@@ -107,37 +107,9 @@
     </header>
 
     <div class="relative flex flex-1 overflow-hidden">
-        <aside class="z-30 hidden w-64 shrink-0 select-none flex-col border-r border-outline-variant bg-surface-container-lowest md:flex">
-            <div class="border-b border-outline-variant p-4">
-                <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white"><span class="material-symbols-outlined">badge</span></div>
-                    <div>
-                        <div class="text-sm font-extrabold text-primary">CLCST e-Pass</div>
-                        <div class="text-[11px] text-on-surface-variant">ID: 2024-10492-OL</div>
-                    </div>
-                </div>
-                <a class="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2.5 text-sm font-bold text-on-primary shadow-sm hover:bg-primary-container" href="{{ route('student.section', 'scan') }}"><span class="material-symbols-outlined text-lg">qr_code_scanner</span>Scan Barcode</a>
-            </div>
+        @include('partials.student-sidebar', ['activePage' => 'support'])
 
-            <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-                <div class="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-outline">Student Navigation</div>
-                <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface" href="{{ route('student.dashboard') }}"><span class="material-symbols-outlined text-xl">dashboard</span>Dashboard</a>
-                <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface" href="{{ route('books.catalog') }}"><span class="material-symbols-outlined text-xl">menu_book</span>Books (Catalog)</a>
-                <a class="flex items-center justify-between rounded-lg px-3 py-2.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'borrow-return') }}"><span class="flex items-center gap-3"><span class="material-symbols-outlined text-xl">swap_horiz</span>Borrow/Return</span><span class="rounded-full bg-surface-container px-2 py-0.5 text-[10px]">{{ $activeLoanCount }}</span></a>
-                <a class="flex items-center justify-between rounded-lg px-3 py-2.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'reservations') }}"><span class="flex items-center gap-3"><span class="material-symbols-outlined text-xl">book_online</span>Reservations</span><span class="rounded-full bg-surface-container px-2 py-0.5 text-[10px]">{{ $reservationCount }}</span></a>
-                <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'history') }}"><span class="material-symbols-outlined text-xl">history_edu</span>Borrowing History</a>
-                <a class="flex items-center justify-between rounded-lg px-3 py-2.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'fines') }}"><span class="flex items-center gap-3"><span class="material-symbols-outlined text-xl">payments</span>Fines & Penalties</span><span class="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] text-error">PHP {{ number_format($outstanding, 0) }}</span></a>
-                <a class="flex items-center justify-between rounded-lg px-3 py-2.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'notifications') }}"><span class="flex items-center gap-3"><span class="material-symbols-outlined text-xl">notifications</span>Notifications</span><span class="rounded-full bg-error-container px-2 py-0.5 text-[10px] text-error">3</span></a>
-                <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'account') }}"><span class="material-symbols-outlined text-xl">account_circle</span>My Profile</a>
-            </nav>
-
-            <div class="space-y-1 border-t border-outline-variant p-3">
-                <a class="flex items-center gap-3 rounded-lg bg-primary-container px-3 py-2.5 text-xs font-bold text-on-primary shadow-sm" href="{{ route('student.section', 'support') }}"><span class="material-symbols-outlined fill-icon text-lg">help_outline</span>Help & Support</a>
-                <a class="flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold text-outline hover:bg-error-container/30 hover:text-error" href="{{ route('login') }}"><span class="material-symbols-outlined text-lg">logout</span>Log Out</a>
-            </div>
-        </aside>
-
-        <main class="flex-1 overflow-y-auto bg-background px-4 py-6 lg:px-8">
+        <main class="md:ml-64 flex-1 overflow-y-auto bg-background px-4 py-6 lg:px-8">
             <div class="mx-auto max-w-7xl space-y-6">
                 <section class="flex flex-col justify-between gap-3 rounded-xl border border-outline-variant bg-surface-container-lowest px-4 py-3 shadow-sm lg:flex-row lg:items-center">
                     <div class="flex flex-wrap items-center gap-2 text-xs font-semibold text-outline">

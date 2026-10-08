@@ -112,32 +112,9 @@
     </header>
 
     <div class="relative flex flex-1 overflow-hidden">
-        <aside class="z-30 hidden w-64 shrink-0 select-none flex-col border-r border-outline-variant bg-surface-container-lowest md:flex">
-            <div class="border-b border-outline-variant bg-surface-container-low/60 p-4">
-                <div class="mb-2 flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-primary">Patron Status</span><span class="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-primary">Active Regular</span></div>
-                <div class="truncate text-xs font-bold">BS Computer Science (BSCS-3A)</div>
-                <div class="mt-2.5"><div class="mb-1 flex justify-between text-[11px] text-outline"><span>Circulation Quota</span><span class="font-semibold text-on-surface">{{ $activeLoanCount }} of 5 Active Loans</span></div><div class="h-1.5 w-full overflow-hidden rounded-full bg-surface-container"><div class="h-1.5 rounded-full bg-primary-container" style="width: {{ min(100, $activeLoanCount * 20) }}%"></div></div></div>
-                <a class="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-outline-variant bg-surface-container px-3 py-2 text-xs font-semibold text-primary hover:bg-surface-container-high" href="{{ route('student.section', 'account') }}"><span class="material-symbols-outlined text-lg">qr_code_scanner</span>Digital Turnstile Pass</a>
-            </div>
+        @include('partials.student-sidebar', ['activePage' => 'notifications'])
 
-            <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-                <a class="flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface" href="{{ route('student.dashboard') }}"><span class="material-symbols-outlined text-xl">dashboard</span>Dashboard</a>
-                <a class="flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface" href="{{ route('books.catalog') }}"><span class="material-symbols-outlined text-xl">menu_book</span>Book Catalog</a>
-                <a class="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'borrow-return') }}"><span class="flex items-center gap-3"><span class="material-symbols-outlined text-xl">swap_horiz</span>My Borrowed Books</span><span class="rounded-full bg-surface-container px-2 py-0.5 text-[11px] font-bold">{{ $activeLoanCount }}</span></a>
-                <a class="flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'history') }}"><span class="material-symbols-outlined text-xl">history_edu</span>Borrowing History</a>
-                <a class="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'reservations') }}"><span class="flex items-center gap-3"><span class="material-symbols-outlined text-xl">book_online</span>Reservations</span><span class="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-900">{{ $reservationCount }} Ready</span></a>
-                <a class="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'fines') }}"><span class="flex items-center gap-3"><span class="material-symbols-outlined text-xl">payments</span>Fines & Penalties</span><span class="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-error">PHP 20</span></a>
-                <a class="flex items-center justify-between rounded-lg bg-primary-container px-3 py-2.5 text-xs font-semibold text-on-primary shadow-sm" href="{{ route('student.section', 'notifications') }}"><span class="flex items-center gap-3"><span class="material-symbols-outlined fill-icon text-xl">notifications_active</span>Notifications</span><span class="rounded-full bg-secondary-container px-2 py-0.5 text-[10px] font-bold text-on-secondary-container">3 Unread</span></a>
-                <a class="flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'account') }}"><span class="material-symbols-outlined text-xl">badge</span>My Profile</a>
-            </nav>
-
-            <div class="space-y-1 border-t border-outline-variant p-3">
-                <a class="flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold text-outline hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'support') }}"><span class="material-symbols-outlined text-lg">help_outline</span>Help & Support</a>
-                <a class="flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold text-outline hover:bg-error-container/30 hover:text-error" href="{{ route('login') }}"><span class="material-symbols-outlined text-lg">logout</span>Log Out</a>
-            </div>
-        </aside>
-
-        <main class="flex-1 overflow-y-auto bg-background px-4 py-6 lg:px-8">
+        <main class="md:ml-64 flex-1 overflow-y-auto bg-background px-4 py-6 lg:px-8">
             <div class="mx-auto max-w-7xl space-y-6">
                 <section>
                     <nav class="mb-1.5 flex items-center gap-2 text-[10px] font-bold text-outline">

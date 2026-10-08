@@ -159,87 +159,9 @@
     </header>
 
     <div class="flex min-h-[calc(100vh-4rem)]">
-        <aside class="hidden w-64 flex-shrink-0 flex-col justify-between border-r border-[#E2E8F0] bg-surface-container-lowest p-4 lg:flex">
-            <div>
-                <div class="mb-4 flex items-center gap-3 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-3">
-                    <div class="rounded-lg bg-primary-container/10 p-2 text-primary-container">
-                        <span class="material-symbols-outlined text-primary-container">local_library</span>
-                    </div>
-                    <div class="overflow-hidden">
-                        <h4 class="truncate text-xs font-bold text-on-surface">Student Service Hub</h4>
-                        <p class="truncate text-[10px] font-bold text-[#64748B]">Circulation Desk Clearance</p>
-                    </div>
-                </div>
+        @include('partials.student-sidebar', ['activePage' => 'dashboard'])
 
-                <nav class="space-y-1">
-                    <a class="flex items-center gap-3 rounded-lg bg-primary-container px-3 py-2.5 font-semibold text-on-primary transition-all" href="{{ route('student.dashboard') }}">
-                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
-                        <span class="text-xs font-semibold">Dashboard</span>
-                    </a>
-                    <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('books.catalog') }}">
-                        <span class="material-symbols-outlined">menu_book</span>
-                        <span class="text-xs font-semibold">Book Catalog</span>
-                    </a>
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2.5 font-medium text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'borrow-return') }}">
-                        <span class="flex items-center gap-3">
-                            <span class="material-symbols-outlined">swap_horiz</span>
-                            <span class="text-xs font-semibold">My Borrowed Books</span>
-                        </span>
-                        <span class="rounded-full bg-[#DCFCE7] px-2 py-0.5 text-[10px] font-bold text-[#166534]">2</span>
-                    </a>
-                    <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'history') }}">
-                        <span class="material-symbols-outlined">history</span>
-                        <span class="text-xs font-semibold">Borrowing History</span>
-                    </a>
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2.5 font-medium text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'reservations') }}">
-                        <span class="flex items-center gap-3">
-                            <span class="material-symbols-outlined">book_online</span>
-                            <span class="text-xs font-semibold">Reservations</span>
-                        </span>
-                        <span class="rounded-full bg-[#DCFCE7] px-2 py-0.5 text-[10px] font-bold text-[#166534]">0</span>
-                    </a>
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2.5 font-medium text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'fines') }}">
-                        <span class="flex items-center gap-3">
-                            <span class="material-symbols-outlined">payments</span>
-                            <span class="text-xs font-semibold">Fines & Penalties</span>
-                        </span>
-                        <span class="rounded-full bg-[#FEF3C7] px-2 py-0.5 text-[10px] font-bold text-[#92400E]">PHP 5</span>
-                    </a>
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2.5 font-medium text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'notifications') }}">
-                        <span class="flex items-center gap-3">
-                            <span class="material-symbols-outlined">notifications</span>
-                            <span class="text-xs font-semibold">Notifications</span>
-                        </span>
-                        <span class="rounded-full bg-[#FEF3C7] px-2 py-0.5 text-[10px] font-bold text-[#92400E]">1</span>
-                    </a>
-                    <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'account') }}">
-                        <span class="material-symbols-outlined">badge</span>
-                        <span class="text-xs font-semibold">My Profile</span>
-                    </a>
-                    <a class="mt-4 flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-[#991B1B] transition-colors hover:bg-[#FEE2E2]" href="{{ route('login') }}">
-                        <span class="material-symbols-outlined text-[#991B1B]">logout</span>
-                        <span class="text-xs font-semibold">Logout</span>
-                    </a>
-                </nav>
-            </div>
-
-            <div class="border-t border-[#E2E8F0] pt-4">
-                <div class="space-y-2 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-3">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-[#475569]">Desk Hours</span>
-                        <span class="text-[10px] font-bold text-[#166534]">Open</span>
-                    </div>
-                    <p class="text-xs text-[#64748B]">Mon - Fri: 8:00 AM - 8:00 PM</p>
-                    <p class="text-xs text-[#64748B]">Saturday: 8:00 AM - 5:00 PM</p>
-                    <div class="flex items-center gap-1.5 border-t border-[#E2E8F0] pt-2 text-[11px] text-[#94A3B8]">
-                        <span class="material-symbols-outlined text-sm">support_agent</span>
-                        <span>Head Librarian: Ms. Santos</span>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <main class="min-w-0 flex-1 space-y-6 overflow-y-auto p-4 sm:p-6 lg:p-8" id="dashboard">
+        <main class="md:ml-64 min-w-0 flex-1 space-y-6 overflow-y-auto p-4 sm:p-6 lg:p-8" id="dashboard">
             @if (session('status'))
                 <div class="rounded-lg border border-[#BBF7D0] bg-[#F0FDF4] px-4 py-3 text-sm font-semibold text-[#166534]">
                     {{ session('status') }}

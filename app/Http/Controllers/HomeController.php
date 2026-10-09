@@ -37,7 +37,11 @@ class HomeController extends Controller
             return redirect()->route('student.dashboard')->with('status', 'Welcome back to your student library dashboard.');
         }
 
-        return back()->with('status', 'Login request received successfully.');
+        if ($request->input('role') === 'faculty') {
+            return redirect()->route('faculty.dashboard')->with('status', 'Welcome back to your faculty library dashboard.');
+        }
+
+        return redirect()->route('staff.dashboard')->with('status', 'Welcome back to the librarian operations dashboard.');
     }
 
     public function register()
@@ -67,6 +71,16 @@ class HomeController extends Controller
     public function studentDashboard()
     {
         return view('student.dashboard');
+    }
+
+    public function facultyDashboard()
+    {
+        return view('staff.dashboard', $this->staffDashboardData('faculty', 'dashboard'));
+    }
+
+    public function staffDashboard()
+    {
+        return view('staff.dashboard', $this->staffDashboardData('staff', 'dashboard'));
     }
 
     public function booksCatalog()
@@ -301,6 +315,80 @@ class HomeController extends Controller
             'renewedLoans' => session('renewed_loans', []),
             'activeLoans' => $this->activeLoans(),
         ]);
+    }
+
+    public function staffSection(string $section)
+    {
+        $titles = [
+            'circulation' => 'Circulation Desk',
+            'patrons' => 'Patron Records',
+            'catalog' => 'Catalog Management',
+            'reservations' => 'Reservations Desk',
+            'reports' => 'Library Reports',
+            'settings' => 'System Settings',
+            'support' => 'Help & Support',
+        ];
+
+        return view('staff.section', array_merge(
+            $this->staffDashboardData('staff', $section),
+            [
+                'title' => $titles[$section],
+                'section' => $section,
+            ],
+        ));
+    }
+
+    private function staffDashboardData(string $portalRole, string $activePage): array
+    {
+        $books = $this->catalogBooks();
+        $activeLoans = $this->activeLoans();
+        $reservations = session('reservations', []);
+        $fineRows = $this->fineLedger();
+
+        return [
+            'portalRole' => $portalRole,
+            'activePage' => $activePage,
+            'catalogBooks' => $books,
+            'activeLoans' => $activeLoans,
+            'reservations' => $reservations,
+            'fineRows' => $fineRows,
+            'stats' => [
+                'activeLoans' => count($activeLoans),
+                'availableCopies' => collect($books)->sum(fn (array $book) => $this->availableCopies($book)),
+                'pendingReservations' => max(count($reservations), 2),
+                'outstandingFines' => collect($fineRows)->where('status', 'outstanding')->sum('amount'),
+            ],
+            'circulationQueue' => $this->circulationQueue(),
+            'facultyRequests' => $this->facultyRequests(),
+            'patronRecords' => $this->patronRecords(),
+        ];
+    }
+
+    private function circulationQueue(): array
+    {
+        return [
+            ['ticket' => 'CIR-1082', 'type' => 'Return Check-In', 'patron' => 'Juan Dela Cruz', 'item' => 'Clean Code', 'status' => 'Due in 2 days', 'priority' => 'High'],
+            ['ticket' => 'CIR-1083', 'type' => 'Hold Pickup', 'patron' => 'Seanne Ynna Alonzo', 'item' => 'Computer Networks', 'status' => 'Shelf scan needed', 'priority' => 'Medium'],
+            ['ticket' => 'CIR-1084', 'type' => 'Renewal Review', 'patron' => 'Miguel Santos', 'item' => 'Introduction to Algorithms', 'status' => 'Eligible', 'priority' => 'Normal'],
+        ];
+    }
+
+    private function facultyRequests(): array
+    {
+        return [
+            ['course' => 'CS 211 - Object-Oriented Programming', 'request' => 'Reserve shelf for Python and software engineering titles', 'owner' => 'Prof. Elena Reyes', 'status' => 'Ready for review'],
+            ['course' => 'IT 312 - Network Administration', 'request' => 'Add Computer Networks to room-use reference list', 'owner' => 'Engr. Mark Ramos', 'status' => 'Pending copy check'],
+            ['course' => 'CAP 401 - Research Methods', 'request' => 'Prepare bibliography support for thesis groups', 'owner' => 'Dr. Liza Mercado', 'status' => 'Scheduled'],
+        ];
+    }
+
+    private function patronRecords(): array
+    {
+        return [
+            ['name' => 'Juan Dela Cruz', 'id' => '2024-10492-OL', 'program' => 'BS Computer Science III', 'loans' => 2, 'status' => 'Active'],
+            ['name' => 'Seanne Ynna Alonzo', 'id' => '2024-10491-OL', 'program' => 'BS Information Technology II', 'loans' => 1, 'status' => 'Hold pending'],
+            ['name' => 'Miguel Santos', 'id' => '2023-11822-OL', 'program' => 'BS Computer Engineering IV', 'loans' => 3, 'status' => 'Clearance check'],
+        ];
     }
 
     private function catalogBooks(): array

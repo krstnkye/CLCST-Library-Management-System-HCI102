@@ -1,8 +1,8 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "vibe/app",
+    "name": "clcst/library-app",
     "type": "project",
-    "description": "A shared-hosting-friendly Laravel starter app.",
+    "description": "CLCST Library Management System.",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
@@ -13,8 +13,6 @@
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.5",
-        "laravel/pao": "^1.0.6",
-        "laravel/pint": "^1.27",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "phpunit/phpunit": "^12.5.12"

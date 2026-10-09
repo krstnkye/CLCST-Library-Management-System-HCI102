@@ -336,7 +336,7 @@ class HomeController extends Controller
         $titles = [
             'circulation' => 'My Borrowed Books',
             'patrons' => 'Patron Records',
-            'catalog' => 'Catalog Management',
+            'catalog' => 'Recommend a Book',
             'reservations' => 'My Reservations',
             'reports' => 'Renewal Requests',
             'history' => 'Borrowing History',

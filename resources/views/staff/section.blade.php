@@ -342,21 +342,198 @@
                     </div>
                 </section>
             @elseif ($section === 'catalog')
-                <section class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                    @foreach ($catalogBooks as $book)
-                        <article class="rounded-xl border border-[#E2E8F0] bg-white p-5 shadow-sm">
-                            <div class="flex gap-4">
-                                <img class="h-28 w-20 rounded-lg border border-[#E2E8F0] object-cover shadow-sm" src="{{ $book['cover_url'] }}" alt="{{ $book['title'] }} cover">
+                @php
+                    $recommendedBooks = [
+                        ['status' => 'Priority Acquisition', 'tone' => 'green', 'title' => 'Designing Data-Intensive Applications', 'author' => 'Martin Kleppmann', 'publisher' => 'O\'Reilly Media', 'isbn' => '978-1449373320', 'course' => 'CS401 Advanced Database Systems', 'copies' => 4, 'amount' => 'PHP 12,800.00', 'note' => 'Primary reference for distributed data systems, replication, and stream processing modules.'],
+                        ['status' => 'Under Dean Review', 'tone' => 'amber', 'title' => 'Database Internals: A Deep Dive into How Distributed Data Systems Work', 'author' => 'Alex Petrov', 'publisher' => 'O\'Reilly Media', 'isbn' => '978-1492040347', 'course' => 'CS302 Database Systems & Architecture', 'copies' => 2, 'amount' => 'PHP 8,900.00', 'note' => 'Supplemental reading for database normalization and distributed storage engines.'],
+                        ['status' => 'Completed - On Stacks Shelf', 'tone' => 'blue', 'title' => 'Clean Architecture: A Craftsman\'s Guide to Software Structure and Design', 'author' => 'Robert C. Martin', 'publisher' => 'Prentice Hall', 'isbn' => 'CLCST-ACQ-2024-412', 'course' => 'Software Engineering Curriculum', 'copies' => 4, 'amount' => 'Circulation Ready', 'note' => 'Four copies received and accessioned for faculty reserve and 14-day checkout.'],
+                        ['status' => 'Peer Request - Needs Endorsement', 'tone' => 'purple', 'title' => 'Cloud Native Patterns: Designing Change-Tolerant Software', 'author' => 'Cornelia Davis', 'publisher' => 'Manning Publications', 'isbn' => '978-1617294297', 'course' => 'CS / Software Engineering Elective', 'copies' => 2, 'amount' => 'PHP 7,400.00', 'note' => 'Requires chair endorsement to qualify for CICT allocated departmental book budget.'],
+                    ];
+                    $priorityCount = collect($recommendedBooks)->where('tone', 'green')->count();
+                    $reviewCount = collect($recommendedBooks)->whereIn('tone', ['amber', 'purple'])->count();
+                    $completedCount = collect($recommendedBooks)->where('tone', 'blue')->count();
+                @endphp
+
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                    <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
+                        <div>
+                            <nav aria-label="Breadcrumb" class="mb-2 flex items-center gap-2 text-xs font-medium text-[#64748B]">
+                                <span>Academic Portal</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span>Faculty Services</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span class="font-bold text-[#065F2A]">Recommend a Book</span>
+                            </nav>
+                            <span class="inline-flex rounded-full bg-[#DCFCE7] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#166534]">Faculty Collection Acquisitions</span>
+                            <h1 class="mt-3 font-display text-3xl font-bold text-[#064E3B]">Recommend a Book & Collection Acquisitions</h1>
+                            <p class="mt-2 max-w-4xl text-sm leading-6 text-[#475569]">Submit syllabus-aligned titles, track department endorsements, and monitor acquisition status for CLCST library collection development.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3.5 py-2 text-xs font-bold text-[#334155] shadow-sm hover:bg-[#F8FAFC]" href="{{ route('books.catalog') }}">
+                                <span class="material-symbols-outlined text-base">search</span>
+                                Search OPAC First
+                            </a>
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#065F2A] px-3.5 py-2 text-xs font-bold text-[#065F2A] hover:bg-[#DCFCE7]" href="{{ route('staff.section', 'support') }}">
+                                <span class="material-symbols-outlined text-base">policy</span>
+                                Acquisition Policy
+                            </a>
+                            <a class="inline-flex items-center gap-2 rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#064E3B]" href="#recommendation-form">
+                                <span class="material-symbols-outlined text-base">add_circle</span>
+                                Submit Acquisition
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div><p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Active Recommendations</p><h2 class="mt-1 font-display text-2xl font-bold text-[#065F2A]">{{ count($recommendedBooks) }} <span class="text-sm font-medium text-[#475569]">titles</span></h2></div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#065F2A]"><span class="material-symbols-outlined">recommend</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">Faculty-submitted titles for procurement and collection review.</p>
+                    </article>
+                    <article class="rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div><p class="text-[10px] font-bold uppercase tracking-wider text-[#166534]">Priority</p><h2 class="mt-1 font-display text-2xl font-bold text-[#166534]">{{ $priorityCount }} <span class="text-sm font-medium">for purchase</span></h2></div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#065F2A]"><span class="material-symbols-outlined">shopping_cart_checkout</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#166534]">Syllabus and CHED-aligned titles with immediate instructional value.</p>
+                    </article>
+                    <article class="rounded-xl border border-[#FACC15] bg-[#FFFBEB] p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div><p class="text-[10px] font-bold uppercase tracking-wider text-[#92400E]">Under Review</p><h2 class="mt-1 font-display text-2xl font-bold text-[#92400E]">{{ $reviewCount }} <span class="text-sm font-medium">pending</span></h2></div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#FACC15] text-[#6D5200]"><span class="material-symbols-outlined">hourglass_top</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#92400E]">Awaiting dean, committee, or department endorsement.</p>
+                    </article>
+                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div><p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Completed</p><h2 class="mt-1 font-display text-2xl font-bold text-[#002E97]">{{ $completedCount }} <span class="text-sm font-medium text-[#475569]">shelved</span></h2></div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#E2E7FF] text-[#002E97]"><span class="material-symbols-outlined">check_circle</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">Titles already accessioned and discoverable from OPAC.</p>
+                    </article>
+                </section>
+
+                <section class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+                    <div class="space-y-5 xl:col-span-8">
+                        <section id="recommendation-form" class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex flex-col justify-between gap-3 lg:flex-row lg:items-center">
                                 <div>
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#A16207]">{{ $book['subject'] }}</span>
-                                    <h2 class="mt-1 font-display text-lg font-bold">{{ $book['title'] }}</h2>
-                                    <p class="text-sm text-[#475569]">by {{ $book['author'] }} - {{ $book['year'] }}</p>
-                                    <p class="mt-2 text-xs text-[#64748B]">Call No: <strong class="text-[#0F172A]">{{ $book['call'] }}</strong></p>
-                                    <p class="text-xs text-[#64748B]">Available copies: <strong class="text-[#065F2A]">{{ collect($book['copies'])->where('status', 'available')->count() }}</strong></p>
+                                    <h2 class="font-display text-xl font-bold text-[#0F172A]">New Acquisition Recommendation</h2>
+                                    <p class="text-xs text-[#64748B]">Prepared for faculty syllabus, CHED CMO, and collection committee review.</p>
+                                </div>
+                                <span class="rounded-full bg-[#F0FDF4] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#166534]">Q4 Acquisition Cycle Open</span>
+                            </div>
+                            <form class="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-2" method="GET" action="{{ route('books.catalog') }}">
+                                <label class="block"><span class="text-xs font-bold text-[#0F172A]">Book Title</span><input class="mt-1 w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" name="q" placeholder="Example: Designing Data-Intensive Applications"></label>
+                                <label class="block"><span class="text-xs font-bold text-[#0F172A]">Author / Editor</span><input class="mt-1 w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" placeholder="Author name"></label>
+                                <label class="block"><span class="text-xs font-bold text-[#0F172A]">ISBN / Edition</span><input class="mt-1 w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" placeholder="978-0000000000 / latest edition"></label>
+                                <label class="block"><span class="text-xs font-bold text-[#0F172A]">Course / Program Alignment</span><select class="mt-1 w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]"><option>BSCS / Software Engineering</option><option>BSIT / Database Systems</option><option>BSCpE / Embedded Systems</option><option>General Education</option></select></label>
+                                <label class="block"><span class="text-xs font-bold text-[#0F172A]">Recommended Copies</span><input class="mt-1 w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" min="1" placeholder="2" type="number"></label>
+                                <label class="block"><span class="text-xs font-bold text-[#0F172A]">Estimated Budget</span><input class="mt-1 w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" placeholder="PHP 8,500.00"></label>
+                                <label class="block lg:col-span-2"><span class="text-xs font-bold text-[#0F172A]">Academic Justification</span><textarea class="mt-1 w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" placeholder="Explain syllabus relevance, accreditation need, or student demand..." rows="4"></textarea></label>
+                                <div class="flex flex-wrap justify-end gap-2 lg:col-span-2">
+                                    <button class="rounded-lg border border-[#CBD5E1] px-4 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" type="reset">Clear Form</button>
+                                    <button class="rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" type="submit">Check OPAC & Submit Draft</button>
+                                </div>
+                            </form>
+                        </section>
+
+                        <section class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+                                <div><h2 class="font-display text-xl font-bold text-[#0F172A]">Recommendation Tracker</h2><p class="text-xs text-[#64748B]">Live acquisition workflow from request to stacks shelving.</p></div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="rounded-full bg-[#065F2A] px-3 py-1.5 text-xs font-bold text-white">All</span>
+                                    <span class="rounded-full border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-1.5 text-xs font-bold text-[#334155]">In Review</span>
+                                    <span class="rounded-full border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-1.5 text-xs font-bold text-[#334155]">Completed</span>
                                 </div>
                             </div>
-                        </article>
-                    @endforeach
+                            <div class="mt-5 space-y-4">
+                                @foreach ($recommendedBooks as $item)
+                                    @php
+                                        $toneClass = match ($item['tone']) {
+                                            'green' => 'bg-[#DCFCE7] text-[#166534]',
+                                            'amber' => 'bg-[#FEF3C7] text-[#92400E]',
+                                            'blue' => 'bg-[#E2E7FF] text-[#002E97]',
+                                            default => 'bg-[#F3E8FF] text-[#6B21A8]',
+                                        };
+                                        $coverClass = match ($item['tone']) {
+                                            'green' => 'bg-[#065F2A] text-white',
+                                            'amber' => 'bg-[#785A00] text-white',
+                                            'blue' => 'bg-[#002E97] text-white',
+                                            default => 'bg-[#0041CC] text-white',
+                                        };
+                                    @endphp
+                                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm transition-all hover:border-[#707A6F]">
+                                        <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
+                                            <div class="flex gap-4">
+                                                <div class="{{ $coverClass }} flex h-28 w-20 shrink-0 flex-col justify-between rounded-lg border border-[#CBD5E1] p-2 shadow-sm">
+                                                    <span class="text-[9px] font-mono uppercase opacity-80">{{ Str::limit($item['publisher'], 12, '') }}</span>
+                                                    <span class="line-clamp-3 text-[10px] font-bold leading-tight">{{ $item['title'] }}</span>
+                                                    <span class="text-[8px] opacity-80">{{ Str::limit($item['author'], 16) }}</span>
+                                                </div>
+                                                <div>
+                                                    <div class="mb-1 flex flex-wrap items-center gap-2">
+                                                        <span class="{{ $toneClass }} rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">{{ $item['status'] }}</span>
+                                                        <span class="rounded bg-[#F8FAFC] px-2 py-0.5 text-[10px] font-bold text-[#475569]">{{ $item['course'] }}</span>
+                                                    </div>
+                                                    <h3 class="font-display text-lg font-bold text-[#0F172A]">{{ $item['title'] }}</h3>
+                                                    <p class="mt-1 text-sm text-[#64748B]">by <span class="font-semibold text-[#334155]">{{ $item['author'] }}</span> - {{ $item['publisher'] }} - ISBN: <span class="font-mono text-[#0F172A]">{{ $item['isbn'] }}</span></p>
+                                                    <p class="mt-3 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] p-3 text-sm leading-6 text-[#475569]"><strong class="text-[#065F2A]">Justification:</strong> {{ $item['note'] }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="text-left sm:text-right">
+                                                <span class="text-xs text-[#64748B]">Recommended: {{ $item['copies'] }} {{ Str::plural('Copy', $item['copies']) }}</span>
+                                                <span class="mt-1 block font-display text-lg font-bold text-[#0F172A]">{{ $item['amount'] }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E8F0] pt-3">
+                                            <span class="flex items-center gap-1.5 text-xs font-medium text-[#64748B]"><span class="material-symbols-outlined text-base">{{ $item['tone'] === 'blue' ? 'verified' : 'schedule' }}</span>{{ $item['tone'] === 'blue' ? 'Verified by Head Cataloger M. Santos' : 'Academic committee workflow in progress' }}</span>
+                                            <div class="flex flex-wrap gap-2">
+                                                <a class="rounded-lg border border-[#CBD5E1] px-3 py-1.5 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('books.catalog', ['q' => $item['title']]) }}">View OPAC Match</a>
+                                                <a class="rounded-lg bg-[#065F2A] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#064E3B]" href="{{ route('staff.section', 'support') }}">{{ $item['tone'] === 'purple' ? 'Endorse Book' : 'Update Request' }}</a>
+                                            </div>
+                                        </div>
+                                    </article>
+                                @endforeach
+                            </div>
+                        </section>
+                    </div>
+
+                    <aside class="space-y-4 xl:col-span-4">
+                        <section class="relative overflow-hidden rounded-2xl border border-[#064E3B] bg-gradient-to-br from-[#135D2E] to-[#072C15] p-5 text-white shadow-md">
+                            @include('partials.celtech-logo', ['class' => 'absolute -bottom-6 -right-6 h-36 w-36 rounded-full bg-white/10 object-contain p-2 opacity-20'])
+                            <div class="relative">
+                                <div class="flex items-center justify-between border-b border-white/20 pb-3">
+                                    <div class="flex items-center gap-2">@include('partials.celtech-logo', ['class' => 'h-7 w-7 rounded-full bg-white object-contain p-0.5'])<span class="text-xs font-bold uppercase tracking-wider text-[#FDC425]">CLCST Digital Pass</span></div>
+                                    <span class="rounded bg-white/10 px-2 py-0.5 text-[10px] font-bold">Faculty / PECE</span>
+                                </div>
+                                <div class="my-4"><p class="text-[11px] uppercase tracking-wider text-white/70">Faculty Borrower Name</p><h3 class="font-display text-lg font-bold">Engr. Roberto M. Mendoza</h3><p class="text-xs text-[#FDC425]">Chair, CICT & Computer Engineering</p><p class="mt-1 font-mono text-[11px] text-white/80">ID: FAC-2018-0412 - Main Campus</p></div>
+                                <div class="rounded-lg bg-white p-3 text-center text-black"><div class="h-12 bg-[repeating-linear-gradient(90deg,#000,#000_2px,transparent_2px,transparent_4px,#000_4px,#000_7px,transparent_7px,transparent_9px,#000_9px,#000_12px)]"></div><p class="mt-1.5 font-mono text-[11px] font-bold tracking-widest">*FAC-2018-0412-LIB-CLCST*</p><div class="mt-2 flex items-center justify-between border-t border-slate-100 pt-2 text-[10px] text-slate-500"><span>Turnstile Optical Pass</span><span class="font-bold text-[#065F2A]">VALID AY 2024-2025</span></div></div>
+                            </div>
+                        </section>
+
+                        <section class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center gap-2 border-b border-[#CBD5E1] pb-3"><span class="material-symbols-outlined text-[#065F2A]">policy</span><h3 class="font-display text-base font-bold">Acquisition Guidelines</h3></div>
+                            <div class="mt-4 space-y-3.5 text-sm leading-6 text-[#475569]">
+                                @foreach ([['1', 'CHED CMO Syllabi Priority', 'Titles listed in approved BSIT, BSCS, and BSCpE syllabi receive top priority.'], ['2', '5-Year Publication Rule', 'Technology and computer engineering references should be published within 2019-2024.'], ['3', 'E-Book Multi-User Option', 'Institutional digital licenses are preferred for high-enrollment courses.'], ['4', 'Per-Faculty Quota', 'Maximum PHP 50,000 allocation per faculty member per semester without council sign-off.']] as $rule)
+                                    <div class="flex items-start gap-2.5"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F2A] text-[10px] font-bold text-white">{{ $rule[0] }}</span><p><strong class="text-[#0F172A]">{{ $rule[1] }}:</strong> {{ $rule[2] }}</p></div>
+                                @endforeach
+                            </div>
+                            <a class="mt-4 flex items-center gap-1 border-t border-[#E2E8F0] pt-3 text-xs font-bold text-[#065F2A] hover:underline" href="{{ route('staff.section', 'support') }}">Download Collection Development Manual<span class="material-symbols-outlined text-base">arrow_forward</span></a>
+                        </section>
+
+                        <section class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center gap-2 border-b border-[#CBD5E1] pb-3"><span class="material-symbols-outlined text-[#785A00]">contact_phone</span><h3 class="font-display text-base font-bold">Committee Contacts</h3></div>
+                            <div class="mt-4 space-y-3">
+                                <div class="flex items-center justify-between rounded-lg bg-[#F8FAFC] p-3"><div><p class="text-sm font-bold">Ms. Maria Santos, RL</p><p class="text-xs text-[#64748B]">Chief Acquisitions Officer</p></div><span class="rounded bg-white px-2 py-0.5 font-mono text-[11px] font-bold text-[#065F2A]">Ext. 108</span></div>
+                                <div class="flex items-center justify-between rounded-lg bg-[#F8FAFC] p-3"><div><p class="text-sm font-bold">Dr. A. De Leon</p><p class="text-xs text-[#64748B]">Dean of Academic Affairs</p></div><span class="rounded bg-white px-2 py-0.5 font-mono text-[11px] font-bold text-[#065F2A]">Ext. 102</span></div>
+                            </div>
+                            <div class="mt-4 rounded-lg border border-[#FACC15]/40 bg-[#FFFBEB] p-3"><p class="flex items-center gap-1.5 text-xs font-bold text-[#92400E]"><span class="material-symbols-outlined text-base">event_busy</span>Q4 Acquisition Cut-Off: Nov 20, 2024</p><p class="mt-1 text-xs leading-5 text-[#64748B]">Late recommendations move to the Q1 2025 procurement stack.</p></div>
+                        </section>
+                    </aside>
                 </section>
             @elseif ($section === 'reservations')
                 @php

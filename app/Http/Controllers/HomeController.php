@@ -338,7 +338,7 @@ class HomeController extends Controller
             'patrons' => 'Patron Records',
             'catalog' => 'Catalog Management',
             'reservations' => 'My Reservations',
-            'reports' => 'Library Reports',
+            'reports' => 'Renewal Requests',
             'settings' => 'System Settings',
             'support' => 'Help & Support',
         ];
@@ -365,6 +365,7 @@ class HomeController extends Controller
             'catalogBooks' => $books,
             'activeLoans' => $activeLoans,
             'borrowingHistory' => $this->borrowingHistory(),
+            'renewedLoans' => session('renewed_loans', []),
             'reservations' => $reservations,
             'fineRows' => $fineRows,
             'stats' => [

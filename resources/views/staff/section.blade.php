@@ -615,6 +615,260 @@
                         </section>
                     </aside>
                 </section>
+            @elseif ($section === 'reports')
+                @php
+                    $bookLookup = collect($catalogBooks)->keyBy('id');
+                    $historyLookup = collect($borrowingHistory)->whereNotNull('loan_id')->keyBy('loan_id');
+                    $renewedLoanMap = $renewedLoans ?? [];
+                    $pendingRenewals = collect($activeLoans)->filter(fn ($loan) => !array_key_exists($loan['id'], $renewedLoanMap));
+                    $approvedRenewals = collect($activeLoans)->filter(fn ($loan) => array_key_exists($loan['id'], $renewedLoanMap));
+                    $restrictedBook = $bookLookup->get('clean-code');
+                    $eligibleBook = $bookLookup->get('algorithms') ?? $bookLookup->get('ai-modern-approach');
+                @endphp
+
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                    <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
+                        <div>
+                            <nav aria-label="Breadcrumb" class="mb-2 flex items-center gap-2 text-xs font-medium text-[#64748B]">
+                                <span>Academic Portal</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span>Faculty Services</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span class="font-bold text-[#065F2A]">Renewal Requests</span>
+                            </nav>
+                            <span class="inline-flex items-center gap-1.5 rounded-full border border-[#BBF7D0] bg-[#DCFCE7] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#166534]">
+                                <span class="material-symbols-outlined text-sm">verified_user</span>
+                                Faculty 30/60-Day Privilege
+                            </span>
+                            <h1 class="mt-3 font-display text-3xl font-bold text-[#0F172A]">Renewal Requests & Extension Queue</h1>
+                            <p class="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">Submit, monitor, and audit online loan extensions for faculty and staff borrowing privileges.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3.5 py-2 text-xs font-bold text-[#334155] shadow-sm hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'circulation') }}">
+                                <span class="material-symbols-outlined text-base">menu_book</span>
+                                My Borrowed Books
+                            </a>
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#065F2A] px-3.5 py-2 text-xs font-bold text-[#065F2A] hover:bg-[#DCFCE7]" href="{{ route('staff.section', 'support') }}">
+                                <span class="material-symbols-outlined text-base">desk</span>
+                                Ask Circulation Desk
+                            </a>
+                            <a class="inline-flex items-center gap-2 rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#064E3B]" href="{{ route('staff.section', 'reports') }}">
+                                <span class="material-symbols-outlined text-base">autorenew</span>
+                                Bulk Renew Eligible
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Pending Review</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#065F2A]">{{ max($pendingRenewals->count(), 1) }} <span class="text-sm font-medium text-[#475569]">request</span></h2>
+                            </div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#065F2A]"><span class="material-symbols-outlined">pending_actions</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">Eligible titles can be extended online before physical desk inspection.</p>
+                    </article>
+                    <article class="rounded-xl border border-[#FACC15] bg-[#FFFBEB] p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#92400E]">Due Soon</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#92400E]">{{ collect($activeLoans)->filter(fn ($loan) => str_contains($loan['due'], 'Oct'))->count() }} <span class="text-sm font-medium">items</span></h2>
+                            </div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#FACC15] text-[#6D5200]"><span class="material-symbols-outlined">notifications_active</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#92400E]">Request renewal before the due date to avoid account review.</p>
+                    </article>
+                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Approved Extensions</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#002E97]">{{ $approvedRenewals->count() }} <span class="text-sm font-medium text-[#475569]">applied</span></h2>
+                            </div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#E2E7FF] text-[#002E97]"><span class="material-symbols-outlined">done_all</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">Approved dates are stored in the renewal ledger for audit slips.</p>
+                    </article>
+                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Restricted</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#B91C1C]">1 <span class="text-sm font-medium text-[#475569]">hold lock</span></h2>
+                            </div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#FEE2E2] text-[#B91C1C]"><span class="material-symbols-outlined">lock_clock</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">Items with active patron holds require physical return or desk override.</p>
+                    </article>
+                </section>
+
+                <section class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+                    <div class="space-y-4 xl:col-span-8">
+                        <div class="rounded-xl border border-[#CBD5E1] bg-white p-4 shadow-sm">
+                            <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                                <div>
+                                    <h2 class="font-display text-xl font-bold text-[#0F172A]">Extension Queue</h2>
+                                    <p class="text-xs text-[#64748B]">Eligible, pending, restricted, and approved renewal records.</p>
+                                </div>
+                                <form class="flex w-full max-w-md items-center gap-2 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-2" method="GET" action="{{ route('books.catalog') }}">
+                                    <span class="material-symbols-outlined text-base text-[#64748B]">search</span>
+                                    <input class="w-full border-0 bg-transparent p-0 text-sm text-[#0F172A] placeholder:text-[#94A3B8] focus:ring-0" name="q" placeholder="Search OPAC catalog or course reserves...">
+                                    <button class="rounded bg-[#065F2A] px-3 py-1.5 text-xs font-bold text-white" type="submit">Search</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        @foreach ($activeLoans as $loan)
+                            @php
+                                $book = $bookLookup->get($loan['book_id']);
+                                $history = $historyLookup->get($loan['id']);
+                                $isRenewed = array_key_exists($loan['id'], $renewedLoanMap);
+                                $isRestricted = $loan['book_id'] === 'clean-code';
+                                $newDueDate = $renewedLoanMap[$loan['id']] ?? 'Nov 14, 2024';
+                            @endphp
+                            <article class="overflow-hidden rounded-xl border {{ $isRestricted ? 'border-[#FCA5A5]' : ($isRenewed ? 'border-[#CBD5E1]' : 'border-[#BBF7D0]') }} bg-white shadow-sm">
+                                <div class="flex flex-wrap items-center justify-between gap-2 border-b px-5 py-3 {{ $isRestricted ? 'border-[#FCA5A5] bg-[#FEE2E2]/50' : ($isRenewed ? 'border-[#CBD5E1] bg-[#F8FAFC]' : 'border-[#BBF7D0] bg-[#F0FDF4]') }}">
+                                    <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider {{ $isRestricted ? 'bg-[#B91C1C] text-white' : ($isRenewed ? 'bg-[#E2E7FF] text-[#002E97]' : 'bg-[#065F2A] text-white') }}">
+                                        <span class="material-symbols-outlined text-sm">{{ $isRestricted ? 'warning' : ($isRenewed ? 'done_all' : 'autorenew') }}</span>
+                                        {{ $isRestricted ? 'Renewal Restricted - Active Holds Waiting' : ($isRenewed ? 'Approved & Applied' : 'Eligible for Online Renewal') }}
+                                    </span>
+                                    <span class="text-xs font-semibold {{ $isRestricted ? 'text-[#B91C1C]' : 'text-[#64748B]' }}">{{ $isRenewed ? 'New due: '.$newDueDate : 'Current due: '.$loan['due'] }}</span>
+                                </div>
+                                <div class="p-5">
+                                    <div class="flex flex-col gap-5 md:flex-row">
+                                        <div class="h-32 w-24 shrink-0 overflow-hidden rounded-lg border border-[#CBD5E1] bg-[#E2E7FF] shadow-sm">
+                                            @if ($book)
+                                                <img class="h-full w-full object-cover" src="{{ $book['cover_url'] }}" alt="{{ $loan['title'] }} cover">
+                                            @else
+                                                <div class="flex h-full w-full flex-col items-center justify-center p-2 text-center text-[#64748B]"><span class="material-symbols-outlined text-3xl">book</span><span class="mt-1 text-[10px] font-bold">Library Copy</span></div>
+                                            @endif
+                                        </div>
+                                        <div class="min-w-0 flex-1 space-y-3">
+                                            <div class="flex flex-wrap items-start justify-between gap-2">
+                                                <div>
+                                                    <h3 class="font-display text-xl font-bold leading-tight text-[#0F172A]">{{ $loan['title'] }}</h3>
+                                                    <p class="mt-1 text-sm text-[#64748B]">by <span class="font-semibold text-[#334155]">{{ $book['author'] ?? ($history['author'] ?? 'Catalog author record') }}</span>{{ $book ? ' - '.$book['publisher'] : '' }}</p>
+                                                </div>
+                                                <span class="rounded-full {{ $isRestricted ? 'bg-[#FEE2E2] text-[#991B1B]' : 'bg-[#DCFCE7] text-[#166534]' }} px-2.5 py-1 text-[10px] font-bold">{{ $isRestricted ? '2 Patrons Waiting' : 'Faculty Extension Eligible' }}</span>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-3 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] p-3 text-xs sm:grid-cols-4">
+                                                <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Call Number</span><span class="font-semibold text-[#0F172A]">{{ $loan['call'] }}</span></div>
+                                                <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Barcode</span><span class="font-mono text-[#0F172A]">{{ $loan['barcode'] }}</span></div>
+                                                <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Borrowed</span><span class="font-semibold text-[#0F172A]">{{ $history['borrowed'] ?? 'Desk Record' }}</span></div>
+                                                <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Renewals</span><span class="font-bold {{ $isRestricted ? 'text-[#B91C1C]' : 'text-[#065F2A]' }}">{{ $isRenewed ? '1 of 2 Used' : ($isRestricted ? 'Locked' : '0 of 2 Used') }}</span></div>
+                                            </div>
+
+                                            @if ($isRestricted)
+                                                <div class="rounded-lg border-l-4 border-[#B91C1C] bg-[#F8FAFC] p-3 text-sm">
+                                                    <p class="flex items-center gap-1.5 font-semibold text-[#0F172A]"><span class="material-symbols-outlined text-base text-[#B91C1C]">info</span>Per CLCST Academic Library Regulations Art. IV Sec. 3</p>
+                                                    <p class="mt-1 pl-5 text-[#475569]">Materials with pending patron hold reservations cannot be renewed online. Please return the book or request an emergency instructional grace period at the counter.</p>
+                                                </div>
+                                            @else
+                                                <div class="flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] p-3 text-sm">
+                                                    <span class="material-symbols-outlined text-base text-[#065F2A]">event_upcoming</span>
+                                                    <span>Projected Extension Due Date: <strong class="text-[#065F2A]">{{ $newDueDate }}</strong> (+{{ $isRenewed ? '7' : '30' }} days)</span>
+                                                </div>
+                                            @endif
+
+                                            <div class="flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E8F0] pt-3">
+                                                <div class="flex flex-wrap gap-2">
+                                                    @if ($isRestricted)
+                                                        <a class="inline-flex items-center gap-1.5 rounded-lg bg-[#E2E8F0] px-3.5 py-2 text-xs font-bold text-[#334155] hover:bg-[#CBD5E1]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">assignment_return</span>Schedule Physical Return</a>
+                                                        <a class="inline-flex items-center gap-1.5 rounded-lg border border-[#CBD5E1] px-3.5 py-2 text-xs font-bold text-[#065F2A] hover:bg-[#DCFCE7]" href="{{ route('staff.section', 'reservations') }}"><span class="material-symbols-outlined text-base">copy_all</span>Request Replacement Copy</a>
+                                                    @else
+                                                        <form method="POST" action="{{ route('loans.renew', $loan['id']) }}">
+                                                            @csrf
+                                                            <button class="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-bold shadow-sm {{ $isRenewed ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#065F2A] text-white hover:bg-[#064E3B]' }}" type="submit" @disabled($isRenewed)>
+                                                                <span class="material-symbols-outlined text-base">{{ $isRenewed ? 'check_circle' : 'bolt' }}</span>
+                                                                {{ $isRenewed ? 'Renewal Submitted' : 'Submit Online Renewal' }}
+                                                            </button>
+                                                        </form>
+                                                        <a class="inline-flex items-center gap-1.5 rounded-lg border border-[#CBD5E1] px-3.5 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'support') }}">Request Custom End-of-Term Date</a>
+                                                    @endif
+                                                </div>
+                                                <a class="inline-flex items-center gap-1 text-xs font-bold text-[#64748B] hover:text-[#0F172A]" href="https://www.google.com/search?q={{ urlencode($loan['title'].' citation') }}" target="_blank" rel="noopener"><span class="material-symbols-outlined text-sm">format_quote</span>Cite Book</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        @endforeach
+
+                        @if ($approvedRenewals->isNotEmpty())
+                            <section class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                                <h3 class="font-display text-lg font-bold text-[#0F172A]">Recently Approved Extension Ledger</h3>
+                                <div class="mt-3 space-y-2">
+                                    @foreach ($approvedRenewals as $loan)
+                                        <div class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] p-3 text-sm">
+                                            <div>
+                                                <p class="font-bold">{{ $loan['title'] }}</p>
+                                                <p class="text-xs text-[#64748B]">Approved by Ms. M. Santos - {{ $loan['barcode'] }}</p>
+                                            </div>
+                                            <span class="rounded bg-[#DCFCE7] px-2.5 py-1 text-xs font-bold text-[#166534]">Extended to {{ $renewedLoanMap[$loan['id']] }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </section>
+                        @endif
+                    </div>
+
+                    <aside class="space-y-4 xl:col-span-4">
+                        <section class="relative overflow-hidden rounded-2xl border border-[#064E3B] bg-gradient-to-br from-[#135D2E] to-[#042410] p-6 text-white shadow-md">
+                            @include('partials.celtech-logo', ['class' => 'absolute -bottom-8 -right-8 h-40 w-40 rounded-full bg-white/10 object-contain p-2 opacity-20'])
+                            <div class="relative">
+                                <div class="flex items-center justify-between border-b border-white/20 pb-4">
+                                    <div class="flex items-center gap-2.5">
+                                        @include('partials.celtech-logo', ['class' => 'h-8 w-8 rounded-full bg-white object-contain p-0.5'])
+                                        <div><p class="text-[10px] font-bold uppercase tracking-wider text-[#FDC425]">Central Luzon College of Science and Tech</p><p class="font-display text-base font-bold">Faculty Borrower Pass</p></div>
+                                    </div>
+                                    <span class="material-symbols-outlined text-[#FDC425]">nfc</span>
+                                </div>
+                                <div class="py-4">
+                                    <p class="text-xs text-white/80">Patron Name</p>
+                                    <p class="font-display text-lg font-bold">Engr. Roberto M. Mendoza, PECE</p>
+                                    <p class="text-xs text-white/90">Dept. Chair - CICT & CpE</p>
+                                </div>
+                                <div class="rounded-xl bg-white p-3 text-center text-black shadow-inner">
+                                    <div class="flex items-center justify-center gap-1 border-b border-[#CBD5E1] pb-1 font-mono text-xs font-bold tracking-wider"><span class="material-symbols-outlined text-sm text-[#065F2A]">qr_code_2</span>FAC*20180412*LIB</div>
+                                    <div class="mt-2 font-mono text-lg font-black tracking-[0.35em]">|||| ||| |||||| |||</div>
+                                    <p class="mt-1 text-[9px] text-[#64748B]">Tap at stacks turnstile or scan under barcode reader</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center gap-2 border-b border-[#CBD5E1] pb-3">
+                                <span class="material-symbols-outlined text-[#065F2A]">policy</span>
+                                <h3 class="font-display text-base font-bold">Faculty Renewal Regulations</h3>
+                            </div>
+                            <ul class="mt-4 space-y-3 text-sm leading-6 text-[#475569]">
+                                <li class="flex gap-2"><span class="material-symbols-outlined mt-0.5 shrink-0 text-base text-[#065F2A]">check_circle</span><span><strong>Max 2 Online Renewals:</strong> Up to two renewals per item before physical desk inspection.</span></li>
+                                <li class="flex gap-2"><span class="material-symbols-outlined mt-0.5 shrink-0 text-base text-[#065F2A]">calendar_month</span><span><strong>Faculty Tenure Grant:</strong> Standard 30 to 60 calendar days per approved extension.</span></li>
+                                <li class="flex gap-2"><span class="material-symbols-outlined mt-0.5 shrink-0 text-base text-[#92400E]">lock_clock</span><span><strong>Hold Lock Policy:</strong> Active student/researcher holds can lock online renewal.</span></li>
+                                <li class="flex gap-2"><span class="material-symbols-outlined mt-0.5 shrink-0 text-base text-[#002E97]">thunderstorm</span><span><strong>Suspension Clause:</strong> Campus closures automatically pause return dates.</span></li>
+                            </ul>
+                            <a class="mt-4 flex items-center justify-between border-t border-[#CBD5E1] pt-3 text-xs font-bold text-[#065F2A] hover:underline" href="{{ route('staff.section', 'support') }}"><span>View Full CLCST Faculty Library Code</span><span class="material-symbols-outlined text-base">arrow_forward</span></a>
+                        </section>
+
+                        <section class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center gap-2 border-b border-[#CBD5E1] pb-3">
+                                <span class="material-symbols-outlined text-[#065F2A]">desk</span>
+                                <h3 class="font-display text-base font-bold">Circulation Desk Duty</h3>
+                            </div>
+                            <div class="mt-4 flex items-center gap-3 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] p-3">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#DCFCE7] font-bold text-[#065F2A]">MS</div>
+                                <div><p class="text-sm font-bold">Ms. M. Santos</p><p class="text-xs text-[#64748B]">Head Librarian - Circulation Counter 01</p><p class="text-xs font-bold text-[#065F2A]">Local Ext. 108</p></div>
+                            </div>
+                            <div class="mt-4 space-y-1.5 text-xs text-[#475569]">
+                                <div class="flex justify-between"><span>Desk Hours:</span><span class="font-semibold text-[#0F172A]">7:30 AM - 6:30 PM</span></div>
+                                <div class="flex justify-between"><span>Saturday Service:</span><span class="font-semibold text-[#0F172A]">8:00 AM - 12:00 PM</span></div>
+                                <div class="flex justify-between"><span>Location:</span><span class="font-semibold text-[#0F172A]">Main Bldg - Level 1</span></div>
+                            </div>
+                            <a class="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-[#065F2A] px-3 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">chat</span>Contact Desk 1 Support</a>
+                        </section>
+                    </aside>
+                </section>
             @else
                 <section class="grid grid-cols-1 gap-4 lg:grid-cols-3">
                     @foreach ([

@@ -10,7 +10,7 @@
         ['key' => 'patrons', 'label' => 'Patron Records', 'icon' => 'groups', 'href' => route('staff.section', 'patrons')],
         ['key' => 'catalog', 'label' => 'Catalog Management', 'icon' => 'library_books', 'href' => route('staff.section', 'catalog')],
         ['key' => 'reservations', 'label' => 'My Reservations', 'icon' => 'book_online', 'href' => route('staff.section', 'reservations'), 'badge' => $pendingReservations],
-        ['key' => 'reports', 'label' => 'Reports', 'icon' => 'monitoring', 'href' => route('staff.section', 'reports')],
+        ['key' => 'reports', 'label' => 'Renewal Requests', 'icon' => 'autorenew', 'href' => route('staff.section', 'reports'), 'badge' => 1],
         ['key' => 'settings', 'label' => 'Settings', 'icon' => 'settings', 'href' => route('staff.section', 'settings')],
     ];
 @endphp

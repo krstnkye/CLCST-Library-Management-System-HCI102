@@ -343,6 +343,7 @@ class HomeController extends Controller
             'academic' => 'Faculty Academic Requests',
             'course-reserves' => 'Course Syllabus Reserves',
             'reading-lists' => 'Course Reading Lists',
+            'instruction-sessions' => 'Library Instruction Sessions',
             'settings' => 'System Settings',
             'support' => 'Help & Support',
         ];

@@ -1285,6 +1285,227 @@
                         </section>
                     </aside>
                 </section>
+            @elseif ($section === 'instruction-sessions')
+                @php
+                    $instructionSessions = [
+                        [
+                            'title' => 'Advanced Engineering Research & IEEE Xplore Retrieval Workshop',
+                            'course' => 'CPE401 - Capstone Research 1',
+                            'faculty' => 'Engr. Roberto M. Mendoza, PECE',
+                            'date' => 'Oct 28, 2024',
+                            'time' => '10:00 AM - 11:30 AM',
+                            'venue' => 'Multimedia AVR Room 302',
+                            'students' => 42,
+                            'status' => 'Confirmed',
+                            'topics' => ['IEEE Xplore', 'Scopus search strategy', 'Citation tracing', 'Keyword mapping'],
+                            'tone' => 'green',
+                        ],
+                        [
+                            'title' => 'Information Literacy & Academic Integrity',
+                            'course' => 'IT401 - Capstone Research 1',
+                            'faculty' => 'Prof. Elena Reyes',
+                            'date' => 'Nov 05, 2024',
+                            'time' => '1:00 PM - 2:30 PM',
+                            'venue' => 'Library Instruction Lab',
+                            'students' => 38,
+                            'status' => 'Pending Confirmation',
+                            'topics' => ['Turnitin basics', 'Plagiarism prevention', 'APA 7 citations'],
+                            'tone' => 'amber',
+                        ],
+                        [
+                            'title' => 'OPAC Search & Reserve Shelf Orientation',
+                            'course' => 'CS102 - Programming Fundamentals',
+                            'faculty' => 'Ms. Carla Dizon',
+                            'date' => 'Oct 14, 2024',
+                            'time' => '9:00 AM - 10:00 AM',
+                            'venue' => 'CLCST Learning Commons',
+                            'students' => 31,
+                            'status' => 'Completed',
+                            'topics' => ['OPAC search', 'Call numbers', 'Borrowing rules'],
+                            'tone' => 'blue',
+                        ],
+                    ];
+                    $scheduledCount = collect($instructionSessions)->whereIn('status', ['Confirmed', 'Pending Confirmation'])->count();
+                    $studentTotal = collect($instructionSessions)->sum('students');
+                    $topicCount = collect($instructionSessions)->flatMap(fn ($session) => $session['topics'])->unique()->count();
+                @endphp
+
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-6 shadow-sm lg:p-8">
+                    <div class="flex flex-col justify-between gap-5 lg:flex-row lg:items-start">
+                        <div>
+                            <nav aria-label="Breadcrumb" class="mb-3 flex flex-wrap items-center gap-2 text-xs font-semibold text-[#64748B]">
+                                <span>Faculty Academic Services</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span class="font-bold text-[#065F2A]">Library Instruction & Literacy</span>
+                            </nav>
+                            <span class="inline-flex rounded-full bg-[#DCFCE7] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#166534]">Academic Services Schedule</span>
+                            <h1 class="mt-4 font-display text-3xl font-bold text-[#064E3B] md:text-4xl">Library Instruction Sessions</h1>
+                            <p class="mt-3 max-w-3xl text-sm leading-6 text-[#475569]">Book and manage librarian-led workshops for database retrieval, OPAC search, citation management, academic integrity, and capstone research support.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <a class="inline-flex items-center gap-2 rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" href="#instruction-booking-form"><span class="material-symbols-outlined text-base">add_circle</span>Book Library Instruction Session</a>
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'reading-lists') }}"><span class="material-symbols-outlined text-base">format_list_bulleted</span>Attach Reading List</a>
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">event</span>Sync Calendar</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    @foreach ([
+                        ['label' => 'Scheduled Sessions', 'value' => $scheduledCount, 'meta' => 'Workshops booked this term', 'icon' => 'event_available'],
+                        ['label' => 'Students to be Trained', 'value' => $studentTotal, 'meta' => 'Across active class sections', 'icon' => 'groups'],
+                        ['label' => 'Topics Covered', 'value' => $topicCount, 'meta' => 'Research and literacy modules', 'icon' => 'school'],
+                        ['label' => 'Session Venue', 'value' => '70%', 'meta' => 'AVR / Instruction Lab capacity', 'icon' => 'meeting_room'],
+                    ] as $metric)
+                        <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">{{ $metric['label'] }}</p>
+                                    <h2 class="mt-2 font-display text-3xl font-bold text-[#065F2A]">{{ $metric['value'] }}</h2>
+                                    <p class="mt-1 text-xs text-[#64748B]">{{ $metric['meta'] }}</p>
+                                </div>
+                                <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#EEF2FF] text-[#002E97]"><span class="material-symbols-outlined">{{ $metric['icon'] }}</span></span>
+                            </div>
+                        </article>
+                    @endforeach
+                </section>
+
+                <section class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+                    <div class="space-y-6 xl:col-span-8">
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="mb-4 flex flex-col justify-between gap-3 border-b border-[#CBD5E1] pb-4 sm:flex-row sm:items-center">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[#065F2A]">cast_for_education</span>
+                                    <h2 class="font-display text-xl font-bold text-[#064E3B]">Active Scheduled Sessions</h2>
+                                </div>
+                                <div class="flex flex-wrap gap-2 text-xs font-bold">
+                                    <a class="rounded-lg bg-[#065F2A] px-3 py-1.5 text-white" href="{{ route('staff.section', 'instruction-sessions') }}">All</a>
+                                    <a class="rounded-lg border border-[#CBD5E1] px-3 py-1.5 text-[#334155] hover:bg-[#F8FAFC]" href="#instruction-booking-form">Book New</a>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                @foreach ($instructionSessions as $session)
+                                    <article class="rounded-2xl border border-[#CBD5E1] bg-[#F8FAFC] p-5">
+                                        <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
+                                            <div class="min-w-0">
+                                                <div class="flex flex-wrap items-center gap-2">
+                                                    <span class="{{ $session['tone'] === 'green' ? 'bg-[#DCFCE7] text-[#166534]' : ($session['tone'] === 'amber' ? 'bg-[#FEF3C7] text-[#92400E]' : 'bg-[#DBEAFE] text-[#1D4ED8]') }} rounded-full px-2.5 py-1 text-[10px] font-bold uppercase">{{ $session['status'] }}</span>
+                                                    <span class="rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold text-[#475569]">{{ $session['course'] }}</span>
+                                                </div>
+                                                <h3 class="mt-3 font-display text-xl font-bold text-[#064E3B]">{{ $session['title'] }}</h3>
+                                                <p class="mt-1 text-sm text-[#64748B]">{{ $session['faculty'] }}</p>
+                                                <div class="mt-4 grid grid-cols-1 gap-3 text-sm text-[#475569] sm:grid-cols-3">
+                                                    <span class="flex items-center gap-2"><span class="material-symbols-outlined text-base text-[#065F2A]">calendar_month</span>{{ $session['date'] }}</span>
+                                                    <span class="flex items-center gap-2"><span class="material-symbols-outlined text-base text-[#065F2A]">schedule</span>{{ $session['time'] }}</span>
+                                                    <span class="flex items-center gap-2"><span class="material-symbols-outlined text-base text-[#065F2A]">location_on</span>{{ $session['venue'] }}</span>
+                                                </div>
+                                                <div class="mt-4 flex flex-wrap gap-2">
+                                                    @foreach ($session['topics'] as $topic)
+                                                        <span class="rounded-full border border-[#CBD5E1] bg-white px-2 py-1 text-[10px] font-bold text-[#334155]">{{ $topic }}</span>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                            <div class="shrink-0 rounded-xl border border-[#CBD5E1] bg-white p-4 text-center">
+                                                <p class="font-display text-3xl font-bold text-[#065F2A]">{{ $session['students'] }}</p>
+                                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Students</p>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4 flex flex-wrap gap-2 border-t border-[#CBD5E1] pt-4">
+                                            <a class="inline-flex items-center gap-1.5 rounded-lg border border-[#CBD5E1] bg-white px-3 py-1.5 text-xs font-bold text-[#065F2A] hover:bg-[#F0FDF4]" href="{{ route('staff.section', 'instruction-sessions') }}"><span class="material-symbols-outlined text-base">edit</span>Edit Session Details</a>
+                                            <a class="inline-flex items-center gap-1.5 rounded-lg border border-[#CBD5E1] bg-white px-3 py-1.5 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">mail</span>Email Class Notice</a>
+                                            <a class="inline-flex items-center gap-1.5 rounded-lg border border-[#CBD5E1] bg-white px-3 py-1.5 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'reading-lists') }}"><span class="material-symbols-outlined text-base">attachment</span>Attach Resources</a>
+                                        </div>
+                                    </article>
+                                @endforeach
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm" id="instruction-booking-form">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[#065F2A]">edit_calendar</span>
+                                <h2 class="font-display text-xl font-bold text-[#064E3B]">Book a New Library Instruction Session</h2>
+                            </div>
+                            <form class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2" method="GET" action="{{ route('staff.section', 'instruction-sessions') }}">
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Course / Section
+                                    <select class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]">
+                                        <option>IT401 - Capstone Research 1 (Sec A)</option>
+                                        <option>CPE401 - Engineering Research</option>
+                                        <option>CS102 - Programming Fundamentals</option>
+                                    </select>
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Instruction Topic
+                                    <select class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]">
+                                        <option>Research Methodology & Capstone Literature Reviews</option>
+                                        <option>OPAC Search and Call Number Orientation</option>
+                                        <option>Academic Integrity and Citation Management</option>
+                                    </select>
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Preferred Date
+                                    <input class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" type="date">
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Preferred Time
+                                    <input class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" type="time">
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Expected Students
+                                    <input class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" placeholder="42">
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Venue Preference
+                                    <select class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]">
+                                        <option>Multimedia AVR Room 302</option>
+                                        <option>Library Instruction Lab</option>
+                                        <option>Classroom visit</option>
+                                    </select>
+                                </label>
+                                <textarea class="min-h-24 rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A] md:col-span-2" placeholder="Learning outcomes, database needs, citation style, or assignment context"></textarea>
+                                <div class="flex justify-end gap-3 md:col-span-2">
+                                    <button class="rounded-lg border border-[#CBD5E1] px-4 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" type="reset">Reset</button>
+                                    <button class="rounded-lg bg-[#065F2A] px-5 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" type="submit">Submit Booking Request</button>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+
+                    <aside class="space-y-6 xl:col-span-4">
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center justify-between"><h2 class="font-display text-lg font-bold text-[#064E3B]">Faculty Digital Pass</h2><span class="rounded bg-[#DCFCE7] px-2 py-0.5 text-[10px] font-bold text-[#166534]">AV LAB READY</span></div>
+                            <div class="mt-4 rounded-2xl bg-[#064E3B] p-5 text-white">
+                                <div class="flex items-center gap-3">
+                                    @include('partials.celtech-logo', ['class' => 'flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white p-1'])
+                                    <div><p class="text-xs font-bold uppercase text-[#BBF7D0]">Faculty Digital Library Credential</p><p class="font-display text-lg font-bold">Engr. Roberto Mendoza</p><p class="text-xs text-[#D1FAE5]">Full Research & AV Lab Booking</p></div>
+                                </div>
+                                <div class="mt-5 rounded-xl bg-white p-4 text-center text-[#0F172A]">
+                                    <div class="mx-auto h-10 w-full max-w-xs bg-[repeating-linear-gradient(90deg,#0F172A_0_2px,transparent_2px_5px,#0F172A_5px_7px,transparent_7px_10px)]"></div>
+                                    <p class="mt-2 font-mono text-xs font-bold tracking-[0.25em]">FAC-2018-0412-LIB</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <h2 class="font-display text-lg font-bold text-[#064E3B]">Instruction Lab Availability</h2>
+                            <div class="mt-4 space-y-3">
+                                <div class="flex justify-between text-xs font-bold"><span>Reserved for workshops</span><span>70%</span></div>
+                                <div class="h-3 overflow-hidden rounded-full bg-[#E2E8F0]"><div class="h-full rounded-full bg-[#065F2A]" style="width: 70%"></div></div>
+                                <p class="text-xs leading-5 text-[#64748B]">AVR Room 302 and Library Instruction Lab are available for confirmed faculty-led classes.</p>
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#92400E]">policy</span><h2 class="font-display text-lg font-bold text-[#064E3B]">Library Instruction Policies</h2></div>
+                            <div class="mt-4 space-y-3 text-sm leading-6 text-[#475569]">
+                                <p><strong class="text-[#0F172A]">Advance booking:</strong> submit requests at least five working days before the preferred session date.</p>
+                                <p><strong class="text-[#0F172A]">Faculty presence:</strong> faculty member presence is required throughout the workshop duration.</p>
+                                <p><strong class="text-[#0F172A]">Materials:</strong> attach assignments, reading lists, or research requirements for better librarian preparation.</p>
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-[#F0FDF4] p-5 shadow-sm">
+                            <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">support_agent</span><h2 class="font-display text-lg font-bold text-[#064E3B]">Instruction Librarian</h2></div>
+                            <p class="mt-3 text-sm leading-6 text-[#475569]">Coordinate session outlines, database access, and faculty calendar changes with the Academic Services Desk.</p>
+                            <a class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#065F2A] px-3 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">chat</span>Contact Librarian</a>
+                        </section>
+                    </aside>
+                </section>
             @elseif ($section === 'course-reserves')
                 @php
                     $bookLookup = collect($catalogBooks)->keyBy('id');

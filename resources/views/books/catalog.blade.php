@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>CLCST School Library - Online Public Access Catalog</title>
+    @include('partials.favicon')
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -87,7 +88,7 @@
 
     <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-outline-variant bg-surface-container-lowest px-4 shadow-sm md:px-6">
         <div class="flex items-center gap-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm">CL</div>
+            @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm object-contain bg-white p-0.5'])
             <div>
                 <div class="font-headline-sm text-base font-bold leading-tight tracking-wide text-primary">CLCST SCHOOL LIBRARY</div>
                 <div class="text-[10px] font-bold uppercase tracking-wider text-secondary">Online Public Access Catalog (OPAC)</div>
@@ -327,7 +328,7 @@
                     </aside>
                 </div>
             </section>
-            <footer class="mt-auto border-t border-outline-variant bg-surface-container-lowest px-4 py-6 text-on-surface-variant sm:px-8"><div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-xs md:flex-row"><div class="flex items-center gap-3"><div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-outline-variant bg-primary text-[10px] font-extrabold text-white">CL</div><div><p class="font-bold text-on-surface">Central Luzon College of Science and Technology (CLCST)</p><p class="text-[11px] text-outline">Compliant with CHED CMO No. 25 - Computer Science & Library Information Standards</p></div></div><div class="flex flex-wrap items-center gap-4 font-medium text-outline"><span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-primary">schedule</span>Turnstiles Open: 7:30 AM - 6:30 PM</span><span>|</span><a class="hover:text-primary" href="{{ route('student.section', 'circulation-policy') }}">Circulation Policy</a><span>|</span><a class="hover:text-primary" href="{{ route('student.section', 'opac-guide') }}">OPAC Guide</a><span>|</span><a class="hover:text-primary" href="{{ route('books.catalog', ['q' => 'repository']) }}">Digital Repository</a></div></div></footer>
+            <footer class="mt-auto border-t border-outline-variant bg-surface-container-lowest px-4 py-6 text-on-surface-variant sm:px-8"><div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-xs md:flex-row"><div class="flex items-center gap-3">@include('partials.celtech-logo', ['class' => 'flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-outline-variant bg-primary text-[10px] font-extrabold text-white object-contain bg-white p-0.5'])<div><p class="font-bold text-on-surface">Central Luzon College of Science and Technology (CLCST)</p><p class="text-[11px] text-outline">Compliant with CHED CMO No. 25 - Computer Science & Library Information Standards</p></div></div><div class="flex flex-wrap items-center gap-4 font-medium text-outline"><span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-primary">schedule</span>Turnstiles Open: 7:30 AM - 6:30 PM</span><span>|</span><a class="hover:text-primary" href="{{ route('student.section', 'circulation-policy') }}">Circulation Policy</a><span>|</span><a class="hover:text-primary" href="{{ route('student.section', 'opac-guide') }}">OPAC Guide</a><span>|</span><a class="hover:text-primary" href="{{ route('books.catalog', ['q' => 'repository']) }}">Digital Repository</a></div></div></footer>
         </main>
     </div>
 </body>

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title }} - CLCST Library Portal</title>
+    @include('partials.favicon')
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -77,7 +78,7 @@
     <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-outline-variant bg-surface-container-lowest px-4 shadow-sm md:px-6">
         <div class="flex items-center gap-4">
             <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm">CL</div>
+                @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm object-contain bg-white p-0.5'])
                 <div class="flex flex-col">
                     <span class="font-headline text-base font-bold leading-none tracking-wide text-primary">CLCST SCHOOL LIBRARY</span>
                     <span class="mt-0.5 text-xs font-medium text-on-surface-variant">Automated Learning Resource Center</span>
@@ -212,7 +213,7 @@
                         </div>
                         <div class="space-y-4 p-5">
                             <div class="rounded-xl bg-gradient-to-br from-primary-container to-primary p-4 text-white shadow-md">
-                                <div class="flex items-start justify-between"><div><p class="text-[10px] font-bold uppercase tracking-widest text-emerald-100">Central Luzon College</p><p class="text-xs font-bold">Learning Commons Digital ID</p></div><div class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-xs font-bold">CL</div></div>
+                                <div class="flex items-start justify-between"><div><p class="text-[10px] font-bold uppercase tracking-widest text-emerald-100">Central Luzon College</p><p class="text-xs font-bold">Learning Commons Digital ID</p></div>@include('partials.celtech-logo', ['class' => 'flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-xs font-bold object-contain bg-white p-0.5'])</div>
                                 <div class="mt-5 flex items-center gap-4"><div class="flex h-16 w-14 items-center justify-center rounded border border-white/40 bg-white/20 font-headline text-xl font-bold">JD</div><div><p class="font-headline text-lg font-bold">Juan Dela Cruz</p><p class="text-xs text-emerald-100">BS Computer Science - 3rd Year</p><p class="mt-0.5 font-mono text-xs text-emerald-100">2024-10492-OL</p></div></div>
                                 <div class="mt-4 rounded bg-white p-2 text-center"><div class="barcode-stripe mx-auto h-8 w-full max-w-[220px]"></div><p class="mt-1 font-mono text-[10px] tracking-widest text-slate-700">*2024-10492-OL*</p></div>
                             </div>

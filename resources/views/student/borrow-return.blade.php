@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title }} - CLCST Library Portal</title>
+    @include('partials.favicon')
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -70,7 +71,7 @@
 
     <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between bg-surface-container-lowest px-4 shadow-sm md:px-6">
         <div class="flex items-center gap-4">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm">CL</div>
+            @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm object-contain bg-white p-0.5'])
             <div>
                 <div class="font-headline text-base font-bold leading-none tracking-wide text-primary">CLCST SCHOOL LIBRARY</div>
                 <div class="mt-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-outline">

@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>CLCST Library Portal - Patron Registration</title>
+    @include('partials.favicon')
 
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -91,7 +92,7 @@
     <header class="sticky top-0 z-40 border-b border-outline-variant/70 bg-surface-container-lowest/95 shadow-sm backdrop-blur">
         <div class="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-6 px-4 py-3 lg:px-8">
             <a class="flex items-center gap-3.5 group" href="{{ route('login') }}">
-                <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-primary text-lg font-extrabold text-white shadow-sm ring-2 ring-secondary-container/80">CL</div>
+                @include('partials.celtech-logo', ['class' => 'flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-primary text-lg font-extrabold text-white shadow-sm ring-2 ring-secondary-container/80 object-contain bg-white p-0.5'])
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="font-headline-sm text-base font-bold tracking-tight text-primary">CLCST Library Portal</span>
@@ -408,7 +409,7 @@
                         <div class="absolute -bottom-8 -right-6 text-8xl font-extrabold text-white/10">CL</div>
                         <div class="relative z-10 flex items-center justify-between border-b border-white/15 pb-3">
                             <div class="flex items-center gap-2.5">
-                                <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white text-xs font-extrabold text-primary shadow-sm">CL</div>
+                                @include('partials.celtech-logo', ['class' => 'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white text-xs font-extrabold text-primary shadow-sm object-contain bg-white p-0.5'])
                                 <div>
                                     <p class="text-[13px] font-bold leading-tight tracking-tight text-white">Central Luzon College</p>
                                     <p class="text-[9px] font-semibold uppercase tracking-wider text-secondary-fixed">Learning Commons Digital ID</p>
@@ -494,7 +495,7 @@
     <footer class="mt-12 border-t border-outline-variant bg-surface-container-lowest px-4 py-8 lg:px-8">
         <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 md:flex-row">
             <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-extrabold text-white ring-1 ring-outline-variant">CL</div>
+                @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-extrabold text-white ring-1 ring-outline-variant object-contain bg-white p-0.5'])
                 <div>
                     <p class="font-headline-sm text-sm font-bold text-primary">Central Luzon College of Science and Technology</p>
                     <p class="text-xs text-on-surface-variant">Learning Resource Center & Library Management System 2024-2025.</p>

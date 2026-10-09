@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>CLCST Library Portal - Login</title>
+    @include('partials.favicon')
 
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -91,8 +92,8 @@
     <header class="sticky top-0 z-40 w-full border-b border-outline-variant/60 bg-surface-container-lowest/95 shadow-sm backdrop-blur-md">
         <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <div class="flex items-center gap-4">
-                <div class="relative flex h-14 w-14 items-center justify-center rounded-full bg-primary text-lg font-extrabold text-on-primary shadow-sm ring-2 ring-primary-container/20">
-                    CL
+                <div class="relative">
+                    @include('partials.celtech-logo', ['class' => 'h-14 w-14 rounded-full object-contain bg-white p-0.5 shadow-sm ring-2 ring-primary-container/20'])
                     <span class="material-symbols-outlined absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary-fixed text-[12px] font-bold text-primary">check</span>
                 </div>
                 <div>
@@ -353,7 +354,7 @@
                         <div class="absolute -bottom-10 -right-8 text-8xl font-extrabold text-white/10">CL</div>
                         <div class="relative z-10 mb-4 flex items-start justify-between">
                             <div class="flex items-center gap-2.5">
-                                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-white text-xs font-extrabold text-primary shadow-sm">CL</div>
+                                @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 items-center justify-center rounded-full bg-white text-xs font-extrabold text-primary shadow-sm object-contain bg-white p-0.5'])
                                 <div>
                                     <p class="text-xs font-bold uppercase tracking-wide text-white">Central Luzon College</p>
                                     <p class="text-[10px] text-secondary-fixed">Science & Technology - Learning Commons</p>
@@ -444,7 +445,7 @@
     <footer class="mt-auto border-t border-outline-variant/60 bg-surface-container-lowest py-6 text-xs text-on-surface-variant">
         <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 text-center md:flex-row md:text-left lg:px-8">
             <div class="flex items-center gap-3">
-                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-[10px] font-extrabold text-white">CL</div>
+                @include('partials.celtech-logo', ['class' => 'flex h-8 w-8 items-center justify-center rounded-full bg-primary text-[10px] font-extrabold text-white object-contain bg-white p-0.5'])
                 <div>
                     <p class="font-semibold text-on-surface">Central Luzon College of Science and Technology (CLCST)</p>
                     <p>In compliance with Republic Act No. 10173 and CHED academic library standards.</p>

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title }} - CLCST Library Portal</title>
+    @include('partials.favicon')
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -119,7 +120,7 @@
     <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-outline-variant bg-surface-container-lowest px-4 shadow-sm md:px-6">
         <div class="flex items-center gap-5">
             <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm">CL</div>
+                @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm object-contain bg-white p-0.5'])
                 <div>
                     <div class="font-headline text-base font-bold leading-tight tracking-wide text-primary">CLCST SCHOOL LIBRARY</div>
                     <p class="flex items-center gap-1.5 text-xs text-on-surface-variant"><span class="h-2 w-2 rounded-full bg-primary"></span>Circulation & Lending Services - Reservations Desk</p>
@@ -305,7 +306,7 @@
                         </div>
                         <div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-[#135d2e] to-[#0e4723] p-4 text-white shadow-md">
                             <div class="relative z-10 flex items-start justify-between">
-                                <div class="flex items-center gap-2.5"><div class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-bold">CL</div><div><div class="text-[10px] font-bold uppercase tracking-widest text-emerald-200">CLCST Library Borrower Pass</div><div class="text-xs font-bold">Central Luzon College of Sci & Tech</div></div></div>
+                                <div class="flex items-center gap-2.5">@include('partials.celtech-logo', ['class' => 'flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-bold object-contain bg-white p-0.5'])<div><div class="text-[10px] font-bold uppercase tracking-widest text-emerald-200">CLCST Library Borrower Pass</div><div class="text-xs font-bold">Central Luzon College of Sci & Tech</div></div></div>
                                 <span class="rounded bg-amber-400 px-2 py-0.5 text-[10px] font-extrabold text-slate-900">ACTIVE</span>
                             </div>
                             <div class="relative z-10 mt-4 flex items-center gap-4"><div class="flex h-14 w-12 items-center justify-center rounded border border-white/40 bg-white/20 text-lg font-bold">JD</div><div><div class="font-headline text-base font-bold">Juan Dela Cruz</div><div class="text-xs text-emerald-100">BS Computer Science - 3rd Year</div><div class="mt-0.5 font-mono text-xs text-emerald-200">Patron ID: 2024-10492-OL</div></div></div>

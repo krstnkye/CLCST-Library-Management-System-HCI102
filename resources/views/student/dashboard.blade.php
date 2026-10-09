@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>CLCST Library Management System - Student Dashboard</title>
+    @include('partials.favicon')
 
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -125,7 +126,7 @@
 <body class="h-full bg-[#F8FAFC] text-on-surface antialiased">
     <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-[#E2E8F0] bg-surface-container-lowest px-4 shadow-sm lg:px-6">
         <div class="flex items-center gap-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm">CL</div>
+            @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm object-contain bg-white p-0.5'])
             <div>
                 <span class="block font-headline-sm text-sm font-bold leading-none tracking-wide text-primary sm:text-base">CLCST SCHOOL LIBRARY</span>
                 <span class="mt-0.5 hidden text-[10px] font-bold tracking-wider text-[#64748B] sm:block">ONLINE PUBLIC ACCESS CATALOG & PATRON PORTAL</span>
@@ -415,7 +416,7 @@
                     <section class="space-y-4 overflow-hidden rounded-2xl border border-[#CBD5E1] bg-gradient-to-b from-[#135d2e] via-[#0e4723] to-[#092c16] p-5 text-white shadow-md">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2.5">
-                                <div class="flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-white text-xs font-extrabold text-primary">CL</div>
+                                @include('partials.celtech-logo', ['class' => 'flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-white text-xs font-extrabold text-primary object-contain bg-white p-0.5'])
                                 <div>
                                     <h5 class="text-[10px] font-bold uppercase tracking-wide text-[#FDE047]">CLCST Digital Library Pass</h5>
                                     <p class="text-[10px] text-slate-200">Optical Turnstile & Self-Service Kiosk</p>

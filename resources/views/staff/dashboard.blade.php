@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>CLCST Library Management System - Faculty & Academic Staff Portal</title>
+    @include('partials.favicon')
 
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -74,7 +75,7 @@
 
     <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm md:px-6">
         <a class="flex items-center gap-2.5" href="{{ $isFaculty ? route('faculty.dashboard') : route('staff.dashboard') }}">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#135d2e] font-headline text-sm font-extrabold text-white ring-2 ring-amber-400">CL</div>
+            @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 items-center justify-center rounded-full bg-[#135d2e] font-headline text-sm font-extrabold text-white ring-2 ring-amber-400 object-contain bg-white p-0.5'])
             <div>
                 <div class="flex items-center gap-2">
                     <span class="font-headline text-[15px] font-extrabold leading-none tracking-tight text-[#135d2e]">CLCST LIBRARY SYSTEM</span>
@@ -128,7 +129,7 @@
         <aside class="custom-scrollbar z-30 hidden w-64 flex-shrink-0 flex-col justify-between overflow-y-auto border-r border-gray-200 bg-white md:flex">
             <div class="flex flex-col gap-3 p-4">
                 <div class="flex items-center gap-3 border-b border-gray-200 pb-3">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#135d2e] text-xs font-extrabold text-white">CL</div>
+                    @include('partials.celtech-logo', ['class' => 'flex h-9 w-9 items-center justify-center rounded-full bg-[#135d2e] text-xs font-extrabold text-white object-contain bg-white p-0.5'])
                     <div class="overflow-hidden">
                         <h2 class="truncate text-xs font-extrabold uppercase tracking-wide text-[#135d2e]">CLCST LMS</h2>
                         <p class="truncate text-[11px] text-gray-500">Library Management System</p>
@@ -333,7 +334,7 @@
                 <aside class="space-y-6 lg:col-span-4">
                     <section class="relative overflow-hidden rounded-xl border border-[#135d2e]/30 bg-gradient-to-br from-[#135d2e] via-[#0c3b1d] to-[#05210e] p-5 text-white shadow-md">
                         <div class="pointer-events-none absolute right-[-15px] top-[-15px] text-8xl font-extrabold text-white/10">CL</div>
-                        <div class="relative z-10 flex items-center justify-between border-b border-white/20 pb-3"><div class="flex items-center gap-2"><div class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs font-extrabold text-[#135d2e]">CL</div><div><div class="text-[10px] font-black uppercase tracking-widest text-amber-300">CLCST Patron Card</div><div class="text-xs font-semibold text-white/90">{{ $isFaculty ? 'Faculty Library Access' : 'Staff Library Access' }}</div></div></div><span class="rounded bg-amber-400 px-2 py-0.5 text-[10px] font-black text-amber-950">RFID ACTIVE</span></div>
+                        <div class="relative z-10 flex items-center justify-between border-b border-white/20 pb-3"><div class="flex items-center gap-2">@include('partials.celtech-logo', ['class' => 'flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs font-extrabold text-[#135d2e] object-contain bg-white p-0.5'])<div><div class="text-[10px] font-black uppercase tracking-widest text-amber-300">CLCST Patron Card</div><div class="text-xs font-semibold text-white/90">{{ $isFaculty ? 'Faculty Library Access' : 'Staff Library Access' }}</div></div></div><span class="rounded bg-amber-400 px-2 py-0.5 text-[10px] font-black text-amber-950">RFID ACTIVE</span></div>
                         <div class="relative z-10 mt-3 space-y-0.5"><div class="text-[10px] font-semibold uppercase tracking-wider text-emerald-200">{{ $currentUser['role'] }} / {{ $currentUser['department'] }}</div><div class="font-headline text-base font-bold tracking-tight text-white">{{ $currentUser['name'] }}</div><div class="text-xs text-white/80">{{ $currentUser['subtitle'] }}</div></div>
                         <div class="relative z-10 mt-4 rounded-lg bg-white p-3 text-center text-gray-900 shadow-inner"><div class="mb-1 font-mono text-[10px] font-bold tracking-wider text-gray-500">TURNSTILE CIRCULATION BARCODE</div><div class="flex h-11 w-full items-center justify-center gap-0.5 bg-white px-2">@foreach ([1,2,1,2,3,1,2,1,3,2,1,3,1,2,1,4,1,2,2,1,3,1,2,1,3,2] as $bar)<span class="h-9 bg-black" style="width: {{ $bar }}px"></span>@endforeach</div><div class="mt-1 font-mono text-xs font-extrabold tracking-widest text-gray-900">{{ $currentUser['id'] }}</div></div>
                         <div class="relative z-10 mt-3 flex items-center justify-between text-[11px] text-white/80"><span>Valid: AY 2024-2025</span><span class="flex items-center gap-1 font-semibold text-emerald-300"><span class="material-symbols-outlined text-[14px]">verified</span>Active Account</span></div>
@@ -366,7 +367,7 @@
             </div>
 
             <footer class="mt-10 border-t border-gray-200 pb-4 pt-6 text-gray-500">
-                <div class="flex flex-col items-center justify-between gap-4 text-xs md:flex-row"><div class="flex items-center gap-3"><div class="flex h-7 w-7 items-center justify-center rounded-full bg-[#135d2e] text-[10px] font-bold text-white">CL</div><div><span class="font-bold text-gray-900">Central Luzon College of Science and Technology (CLCST)</span><span class="text-gray-500"> - Learning Resource Center</span></div></div><div class="flex flex-wrap items-center justify-center gap-3 text-[11px] text-gray-500"><span class="font-medium text-gray-700">CHED CMO No. 25</span><span>-</span><span class="font-medium text-gray-700">ISO 9001:2015 QA</span><span>-</span><span class="rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 font-medium text-emerald-800">RA 10173 Data Privacy</span></div></div>
+                <div class="flex flex-col items-center justify-between gap-4 text-xs md:flex-row"><div class="flex items-center gap-3">@include('partials.celtech-logo', ['class' => 'flex h-7 w-7 items-center justify-center rounded-full bg-[#135d2e] text-[10px] font-bold text-white object-contain bg-white p-0.5'])<div><span class="font-bold text-gray-900">Central Luzon College of Science and Technology (CLCST)</span><span class="text-gray-500"> - Learning Resource Center</span></div></div><div class="flex flex-wrap items-center justify-center gap-3 text-[11px] text-gray-500"><span class="font-medium text-gray-700">CHED CMO No. 25</span><span>-</span><span class="font-medium text-gray-700">ISO 9001:2015 QA</span><span>-</span><span class="rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 font-medium text-emerald-800">RA 10173 Data Privacy</span></div></div>
             </footer>
         </main>
     </div>

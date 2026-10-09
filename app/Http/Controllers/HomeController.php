@@ -340,6 +340,7 @@ class HomeController extends Controller
             'reservations' => 'My Reservations',
             'reports' => 'Renewal Requests',
             'history' => 'Borrowing History',
+            'academic' => 'Faculty Academic Requests',
             'settings' => 'System Settings',
             'support' => 'Help & Support',
         ];

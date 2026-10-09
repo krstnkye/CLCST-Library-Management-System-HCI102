@@ -1,0 +1,27 @@
+{
+    "folders": [
+        {
+            "name": "CLCST Library Management System",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.exclude": {
+            "**/.git": true,
+            "**/vendor": true,
+            "**/node_modules": true
+        },
+        "editor.formatOnSave": true,
+        "php.validate.enable": true
+    },
+    "extensions": {
+        "recommendations": [
+            "bmewburn.vscode-intelephense-client",
+            "onecentlin.laravel-blade",
+            "shufo.vscode-blade-formatter",
+            "amiralizadeh9480.laravel-extra-intellisense",
+            "xdebug.php-debug",
+            "github.vscode-github-actions"
+        ]
+    }
+}

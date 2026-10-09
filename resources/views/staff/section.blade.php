@@ -359,24 +359,261 @@
                     @endforeach
                 </section>
             @elseif ($section === 'reservations')
-                <section class="rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm">
-                    <h2 class="font-display text-xl font-bold">Active Reservation Queue</h2>
-                    <div class="mt-4 space-y-3">
-                        @forelse ($reservations as $reservation)
-                            <div class="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4">
-                                <p class="font-bold">{{ $reservation['title'] }}</p>
-                                <p class="text-xs text-[#64748B]">Requested {{ $reservation['requested_at'] }}</p>
+                @php
+                    $reservationRows = collect($reservations)->values();
+                    $holdBooks = collect($catalogBooks)->filter(fn ($book) => in_array($book['id'], ['clean-code', 'ai-modern-approach', 'computer-networks'], true))->values();
+                    $activeHoldCount = max($reservationRows->count(), 2);
+                    $readyCount = $reservationRows->count();
+                    $waitlistCount = max($activeHoldCount - $readyCount, 1);
+                @endphp
+
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                    <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
+                        <div>
+                            <nav aria-label="Breadcrumb" class="mb-2 flex items-center gap-2 text-xs font-medium text-[#64748B]">
+                                <span>Academic Portal</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span>Faculty Services</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span class="font-bold text-[#065F2A]">My Reservations</span>
+                            </nav>
+                            <span class="inline-flex rounded-full bg-[#DCFCE7] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#166534]">Active Stacks Privileges</span>
+                            <h1 class="mt-3 font-display text-3xl font-bold text-[#064E3B]">My Reservations & Hold Queue</h1>
+                            <p class="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">Track ready-for-pickup holds, waitlist positions, and faculty course reserve staging at the Stacks Level 1 Circulation Desk.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3.5 py-2 text-xs font-bold text-[#334155] shadow-sm hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'reports') }}">
+                                <span class="material-symbols-outlined text-base">picture_as_pdf</span>
+                                Download Hold Slip
+                            </a>
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#065F2A] px-3.5 py-2 text-xs font-bold text-[#065F2A] hover:bg-[#DCFCE7]" href="{{ route('staff.section', 'reservations') }}">
+                                <span class="material-symbols-outlined text-base">sync</span>
+                                Refresh Queue Status
+                            </a>
+                            <a class="inline-flex items-center gap-2 rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#064E3B]" href="{{ route('books.catalog') }}">
+                                <span class="material-symbols-outlined text-base">add_box</span>
+                                New Catalog Hold
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Active Holds</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#065F2A]">{{ $activeHoldCount }} <span class="text-sm font-medium text-[#475569]">requests</span></h2>
                             </div>
-                        @empty
-                            @foreach ($facultyRequests as $request)
-                                <div class="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4">
-                                    <p class="font-bold">{{ $request['course'] }}</p>
-                                    <p class="text-sm text-[#475569]">{{ $request['request'] }}</p>
-                                    <p class="mt-1 text-xs font-semibold text-[#065F2A]">{{ $request['status'] }}</p>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#065F2A]"><span class="material-symbols-outlined">book_online</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">Faculty/staff hold allowance remains available for course reading and research titles.</p>
+                    </article>
+                    <article class="rounded-xl border border-[#FACC15] bg-[#FFFBEB] p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#92400E]">Ready for Pickup</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#92400E]">{{ $readyCount }} <span class="text-sm font-medium">ready</span></h2>
+                            </div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#FACC15] text-[#6D5200]"><span class="material-symbols-outlined">inventory_2</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#92400E]">Pick up ready items at Counter 02 before the hold expiry date.</p>
+                    </article>
+                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Waitlisted</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#002E97]">{{ $waitlistCount }} <span class="text-sm font-medium text-[#475569]">queued</span></h2>
+                            </div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#E2E7FF] text-[#002E97]"><span class="material-symbols-outlined">hourglass_top</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">Queue positions update automatically when returned copies are scanned.</p>
+                    </article>
+                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Course Reserves</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#065F2A]">{{ count($facultyRequests) }} <span class="text-sm font-medium text-[#475569]">staged</span></h2>
+                            </div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#065F2A]"><span class="material-symbols-outlined">school</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">Syllabus-related requests are prioritized for enrolled class access.</p>
+                    </article>
+                </section>
+
+                <section class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+                    <div class="space-y-4 xl:col-span-8">
+                        <div class="rounded-xl border border-[#CBD5E1] bg-white p-4 shadow-sm">
+                            <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                                <div>
+                                    <h2 class="font-display text-xl font-bold text-[#0F172A]">Reservation & Hold Queue</h2>
+                                    <p class="text-xs text-[#64748B]">Ready items, active holds, waitlist positions, and staged faculty reserve requests.</p>
                                 </div>
+                                <form class="flex w-full max-w-md items-center gap-2 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-2" method="GET" action="{{ route('books.catalog') }}">
+                                    <span class="material-symbols-outlined text-base text-[#64748B]">search</span>
+                                    <input class="w-full border-0 bg-transparent p-0 text-sm text-[#0F172A] placeholder:text-[#94A3B8] focus:ring-0" name="q" placeholder="Search title, ISBN, or call number...">
+                                    <button class="rounded bg-[#065F2A] px-3 py-1.5 text-xs font-bold text-white" type="submit">Search</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        @forelse ($reservationRows as $reservation)
+                            @php
+                                $book = collect($catalogBooks)->firstWhere('id', $reservation['book_id'] ?? null);
+                            @endphp
+                            <article class="overflow-hidden rounded-xl border border-[#FACC15] bg-white shadow-sm">
+                                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#FDE68A] bg-[#FFFBEB] px-4 py-2.5">
+                                    <span class="rounded-full bg-[#FACC15] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#6D5200]">Ready for Pickup</span>
+                                    <span class="text-xs font-semibold text-[#92400E]">Requested {{ $reservation['requested_at'] }}</span>
+                                </div>
+                                <div class="p-5">
+                                    <div class="flex flex-col gap-5 sm:flex-row">
+                                        <div class="h-32 w-24 shrink-0 overflow-hidden rounded-lg border border-[#CBD5E1] bg-[#E2E7FF] shadow-sm">
+                                            @if ($book)
+                                                <img class="h-full w-full object-cover" src="{{ $book['cover_url'] }}" alt="{{ $reservation['title'] }} cover">
+                                            @else
+                                                <div class="flex h-full w-full flex-col justify-between p-3 text-center text-[#065F2A]">
+                                                    <span class="material-symbols-outlined text-3xl">book</span>
+                                                    <span class="text-[10px] font-bold">HOLD</span>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <h3 class="font-display text-xl font-bold text-[#0F172A]">{{ $reservation['title'] }}</h3>
+                                            <p class="mt-1 text-sm text-[#64748B]">by <span class="font-semibold text-[#334155]">{{ $book['author'] ?? 'Catalog author record' }}</span>{{ $book ? ' - '.$book['publisher'] : '' }}</p>
+                                            <div class="my-4 grid grid-cols-1 gap-3 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] p-3 text-xs sm:grid-cols-3">
+                                                <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Call Number</span><span class="font-mono font-bold text-[#0F172A]">{{ $book['call'] ?? 'Pending copy scan' }}</span></div>
+                                                <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Pickup Desk</span><span class="font-semibold text-[#0F172A]">Counter 02</span></div>
+                                                <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Hold Expires</span><span class="font-semibold text-[#92400E]">7 calendar days</span></div>
+                                            </div>
+                                            <div class="flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E8F0] pt-4">
+                                                <div class="flex flex-wrap gap-2">
+                                                    <a class="inline-flex items-center gap-1.5 rounded-lg bg-[#065F2A] px-3 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" href="{{ route('books.catalog', ['selected' => $reservation['book_id'] ?? '']) }}"><span class="material-symbols-outlined text-base">qr_code</span>View Pickup Slip</a>
+                                                    <a class="inline-flex items-center gap-1.5 rounded-lg border border-[#CBD5E1] px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">group_add</span>Authorize Pickup</a>
+                                                </div>
+                                                @if (!empty($reservation['book_id']))
+                                                    <form method="POST" action="{{ route('reservations.cancel', $reservation['book_id']) }}">
+                                                        @csrf
+                                                        <button class="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-xs font-bold text-[#B91C1C] hover:bg-[#FEE2E2]" type="submit"><span class="material-symbols-outlined text-base">close</span>Cancel Hold</button>
+                                                    </form>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        @empty
+                            @foreach ($holdBooks->take(2) as $index => $book)
+                                <article class="overflow-hidden rounded-xl border border-[#CBD5E1] bg-white shadow-sm">
+                                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#CBD5E1] bg-[#F8FAFC] px-4 py-2.5">
+                                        <span class="rounded-full {{ $index === 0 ? 'bg-[#FACC15] text-[#6D5200]' : 'bg-[#E2E7FF] text-[#002E97]' }} px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">{{ $index === 0 ? 'Pending Stacks Retrieval' : 'Queue Position: #1 of 3' }}</span>
+                                        <span class="text-xs font-semibold text-[#64748B]">{{ $index === 0 ? 'Expected shelf scan today' : 'Expected return: Oct 18, 2024' }}</span>
+                                    </div>
+                                    <div class="p-5">
+                                        <div class="flex flex-col gap-5 sm:flex-row">
+                                            <img class="h-32 w-24 shrink-0 rounded-lg border border-[#CBD5E1] object-cover shadow-sm" src="{{ $book['cover_url'] }}" alt="{{ $book['title'] }} cover">
+                                            <div class="min-w-0 flex-1">
+                                                <h3 class="font-display text-xl font-bold text-[#0F172A]">{{ $book['title'] }}</h3>
+                                                <p class="mt-1 text-sm text-[#64748B]">by <span class="font-semibold text-[#334155]">{{ $book['author'] }}</span> - {{ $book['publisher'] }}</p>
+                                                <div class="my-4 grid grid-cols-1 gap-3 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] p-3 text-xs sm:grid-cols-3">
+                                                    <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Library Call No.</span><span class="font-mono font-bold text-[#0F172A]">{{ $book['call'] }}</span></div>
+                                                    <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">ISBN / Asset</span><span class="font-mono font-bold text-[#0F172A]">{{ $book['isbn'] }}</span></div>
+                                                    <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Location</span><span class="font-semibold text-[#0F172A]">{{ $book['location'] }}</span></div>
+                                                </div>
+                                                <div class="rounded-lg border border-[#CBD5E1] bg-[#EEF2FF] p-3 text-xs text-[#334155]">
+                                                    <div class="mb-2 flex items-center justify-between">
+                                                        <span class="flex items-center gap-1.5 font-bold"><span class="material-symbols-outlined text-sm text-[#002E97]">person_search</span>Circulation Status</span>
+                                                        <span class="font-mono font-bold text-[#002E97]">{{ collect($book['copies'])->where('status', 'available')->count() }} available copies</span>
+                                                    </div>
+                                                    <div class="h-2 overflow-hidden rounded-full bg-[#DAE2FD]"><div class="h-full rounded-full bg-[#065F2A]" style="width: {{ collect($book['copies'])->where('status', 'available')->count() > 0 ? 70 : 30 }}%"></div></div>
+                                                </div>
+                                                <div class="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E8F0] pt-4">
+                                                    <div class="flex flex-wrap gap-2">
+                                                        <a class="inline-flex items-center gap-1.5 rounded-lg border border-[#CBD5E1] px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('books.catalog', ['selected' => $book['id']]) }}"><span class="material-symbols-outlined text-base">visibility</span>View Catalog Record</a>
+                                                        <a class="inline-flex items-center gap-1.5 rounded-lg bg-[#DCE1FF] px-3 py-2 text-xs font-bold text-[#001551] hover:bg-[#B7C4FF]" href="{{ route('books.catalog', ['q' => $book['title']]) }}"><span class="material-symbols-outlined text-base">cloud_download</span>Find E-Book Alternative</a>
+                                                    </div>
+                                                    <a class="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-xs font-bold text-[#B91C1C] hover:bg-[#FEE2E2]" href="{{ route('staff.section', 'reservations') }}"><span class="material-symbols-outlined text-base">close</span>Cancel Hold</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
                             @endforeach
                         @endforelse
+
+                        <section class="rounded-xl border border-[#0041CC]/30 bg-gradient-to-br from-[#F2F3FF] to-[#EAEDFF] p-5 shadow-sm">
+                            <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+                                <div class="flex items-start gap-3">
+                                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#002E97] text-white"><span class="material-symbols-outlined">menu_book</span></span>
+                                    <div>
+                                        <h3 class="font-display text-lg font-bold text-[#0F172A]">Instructional Syllabus Reserves</h3>
+                                        <p class="text-sm text-[#475569]">Physical copies staged for enrolled student closed-shelf use.</p>
+                                    </div>
+                                </div>
+                                <span class="rounded-full bg-[#0041CC] px-2.5 py-1 text-[10px] font-bold text-white">1st Sem AY 2024-2025</span>
+                            </div>
+                            <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+                                @foreach ($facultyRequests as $request)
+                                    <article class="rounded-lg border border-[#CBD5E1] bg-white p-4 shadow-sm">
+                                        <span class="rounded bg-[#DCFCE7] px-2 py-0.5 text-[10px] font-bold text-[#166534]">{{ $request['course'] }}</span>
+                                        <h4 class="mt-2 text-sm font-bold text-[#0F172A]">{{ $request['request'] }}</h4>
+                                        <p class="mt-1 text-xs text-[#64748B]">Owner: {{ $request['owner'] }}</p>
+                                        <p class="mt-2 border-t border-[#E2E8F0] pt-2 text-xs font-bold text-[#065F2A]">{{ $request['status'] }}</p>
+                                    </article>
+                                @endforeach
+                            </div>
+                        </section>
                     </div>
+
+                    <aside class="space-y-4 xl:col-span-4">
+                        <section class="relative overflow-hidden rounded-2xl border border-[#064E3B] bg-gradient-to-br from-[#135D2E] to-[#00441D] p-6 text-white shadow-md">
+                            @include('partials.celtech-logo', ['class' => 'absolute -bottom-8 -right-8 h-40 w-40 rounded-full bg-white/10 object-contain p-2 opacity-20'])
+                            <div class="relative">
+                                <div class="flex items-center justify-between border-b border-white/20 pb-4">
+                                    <div class="flex items-center gap-2.5">
+                                        @include('partials.celtech-logo', ['class' => 'h-8 w-8 rounded-full bg-white object-contain p-0.5'])
+                                        <div><p class="text-[11px] font-extrabold uppercase tracking-wider text-[#FDC425]">CLCST Faculty Pass</p><p class="text-[9px] text-white/80">RFID Turnstile & Circulation Verified</p></div>
+                                    </div>
+                                    <span class="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">ACTIVE</span>
+                                </div>
+                                <div class="my-4">
+                                    <span class="block text-[10px] font-mono uppercase tracking-wider text-white/70">Borrower / Faculty In-Charge</span>
+                                    <h4 class="mt-1 font-display text-lg font-bold">Engr. Roberto M. Mendoza</h4>
+                                    <p class="text-xs text-white/90">College of Computer Studies & Engineering</p>
+                                    <p class="mt-1 text-[11px] text-white/80">ID: <strong class="font-mono text-white">FAC-2018-0412</strong></p>
+                                </div>
+                                <div class="rounded-xl bg-white p-3 text-center text-black shadow-inner">
+                                    <p class="mb-1 text-[9px] font-bold uppercase tracking-wider text-[#64748B]">Optical Scan Barcode</p>
+                                    <div class="font-mono text-lg font-black tracking-[0.35em]">|||| ||| |||||| |||</div>
+                                    <p class="mt-1 font-mono text-xs font-bold tracking-wider">FAC*20180412*LIB</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center justify-between border-b border-[#CBD5E1] pb-3">
+                                <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">storefront</span><h3 class="font-display text-base font-bold">Circulation Desk Staging</h3></div>
+                                <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                            </div>
+                            <div class="mt-4 space-y-2 text-xs">
+                                <div class="flex justify-between border-b border-[#E2E8F0] py-1"><span class="text-[#64748B]">Desk Duty:</span><span class="font-bold">Ms. M. Santos</span></div>
+                                <div class="flex justify-between border-b border-[#E2E8F0] py-1"><span class="text-[#64748B]">Intercom:</span><span class="font-mono font-bold text-[#065F2A]">Local Ext. 108</span></div>
+                                <div class="flex justify-between py-1"><span class="text-[#64748B]">Hours:</span><span class="font-medium">7:30 AM - 6:30 PM</span></div>
+                            </div>
+                            <a class="mt-4 flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#F8FAFC] px-3 py-2 text-xs font-bold text-[#065F2A] hover:bg-[#E2E8F0]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">support_agent</span>Contact Desk 1 Support</a>
+                        </section>
+
+                        <section class="rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] p-5 shadow-sm">
+                            <div class="flex items-center gap-2 text-[#065F2A]"><span class="material-symbols-outlined text-base">policy</span><h3 class="font-display text-base font-bold">Faculty Reservation Regulations</h3></div>
+                            <ul class="mt-4 list-disc space-y-2 pl-4 text-xs leading-5 text-[#475569]">
+                                <li><strong>10 maximum concurrent holds</strong> for faculty members across departments.</li>
+                                <li><strong>7-day pickup window</strong> at Desk Counter 02 after notification.</li>
+                                <li><strong>TA authorization</strong> is accepted with a signed faculty slip.</li>
+                                <li><strong>Course syllabus priority</strong> applies to required reading materials.</li>
+                            </ul>
+                            <div class="mt-4 flex items-center justify-between border-t border-[#CBD5E1] pt-3 text-[11px]"><span class="text-[#64748B]">CLCST Handbook Art. IV</span><a class="font-bold text-[#065F2A] hover:underline" href="{{ route('staff.section', 'support') }}">Read Policy</a></div>
+                        </section>
+                    </aside>
                 </section>
             @else
                 <section class="grid grid-cols-1 gap-4 lg:grid-cols-3">

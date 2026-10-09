@@ -337,7 +337,7 @@ class HomeController extends Controller
             'circulation' => 'My Borrowed Books',
             'patrons' => 'Patron Records',
             'catalog' => 'Catalog Management',
-            'reservations' => 'Reservations Desk',
+            'reservations' => 'My Reservations',
             'reports' => 'Library Reports',
             'settings' => 'System Settings',
             'support' => 'Help & Support',

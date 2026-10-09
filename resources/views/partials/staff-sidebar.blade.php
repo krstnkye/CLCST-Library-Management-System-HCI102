@@ -13,6 +13,7 @@
         ['key' => 'reports', 'label' => 'Renewal Requests', 'icon' => 'autorenew', 'href' => route('staff.section', 'reports'), 'badge' => 1],
         ['key' => 'history', 'label' => 'Borrowing History', 'icon' => 'history_edu', 'href' => route('staff.section', 'history')],
         ['key' => 'academic', 'label' => 'Faculty Academic Requests', 'icon' => 'school', 'href' => route('staff.section', 'academic'), 'badge' => count($facultyRequests ?? [])],
+        ['key' => 'course-reserves', 'label' => 'Course Syllabus Reserves', 'icon' => 'menu_book', 'href' => route('staff.section', 'course-reserves'), 'badge' => 6],
         ['key' => 'reading-lists', 'label' => 'Course Reading Lists', 'icon' => 'format_list_bulleted', 'href' => route('staff.section', 'reading-lists'), 'badge' => 5],
         ['key' => 'settings', 'label' => 'Settings', 'icon' => 'settings', 'href' => route('staff.section', 'settings')],
     ];

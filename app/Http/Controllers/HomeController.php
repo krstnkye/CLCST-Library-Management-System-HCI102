@@ -341,6 +341,7 @@ class HomeController extends Controller
             'reports' => 'Renewal Requests',
             'history' => 'Borrowing History',
             'academic' => 'Faculty Academic Requests',
+            'course-reserves' => 'Course Syllabus Reserves',
             'reading-lists' => 'Course Reading Lists',
             'settings' => 'System Settings',
             'support' => 'Help & Support',

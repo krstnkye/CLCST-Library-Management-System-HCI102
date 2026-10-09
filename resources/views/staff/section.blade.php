@@ -1285,6 +1285,243 @@
                         </section>
                     </aside>
                 </section>
+            @elseif ($section === 'course-reserves')
+                @php
+                    $bookLookup = collect($catalogBooks)->keyBy('id');
+                    $reserveCourses = [
+                        [
+                            'code' => 'IT301',
+                            'course' => 'Systems Analysis and Design',
+                            'faculty' => 'Prof. Eleanor Vance',
+                            'department' => 'College of Computer Studies',
+                            'status' => 'Active Closed Reserve',
+                            'period' => 'Oct 21 - Dec 06, 2024',
+                            'loan' => '3-Hour Closed Reserve at Desk 02',
+                            'books' => [
+                                ['book' => $bookLookup->get('object-oriented-se'), 'copies' => '3 of 3 copies assigned', 'rule' => 'Room use plus one overnight copy'],
+                                ['book' => $bookLookup->get('clean-code'), 'copies' => '4 copies linked', 'rule' => 'High-demand queue monitored'],
+                            ],
+                            'digital' => 'E-reserve supplementary PDF linked in LMS, fair-use verified.',
+                        ],
+                        [
+                            'code' => 'CS302',
+                            'course' => 'Database Management Systems',
+                            'faculty' => 'Dr. Liza Mercado',
+                            'department' => 'Computer Science Core',
+                            'status' => 'Pending Copy Check',
+                            'period' => 'Nov 04 - Dec 13, 2024',
+                            'loan' => 'Reserve Desk review in progress',
+                            'books' => [
+                                ['book' => $bookLookup->get('algorithms'), 'copies' => '1 copy ready, 2 requested', 'rule' => 'Supplemental data structures reference'],
+                                ['book' => $bookLookup->get('python-programming'), 'copies' => '4 copies available', 'rule' => 'Lab programming support'],
+                            ],
+                            'digital' => 'Instructor upload is queued for bibliographic validation.',
+                        ],
+                        [
+                            'code' => 'CPE402',
+                            'course' => 'Microprocessor Systems & Embedded Architecture',
+                            'faculty' => 'Engr. Mark Ramos',
+                            'department' => 'Engineering',
+                            'status' => 'Lab Reserve Ready',
+                            'period' => 'Whole semester',
+                            'loan' => 'Hardware Lab Reserve',
+                            'books' => [
+                                ['book' => $bookLookup->get('computer-networks'), 'copies' => '2 reference volumes on closed reserve', 'rule' => 'In-library use only'],
+                                ['book' => $bookLookup->get('ai-modern-approach'), 'copies' => '2 supporting titles ready', 'rule' => 'Machine learning module reference'],
+                            ],
+                            'digital' => 'Lab manual access restricted to enrolled class sections.',
+                        ],
+                    ];
+                    $activeReserveCount = collect($reserveCourses)->where('status', 'Active Closed Reserve')->count() + 5;
+                    $reserveCopies = collect($reserveCourses)->sum(fn ($course) => count($course['books']) * 2);
+                @endphp
+
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-6 shadow-sm lg:p-8">
+                    <div class="flex flex-col justify-between gap-5 lg:flex-row lg:items-start">
+                        <div>
+                            <nav aria-label="Breadcrumb" class="mb-3 flex flex-wrap items-center gap-2 text-xs font-semibold text-[#64748B]">
+                                <span>Faculty Academic Portal</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span>Academic Requests</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span class="font-bold text-[#065F2A]">Course Syllabus Reserves</span>
+                            </nav>
+                            <span class="inline-flex rounded-full bg-[#FEF3C7] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#92400E]">Faculty Reserve Shelf Control</span>
+                            <h1 class="mt-4 font-display text-3xl font-bold text-[#064E3B] md:text-4xl">Course Syllabus Reserves</h1>
+                            <p class="mt-3 max-w-3xl text-sm leading-6 text-[#475569]">Track prescribed textbook copies, closed reserve rules, e-reserve access, and syllabus-linked library materials for current faculty courses.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <a class="inline-flex items-center gap-2 rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" href="#reserve-request-form"><span class="material-symbols-outlined text-base">add_circle</span>Submit New Syllabus Reserve</a>
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'reading-lists') }}"><span class="material-symbols-outlined text-base">format_list_bulleted</span>Reading Lists</a>
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">download</span>Download Reserve Slips</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    @foreach ([
+                        ['label' => 'Active Syllabus Reserves', 'value' => $activeReserveCount, 'meta' => 'Closed reserve courses', 'icon' => 'menu_book'],
+                        ['label' => 'Desk Reserve Copies', 'value' => $reserveCopies, 'meta' => '3-hour closed reserve', 'icon' => 'inventory_2'],
+                        ['label' => 'Pending Copy Checks', 'value' => 3, 'meta' => 'Need librarian validation', 'icon' => 'fact_check'],
+                        ['label' => 'E-Reserve Digital Access', 'value' => 8, 'meta' => 'Fair-use verified files', 'icon' => 'cloud_done'],
+                    ] as $metric)
+                        <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">{{ $metric['label'] }}</p>
+                                    <h2 class="mt-2 font-display text-3xl font-bold text-[#065F2A]">{{ $metric['value'] }}</h2>
+                                    <p class="mt-1 text-xs text-[#64748B]">{{ $metric['meta'] }}</p>
+                                </div>
+                                <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#166534]"><span class="material-symbols-outlined">{{ $metric['icon'] }}</span></span>
+                            </div>
+                        </article>
+                    @endforeach
+                </section>
+
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-4 shadow-sm">
+                    <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                        <form class="flex flex-1 flex-col gap-3 sm:flex-row" method="GET" action="{{ route('books.catalog') }}">
+                            <div class="relative flex-1">
+                                <span class="material-symbols-outlined absolute left-3 top-2.5 text-[#64748B]">search</span>
+                                <input class="w-full rounded-lg border-[#CBD5E1] py-2 pl-10 pr-3 text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" name="q" placeholder="Search OPAC, syllabi, ISBN, course code...">
+                            </div>
+                            <button class="rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" type="submit">Search</button>
+                        </form>
+                        <div class="flex flex-wrap gap-2 text-xs font-bold">
+                            <a class="rounded-lg bg-[#065F2A] px-4 py-2 text-white" href="{{ route('staff.section', 'course-reserves') }}">All Active</a>
+                            <a class="rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-4 py-2 text-[#334155] hover:bg-[#E2E8F0]" href="#pending">Pending Review</a>
+                            <a class="rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-4 py-2 text-[#334155] hover:bg-[#E2E8F0]" href="#reserve-request-form">New Request</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+                    <div class="space-y-6 xl:col-span-8">
+                        @foreach ($reserveCourses as $course)
+                            <article class="overflow-hidden rounded-2xl border border-[#CBD5E1] bg-white shadow-sm" @if ($course['status'] === 'Pending Copy Check') id="pending" @endif>
+                                <div class="flex flex-col justify-between gap-4 border-b border-[#CBD5E1] bg-[#F8FAFC] p-5 lg:flex-row lg:items-start">
+                                    <div class="flex gap-4">
+                                        <div class="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-lg bg-[#065F2A] font-bold text-white">
+                                            <span class="text-[9px] uppercase">Course</span>
+                                            <span class="text-sm leading-none">{{ $course['code'] }}</span>
+                                        </div>
+                                        <div>
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                <h2 class="font-display text-xl font-bold text-[#064E3B]">{{ $course['code'] }} - {{ $course['course'] }}</h2>
+                                                <span class="{{ $course['status'] === 'Pending Copy Check' ? 'bg-[#FEF3C7] text-[#92400E]' : 'bg-[#DCFCE7] text-[#166534]' }} rounded-full px-2 py-0.5 text-[10px] font-bold uppercase">{{ $course['status'] }}</span>
+                                            </div>
+                                            <p class="mt-1 text-xs text-[#64748B]">{{ $course['faculty'] }} - {{ $course['department'] }}</p>
+                                            <p class="mt-2 text-sm text-[#475569]">{{ $course['period'] }} - {{ $course['loan'] }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <a class="rounded-lg border border-[#CBD5E1] px-3 py-1.5 text-xs font-bold text-[#065F2A] hover:bg-[#F0FDF4]" href="{{ route('staff.section', 'course-reserves') }}">Manage Copies</a>
+                                        <a class="rounded-lg border border-[#CBD5E1] px-3 py-1.5 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'reports') }}">Update Loan Rules</a>
+                                        <a class="rounded-lg bg-[#EEF2FF] px-3 py-1.5 text-xs font-bold text-[#002E97] hover:bg-[#E2E7FF]" href="{{ route('staff.section', 'history') }}">Circulation Log</a>
+                                    </div>
+                                </div>
+
+                                <div class="p-5">
+                                    <div class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Assigned Desk Reserve Textbooks</div>
+                                    <div class="mt-3 space-y-3">
+                                        @foreach ($course['books'] as $item)
+                                            <div class="flex flex-col gap-4 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4 sm:flex-row">
+                                                @if (!empty($item['book']['cover_url']))
+                                                    <img class="h-28 w-20 shrink-0 rounded-lg border border-[#CBD5E1] object-cover shadow-sm" src="{{ $item['book']['cover_url'] }}" alt="{{ $item['book']['title'] }} cover">
+                                                @else
+                                                    <div class="flex h-28 w-20 shrink-0 items-center justify-center rounded-lg bg-[#065F2A] text-white"><span class="material-symbols-outlined">menu_book</span></div>
+                                                @endif
+                                                <div class="min-w-0 flex-1">
+                                                    <h3 class="font-display text-base font-bold text-[#0F172A]">{{ $item['book']['title'] ?? 'Reserve title pending cataloging' }}</h3>
+                                                    <p class="mt-1 text-xs text-[#64748B]">{{ $item['book']['author'] ?? 'Author pending' }} @if (!empty($item['book']['year'])) - {{ $item['book']['year'] }} @endif</p>
+                                                    <div class="mt-3 grid gap-2 text-xs text-[#475569] md:grid-cols-2">
+                                                        <span>Call No: <strong class="text-[#0F172A]">{{ $item['book']['call'] ?? 'Pending' }}</strong></span>
+                                                        <span>Location: <strong class="text-[#0F172A]">{{ $item['book']['location'] ?? 'Reserve Desk' }}</strong></span>
+                                                    </div>
+                                                    <div class="mt-3 flex flex-wrap items-center gap-2">
+                                                        <span class="rounded-full border border-[#BBF7D0] bg-[#DCFCE7] px-2 py-0.5 text-[10px] font-bold text-[#166534]">{{ $item['copies'] }}</span>
+                                                        <span class="rounded-full bg-[#EEF2FF] px-2 py-0.5 text-[10px] font-bold text-[#334155]">{{ $item['rule'] }}</span>
+                                                    </div>
+                                                </div>
+                                                @if (!empty($item['book']['id']))
+                                                    <a class="self-start rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-xs font-bold text-[#065F2A] hover:bg-[#E2E8F0]" href="{{ route('books.catalog', ['selected' => $item['book']['id']]) }}">OPAC Details</a>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="mt-4 rounded-xl border border-[#BFDBFE] bg-[#EFF6FF] p-4 text-sm text-[#1E3A8A]">
+                                        <span class="material-symbols-outlined mr-1 text-base">cloud_done</span>{{ $course['digital'] }}
+                                    </div>
+                                </div>
+                            </article>
+                        @endforeach
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm" id="reserve-request-form">
+                            <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">post_add</span><h2 class="font-display text-lg font-bold text-[#064E3B]">New Course Syllabus Reserve Request</h2></div>
+                            <form class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2" method="GET" action="{{ route('books.catalog') }}">
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Course Code
+                                    <input class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" placeholder="IT301" value="IT301">
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Reserve Period
+                                    <input class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" placeholder="Oct 21 - Dec 06, 2024">
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A] md:col-span-2">Prescribed Textbook / ISBN
+                                    <input class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" name="q" placeholder="Search title, ISBN, author, or call number">
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Loan Rule
+                                    <select class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]">
+                                        <option>3-hour closed reserve</option>
+                                        <option>Room-use only</option>
+                                        <option>Overnight faculty loan</option>
+                                    </select>
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Needed Copies
+                                    <input class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" placeholder="3">
+                                </label>
+                                <textarea class="min-h-24 rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A] md:col-span-2" placeholder="Syllabus notes, chapter coverage, faculty instructions, or LMS access details"></textarea>
+                                <div class="flex justify-end gap-3 md:col-span-2">
+                                    <a class="rounded-lg border border-[#CBD5E1] px-4 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'course-reserves') }}">Cancel</a>
+                                    <button class="inline-flex items-center gap-2 rounded-lg bg-[#065F2A] px-5 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" type="submit"><span class="material-symbols-outlined text-base">search</span>Find Book & Submit Draft</button>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+
+                    <aside class="space-y-6 xl:col-span-4">
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center justify-between"><h2 class="font-display text-lg font-bold text-[#064E3B]">Faculty Borrower Pass</h2><span class="rounded bg-[#FEF3C7] px-2 py-0.5 text-[10px] font-bold text-[#92400E]">FAC-2018-0412</span></div>
+                            <div class="mt-4 rounded-2xl bg-[#064E3B] p-5 text-white">
+                                <div class="flex items-center gap-3">
+                                    @include('partials.celtech-logo', ['class' => 'flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white p-1'])
+                                    <div><p class="text-xs font-bold uppercase text-[#BBF7D0]">Faculty Reserve Credential</p><p class="font-display text-lg font-bold">Prof. Eleanor Vance</p><p class="text-xs text-[#D1FAE5]">Department of History</p></div>
+                                </div>
+                                <div class="mt-5 rounded-xl bg-white p-4 text-center text-[#0F172A]">
+                                    <div class="mx-auto h-10 w-full max-w-xs bg-[repeating-linear-gradient(90deg,#0F172A_0_2px,transparent_2px_5px,#0F172A_5px_7px,transparent_7px_10px)]"></div>
+                                    <p class="mt-2 font-mono text-xs font-bold tracking-[0.25em]">FAC-RES-2018-0412</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#92400E]">policy</span><h2 class="font-display text-lg font-bold text-[#064E3B]">Reserve Policy Guidelines</h2></div>
+                            <div class="mt-4 space-y-3 text-sm leading-6 text-[#475569]">
+                                <p><strong class="text-[#0F172A]">Minimum copies:</strong> major professional courses should maintain three prescribed textbook copies on closed reserve.</p>
+                                <p><strong class="text-[#0F172A]">Fair-use uploads:</strong> digitized chapters must not exceed 15% or one chapter of copyrighted works.</p>
+                                <p><strong class="text-[#0F172A]">Desk control:</strong> reserve circulation is logged through the faculty/staff portal and circulation desk.</p>
+                            </div>
+                            <a class="mt-4 inline-flex items-center gap-1 text-xs font-bold text-[#065F2A] hover:underline" href="{{ route('staff.section', 'support') }}">Download Full Faculty Reserve Handbook<span class="material-symbols-outlined text-base">arrow_forward</span></a>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-[#F0FDF4] p-5 shadow-sm">
+                            <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">support_agent</span><h2 class="font-display text-lg font-bold text-[#064E3B]">Reserve Desk Contact</h2></div>
+                            <div class="mt-4 space-y-2 text-sm text-[#334155]">
+                                <p>Desk 02 - Course Reserves</p>
+                                <p>library@clcst.edu.ph</p>
+                                <p>Mon - Fri: 7:30 AM - 6:30 PM</p>
+                            </div>
+                        </section>
+                    </aside>
+                </section>
             @elseif ($section === 'reading-lists')
                 @php
                     $bookLookup = collect($catalogBooks)->keyBy('id');

@@ -229,6 +229,8 @@
 
                     <form class="space-y-6" id="registrationForm" method="POST" action="{{ route('register.store') }}" enctype="multipart/form-data">
                         @csrf
+                        <input id="selectedPatronId" name="patron_id" type="hidden" value="{{ old('patron_id') }}">
+                        <input id="selectedProgramOrDepartment" name="program_or_department" type="hidden" value="{{ old('program_or_department') }}">
 
                         <div>
                             <label class="mb-2 block text-xs font-semibold text-on-surface">Full Legal Name <span class="text-error">*</span></label>
@@ -258,13 +260,13 @@
                                         <label class="mb-1.5 block text-xs font-semibold text-on-surface">Student ID Number <span class="text-error">*</span></label>
                                         <div class="relative">
                                             <span class="material-symbols-outlined pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[18px] text-on-surface-variant">badge</span>
-                                            <input class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest py-2.5 pl-10 pr-3.5 font-mono text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="studentIdInput" name="patron_id" placeholder="2024-10492-OL" required type="text" value="{{ old('patron_id') }}">
+                                            <input class="role-id-input w-full rounded-lg border border-outline-variant bg-surface-container-lowest py-2.5 pl-10 pr-3.5 font-mono text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="studentIdInput" placeholder="2024-10492-OL" required type="text" value="{{ old('patron_id') }}">
                                         </div>
                                         @error('patron_id')<p class="mt-1 text-xs text-error">{{ $message }}</p>@enderror
                                     </div>
                                     <div>
                                         <label class="mb-1.5 block text-xs font-semibold text-on-surface">Program / Strand <span class="text-error">*</span></label>
-                                        <select class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="programSelect" name="program_or_department">
+                                        <select class="role-program-input w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="programSelect">
                                             @foreach (['BS in Computer Science (BSCS)', 'BS in Information Technology (BSIT)', 'BS in Business Administration', 'Senior High School - STEM', 'Senior High School - ABM', 'Technical-Vocational Program'] as $program)
                                                 <option value="{{ $program }}" {{ old('program_or_department') === $program ? 'selected' : '' }}>{{ $program }}</option>
                                             @endforeach
@@ -278,11 +280,11 @@
                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     <div>
                                         <label class="mb-1.5 block text-xs font-semibold text-on-surface">Faculty Employee ID <span class="text-error">*</span></label>
-                                        <input class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 font-mono text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="facultyIdInput" name="patron_id" placeholder="FAC-2024-819" type="text" value="{{ old('patron_id') }}">
+                                        <input class="role-id-input w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 font-mono text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="facultyIdInput" placeholder="FAC-2024-819" type="text" value="{{ old('patron_id') }}">
                                     </div>
                                     <div>
                                         <label class="mb-1.5 block text-xs font-semibold text-on-surface">Department <span class="text-error">*</span></label>
-                                        <select class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="facultyDepartmentSelect" name="program_or_department">
+                                        <select class="role-program-input w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="facultyDepartmentSelect">
                                             @foreach (['College of Computer Studies', 'College of Business', 'General Education Department', 'Senior High School Department'] as $department)
                                                 <option value="{{ $department }}" {{ old('program_or_department') === $department ? 'selected' : '' }}>{{ $department }}</option>
                                             @endforeach
@@ -295,11 +297,11 @@
                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     <div>
                                         <label class="mb-1.5 block text-xs font-semibold text-on-surface">Library Staff ID <span class="text-error">*</span></label>
-                                        <input class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 font-mono text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="staffIdInput" name="patron_id" placeholder="LIB-STAFF-042" type="text" value="{{ old('patron_id') }}">
+                                        <input class="role-id-input w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 font-mono text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="staffIdInput" placeholder="LIB-STAFF-042" type="text" value="{{ old('patron_id') }}">
                                     </div>
                                     <div>
                                         <label class="mb-1.5 block text-xs font-semibold text-on-surface">Access Level <span class="text-error">*</span></label>
-                                        <select class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="staffAccessSelect" name="program_or_department">
+                                        <select class="role-program-input w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="staffAccessSelect">
                                             @foreach (['Circulation Desk - Level 1', 'Cataloging Office - Level 2', 'Library Administration - Level 3'] as $accessLevel)
                                                 <option value="{{ $accessLevel }}" {{ old('program_or_department') === $accessLevel ? 'selected' : '' }}>{{ $accessLevel }}</option>
                                             @endforeach
@@ -362,6 +364,7 @@
                                     </div>
                                     <p class="mb-1 font-headline-sm text-base font-semibold text-on-surface">Drag and drop your Certificate of Registration or <span class="text-primary underline">browse files</span></p>
                                     <p class="mb-2 max-w-md text-xs text-on-surface-variant">Official PDF copy or high-resolution photo of validated COR stamp. Accepted formats: PDF, JPG, PNG. Max size: 10MB.</p>
+                                    <img alt="Selected credential preview" class="mb-2 hidden max-h-40 rounded-lg border border-outline-variant object-contain shadow-sm" id="selectedFilePreview">
                                     <p class="text-[10px] font-semibold text-on-surface-variant" id="selectedFileName">No file selected</p>
                                 </label>
                             </div>
@@ -507,6 +510,6 @@
         </div>
     </footer>
 
-    <script src="{{ asset('js/register.js') }}"></script>
+    <script src="{{ asset('js/register.js') }}?v={{ filemtime(public_path('js/register.js')) }}"></script>
 </body>
 </html>

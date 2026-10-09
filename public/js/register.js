@@ -8,8 +8,30 @@ function setBlockState(blockId, enabled) {
     block.classList.toggle('hidden', !enabled);
     block.querySelectorAll('input, select, textarea').forEach((field) => {
         field.disabled = !enabled;
-        field.required = enabled && (field.name === 'patron_id' || field.name === 'program_or_department');
+        field.required = enabled && (field.classList.contains('role-id-input') || field.classList.contains('role-program-input'));
     });
+}
+
+function roleFieldIds(role) {
+    return {
+        id: `${role}IdInput`,
+        program: role === 'student' ? 'programSelect' : (role === 'faculty' ? 'facultyDepartmentSelect' : 'staffAccessSelect'),
+    };
+}
+
+function syncSelectedRoleFields() {
+    const role = selectedRole();
+    const fields = roleFieldIds(role);
+    const visibleId = document.getElementById(fields.id);
+    const visibleProgram = document.getElementById(fields.program);
+    const submittedId = document.getElementById('selectedPatronId');
+    const submittedProgram = document.getElementById('selectedProgramOrDepartment');
+
+    submittedId.value = visibleId?.value?.trim() || '';
+    submittedProgram.value = visibleProgram?.value || '';
+
+    updateLiveBarcode(submittedId.value);
+    updateLiveProgram(submittedProgram.value);
 }
 
 function handleRoleChange(role) {
@@ -33,11 +55,7 @@ function handleRoleChange(role) {
     setBlockState('staffFieldsBlock', role === 'staff');
     document.getElementById('previewCardRoleBadge').innerText = role.toUpperCase();
 
-    const idInput = document.querySelector(`#${role}FieldsBlock [name="patron_id"]`);
-    const programInput = document.querySelector(`#${role}FieldsBlock [name="program_or_department"]`);
-
-    updateLiveBarcode(idInput?.value || '');
-    updateLiveProgram(programInput?.value || '');
+    syncSelectedRoleFields();
 }
 
 function updateLiveCard() {
@@ -62,18 +80,18 @@ document.querySelectorAll('input[name="patron_role"]').forEach((input) => {
 
 document.getElementById('firstNameInput').addEventListener('input', updateLiveCard);
 document.getElementById('lastNameInput').addEventListener('input', updateLiveCard);
-document.querySelectorAll('[name="patron_id"]').forEach((input) => {
+document.querySelectorAll('.role-id-input').forEach((input) => {
     input.addEventListener('input', (event) => {
         if (!event.target.disabled) {
-            updateLiveBarcode(event.target.value);
+            syncSelectedRoleFields();
         }
     });
 });
 
-document.querySelectorAll('[name="program_or_department"]').forEach((input) => {
+document.querySelectorAll('.role-program-input').forEach((input) => {
     input.addEventListener('change', (event) => {
         if (!event.target.disabled) {
-            updateLiveProgram(event.target.value);
+            syncSelectedRoleFields();
         }
     });
 });
@@ -91,12 +109,33 @@ document.querySelectorAll('.toggle-password').forEach((button) => {
 
 document.getElementById('fileUpload').addEventListener('change', (event) => {
     const file = event.target.files[0];
+    const preview = document.getElementById('selectedFilePreview');
+
     document.getElementById('selectedFileName').innerText = file ? file.name : 'No file selected';
+
+    if (preview.src) {
+        URL.revokeObjectURL(preview.src);
+    }
+
+    if (file && file.type.startsWith('image/')) {
+        preview.src = URL.createObjectURL(file);
+        preview.classList.remove('hidden');
+    } else {
+        preview.removeAttribute('src');
+        preview.classList.add('hidden');
+    }
 });
 
-document.getElementById('registrationForm').addEventListener('submit', () => {
+document.getElementById('registrationForm').addEventListener('submit', (event) => {
     const button = document.getElementById('submitRegistrationButton');
     const text = document.getElementById('submitRegistrationText');
+
+    syncSelectedRoleFields();
+
+    if (!document.getElementById('selectedPatronId').value || !document.getElementById('selectedProgramOrDepartment').value) {
+        event.preventDefault();
+        return;
+    }
 
     button.disabled = true;
     text.innerText = 'Submitting registration...';

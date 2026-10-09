@@ -192,7 +192,7 @@
                         <span class="rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-700">3</span>
                     </a>
                     <a class="flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'profile') }}"><span class="material-symbols-outlined text-[18px]">person</span><span>My Profile</span></a>
-                    <button class="flex items-center gap-3 rounded-lg px-3 py-2 text-left font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" onclick="document.getElementById('feedbackModal').classList.remove('hidden')" type="button"><span class="material-symbols-outlined text-[18px]">rate_review</span><span>Library Feedback</span></button>
+                    <a class="flex items-center gap-3 rounded-lg px-3 py-2 text-left font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'feedback') }}"><span class="material-symbols-outlined text-[18px]">rate_review</span><span>Library Feedback</span></a>
                 </nav>
             </div>
 
@@ -361,7 +361,7 @@
                             <li class="flex items-start gap-2"><span class="material-symbols-outlined mt-0.5 shrink-0 text-[16px] text-emerald-600">check_circle</span><span><strong>Reserve Support:</strong> Course and hold shelf requests are routed to the library desk.</span></li>
                             <li class="flex items-start gap-2 rounded border border-amber-200 bg-amber-50 p-2 text-amber-900"><span class="material-symbols-outlined mt-0.5 shrink-0 text-[16px] text-amber-600">info</span><span><strong>Policy Rule:</strong> Physical counter scanning is required for official circulation checkout.</span></li>
                         </ul>
-                        <button class="flex w-full items-center justify-center gap-1.5 rounded-lg border border-gray-300 bg-slate-100 px-3 py-2 text-xs font-semibold text-gray-800 transition-colors hover:bg-slate-200" onclick="document.getElementById('feedbackModal').classList.remove('hidden')" type="button"><span class="material-symbols-outlined text-[16px] text-[#135d2e]">help</span><span>Ask Librarian / Quick Feedback</span></button>
+                        <a class="flex w-full items-center justify-center gap-1.5 rounded-lg border border-gray-300 bg-slate-100 px-3 py-2 text-xs font-semibold text-gray-800 transition-colors hover:bg-slate-200" href="{{ route('staff.section', 'feedback') }}"><span class="material-symbols-outlined text-[16px] text-[#135d2e]">help</span><span>Ask Librarian / Quick Feedback</span></a>
                     </section>
                 </aside>
             </div>

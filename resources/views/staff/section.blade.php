@@ -314,6 +314,182 @@
                         </section>
                     </aside>
                 </section>
+            @elseif ($section === 'feedback')
+                @php
+                    $feedbackRows = [
+                        ['status' => 'In Progress', 'tone' => 'amber', 'title' => 'Stacks 2B HVAC and study carrel comfort issue', 'category' => 'Facility & Stack Environment', 'submitted' => 'Oct 08, 2026', 'body' => 'Feedback noting excess heat and inadequate airflow near QA76 Computer Science aisles, affecting faculty study carrels and preservation conditions.', 'response' => 'Facilities inspection scheduled with the Library Property Custodian.'],
+                        ['status' => 'Resolved', 'tone' => 'green', 'title' => 'OpenAthens Single Sign-On Access for Off-Campus Faculty', 'category' => 'Digital Repository Access', 'submitted' => 'Sep 29, 2026', 'body' => 'Request to integrate department faculty IDs with institutional OpenAthens federation for seamless remote access to IEEE Xplore and ScienceDirect journals.', 'response' => 'SAML 2.0 endpoint re-synchronized with CLCST Faculty Directory.'],
+                        ['status' => 'Resolved', 'tone' => 'blue', 'title' => 'Additional reserve copy for Clean Code', 'category' => 'Collection & Reserve Shelf', 'submitted' => 'Sep 20, 2026', 'body' => 'Requested another high-demand reserve copy for Software Engineering classes.', 'response' => 'Copy accessioned and linked to the course reserve shelf.'],
+                    ];
+                    $resolvedCount = collect($feedbackRows)->where('status', 'Resolved')->count();
+                    $inProgressCount = collect($feedbackRows)->where('status', 'In Progress')->count();
+                @endphp
+
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-6 shadow-sm lg:p-8">
+                    <div class="flex flex-col justify-between gap-5 lg:flex-row lg:items-start">
+                        <div>
+                            <nav aria-label="Breadcrumb" class="mb-3 flex flex-wrap items-center gap-2 text-xs font-semibold text-[#64748B]">
+                                <span>Faculty Services</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span class="font-bold text-[#065F2A]">Library Feedback & Evaluation Hub</span>
+                            </nav>
+                            <span class="inline-flex rounded-full bg-[#DCFCE7] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#166534]">ISO 9001:2015 Quality Feedback</span>
+                            <h1 class="mt-4 font-display text-3xl font-bold text-[#064E3B] md:text-4xl">Library Feedback & Academic Consultation</h1>
+                            <p class="mt-3 max-w-3xl text-sm leading-6 text-[#475569]">Submit institutional evaluations, report facility or stack issues, suggest collection improvements, and rate instruction or research support services for continuous quality assurance.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'history') }}"><span class="material-symbols-outlined text-base">download</span>Download Past Feedback</a>
+                            <a class="inline-flex items-center gap-2 rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" href="#feedback-form"><span class="material-symbols-outlined text-base">add_circle</span>Submit New Evaluation</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    @foreach ([
+                        ['label' => 'Submitted Feedback', 'value' => count($feedbackRows) + 3, 'meta' => 'AY 2024-2025 records', 'icon' => 'rate_review'],
+                        ['label' => 'In Progress', 'value' => $inProgressCount, 'meta' => 'Awaiting desk action', 'icon' => 'pending_actions'],
+                        ['label' => 'Faculty Satisfaction Index', 'value' => '94%', 'meta' => 'Latest mid-semester survey', 'icon' => 'sentiment_satisfied'],
+                        ['label' => 'Resolved Tickets', 'value' => $resolvedCount + 3, 'meta' => 'Closed with librarian response', 'icon' => 'verified'],
+                    ] as $metric)
+                        <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">{{ $metric['label'] }}</p>
+                                    <h2 class="mt-2 font-display text-3xl font-bold text-[#065F2A]">{{ $metric['value'] }}</h2>
+                                    <p class="mt-1 text-xs text-[#64748B]">{{ $metric['meta'] }}</p>
+                                </div>
+                                <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#166534]"><span class="material-symbols-outlined">{{ $metric['icon'] }}</span></span>
+                            </div>
+                        </article>
+                    @endforeach
+                </section>
+
+                <section class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+                    <div class="space-y-6 xl:col-span-8">
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm" id="feedback-form">
+                            <div class="flex items-center gap-2 border-b border-[#CBD5E1] pb-4">
+                                <span class="material-symbols-outlined text-[#065F2A]">rate_review</span>
+                                <h2 class="font-display text-xl font-bold text-[#064E3B]">Submit Faculty Feedback & Service Ticket</h2>
+                            </div>
+                            <form class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2" method="GET" action="{{ route('staff.section', 'feedback') }}">
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Feedback Category <span class="text-[#B91C1C]">*</span>
+                                    <select class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]">
+                                        <option>Facility & Stack Environment</option>
+                                        <option>Collection & Reserve Shelf</option>
+                                        <option>Digital Repository Access</option>
+                                        <option>Library Instruction / Research Support</option>
+                                        <option>Circulation Desk Service</option>
+                                    </select>
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Priority Level
+                                    <select class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]">
+                                        <option>Normal faculty service request</option>
+                                        <option>Urgent academic disruption</option>
+                                        <option>Collection recommendation</option>
+                                    </select>
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Service Rating
+                                    <div class="flex gap-2 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] p-2">
+                                        @foreach ([1, 2, 3, 4, 5] as $star)
+                                            <button class="flex h-9 w-9 items-center justify-center rounded-lg {{ $star <= 4 ? 'bg-[#FEF3C7] text-[#92400E]' : 'bg-white text-[#64748B]' }}" type="button"><span class="material-symbols-outlined">star</span></button>
+                                        @endforeach
+                                    </div>
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Related Area
+                                    <select class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]">
+                                        <option>Stacks 2B - Computer Science</option>
+                                        <option>Circulation Desk</option>
+                                        <option>Faculty Reserve Shelf</option>
+                                        <option>Digital Repositories</option>
+                                    </select>
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A] md:col-span-2">Detailed Comments / Recommendations
+                                    <textarea class="min-h-32 w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" placeholder="Describe the issue, recommendation, requested improvement, or service evaluation details."></textarea>
+                                </label>
+                                <div class="rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] p-4 md:col-span-2">
+                                    <span class="block text-sm font-bold text-[#166534]">Priority Faculty Verification</span>
+                                    <span class="mt-1 block text-xs text-[#166534]">Submit with authenticated credentials: Engr. Roberto M. Mendoza, PECE</span>
+                                </div>
+                                <div class="flex justify-end gap-3 md:col-span-2">
+                                    <button class="rounded-lg border border-[#CBD5E1] px-4 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" type="reset">Clear Draft</button>
+                                    <button class="inline-flex items-center gap-2 rounded-lg bg-[#065F2A] px-5 py-2.5 text-xs font-bold text-white hover:bg-[#064E3B]" type="submit"><span class="material-symbols-outlined text-base">send</span>Submit Feedback to Chief Librarian</button>
+                                </div>
+                            </form>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex flex-col justify-between gap-3 border-b border-[#CBD5E1] pb-4 sm:flex-row sm:items-center">
+                                <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">fact_check</span><h2 class="font-display text-xl font-bold text-[#064E3B]">Feedback History & Resolution Status Ledger</h2></div>
+                                <div class="flex gap-2 text-xs font-bold">
+                                    <a class="rounded-lg bg-[#065F2A] px-3 py-1.5 text-white" href="{{ route('staff.section', 'feedback') }}">All (6)</a>
+                                    <a class="rounded-lg border border-[#CBD5E1] px-3 py-1.5 text-[#334155]" href="{{ route('staff.section', 'feedback') }}">In Progress (1)</a>
+                                    <a class="rounded-lg border border-[#CBD5E1] px-3 py-1.5 text-[#334155]" href="{{ route('staff.section', 'feedback') }}">Resolved (5)</a>
+                                </div>
+                            </div>
+                            <div class="mt-4 space-y-4">
+                                @foreach ($feedbackRows as $row)
+                                    <article class="rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] p-4">
+                                        <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+                                            <div>
+                                                <div class="flex flex-wrap gap-2">
+                                                    <span class="{{ $row['tone'] === 'amber' ? 'bg-[#FEF3C7] text-[#92400E]' : ($row['tone'] === 'green' ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#DBEAFE] text-[#1D4ED8]') }} rounded-full px-2 py-0.5 text-[10px] font-bold uppercase">{{ $row['status'] }}</span>
+                                                    <span class="rounded-full bg-white px-2 py-0.5 text-[10px] font-bold uppercase text-[#64748B]">{{ $row['category'] }}</span>
+                                                </div>
+                                                <h3 class="mt-2 font-display text-base font-bold text-[#0F172A]">{{ $row['title'] }}</h3>
+                                                <p class="mt-2 text-sm leading-6 text-[#475569]">{{ $row['body'] }}</p>
+                                                <p class="mt-3 rounded-lg border border-[#CBD5E1] bg-white p-3 text-xs leading-5 text-[#334155]"><strong>Librarian response:</strong> {{ $row['response'] }}</p>
+                                            </div>
+                                            <span class="shrink-0 text-xs font-semibold text-[#64748B]">{{ $row['submitted'] }}</span>
+                                        </div>
+                                    </article>
+                                @endforeach
+                            </div>
+                        </section>
+                    </div>
+
+                    <aside class="space-y-6 xl:col-span-4">
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="rounded-2xl bg-[#064E3B] p-5 text-white">
+                                <div class="flex items-center gap-3">
+                                    @include('partials.celtech-logo', ['class' => 'flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white p-1'])
+                                    <div>
+                                        <p class="text-xs font-bold uppercase text-[#BBF7D0]">Digital Faculty Pass</p>
+                                        <h3 class="font-display text-lg font-bold">Engr. Roberto M. Mendoza, PECE</h3>
+                                        <p class="text-xs text-[#D1FAE5]">Authenticated Faculty Evaluator</p>
+                                    </div>
+                                </div>
+                                <div class="mt-5 rounded-xl bg-white p-4 text-center text-[#0F172A]">
+                                    <div class="mx-auto h-10 w-full max-w-xs bg-[repeating-linear-gradient(90deg,#0F172A_0_2px,transparent_2px_5px,#0F172A_5px_7px,transparent_7px_10px)]"></div>
+                                    <p class="mt-2 font-mono text-xs font-bold tracking-[0.25em]">FAC-FEEDBACK-0412</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#92400E]">workspace_premium</span><h3 class="font-display text-lg font-bold text-[#064E3B]">AY 2024-2025 Library Service Survey</h3></div>
+                            <p class="mt-3 text-sm leading-6 text-[#64748B]">Current faculty satisfaction checkpoint for collection support, digital access, facilities, and librarian assistance.</p>
+                            <div class="mt-4 space-y-3">
+                                @foreach ([['Collection support', '96%'], ['Digital access', '92%'], ['Instruction support', '95%'], ['Facility readiness', '88%']] as $score)
+                                    <div>
+                                        <div class="mb-1 flex justify-between text-xs font-bold"><span>{{ $score[0] }}</span><span>{{ $score[1] }}</span></div>
+                                        <div class="h-2 overflow-hidden rounded-full bg-[#E2E8F0]"><div class="h-full rounded-full bg-[#065F2A]" style="width: {{ $score[1] }}"></div></div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <a class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-2 text-xs font-bold text-[#065F2A] hover:bg-[#E2E8F0]" href="#feedback-form"><span class="material-symbols-outlined text-base">edit</span>Update Mid-Semester Rating</a>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-[#F0FDF4] p-5 shadow-sm">
+                            <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">support_agent</span><h3 class="font-display text-lg font-bold text-[#064E3B]">Feedback Escalation Contact</h3></div>
+                            <div class="mt-4 space-y-2 text-sm text-[#334155]">
+                                <p>Ms. Maria Santos - Chief Librarian</p>
+                                <p>Faculty Library Committee Chairperson</p>
+                                <p>Engineering Faculty Lounge</p>
+                                <p>library@clcst.edu.ph</p>
+                            </div>
+                        </section>
+                    </aside>
+                </section>
             @elseif ($section === 'profile')
                 @php
                     $profileStats = [

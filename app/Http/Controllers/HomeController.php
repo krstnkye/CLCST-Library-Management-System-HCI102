@@ -346,6 +346,7 @@ class HomeController extends Controller
             'reading-lists' => 'Course Reading Lists',
             'instruction-sessions' => 'Library Instruction Sessions',
             'notifications' => 'Faculty Notifications',
+            'feedback' => 'Library Feedback',
             'settings' => 'System Settings',
             'support' => 'Help & Support',
         ];

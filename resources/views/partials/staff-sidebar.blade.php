@@ -18,6 +18,7 @@
         ['key' => 'reading-lists', 'label' => 'Course Reading Lists', 'icon' => 'format_list_bulleted', 'href' => route('staff.section', 'reading-lists'), 'badge' => 5],
         ['key' => 'instruction-sessions', 'label' => 'Library Instruction Sessions', 'icon' => 'cast_for_education', 'href' => route('staff.section', 'instruction-sessions'), 'badge' => 4],
         ['key' => 'notifications', 'label' => 'Notifications', 'icon' => 'notifications', 'href' => route('staff.section', 'notifications'), 'badge' => 3, 'badgeTone' => 'warning'],
+        ['key' => 'feedback', 'label' => 'Library Feedback', 'icon' => 'rate_review', 'href' => route('staff.section', 'feedback')],
         ['key' => 'settings', 'label' => 'Settings', 'icon' => 'settings', 'href' => route('staff.section', 'settings')],
     ];
 @endphp

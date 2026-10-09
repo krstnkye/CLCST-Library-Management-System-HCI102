@@ -172,7 +172,7 @@
                         <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[18px]">autorenew</span><span>Renewal Requests</span></span>
                         <span class="rounded-full bg-blue-100 px-1.5 py-0.5 text-[10px] font-bold text-blue-700">{{ $renewalCount }}</span>
                     </a>
-                    <a class="flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'reports') }}"><span class="material-symbols-outlined text-[18px]">history</span><span>Borrowing History</span></a>
+                    <a class="flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'history') }}"><span class="material-symbols-outlined text-[18px]">history</span><span>Borrowing History</span></a>
                     <a class="flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'catalog') }}"><span class="material-symbols-outlined text-[18px]">thumb_up</span><span>Recommend a Book</span></a>
 
                     <div class="my-1 border-t border-gray-100 pt-1" id="faculty-academic-module">

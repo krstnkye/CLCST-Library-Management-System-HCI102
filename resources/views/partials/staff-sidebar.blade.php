@@ -11,6 +11,7 @@
         ['key' => 'catalog', 'label' => 'Catalog Management', 'icon' => 'library_books', 'href' => route('staff.section', 'catalog')],
         ['key' => 'reservations', 'label' => 'My Reservations', 'icon' => 'book_online', 'href' => route('staff.section', 'reservations'), 'badge' => $pendingReservations],
         ['key' => 'reports', 'label' => 'Renewal Requests', 'icon' => 'autorenew', 'href' => route('staff.section', 'reports'), 'badge' => 1],
+        ['key' => 'history', 'label' => 'Borrowing History', 'icon' => 'history_edu', 'href' => route('staff.section', 'history')],
         ['key' => 'settings', 'label' => 'Settings', 'icon' => 'settings', 'href' => route('staff.section', 'settings')],
     ];
 @endphp

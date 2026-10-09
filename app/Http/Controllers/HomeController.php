@@ -339,6 +339,7 @@ class HomeController extends Controller
             'catalog' => 'Catalog Management',
             'reservations' => 'My Reservations',
             'reports' => 'Renewal Requests',
+            'history' => 'Borrowing History',
             'settings' => 'System Settings',
             'support' => 'Help & Support',
         ];

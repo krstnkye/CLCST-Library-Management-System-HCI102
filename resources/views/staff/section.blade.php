@@ -869,6 +869,245 @@
                         </section>
                     </aside>
                 </section>
+            @elseif ($section === 'history')
+                @php
+                    $historyRows = collect($borrowingHistory);
+                    $activeHistoryRows = $historyRows->where('status', 'active');
+                    $returnedRows = $historyRows->whereNotIn('status', ['active']);
+                    $settledRows = $historyRows->whereIn('status', ['returned', 'settled', 'grace']);
+                    $totalHistoricalLoans = max($historyRows->count(), 48);
+                    $currentYearRows = $historyRows->filter(fn ($row) => str_contains($row['borrowed'], '2024'));
+                @endphp
+
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                    <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
+                        <div>
+                            <nav aria-label="Breadcrumb" class="mb-2 flex items-center gap-2 text-xs font-medium text-[#64748B]">
+                                <span>Academic Portal</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span>Faculty Services</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span class="font-bold text-[#065F2A]">Borrowing History</span>
+                            </nav>
+                            <span class="inline-flex rounded-full bg-[#DCFCE7] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#166534]">Academic Reading Ledger</span>
+                            <h1 class="mt-3 font-display text-3xl font-bold text-[#064E3B]">Academic Borrowing History & Reading Ledger</h1>
+                            <p class="mt-2 max-w-4xl text-sm leading-6 text-[#475569]">Comprehensive archive of returned instructional books, historical research loans, syllabus references, and citation records for faculty accreditation.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3.5 py-2 text-xs font-bold text-[#334155] shadow-sm hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'reports') }}">
+                                <span class="material-symbols-outlined text-base">download</span>
+                                Export Ledger
+                            </a>
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#065F2A] px-3.5 py-2 text-xs font-bold text-[#065F2A] hover:bg-[#DCFCE7]" href="{{ route('books.catalog') }}">
+                                <span class="material-symbols-outlined text-base">search</span>
+                                Search OPAC
+                            </a>
+                            <a class="inline-flex items-center gap-2 rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#064E3B]" href="{{ route('staff.section', 'support') }}">
+                                <span class="material-symbols-outlined text-base">verified</span>
+                                Clearance Slip
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Historical Loans</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#065F2A]">{{ $totalHistoricalLoans }} <span class="text-sm font-medium text-[#475569]">records</span></h2>
+                            </div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#065F2A]"><span class="material-symbols-outlined">history_edu</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">Includes returned books, renewed loans, and archive records used in faculty documentation.</p>
+                    </article>
+                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Active Loans</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#92400E]">{{ $activeHistoryRows->count() }} <span class="text-sm font-medium text-[#475569]">open</span></h2>
+                            </div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#FEF3C7] text-[#92400E]"><span class="material-symbols-outlined">local_library</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#92400E]">Current loans are still visible for continuity with the renewal queue.</p>
+                    </article>
+                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Returned / Cleared</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#065F2A]">{{ $settledRows->count() }} <span class="text-sm font-medium text-[#475569]">items</span></h2>
+                            </div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#065F2A]"><span class="material-symbols-outlined">check_circle</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">No unresolved replacement records appear in the current faculty ledger.</p>
+                    </article>
+                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">AY 2024 Reads</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#002E97]">{{ $currentYearRows->count() }} <span class="text-sm font-medium text-[#475569]">records</span></h2>
+                            </div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#E2E7FF] text-[#002E97]"><span class="material-symbols-outlined">calendar_month</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">Current academic-year borrowing activity for reports and clearance review.</p>
+                    </article>
+                </section>
+
+                <section class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+                    <div class="space-y-4 xl:col-span-8">
+                        <div class="rounded-xl border border-[#CBD5E1] bg-white p-4 shadow-sm">
+                            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                                <div>
+                                    <h2 class="font-display text-xl font-bold text-[#0F172A]">Borrowing Ledger</h2>
+                                    <p class="text-xs text-[#64748B]">Showing {{ min($historyRows->count(), 5) }} of {{ $totalHistoricalLoans }} historical loans.</p>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="rounded-full bg-[#065F2A] px-3 py-1.5 text-xs font-bold text-white">All Records</span>
+                                    <span class="rounded-full border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-1.5 text-xs font-bold text-[#334155]">Returned</span>
+                                    <span class="rounded-full border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-1.5 text-xs font-bold text-[#334155]">Renewed</span>
+                                    <span class="rounded-full border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-1.5 text-xs font-bold text-[#334155]">Course Reserve</span>
+                                </div>
+                            </div>
+                            <form class="mt-4 flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-2" method="GET" action="{{ route('books.catalog') }}">
+                                <span class="material-symbols-outlined text-base text-[#64748B]">search</span>
+                                <input class="w-full border-0 bg-transparent p-0 text-sm text-[#0F172A] placeholder:text-[#94A3B8] focus:ring-0" name="q" placeholder="Search catalog again by title, author, ISBN, or call number...">
+                                <button class="rounded bg-[#065F2A] px-3 py-1.5 text-xs font-bold text-white" type="submit">Search</button>
+                            </form>
+                        </div>
+
+                        @foreach ($historyRows->take(5) as $row)
+                            @php
+                                $statusClass = match ($row['status']) {
+                                    'active' => 'bg-[#FEF3C7] text-[#92400E]',
+                                    'settled', 'returned', 'grace' => 'bg-[#DCFCE7] text-[#166534]',
+                                    default => 'bg-[#E2E7FF] text-[#002E97]',
+                                };
+                                $statusLabel = match ($row['status']) {
+                                    'active' => 'Currently On Loan',
+                                    'grace' => 'Returned With Grace',
+                                    'settled' => 'Fine Settled',
+                                    default => 'Returned On Time',
+                                };
+                            @endphp
+                            <article class="rounded-xl border border-[#CBD5E1] bg-white p-4 shadow-sm transition-all hover:border-[#707A6F]">
+                                <div class="flex flex-col gap-4 sm:flex-row">
+                                    <div class="flex h-28 w-20 shrink-0 flex-col items-center justify-center rounded-lg border border-[#CBD5E1] bg-[#EAEDFF] p-2 text-center">
+                                        <span class="material-symbols-outlined text-3xl text-[#065F2A]">{{ str_contains($row['title'], 'Network') ? 'hub' : (str_contains($row['title'], 'Architecture') ? 'architecture' : 'menu_book') }}</span>
+                                        <span class="mt-1 text-[9px] font-bold uppercase text-[#64748B]">{{ $row['classification'] }}</span>
+                                    </div>
+                                    <div class="min-w-0 flex-1 space-y-2">
+                                        <div class="flex flex-wrap items-start justify-between gap-2">
+                                            <div>
+                                                <span class="{{ $statusClass }} inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">{{ $statusLabel }}</span>
+                                                <span class="ml-1.5 inline-block rounded-full bg-[#F8FAFC] px-2 py-0.5 text-[10px] font-semibold text-[#065F2A]">{{ $row['classification'] }}</span>
+                                                <h3 class="mt-1 font-display text-lg font-bold text-[#0F172A]">{{ $row['title'] }}</h3>
+                                                <p class="text-sm text-[#64748B]">{{ $row['author'] }}</p>
+                                            </div>
+                                            <span class="rounded bg-[#F8FAFC] px-2 py-1 text-[10px] font-bold text-[#64748B]">{{ $row['receipt'] }}</span>
+                                        </div>
+                                        <div class="grid grid-cols-1 gap-2 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] p-3 text-xs text-[#475569] md:grid-cols-3">
+                                            <div><span class="font-bold text-[#0F172A]">LC Call No:</span> {{ $row['call'] }}</div>
+                                            <div><span class="font-bold text-[#0F172A]">Accession No:</span> {{ $row['barcode'] }}</div>
+                                            <div><span class="font-bold text-[#0F172A]">Desk:</span> {{ $row['desk'] }}</div>
+                                        </div>
+                                        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E8F0] pt-2 text-xs text-[#64748B]">
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                <span><strong class="text-[#0F172A]">Borrowed:</strong> {{ $row['borrowed'] }}</span>
+                                                <span>-</span>
+                                                <span><strong class="text-[#0F172A]">{{ $row['status'] === 'active' ? 'Due' : 'Returned' }}:</strong> {{ $row['status'] === 'active' ? $row['due'] : $row['returned'] }}</span>
+                                                <span>-</span>
+                                                <span>{{ $row['note'] }}</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <a class="inline-flex items-center gap-1 rounded bg-[#EAEDFF] px-2 py-1 text-[11px] font-bold text-[#065F2A] hover:bg-[#E2E7FF]" href="https://www.google.com/search?q={{ urlencode($row['title'].' citation') }}" target="_blank" rel="noopener"><span class="material-symbols-outlined text-sm">format_quote</span>Cite</a>
+                                                <a class="inline-flex items-center gap-1 rounded bg-[#065F2A] px-2 py-1 text-[11px] font-bold text-white hover:bg-[#064E3B]" href="{{ route('books.catalog', ['q' => $row['title']]) }}"><span class="material-symbols-outlined text-sm">bookmark_add</span>Re-Borrow / Reserve</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        @endforeach
+
+                        <div class="flex flex-col items-center justify-between gap-3 rounded-xl border border-[#CBD5E1] bg-white p-4 text-sm shadow-sm sm:flex-row">
+                            <span class="text-[#64748B]">Showing <strong>1-{{ min($historyRows->count(), 5) }}</strong> of <strong>{{ $totalHistoricalLoans }}</strong> historical loans</span>
+                            <div class="flex items-center gap-1">
+                                <span class="rounded border border-[#CBD5E1] px-2.5 py-1 text-[#94A3B8]">Previous</span>
+                                <span class="rounded bg-[#065F2A] px-3 py-1 font-bold text-white">1</span>
+                                <span class="rounded px-3 py-1 text-[#334155] hover:bg-[#F8FAFC]">2</span>
+                                <span class="rounded px-3 py-1 text-[#334155] hover:bg-[#F8FAFC]">3</span>
+                                <span class="px-1 text-[#64748B]">...</span>
+                                <span class="rounded border border-[#CBD5E1] px-2.5 py-1 text-[#334155]">Next</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <aside class="space-y-4 xl:col-span-4">
+                        <section class="relative overflow-hidden rounded-2xl border border-[#064E3B] bg-gradient-to-br from-[#135D2E] to-[#00441D] p-5 text-white shadow-md">
+                            @include('partials.celtech-logo', ['class' => 'absolute -bottom-6 -right-6 h-36 w-36 rounded-full bg-white/10 object-contain p-2 opacity-20'])
+                            <div class="relative">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-center gap-2">
+                                        @include('partials.celtech-logo', ['class' => 'h-8 w-8 rounded-full bg-white object-contain p-0.5'])
+                                        <div><h4 class="text-[11px] font-bold uppercase tracking-wider text-[#BBF7D0]">CLCST Academic Library</h4><p class="text-[9px] text-emerald-100">Official Faculty Borrower Pass</p></div>
+                                    </div>
+                                    <span class="rounded-full bg-[#FDC425] px-2 py-0.5 text-[10px] font-bold text-[#251A00]">NFC Active</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h3 class="font-display text-lg font-bold">Engr. Roberto M. Mendoza</h3>
+                                    <p class="text-xs text-emerald-100">Department Chair - CICT & CpE</p>
+                                    <p class="mt-1 font-mono text-[11px] text-[#BBF7D0]">FAC-2018-0412 - Valid AY 2024-2025</p>
+                                </div>
+                                <div class="mt-4 rounded-xl bg-white p-3 text-center text-black">
+                                    <div class="h-10 rounded bg-[repeating-linear-gradient(90deg,#000_0px,#000_2px,transparent_2px,transparent_4px,#000_4px,#000_7px,transparent_7px,transparent_9px,#000_9px,#000_13px,transparent_13px,transparent_15px)]"></div>
+                                    <p class="mt-1 font-mono text-[11px] font-bold tracking-widest">FAC*20180412*LIB</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">verified</span><h3 class="font-display text-base font-bold">Faculty Clearance Status</h3></div>
+                                <span class="rounded bg-[#DCFCE7] px-2 py-0.5 text-[10px] font-bold uppercase text-[#166534]">AY 2024-2025</span>
+                            </div>
+                            <div class="mt-4 rounded-lg border border-[#BBF7D0] bg-[#F0FDF4] p-3">
+                                <p class="flex items-start gap-2 text-sm font-bold text-[#166534]"><span class="material-symbols-outlined text-base">check_circle</span>Certified Cleared for Accreditation</p>
+                                <p class="mt-1 pl-6 text-xs leading-5 text-[#166534]">No unreturned books, no pending replacement costs, and no unresolved records on file.</p>
+                            </div>
+                            <div class="mt-4 space-y-1.5 text-xs text-[#475569]">
+                                <div class="flex justify-between border-b border-[#E2E8F0] py-1"><span>Library Standing:</span><span class="font-bold text-[#065F2A]">Unencumbered</span></div>
+                                <div class="flex justify-between border-b border-[#E2E8F0] py-1"><span>CHED Readiness:</span><span class="font-bold text-[#166534]">100% Compliant</span></div>
+                                <div class="flex justify-between py-1"><span>Last Verified:</span><span class="text-[#64748B]">August 28, 2024</span></div>
+                            </div>
+                            <a class="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-2 text-xs font-bold text-[#065F2A] hover:bg-[#E2E8F0]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">download_for_offline</span>Download Clearance Slip</a>
+                        </section>
+
+                        <section class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#785A00]">format_quote</span><h3 class="font-display text-base font-bold">Citation & Bibliography</h3></div>
+                                <span class="text-[10px] font-semibold text-[#64748B]">{{ $totalHistoricalLoans }} References</span>
+                            </div>
+                            <p class="mt-3 text-sm leading-6 text-[#64748B]">Export historical reading list records into your academic reference workflow.</p>
+                            <div class="mt-4 grid grid-cols-2 gap-2">
+                                @foreach (['Zotero Export', 'Mendeley', 'BibTeX File', 'EndNote RIS'] as $label)
+                                    <button class="flex items-center justify-center gap-1.5 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-2 py-2 text-xs font-bold text-[#334155] hover:bg-[#E2E8F0]" type="button"><span class="material-symbols-outlined text-sm text-[#065F2A]">library_books</span>{{ $label }}</button>
+                                @endforeach
+                            </div>
+                        </section>
+
+                        <section class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">public</span><h3 class="font-display text-base font-bold">Institutional Repositories</h3></div>
+                                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                            </div>
+                            <p class="mt-3 text-sm leading-6 text-[#64748B]">Single-sign-on access to subscribed e-journals and academic databases.</p>
+                            <div class="mt-4 space-y-2 text-xs">
+                                @foreach ([['OA', 'OpenAthens Gateway', 'Connected'], ['IEEE', 'IEEE Xplore Digital Library', 'Institutional Access'], ['SD', 'ScienceDirect / Elsevier', 'Full Text Subscribed']] as $repo)
+                                    <a class="flex items-center justify-between rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] p-2 hover:bg-[#E2E8F0]" href="{{ route('staff.section', 'support') }}"><span class="flex items-center gap-2"><span class="flex h-6 w-8 items-center justify-center rounded bg-[#E2E7FF] text-[10px] font-bold text-[#002E97]">{{ $repo[0] }}</span><span class="font-bold text-[#0F172A]">{{ $repo[1] }}</span></span><span class="text-[#64748B]">{{ $repo[2] }}</span></a>
+                                @endforeach
+                            </div>
+                        </section>
+                    </aside>
+                </section>
             @else
                 <section class="grid grid-cols-1 gap-4 lg:grid-cols-3">
                     @foreach ([

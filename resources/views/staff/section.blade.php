@@ -1285,6 +1285,212 @@
                         </section>
                     </aside>
                 </section>
+            @elseif ($section === 'notifications')
+                @php
+                    $facultyNotifications = [
+                        [
+                            'category' => 'Syllabus Reserve Alert',
+                            'title' => 'Clean Code reserve queue reached high-demand threshold',
+                            'body' => 'Four students are queued for the same syllabus title. Add another reserve copy or adjust the closed-reserve loan window before the next class meeting.',
+                            'time' => '8 minutes ago',
+                            'status' => 'Unread',
+                            'icon' => 'menu_book',
+                            'tone' => 'amber',
+                            'primary' => 'Manage Reserve',
+                            'href' => route('staff.section', 'course-reserves'),
+                        ],
+                        [
+                            'category' => 'Instruction Session',
+                            'title' => 'Library instruction workshop confirmed',
+                            'body' => 'Your IEEE Xplore and Scopus retrieval workshop is confirmed for Oct 28, 2024 at Multimedia AVR Room 302.',
+                            'time' => '34 minutes ago',
+                            'status' => 'Unread',
+                            'icon' => 'cast_for_education',
+                            'tone' => 'green',
+                            'primary' => 'View Session',
+                            'href' => route('staff.section', 'instruction-sessions'),
+                        ],
+                        [
+                            'category' => 'Renewal Approved',
+                            'title' => 'Faculty privilege renewal request approved',
+                            'body' => 'Head Librarian Ms. Santos approved your extension request. New return due date: November 19, 2024.',
+                            'time' => 'Today, 9:10 AM',
+                            'status' => 'Unread',
+                            'icon' => 'autorenew',
+                            'tone' => 'blue',
+                            'primary' => 'Open Renewal',
+                            'href' => route('staff.section', 'reports'),
+                        ],
+                        [
+                            'category' => 'Hold Waitlist Notice',
+                            'title' => 'Reserved textbook is ready for faculty pickup',
+                            'body' => 'Computer Networks: A Systems Approach is ready at Desk 02. Please pick it up within the assigned hold window.',
+                            'time' => 'Yesterday',
+                            'status' => 'Read',
+                            'icon' => 'bookmark',
+                            'tone' => 'slate',
+                            'primary' => 'View Reservation',
+                            'href' => route('staff.section', 'reservations'),
+                        ],
+                        [
+                            'category' => 'Clearance',
+                            'title' => 'Electronic faculty clearance is ready',
+                            'body' => 'Your account is currently compliant with zero unreturned materials. You may generate your authenticated library clearance slip.',
+                            'time' => 'Oct 07, 2024',
+                            'status' => 'Read',
+                            'icon' => 'verified',
+                            'tone' => 'green',
+                            'primary' => 'Generate Slip',
+                            'href' => route('staff.section', 'history'),
+                        ],
+                    ];
+                    $unreadCount = collect($facultyNotifications)->where('status', 'Unread')->count();
+                    $reserveAlertCount = collect($facultyNotifications)->where('category', 'Syllabus Reserve Alert')->count();
+                    $sessionAlertCount = collect($facultyNotifications)->where('category', 'Instruction Session')->count();
+                @endphp
+
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-6 shadow-sm lg:p-8">
+                    <div class="flex flex-col justify-between gap-5 lg:flex-row lg:items-start">
+                        <div>
+                            <nav aria-label="Breadcrumb" class="mb-3 flex flex-wrap items-center gap-2 text-xs font-semibold text-[#64748B]">
+                                <span>Faculty Services</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span class="font-bold text-[#065F2A]">Notifications & Academic Alerts Hub</span>
+                            </nav>
+                            <span class="inline-flex rounded-full bg-[#FEF3C7] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#92400E]">3 Unread Alerts</span>
+                            <h1 class="mt-4 font-display text-3xl font-bold text-[#064E3B] md:text-4xl">Faculty Notifications & Academic Alerts</h1>
+                            <p class="mt-3 max-w-3xl text-sm leading-6 text-[#475569]">Review syllabus reserve notices, renewal outcomes, instruction session confirmations, hold updates, and clearance messages in one faculty notification center.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'notifications') }}"><span class="material-symbols-outlined text-base">done_all</span>Mark All as Read</a>
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="#notification-preferences"><span class="material-symbols-outlined text-base">tune</span>Preferences</a>
+                            <a class="inline-flex items-center gap-2 rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">support_agent</span>Ask Desk</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    @foreach ([
+                        ['label' => 'Unread Notifications', 'value' => $unreadCount, 'meta' => 'Needs faculty review', 'icon' => 'notifications_active'],
+                        ['label' => 'Syllabus & Reserve Alerts', 'value' => $reserveAlertCount, 'meta' => 'Course material updates', 'icon' => 'menu_book'],
+                        ['label' => 'Instruction Session Alerts', 'value' => $sessionAlertCount, 'meta' => 'Workshop confirmations', 'icon' => 'cast_for_education'],
+                        ['label' => 'Delivery Channels', 'value' => 4, 'meta' => 'Portal, email, SMS, terminal', 'icon' => 'rss_feed'],
+                    ] as $metric)
+                        <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">{{ $metric['label'] }}</p>
+                                    <h2 class="mt-2 font-display text-3xl font-bold text-[#065F2A]">{{ $metric['value'] }}</h2>
+                                    <p class="mt-1 text-xs text-[#64748B]">{{ $metric['meta'] }}</p>
+                                </div>
+                                <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#FEF3C7] text-[#92400E]"><span class="material-symbols-outlined">{{ $metric['icon'] }}</span></span>
+                            </div>
+                        </article>
+                    @endforeach
+                </section>
+
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-4 shadow-sm">
+                    <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                        <div class="flex flex-wrap gap-2 text-xs font-bold">
+                            <a class="rounded-lg bg-[#065F2A] px-3.5 py-2 text-white" href="{{ route('staff.section', 'notifications') }}">All Notifications</a>
+                            <a class="rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3.5 py-2 text-[#334155] hover:bg-[#E2E8F0]" href="#unread-alerts">Unread</a>
+                            <a class="rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3.5 py-2 text-[#334155] hover:bg-[#E2E8F0]" href="{{ route('staff.section', 'course-reserves') }}">Reserve Alerts</a>
+                            <a class="rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3.5 py-2 text-[#334155] hover:bg-[#E2E8F0]" href="{{ route('staff.section', 'instruction-sessions') }}">Instruction Sessions</a>
+                            <a class="rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3.5 py-2 text-[#334155] hover:bg-[#E2E8F0]" href="{{ route('staff.section', 'reports') }}">Renewals</a>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="inline-flex items-center gap-1 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-2 text-xs font-bold text-[#334155]" type="button"><span class="material-symbols-outlined text-base">select_all</span>Select All</button>
+                            <button class="inline-flex items-center gap-1 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-2 text-xs font-bold text-[#334155]" type="button"><span class="material-symbols-outlined text-base">archive</span>Archive</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+                    <div class="space-y-4 xl:col-span-8" id="unread-alerts">
+                        @foreach ($facultyNotifications as $notice)
+                            @php
+                                $toneClasses = match ($notice['tone']) {
+                                    'amber' => ['icon' => 'bg-[#FEF3C7] text-[#92400E]', 'border' => 'border-[#FACC15]'],
+                                    'green' => ['icon' => 'bg-[#DCFCE7] text-[#166534]', 'border' => 'border-[#BBF7D0]'],
+                                    'blue' => ['icon' => 'bg-[#DBEAFE] text-[#1D4ED8]', 'border' => 'border-[#BFDBFE]'],
+                                    default => ['icon' => 'bg-[#F1F5F9] text-[#475569]', 'border' => 'border-[#CBD5E1]'],
+                                };
+                            @endphp
+                            <article class="group rounded-2xl border {{ $notice['status'] === 'Unread' ? $toneClasses['border'].' bg-white' : 'border-[#CBD5E1] bg-[#F8FAFC]' }} p-5 shadow-sm">
+                                <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
+                                    <span class="{{ $toneClasses['icon'] }} flex h-11 w-11 shrink-0 items-center justify-center rounded-xl">
+                                        <span class="material-symbols-outlined">{{ $notice['icon'] }}</span>
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <span class="rounded-full bg-[#EEF2FF] px-2 py-0.5 text-[10px] font-bold uppercase text-[#334155]">{{ $notice['category'] }}</span>
+                                            <span class="{{ $notice['status'] === 'Unread' ? 'bg-[#FEE2E2] text-[#B91C1C]' : 'bg-[#E2E8F0] text-[#475569]' }} rounded-full px-2 py-0.5 text-[10px] font-bold uppercase">{{ $notice['status'] }}</span>
+                                            <span class="text-[11px] font-semibold text-[#64748B]">{{ $notice['time'] }}</span>
+                                        </div>
+                                        <h3 class="mt-2 font-display text-lg font-bold text-[#0F172A] group-hover:text-[#065F2A]">{{ $notice['title'] }}</h3>
+                                        <p class="mt-2 text-sm leading-6 text-[#475569]">{{ $notice['body'] }}</p>
+                                        <div class="mt-4 flex flex-wrap gap-2">
+                                            <a class="inline-flex items-center gap-1.5 rounded-lg bg-[#065F2A] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#064E3B]" href="{{ $notice['href'] }}"><span class="material-symbols-outlined text-base">open_in_new</span>{{ $notice['primary'] }}</a>
+                                            <a class="inline-flex items-center gap-1.5 rounded-lg border border-[#CBD5E1] bg-white px-3 py-1.5 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'notifications') }}"><span class="material-symbols-outlined text-base">done</span>Mark Read</a>
+                                            <button class="px-2 py-1 text-xs font-bold text-[#B91C1C] hover:underline" type="button">Dismiss</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        @endforeach
+
+                        <div class="text-center">
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-5 py-2 text-xs font-bold text-[#334155] shadow-sm hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'history') }}"><span class="material-symbols-outlined text-base">history</span>View Past Notifications Archive</a>
+                        </div>
+                    </div>
+
+                    <aside class="space-y-6 xl:col-span-4">
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="rounded-2xl bg-[#064E3B] p-5 text-white">
+                                <div class="flex items-center gap-3">
+                                    @include('partials.celtech-logo', ['class' => 'flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white p-1'])
+                                    <div>
+                                        <p class="text-xs font-bold uppercase text-[#BBF7D0]">Faculty Pass</p>
+                                        <h3 class="font-display text-lg font-bold">Engr. Roberto M. Mendoza, PECE</h3>
+                                        <p class="text-[11px] text-white/80">Faculty ID: CLCST-FAC-2018-0412</p>
+                                    </div>
+                                </div>
+                                <div class="mt-5 rounded-xl bg-white p-4 text-center text-[#0F172A]">
+                                    <div class="mx-auto h-10 w-full max-w-xs bg-[repeating-linear-gradient(90deg,#0F172A_0_2px,transparent_2px_5px,#0F172A_5px_7px,transparent_7px_10px)]"></div>
+                                    <p class="mt-2 font-mono text-xs font-bold tracking-[0.25em]">FAC-NOTIFY-0412</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm" id="notification-preferences">
+                            <h2 class="font-display text-lg font-bold text-[#064E3B]">Alert Delivery Channels</h2>
+                            <div class="mt-4 space-y-3">
+                                @foreach ([['Portal Alerts', 'Enabled', true], ['Institutional Email', 'Enabled', true], ['SMS Urgent Alerts', 'Enabled for due dates', true], ['Faculty Terminal & Mac', 'Connected', true]] as $channel)
+                                    <div class="flex items-center justify-between rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] p-3">
+                                        <div>
+                                            <p class="text-sm font-bold text-[#0F172A]">{{ $channel[0] }}</p>
+                                            <p class="text-xs text-[#64748B]">{{ $channel[1] }}</p>
+                                        </div>
+                                        <span class="flex h-6 w-11 items-center rounded-full bg-[#065F2A] p-1"><span class="h-4 w-4 rounded-full bg-white shadow-sm translate-x-5"></span></span>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="mt-4 border-t border-[#CBD5E1] pt-4">
+                                <p class="text-xs font-bold text-[#334155]">Notification Digest Cadence</p>
+                                <div class="mt-2 grid grid-cols-2 gap-2 text-xs font-bold">
+                                    <a class="rounded-lg bg-[#065F2A] px-3 py-2 text-center text-white" href="{{ route('staff.section', 'notifications') }}">Instant</a>
+                                    <a class="rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-2 text-center text-[#475569]" href="{{ route('staff.section', 'notifications') }}">Daily 5 PM</a>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-[#F0FDF4] p-5 shadow-sm">
+                            <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">support_agent</span><h2 class="font-display text-lg font-bold text-[#064E3B]">Notification Help</h2></div>
+                            <p class="mt-3 text-sm leading-6 text-[#475569]">Contact the circulation desk if alerts are missing from email, SMS, or faculty terminal channels.</p>
+                            <a class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#065F2A] px-3 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">chat</span>Contact Desk</a>
+                        </section>
+                    </aside>
+                </section>
             @elseif ($section === 'instruction-sessions')
                 @php
                     $instructionSessions = [

@@ -105,7 +105,7 @@
                 <span class="material-symbols-outlined text-[17px]">add_circle</span>
                 <span>{{ $isFaculty ? 'Request Academic Resource' : 'Add Catalog Task' }}</span>
             </a>
-            <a aria-label="Notifications" class="relative rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900" href="{{ route('staff.section', 'support') }}">
+            <a aria-label="Notifications" class="relative rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900" href="{{ route('staff.section', 'notifications') }}">
                 <span class="material-symbols-outlined text-[22px]">notifications</span>
                 <span class="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white ring-2 ring-white">3</span>
             </a>
@@ -187,7 +187,7 @@
                         </div>
                     </div>
 
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'support') }}">
+                    <a class="flex items-center justify-between rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'notifications') }}">
                         <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[18px]">notifications</span><span>Notifications</span></span>
                         <span class="rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-700">3</span>
                     </a>

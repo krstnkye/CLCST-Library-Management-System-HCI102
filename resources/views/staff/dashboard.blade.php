@@ -182,7 +182,7 @@
                         </a>
                         <div class="ml-4 space-y-1 border-l-2 border-emerald-200 py-1 pl-3">
                             <a class="flex items-center gap-2 py-0.5 text-[11px] font-medium text-gray-600 hover:text-[#135d2e]" href="{{ route('staff.section', 'academic') }}#course-reserves"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Course Reserves</span></a>
-                            <a class="flex items-center gap-2 py-0.5 text-[11px] font-medium text-gray-600 hover:text-[#135d2e]" href="{{ route('staff.section', 'academic') }}#reading-lists"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Course Reading Lists</span></a>
+                            <a class="flex items-center gap-2 py-0.5 text-[11px] font-medium text-gray-600 hover:text-[#135d2e]" href="{{ route('staff.section', 'reading-lists') }}"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Course Reading Lists</span></a>
                             <a class="flex items-center gap-2 py-0.5 text-[11px] font-medium text-gray-600 hover:text-[#135d2e]" href="{{ route('staff.section', 'academic') }}#instruction-session"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Instruction Sessions</span></a>
                         </div>
                     </div>
@@ -313,7 +313,7 @@
                             <article class="rounded-lg border border-gray-200 bg-slate-50/70 p-4" id="reading-lists">
                                 <div class="mb-2 flex items-center justify-between"><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] text-[#135d2e]">format_list_bulleted</span><h3 class="text-xs font-bold uppercase tracking-wide text-gray-900">2. Course Reading Lists</h3></div><span class="text-[10px] font-medium text-gray-400">OPAC Discoverable</span></div>
                                 <div class="rounded border border-gray-200 bg-white p-3 text-xs"><div class="flex items-center justify-between gap-3"><span class="font-bold text-gray-900">AY 2024-2025 1st Sem: BSCS Core Syllabus</span><span class="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-bold text-blue-800">Published</span></div><p class="mt-2 text-[11px] text-gray-600">12 titles linked for students to discover directly in the CLCST web catalog.</p></div>
-                                <div class="mt-3 flex items-center justify-between border-t border-gray-200 pt-2.5"><span class="text-[11px] text-gray-500">Student reads this term: <strong>214</strong></span><a class="text-xs font-semibold text-[#135d2e] hover:underline" href="{{ route('staff.section', 'academic') }}">Manage Lists</a></div>
+                                <div class="mt-3 flex items-center justify-between border-t border-gray-200 pt-2.5"><span class="text-[11px] text-gray-500">Student reads this term: <strong>214</strong></span><a class="text-xs font-semibold text-[#135d2e] hover:underline" href="{{ route('staff.section', 'reading-lists') }}">Manage Lists</a></div>
                             </article>
 
                             <article class="rounded-lg border border-gray-200 bg-slate-50/70 p-4">

@@ -1285,6 +1285,236 @@
                         </section>
                     </aside>
                 </section>
+            @elseif ($section === 'reading-lists')
+                @php
+                    $bookLookup = collect($catalogBooks)->keyBy('id');
+                    $readingLists = [
+                        [
+                            'code' => 'IT401',
+                            'course' => 'Advanced Artificial Intelligence & Machine Learning',
+                            'curator' => 'Engr. Roberto M. Mendoza, PECE',
+                            'resources' => [
+                                ['type' => 'Textbook', 'tag' => 'Mandatory Core', 'weeks' => 'Week 1-6', 'title' => 'Artificial Intelligence: A Modern Approach (4th Global Edition)', 'author' => 'Stuart Russell & Peter Norvig', 'book' => $bookLookup->get('ai-modern-approach'), 'availability' => 'Available - Stacks 3A', 'clicks' => 64],
+                                ['type' => 'Research Paper', 'tag' => 'Research Paper', 'weeks' => 'Week 8', 'title' => 'Attention Is All You Need', 'author' => 'Vaswani, Shazeer, Parmar, et al.', 'book' => null, 'availability' => 'PDF Online Access Available', 'clicks' => 118],
+                                ['type' => 'Dataset', 'tag' => 'Lab Resource', 'weeks' => 'Week 10-14', 'title' => 'CLCST Machine Learning Lab Datasets', 'author' => 'Faculty curated repository', 'book' => null, 'availability' => 'Digital repository ready', 'clicks' => 37],
+                            ],
+                        ],
+                        [
+                            'code' => 'CS302',
+                            'course' => 'Data Structures and Algorithms',
+                            'curator' => 'Prof. Elena Reyes',
+                            'resources' => [
+                                ['type' => 'Textbook', 'tag' => 'Core Text', 'weeks' => 'Week 1-12', 'title' => 'Introduction to Algorithms (4th Edition)', 'author' => 'Cormen, Leiserson, Rivest, Stein', 'book' => $bookLookup->get('algorithms'), 'availability' => 'Stacks 2A - 1 copy ready', 'clicks' => 92],
+                                ['type' => 'Programming Guide', 'tag' => 'Supplemental', 'weeks' => 'Week 3-6', 'title' => 'Introduction to Python Programming', 'author' => 'John Zelle', 'book' => $bookLookup->get('python-programming'), 'availability' => '4 copies available', 'clicks' => 76],
+                            ],
+                        ],
+                        [
+                            'code' => 'CPE402',
+                            'course' => 'Digital Logic & Microcontroller Design',
+                            'curator' => 'Engr. Mark Ramos',
+                            'resources' => [
+                                ['type' => 'Reference', 'tag' => 'Room Use', 'weeks' => 'Lab Weeks', 'title' => 'Computer Networks: A Systems Approach (6th Edition)', 'author' => 'Larry L. Peterson & Bruce S. Davie', 'book' => $bookLookup->get('computer-networks'), 'availability' => 'Engineering reserve desk', 'clicks' => 41],
+                            ],
+                        ],
+                    ];
+                    $totalResources = collect($readingLists)->sum(fn ($list) => count($list['resources']));
+                    $catalogReady = collect($readingLists)->flatMap(fn ($list) => $list['resources'])->filter(fn ($resource) => !empty($resource['book']))->count();
+                @endphp
+
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-6 shadow-sm lg:p-8">
+                    <div class="flex flex-col justify-between gap-5 lg:flex-row lg:items-start">
+                        <div>
+                            <nav aria-label="Breadcrumb" class="mb-3 flex flex-wrap items-center gap-2 text-xs font-semibold text-[#64748B]">
+                                <span>Faculty Academic Services</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span class="font-bold text-[#065F2A]">Course Reading Lists</span>
+                            </nav>
+                            <span class="inline-flex rounded-full bg-[#DCFCE7] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#166534]">2nd Semester AY 2024-2025</span>
+                            <h1 class="mt-4 font-display text-3xl font-bold text-[#064E3B] md:text-4xl">Curated Course Reading Lists</h1>
+                            <p class="mt-3 max-w-3xl text-sm leading-6 text-[#475569]">Manage assigned textbooks, journal articles, datasets, OPAC-linked copies, and reserve shelf visibility for faculty courses.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <a class="inline-flex items-center gap-2 rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" href="#quick-resource-adder"><span class="material-symbols-outlined text-base">add</span>Create New Reading List</a>
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'academic') }}"><span class="material-symbols-outlined text-base">cloud_sync</span>Import from Moodle</a>
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">file_download</span>Export BibTeX / APA</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    @foreach ([
+                        ['label' => 'Published Reading Lists', 'value' => count($readingLists), 'unit' => 'Lists', 'meta' => 'Active semester courses', 'icon' => 'collections_bookmark'],
+                        ['label' => 'Total Curated Resources', 'value' => $totalResources, 'unit' => 'Titles', 'meta' => 'Textbooks, papers, datasets', 'icon' => 'library_books'],
+                        ['label' => 'Student Engagement', 'value' => '1,840', 'unit' => 'Views', 'meta' => '+24% vs prelim cycle', 'icon' => 'touch_app'],
+                        ['label' => 'Library Stack Availability', 'value' => '94%', 'unit' => 'Ready', 'meta' => $catalogReady.' OPAC-linked resources', 'icon' => 'verified'],
+                    ] as $metric)
+                        <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">{{ $metric['label'] }}</p>
+                                    <h2 class="mt-2 font-display text-3xl font-bold text-[#065F2A]">{{ $metric['value'] }} <span class="text-sm font-medium text-[#64748B]">{{ $metric['unit'] }}</span></h2>
+                                    <p class="mt-1 text-xs text-[#64748B]">{{ $metric['meta'] }}</p>
+                                </div>
+                                <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#EEF2FF] text-[#002E97]"><span class="material-symbols-outlined">{{ $metric['icon'] }}</span></span>
+                            </div>
+                        </article>
+                    @endforeach
+                </section>
+
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-4 shadow-sm">
+                    <form class="flex flex-col gap-3 lg:flex-row lg:items-center" method="GET" action="{{ route('books.catalog') }}">
+                        <div class="relative flex-1">
+                            <span class="material-symbols-outlined absolute left-3 top-2.5 text-[#64748B]">search</span>
+                            <input class="w-full rounded-lg border-[#CBD5E1] py-2 pl-10 pr-3 text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" name="q" placeholder="Filter by course title, code, author, call number, ISBN, or DOI">
+                        </div>
+                        <select class="rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" name="category">
+                            <option value="all">All Faculty Courses</option>
+                            <option value="Computer Studies & IT">Computer Engineering & IT</option>
+                            <option value="Engineering">Engineering</option>
+                        </select>
+                        <div class="inline-flex rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] p-1 text-xs font-bold">
+                            <a class="rounded-md bg-white px-3 py-1.5 text-[#065F2A] shadow-sm" href="{{ route('staff.section', 'reading-lists') }}">Current</a>
+                            <a class="px-3 py-1.5 text-[#64748B] hover:text-[#0F172A]" href="{{ route('staff.section', 'history') }}">Archived</a>
+                        </div>
+                        <button class="rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" type="submit">Search OPAC</button>
+                    </form>
+                </section>
+
+                <section class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+                    <div class="space-y-6 xl:col-span-8">
+                        @foreach ($readingLists as $list)
+                            <article class="overflow-hidden rounded-2xl border border-[#CBD5E1] bg-white shadow-sm hover:border-[#065F2A]">
+                                <div class="flex flex-col justify-between gap-4 border-b border-[#CBD5E1] bg-[#F8FAFC] p-5 md:flex-row md:items-center">
+                                    <div class="flex items-start gap-3">
+                                        <div class="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-lg bg-[#065F2A] font-bold text-white">
+                                            <span class="text-[9px] uppercase">Course</span>
+                                            <span class="text-sm leading-none">{{ $list['code'] }}</span>
+                                        </div>
+                                        <div>
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                <h2 class="font-display text-xl font-bold text-[#0F172A]">{{ $list['course'] }}</h2>
+                                                <span class="rounded-full bg-[#DCFCE7] px-2 py-0.5 text-[10px] font-bold uppercase text-[#166534]">Active Syllabus</span>
+                                            </div>
+                                            <p class="mt-1 text-xs text-[#64748B]">Curator: <strong class="text-[#0F172A]">{{ $list['curator'] }}</strong> - {{ count($list['resources']) }} curated resources</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <a class="inline-flex items-center gap-1 rounded-lg border border-[#CBD5E1] px-3 py-1.5 text-xs font-bold text-[#065F2A] hover:bg-[#F0FDF4]" href="#quick-resource-adder"><span class="material-symbols-outlined text-base">add</span>Add Resource</a>
+                                        <a class="rounded-lg border border-[#CBD5E1] p-1.5 text-[#64748B] hover:bg-[#E2E8F0]" title="Reorder priority" href="{{ route('staff.section', 'reading-lists') }}"><span class="material-symbols-outlined">swap_vert</span></a>
+                                        <a class="rounded-lg border border-[#CBD5E1] p-1.5 text-[#64748B] hover:bg-[#E2E8F0]" title="Sync settings" href="{{ route('staff.section', 'academic') }}"><span class="material-symbols-outlined">sync</span></a>
+                                    </div>
+                                </div>
+                                <div class="divide-y divide-[#E2E8F0] p-5">
+                                    @foreach ($list['resources'] as $resource)
+                                        <div class="flex flex-col justify-between gap-4 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center">
+                                            <div class="flex items-start gap-4">
+                                                @if (!empty($resource['book']['cover_url']))
+                                                    <img class="h-24 w-16 shrink-0 rounded border border-[#CBD5E1] object-cover shadow-sm" src="{{ $resource['book']['cover_url'] }}" alt="{{ $resource['book']['title'] }} cover">
+                                                @else
+                                                    <div class="flex h-24 w-16 shrink-0 flex-col items-center justify-center rounded border border-[#CBD5E1] bg-[#EEF2FF] p-1 text-center">
+                                                        <span class="material-symbols-outlined text-[#002E97]">{{ $resource['type'] === 'Dataset' ? 'dataset' : 'description' }}</span>
+                                                        <span class="mt-1 text-[9px] font-bold uppercase text-[#64748B]">{{ $resource['type'] }}</span>
+                                                    </div>
+                                                @endif
+                                                <div>
+                                                    <div class="flex flex-wrap items-center gap-2">
+                                                        <span class="rounded bg-[#FDE68A] px-2 py-0.5 text-[10px] font-bold uppercase text-[#5A4300]">{{ $resource['tag'] }}</span>
+                                                        <span class="text-xs text-[#64748B]">{{ $resource['weeks'] }}</span>
+                                                    </div>
+                                                    <h3 class="mt-1 font-display text-base font-bold text-[#0F172A]">{{ $resource['title'] }}</h3>
+                                                    <p class="mt-1 text-xs text-[#64748B]">{{ $resource['author'] }} @if (!empty($resource['book']['isbn'])) - ISBN {{ $resource['book']['isbn'] }} @endif</p>
+                                                    <div class="mt-2 flex flex-wrap items-center gap-3 text-xs">
+                                                        <span class="inline-flex items-center gap-1 rounded-full border border-[#BBF7D0] bg-[#DCFCE7] px-2 py-0.5 font-bold text-[#166534]"><span class="material-symbols-outlined text-sm">inventory_2</span>{{ $resource['availability'] }}</span>
+                                                        @if (!empty($resource['book']['call']))
+                                                            <span class="text-[#64748B]">Call: <strong class="text-[#0F172A]">{{ $resource['book']['call'] }}</strong></span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex shrink-0 items-center gap-2 sm:flex-col sm:items-end">
+                                                @if (!empty($resource['book']['id']))
+                                                    <a class="rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-1.5 text-xs font-bold text-[#065F2A] hover:bg-[#E2E8F0]" href="{{ route('books.catalog', ['selected' => $resource['book']['id']]) }}">OPAC Details</a>
+                                                @else
+                                                    <a class="rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-1.5 text-xs font-bold text-[#065F2A] hover:bg-[#E2E8F0]" href="{{ route('staff.section', 'support') }}">Access Link</a>
+                                                @endif
+                                                <span class="text-[10px] font-semibold text-[#64748B]">{{ $resource['clicks'] }} student clicks</span>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </article>
+                        @endforeach
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm" id="quick-resource-adder">
+                            <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">playlist_add</span><h2 class="font-display text-lg font-bold">Quick Resource Adder</h2></div>
+                            <form class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2" method="GET" action="{{ route('books.catalog') }}">
+                                <input class="rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" name="q" placeholder="Title, ISBN, DOI, or URL">
+                                <select class="rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" name="field">
+                                    <option value="all">Search all catalog fields</option>
+                                    <option value="title">Title only</option>
+                                    <option value="isbn">ISBN only</option>
+                                    <option value="author">Author only</option>
+                                </select>
+                                <input class="rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" placeholder="Course code, e.g. IT401">
+                                <select class="rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]">
+                                    <option>Mandatory core</option>
+                                    <option>Supplemental reading</option>
+                                    <option>Lab resource</option>
+                                    <option>Research paper</option>
+                                </select>
+                                <div class="flex justify-end gap-3 md:col-span-2">
+                                    <a class="rounded-lg border border-[#CBD5E1] px-4 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'reading-lists') }}">Clear</a>
+                                    <button class="inline-flex items-center gap-2 rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" type="submit"><span class="material-symbols-outlined text-base">add_link</span>Find and Add Resource</button>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+
+                    <aside class="space-y-6 xl:col-span-4">
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm" id="digital-pass">
+                            <div class="flex items-center justify-between"><h2 class="font-display text-lg font-bold text-[#064E3B]">Faculty Digital Pass</h2><span class="rounded bg-[#DCFCE7] px-2 py-0.5 text-[10px] font-bold text-[#166534]">READY</span></div>
+                            <div class="mt-4 rounded-2xl bg-[#064E3B] p-5 text-white">
+                                <div class="flex items-center gap-3">
+                                    @include('partials.celtech-logo', ['class' => 'flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white p-1'])
+                                    <div><p class="text-xs font-bold uppercase text-[#BBF7D0]">Faculty Academic Portal</p><p class="font-display text-lg font-bold">Engr. Roberto Mendoza</p><p class="text-xs text-[#D1FAE5]">Dept. of Computer Engineering</p></div>
+                                </div>
+                                <div class="mt-5 rounded-xl bg-white p-4 text-center text-[#0F172A]">
+                                    <div class="mx-auto h-10 w-full max-w-xs bg-[repeating-linear-gradient(90deg,#0F172A_0_2px,transparent_2px_5px,#0F172A_5px_7px,transparent_7px_10px)]"></div>
+                                    <p class="mt-2 font-mono text-xs font-bold tracking-[0.25em]">FAC-READ-2024</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <h2 class="font-display text-lg font-bold text-[#064E3B]">Pedagogical Guidelines</h2>
+                            <div class="mt-4 space-y-3 text-sm leading-6 text-[#475569]">
+                                <p><strong class="text-[#0F172A]">Core readings:</strong> mark items required for weekly class discussion and assessment coverage.</p>
+                                <p><strong class="text-[#0F172A]">Reserve copies:</strong> link OPAC records before students access the syllabus list.</p>
+                                <p><strong class="text-[#0F172A]">Digital access:</strong> include DOI, database, or institutional repository notes for papers and datasets.</p>
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <h2 class="font-display text-lg font-bold text-[#064E3B]">Citation & Export Tools</h2>
+                            <div class="mt-4 grid grid-cols-2 gap-2">
+                                @foreach (['APA 7', 'BibTeX', 'RIS', 'CSV'] as $tool)
+                                    <a class="flex items-center justify-center gap-1.5 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] p-2 text-xs font-bold text-[#334155] hover:bg-[#E2E8F0]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-sm text-[#065F2A]">download</span>{{ $tool }}</a>
+                                @endforeach
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-[#F0FDF4] p-5 shadow-sm">
+                            <div class="flex items-start gap-3">
+                                <span class="flex h-10 w-10 items-center justify-center rounded-full bg-[#DCFCE7] text-[#065F2A]"><span class="material-symbols-outlined">support_agent</span></span>
+                                <div>
+                                    <h2 class="font-display text-base font-bold text-[#064E3B]">Academic Librarian</h2>
+                                    <p class="mt-1 text-sm text-[#475569]">Ms. Maria Santos can help validate bibliographic records and reserve shelf availability.</p>
+                                    <a class="mt-3 inline-flex text-xs font-bold text-[#065F2A] hover:underline" href="{{ route('staff.section', 'support') }}">Schedule Meeting</a>
+                                </div>
+                            </div>
+                        </section>
+                    </aside>
+                </section>
             @elseif ($section === 'academic')
                 @php
                     $reserveBook = collect($catalogBooks)->firstWhere('id', 'clean-code') ?? ($catalogBooks[0] ?? null);

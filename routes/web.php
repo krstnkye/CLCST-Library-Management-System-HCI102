@@ -22,5 +22,5 @@ Route::get('/student/{section}', [HomeController::class, 'studentSection'])
     ->whereIn('section', ['borrow-return', 'reservations', 'history', 'fines', 'notifications', 'account', 'support', 'scan', 'circulation-policy', 'opac-guide'])
     ->name('student.section');
 Route::get('/staff/{section}', [HomeController::class, 'staffSection'])
-    ->whereIn('section', ['circulation', 'patrons', 'catalog', 'reservations', 'reports', 'history', 'academic', 'settings', 'support'])
+    ->whereIn('section', ['circulation', 'patrons', 'catalog', 'reservations', 'reports', 'history', 'academic', 'reading-lists', 'settings', 'support'])
     ->name('staff.section');

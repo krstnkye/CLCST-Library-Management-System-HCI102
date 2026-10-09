@@ -8,6 +8,7 @@
         ['key' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'dashboard', 'href' => $homeRoute],
         ['key' => 'circulation', 'label' => 'My Borrowed Books', 'icon' => 'swap_horiz', 'href' => route('staff.section', 'circulation'), 'badge' => $stats['activeLoans'] ?? null, 'badgeTone' => 'warning'],
         ['key' => 'patrons', 'label' => 'Patron Records', 'icon' => 'groups', 'href' => route('staff.section', 'patrons')],
+        ['key' => 'profile', 'label' => 'My Profile', 'icon' => 'person', 'href' => route('staff.section', 'profile')],
         ['key' => 'catalog', 'label' => 'Recommend a Book', 'icon' => 'recommend', 'href' => route('staff.section', 'catalog')],
         ['key' => 'reservations', 'label' => 'My Reservations', 'icon' => 'book_online', 'href' => route('staff.section', 'reservations'), 'badge' => $pendingReservations],
         ['key' => 'reports', 'label' => 'Renewal Requests', 'icon' => 'autorenew', 'href' => route('staff.section', 'reports'), 'badge' => 1],

@@ -191,7 +191,7 @@
                         <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[18px]">notifications</span><span>Notifications</span></span>
                         <span class="rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-700">3</span>
                     </a>
-                    <a class="flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'patrons') }}"><span class="material-symbols-outlined text-[18px]">person</span><span>My Profile</span></a>
+                    <a class="flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'profile') }}"><span class="material-symbols-outlined text-[18px]">person</span><span>My Profile</span></a>
                     <button class="flex items-center gap-3 rounded-lg px-3 py-2 text-left font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" onclick="document.getElementById('feedbackModal').classList.remove('hidden')" type="button"><span class="material-symbols-outlined text-[18px]">rate_review</span><span>Library Feedback</span></button>
                 </nav>
             </div>

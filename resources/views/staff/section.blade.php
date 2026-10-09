@@ -314,6 +314,173 @@
                         </section>
                     </aside>
                 </section>
+            @elseif ($section === 'profile')
+                @php
+                    $profileStats = [
+                        ['label' => 'Active Loans', 'value' => count($activeLoans), 'meta' => '15-volume faculty quota', 'icon' => 'menu_book'],
+                        ['label' => 'Reserve Requests', 'value' => count($facultyRequests), 'meta' => 'Academic service queue', 'icon' => 'school'],
+                        ['label' => 'Clearance Status', 'value' => '100%', 'meta' => 'No unresolved account flags', 'icon' => 'verified'],
+                        ['label' => 'Access Zones', 'value' => 4, 'meta' => 'Faculty lounge, stacks, media, archive', 'icon' => 'key'],
+                    ];
+                @endphp
+
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-6 shadow-sm lg:p-8">
+                    <div class="flex flex-col justify-between gap-5 lg:flex-row lg:items-start">
+                        <div>
+                            <nav aria-label="Breadcrumb" class="mb-3 flex flex-wrap items-center gap-2 text-xs font-semibold text-[#64748B]">
+                                <span>Faculty Services</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span class="font-bold text-[#065F2A]">My Profile</span>
+                            </nav>
+                            <span class="inline-flex rounded-full bg-[#DCFCE7] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#166534]">Verified Academic Patron</span>
+                            <h1 class="mt-4 font-display text-3xl font-bold text-[#064E3B] md:text-4xl">Faculty Profile & Academic Patron Credentials</h1>
+                            <p class="mt-3 max-w-3xl text-sm leading-6 text-[#475569]">Manage faculty identity details, library privilege status, RFID card sync, clearance records, notification settings, and secure institutional access.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'notifications') }}"><span class="material-symbols-outlined text-base">notifications</span>Alerts</a>
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">download</span>Download Profile</a>
+                            <a class="inline-flex items-center gap-2 rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" href="#profile-editor"><span class="material-symbols-outlined text-base">edit</span>Edit Profile Info</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    @foreach ($profileStats as $stat)
+                        <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">{{ $stat['label'] }}</p>
+                                    <h2 class="mt-2 font-display text-3xl font-bold text-[#065F2A]">{{ $stat['value'] }}</h2>
+                                    <p class="mt-1 text-xs text-[#64748B]">{{ $stat['meta'] }}</p>
+                                </div>
+                                <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#166534]"><span class="material-symbols-outlined">{{ $stat['icon'] }}</span></span>
+                            </div>
+                        </article>
+                    @endforeach
+                </section>
+
+                <section class="flex gap-2 overflow-x-auto border-b border-[#CBD5E1]">
+                    @foreach ([['person', 'Personal & Academic Info'], ['badge', 'Digital Faculty Pass'], ['verified_user', 'Clearance'], ['notifications', 'Alerts'], ['lock', 'Security']] as $tab)
+                        <a class="{{ $loop->first ? 'border-[#065F2A] bg-white text-[#065F2A]' : 'border-transparent text-[#64748B] hover:bg-[#F8FAFC]' }} inline-flex shrink-0 items-center gap-1.5 rounded-t-lg border-t-2 px-4 py-2 text-xs font-bold" href="{{ $loop->first ? '#profile-editor' : route('staff.section', 'profile') }}">
+                            <span class="material-symbols-outlined text-base">{{ $tab[0] }}</span>{{ $tab[1] }}
+                        </a>
+                    @endforeach
+                </section>
+
+                <section class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+                    <div class="space-y-6 xl:col-span-8">
+                        <section class="overflow-hidden rounded-2xl border border-[#CBD5E1] bg-white shadow-sm">
+                            <div class="bg-[#064E3B] p-6 text-white">
+                                <div class="flex flex-col gap-5 md:flex-row md:items-center">
+                                    <div class="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl border-2 border-white/70 bg-white p-2 shadow-md">
+                                        @include('partials.celtech-logo', ['class' => 'h-full w-full object-contain'])
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-xs font-bold uppercase tracking-wider text-[#FACC15]">CLCST Faculty Digital Library Pass</p>
+                                        <h2 class="mt-1 font-display text-2xl font-bold">Engr. Roberto M. Mendoza, PECE</h2>
+                                        <p class="mt-1 text-sm text-[#D1FAE5]">Department Chair, CICT & Computer Engineering</p>
+                                        <div class="mt-3 flex flex-wrap gap-2 text-[10px] font-bold uppercase">
+                                            <span class="rounded-full bg-white/15 px-2.5 py-1">Faculty ID: FAC-2018-0412</span>
+                                            <span class="rounded-full bg-white/15 px-2.5 py-1">Active Patron</span>
+                                            <span class="rounded-full bg-[#FACC15] px-2.5 py-1 text-[#5A4300]">Tier 1 Privilege</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-6 rounded-xl bg-white p-4 text-center text-[#0F172A]">
+                                    <div class="mx-auto h-12 w-full max-w-md bg-[repeating-linear-gradient(90deg,#0F172A_0_2px,transparent_2px_5px,#0F172A_5px_9px,transparent_9px_11px,#0F172A_11px_14px,transparent_14px_18px)]"></div>
+                                    <p class="mt-2 font-mono text-xs font-bold tracking-[0.25em]">FAC-2018-0412-LIB</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm" id="profile-editor">
+                            <div class="flex items-center justify-between gap-3 border-b border-[#CBD5E1] pb-4">
+                                <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">id_card</span><h2 class="font-display text-xl font-bold text-[#064E3B]">Academic & Institutional Record</h2></div>
+                                <a class="inline-flex items-center gap-1 text-xs font-bold text-[#065F2A] hover:underline" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">edit</span>Request Update</a>
+                            </div>
+                            <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+                                @foreach ([
+                                    ['Faculty Rank & Assignment', 'Professional Electronics Engineer - Department Chair'],
+                                    ['Institutional Email', 'rmendoza@clcst.edu.ph'],
+                                    ['On-Campus Faculty Office', 'Room 302, CICT Faculty Wing, Tech Bldg.'],
+                                    ['Mobile / Desk Contact', '+63 917 555 0412 - local 302'],
+                                    ['Academic Department', 'College of Computer Studies and Engineering'],
+                                    ['Research Areas', 'Embedded systems, IoT engineering, engineering education'],
+                                ] as $field)
+                                    <div class="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4">
+                                        <label class="block text-[10px] font-bold uppercase tracking-wider text-[#64748B]">{{ $field[0] }}</label>
+                                        <p class="mt-1 text-sm font-semibold text-[#0F172A]">{{ $field[1] }}</p>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </section>
+
+                        <section class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                            <article class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                                <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">fact_check</span><h3 class="font-display text-lg font-bold text-[#064E3B]">Patron Privilege & Loan Quota</h3></div>
+                                <p class="mt-3 text-sm leading-6 text-[#64748B]">Faculty borrowing privileges are active for instructional and research titles.</p>
+                                <div class="mt-4 space-y-2 text-sm">
+                                    <div class="flex justify-between border-b border-[#E2E8F0] py-2"><span>Loan quota</span><strong>2 / 15 volumes used</strong></div>
+                                    <div class="flex justify-between border-b border-[#E2E8F0] py-2"><span>Loan period</span><strong>60 days</strong></div>
+                                    <div class="flex justify-between py-2"><span>Reserve desk access</span><strong class="text-[#065F2A]">Enabled</strong></div>
+                                </div>
+                            </article>
+                            <article class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                                <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">verified</span><h3 class="font-display text-lg font-bold text-[#064E3B]">Academic Library Clearance</h3></div>
+                                <p class="mt-3 text-sm leading-6 text-[#64748B]">Official verification for Registrar, faculty merit promotion, and institutional quality assurance audit.</p>
+                                <div class="mt-4 rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] p-4">
+                                    <p class="font-bold text-[#166534]">Certified Cleared</p>
+                                    <p class="mt-1 text-xs text-[#166534]">No unreturned materials, fines, or unresolved circulation records.</p>
+                                </div>
+                            </article>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex flex-col justify-between gap-3 border-b border-[#CBD5E1] pb-4 sm:flex-row sm:items-center">
+                                <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">contactless</span><h3 class="font-display text-lg font-bold text-[#064E3B]">Physical RFID Turnstile Card Sync</h3></div>
+                                <span class="rounded-full bg-[#DCFCE7] px-2.5 py-1 text-[10px] font-bold uppercase text-[#166534]">Synchronized</span>
+                            </div>
+                            <div class="mt-4 grid gap-4 md:grid-cols-3">
+                                <div class="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4"><p class="text-[10px] font-bold uppercase text-[#64748B]">Card Serial</p><p class="mt-1 font-mono text-sm font-bold">RFID-FAC-0412</p></div>
+                                <div class="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4"><p class="text-[10px] font-bold uppercase text-[#64748B]">Last Sync</p><p class="mt-1 text-sm font-bold">Oct 09, 2026 - 9:44 AM</p></div>
+                                <div class="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4"><p class="text-[10px] font-bold uppercase text-[#64748B]">Access Levels</p><p class="mt-1 text-sm font-bold">Faculty Lounge, Stacks 1-4, Media Room, Archival Vault</p></div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <aside class="space-y-6 xl:col-span-4">
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">notifications_active</span><h3 class="font-display text-lg font-bold text-[#064E3B]">Circulation & Collection Alerts</h3></div>
+                            <div class="mt-4 space-y-3">
+                                @foreach ([['Due date watch', 'Clean Code due in 2 days'], ['Reserve queue', '3 active academic requests'], ['Collection updates', '2 recommended titles in review']] as $alert)
+                                    <a class="block rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] p-3 hover:bg-[#E2E8F0]" href="{{ route('staff.section', 'notifications') }}">
+                                        <p class="text-sm font-bold text-[#0F172A]">{{ $alert[0] }}</p>
+                                        <p class="mt-1 text-xs text-[#64748B]">{{ $alert[1] }}</p>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">lock</span><h3 class="font-display text-lg font-bold text-[#064E3B]">Security, SSO & Access Credentials</h3></div>
+                            <div class="mt-4 space-y-3 text-sm">
+                                <div class="flex justify-between border-b border-[#E2E8F0] py-2"><span>SSO domain</span><strong>clcst.edu.ph</strong></div>
+                                <div class="flex justify-between border-b border-[#E2E8F0] py-2"><span>Two-factor status</span><strong class="text-[#065F2A]">Enabled</strong></div>
+                                <div class="flex justify-between py-2"><span>Last login</span><strong>Today, 9:31 AM</strong></div>
+                            </div>
+                            <div class="mt-4 flex gap-2">
+                                <a class="flex-1 rounded-lg border border-[#CBD5E1] px-3 py-2 text-center text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'support') }}">Reset PIN</a>
+                                <a class="flex-1 rounded-lg bg-[#065F2A] px-3 py-2 text-center text-xs font-bold text-white hover:bg-[#064E3B]" href="{{ route('staff.section', 'settings') }}">Manage SSO</a>
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-[#F0FDF4] p-5 shadow-sm">
+                            <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#065F2A]">support_agent</span><h3 class="font-display text-lg font-bold text-[#064E3B]">Profile Support</h3></div>
+                            <p class="mt-3 text-sm leading-6 text-[#475569]">For rank, department, contact, or clearance corrections, send a verified request to the library desk.</p>
+                            <a class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#065F2A] px-3 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">chat</span>Request Profile Update</a>
+                        </section>
+                    </aside>
+                </section>
             @elseif ($section === 'patrons')
                 <section class="rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm">
                     <div class="overflow-x-auto">

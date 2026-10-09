@@ -71,18 +71,248 @@
             </section>
 
             @if ($section === 'circulation')
-                <section class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-                    @foreach ($circulationQueue as $row)
-                        <article class="rounded-xl border border-[#E2E8F0] bg-white p-5 shadow-sm">
-                            <span class="rounded-full bg-[#EEF2FF] px-2.5 py-1 text-[10px] font-bold text-[#334155]">{{ $row['ticket'] }}</span>
-                            <h2 class="mt-3 font-display text-lg font-bold">{{ $row['type'] }}</h2>
-                            <p class="mt-1 text-sm text-[#475569]">{{ $row['patron'] }} - {{ $row['item'] }}</p>
-                            <div class="mt-4 flex items-center justify-between">
-                                <span class="text-xs font-bold text-[#065F2A]">{{ $row['status'] }}</span>
-                                <button class="rounded-lg bg-[#065F2A] px-3 py-2 text-xs font-bold text-white" type="button">Process</button>
+                @php
+                    $bookLookup = collect($catalogBooks)->keyBy('id');
+                    $historyLookup = collect($borrowingHistory)->whereNotNull('loan_id')->keyBy('loan_id');
+                    $loanQuota = $portalRole === 'faculty' ? 15 : 5;
+                    $activeLoanCount = count($activeLoans);
+                    $quotaPercent = $loanQuota > 0 ? min(($activeLoanCount / $loanQuota) * 100, 100) : 0;
+                    $dueSoonCount = collect($activeLoans)->filter(fn ($loan) => str_contains($loan['due'], 'Oct'))->count();
+                    $remainingSlots = max($loanQuota - $activeLoanCount, 0);
+                @endphp
+
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                    <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
+                        <div>
+                            <nav aria-label="Breadcrumb" class="mb-2 flex items-center gap-2 text-xs font-medium text-[#64748B]">
+                                <span>Academic Portal</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span>Circulation</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span class="font-bold text-[#065F2A]">My Borrowed Books</span>
+                            </nav>
+                            <span class="inline-flex rounded-full bg-[#DCFCE7] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#166534]">Faculty / Staff Borrowing Desk</span>
+                            <h1 class="mt-3 font-display text-3xl font-bold text-[#064E3B]">My Borrowed Books</h1>
+                            <p class="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">Track active book loans, due dates, renewal limits, return options, and citation actions from one library account workspace.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3.5 py-2 text-xs font-bold text-[#334155] shadow-sm hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'reports') }}">
+                                <span class="material-symbols-outlined text-base">download</span>
+                                Export Loan Ledger
+                            </a>
+                            <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3.5 py-2 text-xs font-bold text-[#334155] shadow-sm hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'support') }}">
+                                <span class="material-symbols-outlined text-base">meeting_room</span>
+                                Return Drop Box Info
+                            </a>
+                            <a class="inline-flex items-center gap-2 rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#064E3B]" href="{{ route('staff.section', 'reports') }}">
+                                <span class="material-symbols-outlined text-base">autorenew</span>
+                                Renew All Eligible
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Active Borrowed Books</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#065F2A]">{{ $activeLoanCount }} <span class="text-sm font-medium text-[#475569]">titles</span></h2>
                             </div>
-                        </article>
-                    @endforeach
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#065F2A]"><span class="material-symbols-outlined">library_books</span></span>
+                        </div>
+                        <div class="mt-4">
+                            <div class="mb-1.5 flex items-center justify-between text-xs text-[#64748B]">
+                                <span>Quota Used: {{ $activeLoanCount }} of {{ $loanQuota }}</span>
+                                <span class="font-bold text-[#065F2A]">{{ round($quotaPercent) }}%</span>
+                            </div>
+                            <div class="h-2 overflow-hidden rounded-full bg-[#E2E8F0]"><div class="h-full rounded-full bg-[#065F2A]" style="width: {{ $quotaPercent }}%"></div></div>
+                            <p class="mt-1.5 text-[11px] font-medium text-[#64748B]">{{ $remainingSlots }} loan {{ Str::plural('slot', $remainingSlots) }} remaining</p>
+                        </div>
+                    </article>
+
+                    <article class="rounded-xl border-2 border-[#FACC15] bg-[#FFFBEB] p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#92400E]">Due Date Watch</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#92400E]">{{ $dueSoonCount }} <span class="text-sm font-medium">soon</span></h2>
+                            </div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#FACC15] text-[#6D5200]"><span class="material-symbols-outlined">notifications_active</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#92400E]">Books near their deadline are highlighted below so they can be renewed or returned on time.</p>
+                    </article>
+
+                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Renewal Requests</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#065F2A]">1 <span class="text-sm font-medium text-[#475569]">pending</span></h2>
+                            </div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#EEF2FF] text-[#002E97]"><span class="material-symbols-outlined">sync</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">Renewals are allowed when no other patron has a hold on the same copy.</p>
+                    </article>
+
+                    <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Account Standing</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#065F2A]">Clear</h2>
+                            </div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#065F2A]"><span class="material-symbols-outlined">verified_user</span></span>
+                        </div>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">No blocking fines or account holds are attached to this faculty/staff account.</p>
+                    </article>
+                </section>
+
+                <section class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+                    <div class="space-y-4 xl:col-span-8">
+                        <div class="rounded-xl border border-[#CBD5E1] bg-white p-4 shadow-sm">
+                            <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                                <div>
+                                    <h2 class="font-display text-xl font-bold text-[#0F172A]">Active Loan Cards</h2>
+                                    <p class="text-xs text-[#64748B]">Displaying books currently checked out to this account.</p>
+                                </div>
+                                <form class="flex w-full max-w-md items-center gap-2 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-2" method="GET" action="{{ route('books.catalog') }}">
+                                    <span class="material-symbols-outlined text-base text-[#64748B]">search</span>
+                                    <input class="w-full border-0 bg-transparent p-0 text-sm text-[#0F172A] placeholder:text-[#94A3B8] focus:ring-0" name="q" placeholder="Search catalog for another title...">
+                                    <button class="rounded bg-[#065F2A] px-3 py-1.5 text-xs font-bold text-white" type="submit">Search</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        @forelse ($activeLoans as $loan)
+                            @php
+                                $book = $bookLookup->get($loan['book_id']);
+                                $history = $historyLookup->get($loan['id']);
+                                $isDueSoon = str_contains($loan['due'], 'Oct');
+                                $renewedLoans = session('renewed_loans', []);
+                                $isRenewed = in_array($loan['id'], $renewedLoans, true);
+                            @endphp
+                            <article class="relative overflow-hidden rounded-xl border {{ $isDueSoon ? 'border-[#FACC15] bg-[#FFFBEB]' : 'border-[#CBD5E1] bg-white' }} p-5 shadow-sm transition-shadow hover:shadow-md">
+                                <div class="absolute right-0 top-0">
+                                    <span class="inline-flex items-center gap-1.5 rounded-bl-lg px-3 py-1 text-[10px] font-bold uppercase {{ $isDueSoon ? 'bg-[#FACC15] text-[#6D5200]' : 'bg-[#E2E7FF] text-[#0F172A]' }}">
+                                        <span class="material-symbols-outlined text-sm">{{ $isDueSoon ? 'warning' : 'calendar_today' }}</span>
+                                        Due {{ $loan['due'] }}
+                                    </span>
+                                </div>
+                                <div class="mt-3 flex flex-col gap-5 sm:flex-row">
+                                    <div class="h-32 w-24 flex-shrink-0 overflow-hidden rounded-lg border border-[#CBD5E1] bg-[#E2E7FF] shadow-sm">
+                                        @if ($book)
+                                            <img class="h-full w-full object-cover" src="{{ $book['cover_url'] }}" alt="{{ $loan['title'] }} cover">
+                                        @else
+                                            <div class="flex h-full w-full flex-col justify-between p-3 text-center text-[#065F2A]">
+                                                <span class="material-symbols-outlined text-3xl">menu_book</span>
+                                                <span class="text-[10px] font-bold">{{ $loan['call'] }}</span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <h3 class="font-display text-lg font-bold text-[#0F172A]">{{ $loan['title'] }}</h3>
+                                        <p class="mt-1 text-sm text-[#64748B]">
+                                            By <span class="font-medium text-[#334155]">{{ $book['author'] ?? ($history['author'] ?? 'Catalog author record') }}</span>
+                                            @if ($book)
+                                                - {{ $book['publisher'] }} ({{ $book['year'] }})
+                                            @endif
+                                        </p>
+                                        <div class="my-4 grid grid-cols-1 gap-3 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] p-3 text-xs sm:grid-cols-2 lg:grid-cols-4">
+                                            <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Accession Barcode</span><span class="font-mono font-bold text-[#0F172A]">{{ $loan['barcode'] }}</span></div>
+                                            <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Call Number</span><span class="font-medium text-[#0F172A]">{{ $loan['call'] }}</span></div>
+                                            <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Borrowed On</span><span class="text-[#0F172A]">{{ $history['borrowed'] ?? 'Recorded by Desk 01' }}</span></div>
+                                            <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Renewal Limit</span><span class="font-bold text-[#065F2A]">{{ $isRenewed ? '1 of 2 Used' : '0 of 2 Used' }}</span></div>
+                                        </div>
+                                        <div class="flex flex-wrap items-center justify-between gap-3">
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                <form method="POST" action="{{ route('loans.renew', $loan['id']) }}">
+                                                    @csrf
+                                                    <button class="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-bold shadow-sm {{ $isRenewed ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#065F2A] text-white hover:bg-[#064E3B]' }}" type="submit" @disabled($isRenewed)>
+                                                        <span class="material-symbols-outlined text-base">{{ $isRenewed ? 'check_circle' : 'autorenew' }}</span>
+                                                        {{ $isRenewed ? 'Renewed' : 'Renew Book' }}
+                                                    </button>
+                                                </form>
+                                                <a class="inline-flex items-center gap-1.5 rounded-lg border border-[#CBD5E1] px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="https://www.google.com/search?q={{ urlencode($loan['title'].' citation') }}" target="_blank" rel="noopener">
+                                                    <span class="material-symbols-outlined text-base">format_quote</span>
+                                                    Cite Book
+                                                </a>
+                                                <a class="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-xs font-bold text-[#065F2A] hover:underline" href="{{ route('books.catalog', ['selected' => $loan['book_id']]) }}">
+                                                    View Book Details
+                                                    <span class="material-symbols-outlined text-base">arrow_forward</span>
+                                                </a>
+                                            </div>
+                                            <span class="text-[11px] font-semibold text-[#64748B]">{{ $book['location'] ?? 'Main Library Stacks' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        @empty
+                            <article class="rounded-xl border border-[#CBD5E1] bg-white p-8 text-center shadow-sm">
+                                <span class="material-symbols-outlined text-4xl text-[#94A3B8]">library_books</span>
+                                <h2 class="mt-3 font-display text-xl font-bold">No active borrowed books</h2>
+                                <p class="mt-2 text-sm text-[#64748B]">Search the catalog to reserve or borrow a title.</p>
+                            </article>
+                        @endforelse
+                    </div>
+
+                    <aside class="space-y-4 xl:col-span-4">
+                        <section class="relative overflow-hidden rounded-2xl border border-[#064E3B] bg-gradient-to-br from-[#135D2E] to-[#00441D] p-6 text-white shadow-md">
+                            @include('partials.celtech-logo', ['class' => 'absolute -bottom-8 -right-8 h-40 w-40 rounded-full bg-white/10 object-contain p-2 opacity-20'])
+                            <div class="relative">
+                                <div class="flex items-center justify-between border-b border-white/20 pb-4">
+                                    <div class="flex items-center gap-2.5">
+                                        @include('partials.celtech-logo', ['class' => 'h-8 w-8 rounded-full bg-white object-contain p-0.5'])
+                                        <div>
+                                            <h3 class="text-xs font-bold uppercase tracking-wide">CLCST Digital Pass</h3>
+                                            <p class="text-[10px] text-[#AAF4B5]">Library Turnstile Verified</p>
+                                        </div>
+                                    </div>
+                                    <span class="inline-flex items-center gap-1 rounded-full border border-[#AAF4B5]/40 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-[#AAF4B5]"><span class="h-1.5 w-1.5 rounded-full bg-[#8FD79B]"></span>Active</span>
+                                </div>
+                                <div class="mt-4">
+                                    <span class="block text-[10px] font-bold uppercase tracking-wider text-[#AAF4B5]">Authorized Patron</span>
+                                    <p class="mt-1 font-display text-lg font-bold">Engr. Roberto M. Mendoza</p>
+                                    <p class="text-xs text-white/80">College of Computer Studies - Faculty / Researcher</p>
+                                    <p class="mt-1 text-[11px] text-white/70">ID: <span class="font-mono font-bold text-white">2024-10492-OL</span></p>
+                                </div>
+                                <div class="mt-5 rounded-xl bg-white p-4 text-center text-black shadow-inner">
+                                    <div class="font-mono text-lg font-black tracking-[0.35em]">|||| |||| ||||| ||||</div>
+                                    <div class="mt-2 border-t border-slate-100 pt-2 text-[10px] font-mono font-bold tracking-wider">CLCST*2018042*LIB</div>
+                                </div>
+                                <div class="mt-4 grid grid-cols-2 gap-2">
+                                    <button class="rounded-lg bg-white/10 px-3 py-2 text-xs font-bold hover:bg-white/20" type="button">Enlarge</button>
+                                    <button class="rounded-lg bg-[#FDC425] px-3 py-2 text-xs font-bold text-[#6D5200] hover:bg-[#F7BE1D]" type="button">Sync</button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center gap-2 border-b border-[#CBD5E1] pb-3">
+                                <span class="material-symbols-outlined text-[#065F2A]">policy</span>
+                                <h3 class="font-display text-base font-bold">Circulation Guidelines</h3>
+                            </div>
+                            <ul class="mt-4 space-y-3 text-sm leading-6 text-[#475569]">
+                                <li class="flex gap-2"><span class="material-symbols-outlined mt-0.5 shrink-0 text-base text-[#065F2A]">check_circle</span><span><strong>Loan Limits:</strong> 5 concurrent items for students; up to 15 items for permanent faculty.</span></li>
+                                <li class="flex gap-2"><span class="material-symbols-outlined mt-0.5 shrink-0 text-base text-[#065F2A]">sync</span><span><strong>Renewal Policy:</strong> Maximum of 2 online renewals when no hold exists.</span></li>
+                                <li class="flex gap-2"><span class="material-symbols-outlined mt-0.5 shrink-0 text-base text-[#B91C1C]">warning</span><span><strong>Overdue Penalties:</strong> Standard fines apply after the grace period.</span></li>
+                            </ul>
+                        </section>
+
+                        <section class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center gap-2 border-b border-[#CBD5E1] pb-3">
+                                <span class="material-symbols-outlined text-[#065F2A]">pin_drop</span>
+                                <h3 class="font-display text-base font-bold">Physical Return Depots</h3>
+                            </div>
+                            <div class="mt-4 space-y-3">
+                                <div class="rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] p-3 text-sm">
+                                    <p class="font-bold">Circulation Counter</p>
+                                    <p class="text-xs text-[#64748B]">Monday to Friday - 8:00 AM to 5:00 PM</p>
+                                </div>
+                                <div class="rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] p-3 text-sm">
+                                    <p class="font-bold">24/7 Book Return Drop Box</p>
+                                    <p class="text-xs text-[#64748B]">Gate 2 Main Entrance, East Wing</p>
+                                </div>
+                            </div>
+                        </section>
+                    </aside>
                 </section>
             @elseif ($section === 'patrons')
                 <section class="rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm">

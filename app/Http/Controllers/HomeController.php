@@ -334,7 +334,7 @@ class HomeController extends Controller
     public function staffSection(string $section)
     {
         $titles = [
-            'circulation' => 'Circulation Desk',
+            'circulation' => 'My Borrowed Books',
             'patrons' => 'Patron Records',
             'catalog' => 'Catalog Management',
             'reservations' => 'Reservations Desk',
@@ -364,6 +364,7 @@ class HomeController extends Controller
             'activePage' => $activePage,
             'catalogBooks' => $books,
             'activeLoans' => $activeLoans,
+            'borrowingHistory' => $this->borrowingHistory(),
             'reservations' => $reservations,
             'fineRows' => $fineRows,
             'stats' => [

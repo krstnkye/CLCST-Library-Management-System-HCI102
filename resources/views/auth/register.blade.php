@@ -277,16 +277,15 @@
                             <div class="hidden space-y-4" id="facultyFieldsBlock">
                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     <div>
-                                        <label class="mb-1.5 block text-xs font-semibold text-on-surface">Faculty Employee ID</label>
-                                        <input class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 font-mono text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" placeholder="FAC-2024-819" type="text">
+                                        <label class="mb-1.5 block text-xs font-semibold text-on-surface">Faculty Employee ID <span class="text-error">*</span></label>
+                                        <input class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 font-mono text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="facultyIdInput" name="patron_id" placeholder="FAC-2024-819" type="text" value="{{ old('patron_id') }}">
                                     </div>
                                     <div>
-                                        <label class="mb-1.5 block text-xs font-semibold text-on-surface">Department</label>
-                                        <select class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary">
-                                            <option>College of Computer Studies</option>
-                                            <option>College of Business</option>
-                                            <option>General Education Department</option>
-                                            <option>Senior High School Department</option>
+                                        <label class="mb-1.5 block text-xs font-semibold text-on-surface">Department <span class="text-error">*</span></label>
+                                        <select class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="facultyDepartmentSelect" name="program_or_department">
+                                            @foreach (['College of Computer Studies', 'College of Business', 'General Education Department', 'Senior High School Department'] as $department)
+                                                <option value="{{ $department }}" {{ old('program_or_department') === $department ? 'selected' : '' }}>{{ $department }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -295,12 +294,16 @@
                             <div class="hidden space-y-4" id="staffFieldsBlock">
                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     <div>
-                                        <label class="mb-1.5 block text-xs font-semibold text-on-surface">Library Staff ID</label>
-                                        <input class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 font-mono text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" placeholder="LIB-STAFF-042" type="text">
+                                        <label class="mb-1.5 block text-xs font-semibold text-on-surface">Library Staff ID <span class="text-error">*</span></label>
+                                        <input class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 font-mono text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="staffIdInput" name="patron_id" placeholder="LIB-STAFF-042" type="text" value="{{ old('patron_id') }}">
                                     </div>
                                     <div>
-                                        <label class="mb-1.5 block text-xs font-semibold text-on-surface">Access Level</label>
-                                        <input class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" placeholder="Clearance Level 1-3" type="text">
+                                        <label class="mb-1.5 block text-xs font-semibold text-on-surface">Access Level <span class="text-error">*</span></label>
+                                        <select class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="staffAccessSelect" name="program_or_department">
+                                            @foreach (['Circulation Desk - Level 1', 'Cataloging Office - Level 2', 'Library Administration - Level 3'] as $accessLevel)
+                                                <option value="{{ $accessLevel }}" {{ old('program_or_department') === $accessLevel ? 'selected' : '' }}>{{ $accessLevel }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -376,9 +379,9 @@
                         </div>
 
                         <div class="flex flex-col items-center gap-4 pt-2 sm:flex-row">
-                            <button class="flex w-full flex-1 items-center justify-center gap-2.5 rounded-lg bg-primary px-8 py-3.5 text-sm font-bold text-on-primary shadow-md transition-all hover:bg-[#0E4723] hover:shadow-lg active:scale-[0.98] sm:w-auto" type="submit">
+                            <button class="flex w-full flex-1 items-center justify-center gap-2.5 rounded-lg bg-primary px-8 py-3.5 text-sm font-bold text-on-primary shadow-md transition-all hover:bg-[#0E4723] hover:shadow-lg active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto" id="submitRegistrationButton" type="submit">
                                 <span class="material-symbols-outlined text-[20px]">qr_code_2</span>
-                                Submit Registration & Issue Digital Library Pass
+                                <span id="submitRegistrationText">Submit Registration & Issue Digital Library Pass</span>
                             </button>
                             <button class="w-full rounded-lg border border-outline-variant px-5 py-3.5 text-sm font-semibold text-on-surface transition-all hover:bg-surface-container active:scale-[0.98] sm:w-auto" type="reset">
                                 Clear Form

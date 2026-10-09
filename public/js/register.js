@@ -2,6 +2,16 @@ function selectedRole() {
     return document.querySelector('input[name="patron_role"]:checked')?.value || 'student';
 }
 
+function setBlockState(blockId, enabled) {
+    const block = document.getElementById(blockId);
+
+    block.classList.toggle('hidden', !enabled);
+    block.querySelectorAll('input, select, textarea').forEach((field) => {
+        field.disabled = !enabled;
+        field.required = enabled && (field.name === 'patron_id' || field.name === 'program_or_department');
+    });
+}
+
 function handleRoleChange(role) {
     document.querySelectorAll('.role-option').forEach((card) => {
         const isSelected = card.dataset.role === role;
@@ -18,10 +28,16 @@ function handleRoleChange(role) {
         title.classList.toggle('text-on-surface', !isSelected);
     });
 
-    document.getElementById('studentFieldsBlock').classList.toggle('hidden', role !== 'student');
-    document.getElementById('facultyFieldsBlock').classList.toggle('hidden', role !== 'faculty');
-    document.getElementById('staffFieldsBlock').classList.toggle('hidden', role !== 'staff');
+    setBlockState('studentFieldsBlock', role === 'student');
+    setBlockState('facultyFieldsBlock', role === 'faculty');
+    setBlockState('staffFieldsBlock', role === 'staff');
     document.getElementById('previewCardRoleBadge').innerText = role.toUpperCase();
+
+    const idInput = document.querySelector(`#${role}FieldsBlock [name="patron_id"]`);
+    const programInput = document.querySelector(`#${role}FieldsBlock [name="program_or_department"]`);
+
+    updateLiveBarcode(idInput?.value || '');
+    updateLiveProgram(programInput?.value || '');
 }
 
 function updateLiveCard() {
@@ -46,8 +62,21 @@ document.querySelectorAll('input[name="patron_role"]').forEach((input) => {
 
 document.getElementById('firstNameInput').addEventListener('input', updateLiveCard);
 document.getElementById('lastNameInput').addEventListener('input', updateLiveCard);
-document.getElementById('studentIdInput').addEventListener('input', (event) => updateLiveBarcode(event.target.value));
-document.getElementById('programSelect').addEventListener('change', (event) => updateLiveProgram(event.target.value));
+document.querySelectorAll('[name="patron_id"]').forEach((input) => {
+    input.addEventListener('input', (event) => {
+        if (!event.target.disabled) {
+            updateLiveBarcode(event.target.value);
+        }
+    });
+});
+
+document.querySelectorAll('[name="program_or_department"]').forEach((input) => {
+    input.addEventListener('change', (event) => {
+        if (!event.target.disabled) {
+            updateLiveProgram(event.target.value);
+        }
+    });
+});
 
 document.querySelectorAll('.toggle-password').forEach((button) => {
     button.addEventListener('click', () => {
@@ -63,6 +92,21 @@ document.querySelectorAll('.toggle-password').forEach((button) => {
 document.getElementById('fileUpload').addEventListener('change', (event) => {
     const file = event.target.files[0];
     document.getElementById('selectedFileName').innerText = file ? file.name : 'No file selected';
+});
+
+document.getElementById('registrationForm').addEventListener('submit', () => {
+    const button = document.getElementById('submitRegistrationButton');
+    const text = document.getElementById('submitRegistrationText');
+
+    button.disabled = true;
+    text.innerText = 'Submitting registration...';
+});
+
+document.getElementById('registrationForm').addEventListener('reset', () => {
+    window.setTimeout(() => {
+        handleRoleChange(selectedRole());
+        updateLiveCard();
+    }, 0);
 });
 
 handleRoleChange(selectedRole());

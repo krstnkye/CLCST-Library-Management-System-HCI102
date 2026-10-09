@@ -65,7 +65,21 @@ class HomeController extends Controller
             'privacy_consent' => ['accepted'],
         ]);
 
-        return back()->with('status', 'Registration submitted successfully. Your account is now queued for registrar verification.');
+        $request->session()->put('registered_patron', [
+            'role' => $request->input('patron_role'),
+            'name' => trim($request->input('first_name').' '.$request->input('last_name')),
+            'id' => $request->input('patron_id'),
+            'program' => $request->input('program_or_department'),
+            'registered_at' => now()->format('M d, Y h:i A'),
+        ]);
+
+        $status = 'Registration submitted successfully. Your digital library pass has been issued for verification.';
+
+        return match ($request->input('patron_role')) {
+            'faculty' => redirect()->route('faculty.dashboard')->with('status', $status),
+            'staff' => redirect()->route('staff.dashboard')->with('status', $status),
+            default => redirect()->route('student.dashboard')->with('status', $status),
+        };
     }
 
     public function studentDashboard()

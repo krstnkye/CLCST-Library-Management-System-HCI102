@@ -3,93 +3,137 @@
     $activePage = $activePage ?? ($section ?? 'dashboard');
     $homeRoute = $portalRole === 'faculty' ? route('faculty.dashboard') : route('staff.dashboard');
     $pendingReservations = $stats['pendingReservations'] ?? count($reservations ?? []);
+    $borrowedCount = $stats['activeLoans'] ?? count($activeLoans ?? []);
 
-    $navItems = [
+    $mainItems = [
         ['key' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'dashboard', 'href' => $homeRoute],
-        ['key' => 'circulation', 'label' => 'My Borrowed Books', 'icon' => 'swap_horiz', 'href' => route('staff.section', 'circulation'), 'badge' => $stats['activeLoans'] ?? null, 'badgeTone' => 'warning'],
-        ['key' => 'patrons', 'label' => 'Patron Records', 'icon' => 'groups', 'href' => route('staff.section', 'patrons')],
-        ['key' => 'profile', 'label' => 'My Profile', 'icon' => 'person', 'href' => route('staff.section', 'profile')],
-        ['key' => 'catalog', 'label' => 'Recommend a Book', 'icon' => 'recommend', 'href' => route('staff.section', 'catalog')],
-        ['key' => 'reservations', 'label' => 'My Reservations', 'icon' => 'book_online', 'href' => route('staff.section', 'reservations'), 'badge' => $pendingReservations],
-        ['key' => 'reports', 'label' => 'Renewal Requests', 'icon' => 'autorenew', 'href' => route('staff.section', 'reports'), 'badge' => 1],
-        ['key' => 'history', 'label' => 'Borrowing History', 'icon' => 'history_edu', 'href' => route('staff.section', 'history')],
-        ['key' => 'academic', 'label' => 'Faculty Academic Requests', 'icon' => 'school', 'href' => route('staff.section', 'academic'), 'badge' => count($facultyRequests ?? [])],
-        ['key' => 'course-reserves', 'label' => 'Course Syllabus Reserves', 'icon' => 'menu_book', 'href' => route('staff.section', 'course-reserves'), 'badge' => 6],
-        ['key' => 'reading-lists', 'label' => 'Course Reading Lists', 'icon' => 'format_list_bulleted', 'href' => route('staff.section', 'reading-lists'), 'badge' => 5],
-        ['key' => 'instruction-sessions', 'label' => 'Library Instruction Sessions', 'icon' => 'cast_for_education', 'href' => route('staff.section', 'instruction-sessions'), 'badge' => 4],
-        ['key' => 'notifications', 'label' => 'Notifications', 'icon' => 'notifications', 'href' => route('staff.section', 'notifications'), 'badge' => 3, 'badgeTone' => 'warning'],
-        ['key' => 'feedback', 'label' => 'Library Feedback', 'icon' => 'rate_review', 'href' => route('staff.section', 'feedback')],
-        ['key' => 'settings', 'label' => 'Settings', 'icon' => 'settings', 'href' => route('staff.section', 'settings')],
+        ['key' => 'search-books', 'label' => 'Search Books', 'icon' => 'menu_book', 'href' => route('books.catalog'), 'activeWhen' => ['search-books']],
+        ['key' => 'circulation', 'label' => 'My Borrowed Books', 'icon' => 'swap_horiz', 'href' => route('staff.section', 'circulation'), 'badge' => $borrowedCount, 'badgeTone' => 'info'],
+        ['key' => 'reservations', 'label' => 'My Reservations', 'icon' => 'book_online', 'href' => route('staff.section', 'reservations'), 'badge' => $pendingReservations, 'badgeTone' => 'warning'],
+        ['key' => 'reports', 'label' => 'Renewal Requests', 'icon' => 'autorenew', 'href' => route('staff.section', 'reports'), 'badge' => 1, 'badgeTone' => 'danger'],
+        ['key' => 'history', 'label' => 'Borrowing History', 'icon' => 'history', 'href' => route('staff.section', 'history')],
     ];
+
+    $academicItems = [
+        ['key' => 'catalog', 'label' => 'Recommend a Book', 'icon' => 'thumb_up', 'href' => route('staff.section', 'catalog')],
+        ['key' => 'course-reserves', 'label' => 'Course Reserves', 'icon' => 'assignment', 'href' => route('staff.section', 'course-reserves')],
+        ['key' => 'reading-lists', 'label' => 'Reading Lists', 'icon' => 'format_list_bulleted', 'href' => route('staff.section', 'reading-lists')],
+        ['key' => 'instruction-sessions', 'label' => 'Library Class Sessions', 'icon' => 'cast_for_education', 'href' => route('staff.section', 'instruction-sessions')],
+    ];
+
+    $accountItems = [
+        ['key' => 'notifications', 'label' => 'Notifications', 'icon' => 'notifications', 'href' => route('staff.section', 'notifications'), 'badge' => 3, 'badgeTone' => 'danger'],
+        ['key' => 'profile', 'label' => 'My Profile', 'icon' => 'manage_accounts', 'href' => route('staff.section', 'profile')],
+        ['key' => 'feedback', 'label' => 'Library Feedback', 'icon' => 'rate_review', 'href' => route('staff.section', 'feedback')],
+        ['key' => 'support', 'label' => 'Help & Support', 'icon' => 'help_outline', 'href' => route('staff.section', 'support')],
+    ];
+
+    $academicActive = in_array($activePage, ['academic', 'catalog', 'course-reserves', 'reading-lists', 'instruction-sessions'], true);
+
+    $badgeClass = function (?string $tone): string {
+        return match ($tone) {
+            'danger' => 'bg-[#FEE2E2] text-[#B91C1C]',
+            'warning' => 'bg-[#FEF3C7] text-[#92400E]',
+            'info' => 'bg-[#DBEAFE] text-[#1D4ED8]',
+            default => 'bg-[#EEF2FF] text-[#334155]',
+        };
+    };
 @endphp
 
 <aside id="staff-sidebar" class="fixed bottom-0 left-0 top-16 z-30 hidden w-64 flex-shrink-0 flex-col justify-between border-r border-[#CBD5E1] bg-white md:flex">
-    <div id="staff-sidebar-scroll" class="custom-scrollbar flex flex-1 flex-col gap-1 overflow-y-auto p-4">
-        <a class="mb-3 flex items-center gap-3 rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] p-3" href="{{ $homeRoute }}">
-            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#065F2A] font-bold text-white">
-                <span class="material-symbols-outlined">admin_panel_settings</span>
-            </div>
-            <div class="overflow-hidden">
-                <p class="truncate text-xs font-bold text-[#065F2A]">
-                    {{ $portalRole === 'faculty' ? 'Faculty Library Access' : 'Staff Console' }}
-                </p>
-                <p class="truncate text-[10px] text-[#475569]">
-                    {{ $portalRole === 'faculty' ? 'Course reserves and requests' : 'Circulation and records desk' }}
-                </p>
+    <div id="staff-sidebar-scroll" class="custom-scrollbar flex flex-1 flex-col gap-4 overflow-y-auto p-5">
+        <a class="flex items-center gap-3" href="{{ $homeRoute }}">
+            @include('partials.celtech-logo', ['class' => 'h-10 w-10 shrink-0 rounded-full object-contain'])
+            <div class="min-w-0">
+                <p class="truncate text-sm font-extrabold leading-tight tracking-tight text-[#064E3B]">CLCST SCHOOL LIBRARY</p>
+                <p class="truncate text-[10px] font-bold uppercase tracking-wide text-[#64748B]">Central Luzon College of Science and Technology</p>
             </div>
         </a>
 
-        <span class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Library Operations</span>
-        <nav class="space-y-1">
-            @foreach ($navItems as $item)
-                @php
-                    $isActive = $activePage === $item['key'];
-                    $badgeTone = $item['badgeTone'] ?? 'neutral';
-                    $badgeClass = match ($badgeTone) {
-                        'warning' => 'bg-[#FEF3C7] text-[#92400E]',
-                        default => 'bg-[#EEF2FF] text-[#334155]',
-                    };
-                @endphp
-                <a class="{{ $isActive ? 'bg-[#065F2A] text-white shadow-sm' : 'text-[#334155] hover:bg-[#F1F5F9] hover:text-[#0F172A]' }} flex items-center justify-between rounded-lg px-3 py-2.5 font-medium transition-colors" href="{{ $item['href'] }}">
-                    <span class="flex items-center gap-3">
-                        <span class="material-symbols-outlined {{ $isActive ? '' : 'text-[#64748B]' }}" @if ($isActive) style="font-variation-settings: 'FILL' 1;" @endif>{{ $item['icon'] }}</span>
-                        <span class="text-xs font-semibold">{{ $item['label'] }}</span>
-                    </span>
-                    @if (!empty($item['badge']))
-                        <span class="{{ $badgeClass }} rounded-full px-2 py-0.5 text-[10px] font-bold">{{ $item['badge'] }}</span>
-                    @endif
-                </a>
-            @endforeach
-        </nav>
-
-        <div class="mt-4 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] p-3">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2 text-xs font-bold text-[#065F2A]">
-                    <span class="material-symbols-outlined text-base">barcode_scanner</span>
-                    <span>Desk Scanner</span>
+        <section class="rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] p-3">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#065F2A] text-white">
+                    <span class="material-symbols-outlined">local_library</span>
                 </div>
-                <span class="rounded-full bg-[#DCFCE7] px-2 py-0.5 text-[10px] font-bold text-[#166534]">READY</span>
+                <div>
+                    <p class="text-xs font-bold text-[#064E3B]">Central Stacks</p>
+                    <p class="text-[10px] text-[#64748B]">Olongapo Main Campus</p>
+                </div>
             </div>
-            <p class="mt-2 text-[11px] leading-tight text-[#475569]">Scan patron IDs, copy barcodes, and reservation slips from one circulation station.</p>
-            <form class="mt-3 space-y-2" method="GET" action="{{ route('books.catalog') }}">
-                <input name="field" type="hidden" value="all">
-                <input class="w-full rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-xs text-[#0F172A] placeholder:text-[#94A3B8]" name="q" placeholder="Barcode or call number">
-                <button class="flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#065F2A] px-3 py-2 text-xs font-bold text-white" type="submit">
-                    <span class="material-symbols-outlined text-base">search</span>Open Record
-                </button>
-            </form>
-        </div>
+        </section>
+
+        <a class="flex items-center justify-center gap-2 rounded-lg bg-[#065F2A] px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-[#064E3B]" href="{{ route('books.catalog') }}">
+            <span class="material-symbols-outlined text-base">barcode_scanner</span>
+            Scan Barcode
+        </a>
+
+        <nav class="space-y-5" aria-label="Faculty and staff navigation">
+            <section>
+                <p class="mb-2 px-2 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Catalog & Circulation</p>
+                <div class="space-y-1">
+                    @foreach ($mainItems as $item)
+                        @php
+                            $isActive = $activePage === $item['key'] || in_array($activePage, $item['activeWhen'] ?? [], true);
+                        @endphp
+                        <a class="{{ $isActive ? 'bg-[#065F2A] text-white shadow-sm' : 'text-[#334155] hover:bg-[#F1F5F9] hover:text-[#0F172A]' }} flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors" href="{{ $item['href'] }}">
+                            <span class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-[20px] {{ $isActive ? '' : 'text-[#475569]' }}" @if ($isActive) style="font-variation-settings: 'FILL' 1;" @endif>{{ $item['icon'] }}</span>
+                                <span>{{ $item['label'] }}</span>
+                            </span>
+                            @if (!empty($item['badge']))
+                                <span class="{{ $isActive ? 'bg-white/20 text-white' : $badgeClass($item['badgeTone'] ?? null) }} rounded-full px-2 py-0.5 text-[10px] font-bold">{{ $item['badge'] }}</span>
+                            @endif
+                        </a>
+                    @endforeach
+                </div>
+            </section>
+
+            <section>
+                <p class="mb-2 px-2 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Academics & Faculty</p>
+                <a class="{{ $activePage === 'academic' ? 'bg-[#065F2A] text-white shadow-sm' : 'border border-[#CBD5E1] text-[#334155] hover:bg-[#F1F5F9]' }} flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors" href="{{ route('staff.section', 'academic') }}">
+                    <span class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]" @if ($activePage === 'academic') style="font-variation-settings: 'FILL' 1;" @endif>school</span>
+                        <span>Academic Requests</span>
+                    </span>
+                    <span class="material-symbols-outlined text-base">{{ $academicActive ? 'expand_less' : 'expand_more' }}</span>
+                </a>
+                <div class="mt-2 space-y-1 border-l-2 border-[#BBF7D0] pl-4">
+                    @foreach ($academicItems as $item)
+                        @php $isActive = $activePage === $item['key']; @endphp
+                        <a class="{{ $isActive ? 'font-bold text-[#065F2A]' : 'text-[#475569] hover:text-[#065F2A]' }} flex items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors" href="{{ $item['href'] }}">
+                            <span class="material-symbols-outlined text-base">{{ $item['icon'] }}</span>
+                            <span>{{ $item['label'] }}</span>
+                        </a>
+                    @endforeach
+                </div>
+            </section>
+
+            <section>
+                <p class="mb-2 px-2 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Account</p>
+                <div class="space-y-1">
+                    @foreach ($accountItems as $item)
+                        @php $isActive = $activePage === $item['key']; @endphp
+                        <a class="{{ $isActive ? 'bg-[#065F2A] text-white shadow-sm' : 'text-[#334155] hover:bg-[#F1F5F9] hover:text-[#0F172A]' }} flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors" href="{{ $item['href'] }}">
+                            <span class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-[20px] {{ $isActive ? '' : 'text-[#475569]' }}" @if ($isActive) style="font-variation-settings: 'FILL' 1;" @endif>{{ $item['icon'] }}</span>
+                                <span>{{ $item['label'] }}</span>
+                            </span>
+                            @if (!empty($item['badge']))
+                                <span class="{{ $isActive ? 'bg-white/20 text-white' : $badgeClass($item['badgeTone'] ?? null) }} rounded-full px-2 py-0.5 text-[10px] font-bold">{{ $item['badge'] }}</span>
+                            @endif
+                        </a>
+                    @endforeach
+                </div>
+            </section>
+        </nav>
     </div>
 
-    <div class="flex flex-col gap-2 border-t border-[#CBD5E1] bg-white p-4">
-        <a class="{{ $activePage === 'support' ? 'bg-[#065F2A] text-white shadow-sm' : 'text-[#334155] hover:bg-[#F1F5F9]' }} flex items-center gap-3 rounded-lg px-3 py-2 font-medium transition-colors" href="{{ route('staff.section', 'support') }}">
-            <span class="material-symbols-outlined" @if ($activePage === 'support') style="font-variation-settings: 'FILL' 1;" @endif>help_outline</span>
-            <span class="text-xs font-semibold">Help & Support</span>
+    <div class="border-t border-[#CBD5E1] bg-white p-5">
+        <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-[#B91C1C] hover:bg-[#FEE2E2]" href="{{ route('login') }}">
+            <span class="material-symbols-outlined text-[20px]">logout</span>
+            <span>Log Out</span>
         </a>
-        <a class="flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-[#B91C1C] hover:bg-[#FEE2E2]" href="{{ route('login') }}">
-            <span class="material-symbols-outlined">logout</span><span class="text-xs font-semibold">Log Out</span>
-        </a>
-        <p class="px-3 pt-2 text-[10px] leading-tight text-[#64748B]">Authorized access for library transactions, patron records, and reporting.</p>
+        <p class="mt-3 px-3 text-[10px] leading-tight text-[#64748B]">Library records are for authorized school use only.</p>
     </div>
 </aside>
 

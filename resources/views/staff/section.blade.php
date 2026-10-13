@@ -1158,10 +1158,10 @@
                             </nav>
                             <span class="inline-flex items-center gap-1.5 rounded-full border border-[#BBF7D0] bg-[#DCFCE7] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#166534]">
                                 <span class="material-symbols-outlined text-sm">verified_user</span>
-                                Faculty 30/60-Day Privilege
+                                Faculty loan extension available
                             </span>
-                            <h1 class="mt-3 font-display text-3xl font-bold text-[#0F172A]">Renewal Requests & Extension Queue</h1>
-                            <p class="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">Submit, monitor, and audit online loan extensions for faculty and staff borrowing privileges.</p>
+                            <h1 class="mt-3 font-display text-3xl font-bold text-[#0F172A]">Renew or Extend Borrowed Books</h1>
+                            <p class="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">Renew eligible borrowed books before the due date. Books with another patron waiting must be returned or checked by the circulation desk.</p>
                         </div>
                         <div class="flex flex-wrap items-center gap-2">
                             <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3.5 py-2 text-xs font-bold text-[#334155] shadow-sm hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'circulation') }}">
@@ -1174,7 +1174,7 @@
                             </a>
                             <a class="inline-flex items-center gap-2 rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#064E3B]" href="{{ route('staff.section', 'reports') }}">
                                 <span class="material-symbols-outlined text-base">autorenew</span>
-                                Bulk Renew Eligible
+                                Renew All Eligible
                             </a>
                         </div>
                     </div>
@@ -1184,12 +1184,12 @@
                     <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
                         <div class="flex items-start justify-between">
                             <div>
-                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Pending Review</p>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Waiting for Review</p>
                                 <h2 class="mt-1 font-display text-2xl font-bold text-[#065F2A]">{{ max($pendingRenewals->count(), 1) }} <span class="text-sm font-medium text-[#475569]">request</span></h2>
                             </div>
                             <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#065F2A]"><span class="material-symbols-outlined">pending_actions</span></span>
                         </div>
-                        <p class="mt-4 text-xs leading-5 text-[#64748B]">Eligible titles can be extended online before physical desk inspection.</p>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">These books can still be checked by the library staff before renewal.</p>
                     </article>
                     <article class="rounded-xl border border-[#FACC15] bg-[#FFFBEB] p-5 shadow-sm">
                         <div class="flex items-start justify-between">
@@ -1204,22 +1204,22 @@
                     <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
                         <div class="flex items-start justify-between">
                             <div>
-                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Approved Extensions</p>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Approved Renewals</p>
                                 <h2 class="mt-1 font-display text-2xl font-bold text-[#002E97]">{{ $approvedRenewals->count() }} <span class="text-sm font-medium text-[#475569]">applied</span></h2>
                             </div>
                             <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#E2E7FF] text-[#002E97]"><span class="material-symbols-outlined">done_all</span></span>
                         </div>
-                        <p class="mt-4 text-xs leading-5 text-[#64748B]">Approved dates are stored in the renewal ledger for audit slips.</p>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">New due dates are saved for receipts and borrowing records.</p>
                     </article>
                     <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
                         <div class="flex items-start justify-between">
                             <div>
-                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Restricted</p>
-                                <h2 class="mt-1 font-display text-2xl font-bold text-[#B91C1C]">1 <span class="text-sm font-medium text-[#475569]">hold lock</span></h2>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Cannot Renew Online</p>
+                                <h2 class="mt-1 font-display text-2xl font-bold text-[#B91C1C]">1 <span class="text-sm font-medium text-[#475569]">book</span></h2>
                             </div>
                             <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#FEE2E2] text-[#B91C1C]"><span class="material-symbols-outlined">lock_clock</span></span>
                         </div>
-                        <p class="mt-4 text-xs leading-5 text-[#64748B]">Items with active patron holds require physical return or desk override.</p>
+                        <p class="mt-4 text-xs leading-5 text-[#64748B]">A book cannot be renewed online when someone else is waiting for it.</p>
                     </article>
                 </section>
 
@@ -1228,12 +1228,12 @@
                         <div class="rounded-xl border border-[#CBD5E1] bg-white p-4 shadow-sm">
                             <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                                 <div>
-                                    <h2 class="font-display text-xl font-bold text-[#0F172A]">Extension Queue</h2>
-                                    <p class="text-xs text-[#64748B]">Eligible, pending, restricted, and approved renewal records.</p>
+                                    <h2 class="font-display text-xl font-bold text-[#0F172A]">Borrowed Books for Renewal</h2>
+                                    <p class="text-xs text-[#64748B]">See which borrowed books can be renewed, already renewed, or need help from the desk.</p>
                                 </div>
                                 <form class="flex w-full max-w-md items-center gap-2 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-2" method="GET" action="{{ route('books.catalog') }}">
                                     <span class="material-symbols-outlined text-base text-[#64748B]">search</span>
-                                    <input class="w-full border-0 bg-transparent p-0 text-sm text-[#0F172A] placeholder:text-[#94A3B8] focus:ring-0" name="q" placeholder="Search OPAC catalog or course reserves...">
+                                    <input class="w-full border-0 bg-transparent p-0 text-sm text-[#0F172A] placeholder:text-[#94A3B8] focus:ring-0" name="q" placeholder="Search by title, author, ISBN, or call number...">
                                     <button class="rounded bg-[#065F2A] px-3 py-1.5 text-xs font-bold text-white" type="submit">Search</button>
                                 </form>
                             </div>
@@ -1251,7 +1251,7 @@
                                 <div class="flex flex-wrap items-center justify-between gap-2 border-b px-5 py-3 {{ $isRestricted ? 'border-[#FCA5A5] bg-[#FEE2E2]/50' : ($isRenewed ? 'border-[#CBD5E1] bg-[#F8FAFC]' : 'border-[#BBF7D0] bg-[#F0FDF4]') }}">
                                     <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider {{ $isRestricted ? 'bg-[#B91C1C] text-white' : ($isRenewed ? 'bg-[#E2E7FF] text-[#002E97]' : 'bg-[#065F2A] text-white') }}">
                                         <span class="material-symbols-outlined text-sm">{{ $isRestricted ? 'warning' : ($isRenewed ? 'done_all' : 'autorenew') }}</span>
-                                        {{ $isRestricted ? 'Renewal Restricted - Active Holds Waiting' : ($isRenewed ? 'Approved & Applied' : 'Eligible for Online Renewal') }}
+                                        {{ $isRestricted ? 'Cannot Renew Online - Someone Is Waiting' : ($isRenewed ? 'Renewal Submitted' : 'Can Be Renewed Online') }}
                                     </span>
                                     <span class="text-xs font-semibold {{ $isRestricted ? 'text-[#B91C1C]' : 'text-[#64748B]' }}">{{ $isRenewed ? 'New due: '.$newDueDate : 'Current due: '.$loan['due'] }}</span>
                                 </div>
@@ -1270,31 +1270,31 @@
                                                     <h3 class="font-display text-xl font-bold leading-tight text-[#0F172A]">{{ $loan['title'] }}</h3>
                                                     <p class="mt-1 text-sm text-[#64748B]">by <span class="font-semibold text-[#334155]">{{ $book['author'] ?? ($history['author'] ?? 'Catalog author record') }}</span>{{ $book ? ' - '.$book['publisher'] : '' }}</p>
                                                 </div>
-                                                <span class="rounded-full {{ $isRestricted ? 'bg-[#FEE2E2] text-[#991B1B]' : 'bg-[#DCFCE7] text-[#166534]' }} px-2.5 py-1 text-[10px] font-bold">{{ $isRestricted ? '2 Patrons Waiting' : 'Faculty Extension Eligible' }}</span>
+                                                <span class="rounded-full {{ $isRestricted ? 'bg-[#FEE2E2] text-[#991B1B]' : 'bg-[#DCFCE7] text-[#166534]' }} px-2.5 py-1 text-[10px] font-bold">{{ $isRestricted ? '2 People Waiting' : 'Renewal Available' }}</span>
                                             </div>
                                             <div class="grid grid-cols-1 gap-3 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] p-3 text-xs sm:grid-cols-4">
                                                 <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Call Number</span><span class="font-semibold text-[#0F172A]">{{ $loan['call'] }}</span></div>
                                                 <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Barcode</span><span class="font-mono text-[#0F172A]">{{ $loan['barcode'] }}</span></div>
                                                 <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Borrowed</span><span class="font-semibold text-[#0F172A]">{{ $history['borrowed'] ?? 'Desk Record' }}</span></div>
-                                                <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Renewals</span><span class="font-bold {{ $isRestricted ? 'text-[#B91C1C]' : 'text-[#065F2A]' }}">{{ $isRenewed ? '1 of 2 Used' : ($isRestricted ? 'Locked' : '0 of 2 Used') }}</span></div>
+                                                <div><span class="block text-[10px] font-bold uppercase text-[#64748B]">Renewals Used</span><span class="font-bold {{ $isRestricted ? 'text-[#B91C1C]' : 'text-[#065F2A]' }}">{{ $isRenewed ? '1 of 2 Used' : ($isRestricted ? 'Not Available' : '0 of 2 Used') }}</span></div>
                                             </div>
 
                                             @if ($isRestricted)
                                                 <div class="rounded-lg border-l-4 border-[#B91C1C] bg-[#F8FAFC] p-3 text-sm">
-                                                    <p class="flex items-center gap-1.5 font-semibold text-[#0F172A]"><span class="material-symbols-outlined text-base text-[#B91C1C]">info</span>Per CLCST Academic Library Regulations Art. IV Sec. 3</p>
-                                                    <p class="mt-1 pl-5 text-[#475569]">Materials with pending patron hold reservations cannot be renewed online. Please return the book or request an emergency instructional grace period at the counter.</p>
+                                                    <p class="flex items-center gap-1.5 font-semibold text-[#0F172A]"><span class="material-symbols-outlined text-base text-[#B91C1C]">info</span>This book has a waiting list</p>
+                                                    <p class="mt-1 pl-5 text-[#475569]">Please return this book on time or ask the circulation desk if you need a short teaching-related extension.</p>
                                                 </div>
                                             @else
                                                 <div class="flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] p-3 text-sm">
                                                     <span class="material-symbols-outlined text-base text-[#065F2A]">event_upcoming</span>
-                                                    <span>Projected Extension Due Date: <strong class="text-[#065F2A]">{{ $newDueDate }}</strong> (+{{ $isRenewed ? '7' : '30' }} days)</span>
+                                                    <span>New due date after renewal: <strong class="text-[#065F2A]">{{ $newDueDate }}</strong> (+{{ $isRenewed ? '7' : '30' }} days)</span>
                                                 </div>
                                             @endif
 
                                             <div class="flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E8F0] pt-3">
                                                 <div class="flex flex-wrap gap-2">
                                                     @if ($isRestricted)
-                                                        <a class="inline-flex items-center gap-1.5 rounded-lg bg-[#E2E8F0] px-3.5 py-2 text-xs font-bold text-[#334155] hover:bg-[#CBD5E1]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">assignment_return</span>Schedule Physical Return</a>
+                                                        <a class="inline-flex items-center gap-1.5 rounded-lg bg-[#E2E8F0] px-3.5 py-2 text-xs font-bold text-[#334155] hover:bg-[#CBD5E1]" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-base">assignment_return</span>Ask About Return</a>
                                                         <a class="inline-flex items-center gap-1.5 rounded-lg border border-[#CBD5E1] px-3.5 py-2 text-xs font-bold text-[#065F2A] hover:bg-[#DCFCE7]" href="{{ route('staff.section', 'reservations') }}"><span class="material-symbols-outlined text-base">copy_all</span>Request Replacement Copy</a>
                                                     @else
                                                         <form method="POST" action="{{ route('loans.renew', $loan['id']) }}">
@@ -1304,7 +1304,7 @@
                                                                 {{ $isRenewed ? 'Renewal Submitted' : 'Submit Online Renewal' }}
                                                             </button>
                                                         </form>
-                                                        <a class="inline-flex items-center gap-1.5 rounded-lg border border-[#CBD5E1] px-3.5 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'support') }}">Request Custom End-of-Term Date</a>
+                                                        <a class="inline-flex items-center gap-1.5 rounded-lg border border-[#CBD5E1] px-3.5 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'support') }}">Ask for a Different Date</a>
                                                     @endif
                                                 </div>
                                                 <a class="inline-flex items-center gap-1 text-xs font-bold text-[#64748B] hover:text-[#0F172A]" href="https://www.google.com/search?q={{ urlencode($loan['title'].' citation') }}" target="_blank" rel="noopener"><span class="material-symbols-outlined text-sm">format_quote</span>Cite Book</a>

@@ -126,84 +126,9 @@
     </header>
 
     <div class="flex flex-1 overflow-hidden">
-        <aside class="custom-scrollbar z-30 hidden w-64 flex-shrink-0 flex-col justify-between overflow-y-auto border-r border-gray-200 bg-white md:flex">
-            <div class="flex flex-col gap-3 p-4">
-                <div class="flex items-center gap-3 border-b border-gray-200 pb-3">
-                    @include('partials.celtech-logo', ['class' => 'flex h-9 w-9 items-center justify-center rounded-full bg-[#135d2e] text-xs font-extrabold text-white object-contain bg-white p-0.5'])
-                    <div class="overflow-hidden">
-                        <h2 class="truncate text-xs font-extrabold uppercase tracking-wide text-[#135d2e]">CLCST LMS</h2>
-                        <p class="truncate text-[11px] text-gray-500">Library Management System</p>
-                    </div>
-                </div>
+        @include('partials.staff-sidebar', ['activePage' => 'dashboard'])
 
-                <div class="rounded-lg border border-emerald-200 bg-emerald-50 p-2.5">
-                    <div class="mb-1.5 flex items-center justify-between">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-900">Patron Classification</span>
-                        <span class="h-2 w-2 animate-pulse rounded-full bg-emerald-600"></span>
-                    </div>
-                    <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-900">
-                        <span class="material-symbols-outlined text-[16px] text-[#135d2e]">{{ $isFaculty ? 'school' : 'admin_panel_settings' }}</span>
-                        <span>{{ $isFaculty ? 'Faculty Account - Teaching' : 'Library Staff Account' }}</span>
-                    </div>
-                    <div class="mt-2 flex items-center justify-between border-t border-emerald-200/60 pt-2">
-                        <span class="text-[10px] font-medium text-emerald-800">Switch view mode:</span>
-                        <button class="rounded border border-emerald-300 bg-white px-2 py-0.5 text-[10px] font-semibold text-emerald-800 transition-colors hover:bg-emerald-100" id="toggleStaffViewBtn" type="button">{{ $isFaculty ? 'Non-Teaching Staff' : 'Teaching Faculty' }}</button>
-                    </div>
-                </div>
-
-                <nav class="mt-1 flex flex-col gap-0.5 text-xs">
-                    <a class="flex items-center gap-3 rounded-lg bg-[#135d2e] px-3 py-2 font-semibold text-white shadow-sm" href="{{ $isFaculty ? route('faculty.dashboard') : route('staff.dashboard') }}">
-                        <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">dashboard</span>
-                        <span>Dashboard</span>
-                    </a>
-                    <a class="flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('books.catalog') }}">
-                        <span class="material-symbols-outlined text-[18px]">search</span>
-                        <span>Search Books</span>
-                    </a>
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'circulation') }}">
-                        <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[18px]">menu_book</span><span>{{ $isFaculty ? 'My Borrowed Books' : 'Circulation Desk' }}</span></span>
-                        <span class="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-[#135d2e]">{{ $borrowedCount }}</span>
-                    </a>
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'reservations') }}">
-                        <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[18px]">bookmark</span><span>My Reservations</span></span>
-                        <span class="rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-800">{{ $reservationCount }}</span>
-                    </a>
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'reports') }}">
-                        <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[18px]">autorenew</span><span>Renewal Requests</span></span>
-                        <span class="rounded-full bg-blue-100 px-1.5 py-0.5 text-[10px] font-bold text-blue-700">{{ $renewalCount }}</span>
-                    </a>
-                    <a class="flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'history') }}"><span class="material-symbols-outlined text-[18px]">history</span><span>Borrowing History</span></a>
-                    <a class="flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'catalog') }}"><span class="material-symbols-outlined text-[18px]">thumb_up</span><span>Recommend a Book</span></a>
-
-                    <div class="my-1 border-t border-gray-100 pt-1" id="faculty-academic-module">
-                        <a class="flex items-center justify-between rounded-lg border border-emerald-200/80 bg-emerald-50/70 px-3 py-2 font-bold text-[#135d2e] transition-colors" href="{{ route('staff.section', 'academic') }}">
-                            <span class="flex items-center gap-2.5"><span class="material-symbols-outlined text-[18px]">school</span><span class="truncate">Faculty Academic Requests</span></span>
-                            <span class="material-symbols-outlined text-[16px]">expand_more</span>
-                        </a>
-                        <div class="ml-4 space-y-1 border-l-2 border-emerald-200 py-1 pl-3">
-                            <a class="flex items-center gap-2 py-0.5 text-[11px] font-medium text-gray-600 hover:text-[#135d2e]" href="{{ route('staff.section', 'course-reserves') }}"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Course Reserves</span></a>
-                            <a class="flex items-center gap-2 py-0.5 text-[11px] font-medium text-gray-600 hover:text-[#135d2e]" href="{{ route('staff.section', 'reading-lists') }}"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Course Reading Lists</span></a>
-                            <a class="flex items-center gap-2 py-0.5 text-[11px] font-medium text-gray-600 hover:text-[#135d2e]" href="{{ route('staff.section', 'instruction-sessions') }}"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Instruction Sessions</span></a>
-                        </div>
-                    </div>
-
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'notifications') }}">
-                        <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[18px]">notifications</span><span>Notifications</span></span>
-                        <span class="rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-700">3</span>
-                    </a>
-                    <a class="flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'profile') }}"><span class="material-symbols-outlined text-[18px]">person</span><span>My Profile</span></a>
-                    <a class="flex items-center gap-3 rounded-lg px-3 py-2 text-left font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-gray-900" href="{{ route('staff.section', 'feedback') }}"><span class="material-symbols-outlined text-[18px]">rate_review</span><span>Library Feedback</span></a>
-                </nav>
-            </div>
-
-            <div class="space-y-1 border-t border-gray-200 p-4">
-                <a class="flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium text-gray-600 transition-colors hover:bg-slate-100" href="{{ route('staff.section', 'support') }}"><span class="material-symbols-outlined text-[18px]">policy</span><span>Library Policies</span></a>
-                <a class="flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium text-red-600 transition-colors hover:bg-red-50" href="{{ route('login') }}"><span class="material-symbols-outlined text-[18px]">logout</span><span>Logout</span></a>
-                <div class="pt-2 text-center"><span class="block font-mono text-[10px] text-gray-400">CLCST ILS - HCI102 v2.4</span></div>
-            </div>
-        </aside>
-
-        <main class="custom-scrollbar flex-1 space-y-6 overflow-y-auto p-4 md:p-6 lg:p-8">
+        <main class="custom-scrollbar md:ml-64 flex-1 space-y-6 overflow-y-auto p-4 md:p-6 lg:p-8">
             @if (session('status'))
                 <div class="rounded-r-xl border-l-4 border-emerald-500 bg-emerald-50 p-3.5 text-sm font-semibold text-emerald-900 shadow-sm">{{ session('status') }}</div>
             @endif

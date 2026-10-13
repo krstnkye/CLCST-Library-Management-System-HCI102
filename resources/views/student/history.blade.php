@@ -76,12 +76,12 @@
             @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm object-contain bg-white p-0.5'])
             <div class="flex flex-col">
                 <span class="font-headline text-base font-bold leading-tight tracking-wide text-primary">CLCST SCHOOL LIBRARY</span>
-                <span class="text-xs font-medium text-on-surface-variant">Integrated Library System - IM101 Patron Portal</span>
+                <span class="text-xs font-medium text-on-surface-variant">Integrated Library System - IM101 Student Portal</span>
             </div>
             <div class="ml-4 hidden items-center border-l border-outline-variant pl-4 lg:flex">
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-surface-container px-2.5 py-1 text-xs font-semibold text-primary">
                     <span class="h-2 w-2 rounded-full bg-primary-container"></span>
-                    Student Patron Portal - IM101 Ready
+                    Student Account Portal - IM101 Ready
                 </span>
             </div>
         </div>
@@ -116,14 +116,14 @@
         <main class="md:ml-64 flex min-w-0 flex-1 flex-col bg-background pb-16">
             <div class="border-b border-outline-variant bg-surface-container-lowest px-4 pb-4 pt-6 md:px-8">
                 <nav class="mb-2 flex items-center gap-2 text-[10px] font-bold text-on-surface-variant">
-                    <span>Student Portal</span><span class="material-symbols-outlined text-sm">chevron_right</span><span>Circulation Records</span><span class="material-symbols-outlined text-sm">chevron_right</span><span class="text-primary">Borrowing History</span>
+                    <span>Student Portal</span><span class="material-symbols-outlined text-sm">chevron_right</span><span>Borrowing Records</span><span class="material-symbols-outlined text-sm">chevron_right</span><span class="text-primary">Borrowing History</span>
                 </nav>
                 @if (session('status'))
                     <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">{{ session('status') }}</div>
                 @endif
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div>
-                        <h1 class="font-headline text-3xl font-bold tracking-tight text-primary">Borrowing History & Academic Reading Ledger</h1>
+                        <h1 class="font-headline text-3xl font-bold tracking-tight text-primary">Borrowing History & Academic Reading Record</h1>
                         <p class="mt-1 max-w-3xl text-sm text-on-surface-variant">Complete audit record of physical textbooks, journals, and thesis manuscripts borrowed, returned, renewed, or cleared by <span class="font-semibold text-on-surface">Juan Dela Cruz</span>.</p>
                     </div>
                     <div class="flex shrink-0 items-center gap-3">
@@ -138,8 +138,8 @@
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm"><div class="mb-2 flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Lifetime Borrows</span><span class="material-symbols-outlined rounded-lg bg-surface-container p-1.5 text-primary">auto_stories</span></div><p class="font-headline text-2xl font-bold">{{ $totalRows }} Books</p><div class="mt-2 flex items-center gap-1.5 text-xs text-on-surface-variant"><span class="h-2 w-2 rounded-full bg-primary-container"></span>{{ $returnedCount }} Returned - {{ $activeLoanCount }} Active Loans</div></div>
                         <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm"><div class="mb-2 flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">On-Time Return Rate</span><span class="material-symbols-outlined rounded-lg bg-surface-container p-1.5 text-primary-container">verified_user</span></div><p class="font-headline text-2xl font-bold text-primary-container">{{ $onTimeRate }}% Rate</p><div class="mt-2 flex items-center gap-1.5 text-xs text-on-surface-variant"><span class="material-symbols-outlined text-sm text-primary-container">check_circle</span>{{ $onTimeCount }} on-time records</div></div>
-                        <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm"><div class="mb-2 flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Circulation Penalties</span><span class="material-symbols-outlined rounded-lg bg-surface-container p-1.5 text-secondary">payments</span></div><p class="font-headline text-2xl font-bold">PHP 0.00 Due</p><div class="mt-2 text-xs text-on-surface-variant"><span class="font-semibold text-primary-container">Clean Record</span> - PHP 15.00 settled prior</div></div>
-                        <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm"><div class="mb-2 flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Clearance Status</span><span class="material-symbols-outlined rounded-lg bg-primary-fixed p-1.5 text-primary">assignment_turned_in</span></div><p class="font-headline text-2xl font-bold text-primary-container">Clear & Eligible</p><div class="mt-2 flex items-center gap-1.5 text-xs text-on-surface-variant"><span class="material-symbols-outlined text-sm text-primary">sensor_door</span>Turnstile pass unlocked</div></div>
+                        <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm"><div class="mb-2 flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Borrowing Penalties</span><span class="material-symbols-outlined rounded-lg bg-surface-container p-1.5 text-secondary">payments</span></div><p class="font-headline text-2xl font-bold">PHP 0.00 Due</p><div class="mt-2 text-xs text-on-surface-variant"><span class="font-semibold text-primary-container">Clean Record</span> - PHP 15.00 settled prior</div></div>
+                        <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm"><div class="mb-2 flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Clearance Status</span><span class="material-symbols-outlined rounded-lg bg-primary-fixed p-1.5 text-primary">assignment_turned_in</span></div><p class="font-headline text-2xl font-bold text-primary-container">Clear & Allowed</p><div class="mt-2 flex items-center gap-1.5 text-xs text-on-surface-variant"><span class="material-symbols-outlined text-sm text-primary">sensor_door</span>Library Entry pass unlocked</div></div>
                     </div>
 
                     <div class="flex flex-col gap-3 rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm">
@@ -154,14 +154,14 @@
                             </div>
                         </div>
                         <div class="flex flex-wrap items-center justify-between gap-2 border-t border-outline-variant/50 pt-2">
-                            <div class="flex flex-wrap items-center gap-2"><span class="mr-1 text-[10px] font-bold text-on-surface-variant">Classification:</span><a class="rounded-md bg-primary-container px-2.5 py-1 text-[10px] font-bold text-on-primary" href="#">All ({{ $totalRows }})</a><a class="rounded-md bg-surface-container px-2.5 py-1 text-[10px] font-bold text-on-surface-variant hover:text-on-surface" href="#">Computer Science</a><a class="rounded-md bg-surface-container px-2.5 py-1 text-[10px] font-bold text-on-surface-variant hover:text-on-surface" href="#">Mathematics</a></div>
+                            <div class="flex flex-wrap items-center gap-2"><span class="mr-1 text-[10px] font-bold text-on-surface-variant">Category:</span><a class="rounded-md bg-primary-container px-2.5 py-1 text-[10px] font-bold text-on-primary" href="#">All ({{ $totalRows }})</a><a class="rounded-md bg-surface-container px-2.5 py-1 text-[10px] font-bold text-on-surface-variant hover:text-on-surface" href="#">Computer Science</a><a class="rounded-md bg-surface-container px-2.5 py-1 text-[10px] font-bold text-on-surface-variant hover:text-on-surface" href="#">Mathematics</a></div>
                             <div class="flex items-center gap-2"><span class="text-[10px] font-bold text-on-surface-variant">Sort:</span><select class="rounded border-none bg-surface-container py-1 pl-2 pr-6 text-[10px] font-bold"><option>Newest Borrow Date</option><option>Oldest Borrow Date</option><option>Title A-Z</option></select></div>
                         </div>
                     </div>
 
                     <div class="overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest shadow-sm">
                         <div class="flex items-center justify-between border-b border-outline-variant p-4">
-                            <div><h2 class="font-headline text-base font-bold">Circulation Audit Ledger</h2><p class="text-xs text-on-surface-variant">Displaying {{ $returnedCount }} historical and {{ $activeLoanCount }} active circulation transaction logs</p></div>
+                            <div><h2 class="font-headline text-base font-bold">Borrowing Audit Record</h2><p class="text-xs text-on-surface-variant">Displaying {{ $returnedCount }} historical and {{ $activeLoanCount }} active circulation transaction logs</p></div>
                             <span class="text-[10px] font-bold text-outline">Sorted by Borrow Date</span>
                         </div>
                         <div class="custom-scrollbar overflow-x-auto">
@@ -253,7 +253,7 @@
                                 <div class="grid h-16 w-16 shrink-0 grid-cols-4 gap-0.5 rounded-lg border border-outline-variant bg-white p-1.5 shadow-sm">@for ($i = 0; $i < 16; $i++)<div class="{{ in_array($i, [2,5,7,8,13]) ? 'bg-surface' : 'bg-primary' }} rounded-[1px]"></div>@endfor</div>
                             </div>
                             <div class="space-y-2.5 pt-1 text-sm">
-                                <div class="flex items-center justify-between border-b border-outline-variant/40 py-1"><span class="text-on-surface-variant">Patron Name</span><span class="font-bold">Juan Dela Cruz</span></div>
+                                <div class="flex items-center justify-between border-b border-outline-variant/40 py-1"><span class="text-on-surface-variant">Name</span><span class="font-bold">Juan Dela Cruz</span></div>
                                 <div class="flex items-center justify-between border-b border-outline-variant/40 py-1"><span class="text-on-surface-variant">Student Number</span><span class="font-mono font-medium">2024-10492-OL</span></div>
                                 <div class="flex items-center justify-between border-b border-outline-variant/40 py-1"><span class="text-on-surface-variant">Degree Program</span><span class="font-medium">BS Computer Science (3A)</span></div>
                                 <div class="flex items-center justify-between border-b border-outline-variant/40 py-1"><span class="text-on-surface-variant">Overdue Copies Held</span><span class="font-bold text-primary-container">0 Books</span></div>
@@ -261,7 +261,7 @@
                             </div>
                             <div class="flex items-center gap-3 rounded-lg border border-outline-variant bg-surface-container p-3">
                                 <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-container text-xs font-bold text-on-primary">MS</div>
-                                <div><p class="text-xs font-bold">Ms. Maria Santos, RL</p><p class="text-[11px] text-on-surface-variant">Head Librarian - CLCST Circulation Section</p><p class="mt-0.5 font-mono text-[10px] text-outline">Signed: Oct 20, 2024 - 08:30 AM PST</p></div>
+                                <div><p class="text-xs font-bold">Ms. Maria Santos, RL</p><p class="text-[11px] text-on-surface-variant">Head Librarian - CLCST Borrowing Section</p><p class="mt-0.5 font-mono text-[10px] text-outline">Signed: Oct 20, 2024 - 08:30 AM PST</p></div>
                             </div>
                             <button class="flex w-full items-center justify-center gap-2 rounded-lg border border-outline-variant bg-surface-container px-4 py-2.5 text-xs font-bold text-primary hover:bg-surface-container-high" type="button"><span class="material-symbols-outlined text-lg">verified</span>Generate Official Seal Certificate</button>
                         </div>
@@ -269,15 +269,15 @@
 
                     <section class="flex flex-col gap-4 rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm">
                         <div class="flex items-center justify-between"><h3 class="font-headline text-base font-bold">Reading Analytics</h3><span class="material-symbols-outlined text-xl text-primary">analytics</span></div>
-                        <div><div class="mb-1.5 flex items-center justify-between text-[10px] font-bold text-on-surface-variant"><span>Field Classification Breakdown</span><span class="text-primary">{{ $totalRows }} Volumes Total</span></div><div class="flex h-3 w-full overflow-hidden rounded-full bg-surface-container"><div class="h-full bg-primary-container" style="width: 75%"></div><div class="h-full bg-secondary-container" style="width: 15%"></div><div class="h-full bg-tertiary" style="width: 10%"></div></div><div class="mt-2 flex items-center justify-between text-[11px] text-on-surface-variant"><span>CompSci 75%</span><span>Math 15%</span><span>GenEd 10%</span></div></div>
+                        <div><div class="mb-1.5 flex items-center justify-between text-[10px] font-bold text-on-surface-variant"><span>Field Category Breakdown</span><span class="text-primary">{{ $totalRows }} Volumes Total</span></div><div class="flex h-3 w-full overflow-hidden rounded-full bg-surface-container"><div class="h-full bg-primary-container" style="width: 75%"></div><div class="h-full bg-secondary-container" style="width: 15%"></div><div class="h-full bg-tertiary" style="width: 10%"></div></div><div class="mt-2 flex items-center justify-between text-[11px] text-on-surface-variant"><span>CompSci 75%</span><span>Math 15%</span><span>GenEd 10%</span></div></div>
                         <div class="grid grid-cols-2 gap-3 border-t border-outline-variant/50 pt-2"><div class="rounded-lg border border-outline-variant bg-surface-container-low p-3"><p class="text-[11px] font-semibold uppercase text-on-surface-variant">Avg. Loan Time</p><p class="font-headline mt-0.5 text-base font-bold text-primary">11.4 Days</p><p class="text-[10px] text-outline">Under 14-day limit</p></div><div class="rounded-lg border border-outline-variant bg-surface-container-low p-3"><p class="text-[11px] font-semibold uppercase text-on-surface-variant">Top Authors</p><p class="mt-0.5 truncate text-xs font-bold">R. Martin, J. Zelle</p><p class="text-[10px] text-outline">Software Engineering</p></div></div>
                     </section>
 
                     <section class="rounded-xl border border-secondary/40 bg-surface-container-lowest p-5 shadow-sm">
-                        <div class="mb-2 flex items-center gap-2 text-secondary"><span class="material-symbols-outlined text-xl">info</span><h4 class="text-sm font-bold text-on-surface">Circulation Regulations</h4></div>
+                        <div class="mb-2 flex items-center gap-2 text-secondary"><span class="material-symbols-outlined text-xl">info</span><h4 class="text-sm font-bold text-on-surface">Borrowing Rules</h4></div>
                         <ul class="space-y-2 text-sm text-on-surface-variant">
                             <li class="flex items-start gap-2"><span class="material-symbols-outlined mt-0.5 shrink-0 text-base text-primary">check_circle</span><span><strong>14-Day Maximum:</strong> Regular circulation books may be kept for up to 14 calendar days.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined mt-0.5 shrink-0 text-base text-primary">check_circle</span><span><strong>1 Renewal Allowed:</strong> Eligible titles can be renewed once online unless another patron has a hold.</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined mt-0.5 shrink-0 text-base text-primary">check_circle</span><span><strong>1 Renewal Allowed:</strong> Allowed books can be renewed once online unless another borrower has a reservation.</span></li>
                             <li class="flex items-start gap-2"><span class="material-symbols-outlined mt-0.5 shrink-0 text-base text-secondary">warning</span><span><strong>PHP 5.00/Day Fine:</strong> Overdue penalties accumulate daily per book.</span></li>
                         </ul>
                         <div class="mt-4 flex items-center justify-between border-t border-outline-variant/60 pt-3"><a class="flex items-center gap-1 text-xs font-bold text-primary hover:underline" href="{{ route('student.section', 'circulation-policy') }}">View Full Library Manual<span class="material-symbols-outlined text-sm">arrow_forward</span></a><span class="font-mono text-[11px] text-outline">Rev. 2024</span></div>

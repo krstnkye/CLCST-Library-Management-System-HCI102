@@ -28,7 +28,7 @@
             </div>
         </a>
 
-        <span class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-outline">OPAC Navigation</span>
+        <span class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-outline">Book Catalog Navigation</span>
         <nav class="space-y-1">
             @foreach ($navItems as $item)
                 @php
@@ -105,7 +105,7 @@
         <a class="flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-error hover:bg-error-container/30" href="{{ route('login') }}">
             <span class="material-symbols-outlined">logout</span><span class="text-xs font-semibold">Log Out</span>
         </a>
-        <p class="px-3 pt-2 text-[10px] leading-tight text-outline">Patron Mode: Read and search only. Circulation handled at Counter 1.</p>
+        <p class="px-3 pt-2 text-[10px] leading-tight text-outline">Student Mode: Read and search only. Borrowing handled at Counter 1.</p>
     </div>
 </aside>
 

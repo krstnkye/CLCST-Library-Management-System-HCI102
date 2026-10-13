@@ -81,7 +81,7 @@
                 @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm object-contain bg-white p-0.5'])
                 <div class="flex flex-col">
                     <span class="font-headline text-base font-bold leading-none tracking-wide text-primary">CLCST SCHOOL LIBRARY</span>
-                    <span class="mt-0.5 text-xs font-medium text-on-surface-variant">Automated Learning Resource Center</span>
+                    <span class="mt-0.5 text-xs font-medium text-on-surface-variant">Library Notifications</span>
                 </div>
             </div>
             <div class="hidden h-6 w-px bg-outline-variant lg:block"></div>
@@ -120,9 +120,9 @@
         <main class="flex-1 space-y-6 p-4 md:ml-64 md:p-8">
             <div class="flex flex-col justify-between gap-4 border-b border-outline-variant pb-2 md:flex-row md:items-end">
                 <div>
-                    <nav class="mb-1 flex items-center gap-2 text-xs text-on-surface-variant"><span>Student Portal</span><span class="material-symbols-outlined text-sm">chevron_right</span><span>Circulation & Accounts</span><span class="material-symbols-outlined text-sm">chevron_right</span><span class="font-semibold text-primary">My Patron Profile</span></nav>
-                    <h1 class="font-headline text-3xl font-bold tracking-tight text-on-surface">Student Patron Profile & Digital Library Identity</h1>
-                    <p class="mt-1 max-w-3xl text-sm text-on-surface-variant">Manage academic credentials, digital RFID/barcode turnstile pass, communication channels, borrowing privileges, and security settings.</p>
+                    <nav class="mb-1 flex items-center gap-2 text-xs text-on-surface-variant"><span>Student Portal</span><span class="material-symbols-outlined text-sm">chevron_right</span><span>Borrowing & Account</span><span class="material-symbols-outlined text-sm">chevron_right</span><span class="font-semibold text-primary">My Profile</span></nav>
+                    <h1 class="font-headline text-3xl font-bold tracking-tight text-on-surface">Student Account Profile & Digital Library Identity</h1>
+                    <p class="mt-1 max-w-3xl text-sm text-on-surface-variant">Manage academic credentials, digital Barcode/barcode library entry pass, communication channels, borrowing access, and security settings.</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-2.5">
                     <button class="inline-flex items-center gap-2 rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 text-sm font-semibold hover:bg-surface-container" type="button"><span class="material-symbols-outlined text-lg text-primary">sync</span>Sync with Registrar</button>
@@ -144,7 +144,7 @@
                     </div>
                     <div class="grid grid-cols-2 gap-3 rounded-xl border border-outline-variant/60 bg-surface-container-low p-3.5 sm:grid-cols-4">
                         <div><div class="flex items-center gap-1.5 text-xs text-on-surface-variant"><span class="material-symbols-outlined text-base text-primary">school</span>Enrollment</div><span class="mt-0.5 block text-sm font-bold">Enrolled</span><span class="text-[11px] text-outline">Registrar verified</span></div>
-                        <div><div class="flex items-center gap-1.5 text-xs text-on-surface-variant"><span class="material-symbols-outlined text-base text-primary">contactless</span>Turnstile RFID</div><span class="mt-0.5 block text-sm font-bold text-primary-container">Granted</span><span class="font-mono text-[11px] text-outline">04-A9-C2-88</span></div>
+                        <div><div class="flex items-center gap-1.5 text-xs text-on-surface-variant"><span class="material-symbols-outlined text-base text-primary">contactless</span>Library Entry Barcode</div><span class="mt-0.5 block text-sm font-bold text-primary-container">Granted</span><span class="font-mono text-[11px] text-outline">04-A9-C2-88</span></div>
                         <div><div class="flex items-center gap-1.5 text-xs text-on-surface-variant"><span class="material-symbols-outlined text-base text-primary">assignment_turned_in</span>Clearance</div><span class="mt-0.5 block text-sm font-bold">Clear to Borrow</span><span class="text-[11px] font-semibold text-primary">{{ $slotsLeft }} of 5 slots free</span></div>
                         <div><div class="flex items-center gap-1.5 text-xs text-on-surface-variant"><span class="material-symbols-outlined text-base text-outline">event</span>Account Expiry</div><span class="mt-0.5 block text-sm font-bold">May 31, 2025</span><span class="text-[11px] text-outline">Term renewal</span></div>
                     </div>
@@ -152,8 +152,8 @@
             </section>
 
             <nav aria-label="Profile Sections" class="flex items-center gap-2 overflow-x-auto border-b border-outline-variant">
-                <a class="flex whitespace-nowrap border-b-2 border-primary px-4 py-2.5 text-sm font-bold text-primary" href="#credentials"><span class="material-symbols-outlined mr-2 text-lg" style="font-variation-settings: 'FILL' 1;">badge</span>Overview & Credentials</a>
-                <a class="flex whitespace-nowrap border-b-2 border-transparent px-4 py-2.5 text-sm font-semibold text-on-surface-variant hover:text-on-surface" href="#privileges"><span class="material-symbols-outlined mr-2 text-lg">tune</span>Borrowing Privileges</a>
+                <a class="flex whitespace-nowrap border-b-2 border-primary px-4 py-2.5 text-sm font-bold text-primary" href="#credentials"><span class="material-symbols-outlined mr-2 text-lg" style="font-variation-settings: 'FILL' 1;">badge</span>Overview & Documents</a>
+                <a class="flex whitespace-nowrap border-b-2 border-transparent px-4 py-2.5 text-sm font-semibold text-on-surface-variant hover:text-on-surface" href="#access"><span class="material-symbols-outlined mr-2 text-lg">tune</span>Borrowing Access</a>
                 <a class="flex whitespace-nowrap border-b-2 border-transparent px-4 py-2.5 text-sm font-semibold text-on-surface-variant hover:text-on-surface" href="#notifications"><span class="material-symbols-outlined mr-2 text-lg">notifications_active</span>Notification Preferences</a>
                 <a class="flex whitespace-nowrap border-b-2 border-transparent px-4 py-2.5 text-sm font-semibold text-on-surface-variant hover:text-on-surface" href="#security"><span class="material-symbols-outlined mr-2 text-lg">shield</span>Privacy & Security</a>
             </nav>
@@ -162,29 +162,29 @@
                 <section id="credentials" class="space-y-6 xl:col-span-8">
                     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
                         <article class="rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm">
-                            <div class="mb-4 flex items-center justify-between border-b border-outline-variant pb-3"><h2 class="font-headline flex items-center gap-2 text-base font-bold"><span class="material-symbols-outlined text-primary">badge</span>Institutional Credentials</h2><span class="rounded bg-primary-fixed px-2 py-0.5 text-[10px] font-bold text-primary">VERIFIED</span></div>
+                            <div class="mb-4 flex items-center justify-between border-b border-outline-variant pb-3"><h2 class="font-headline flex items-center gap-2 text-base font-bold"><span class="material-symbols-outlined text-primary">badge</span>School Documents</h2><span class="rounded bg-primary-fixed px-2 py-0.5 text-[10px] font-bold text-primary">VERIFIED</span></div>
                             <dl class="grid gap-3 text-sm">
                                 <div class="flex items-center justify-between border-b border-outline-variant/40 pb-2"><dt class="text-on-surface-variant">Full Legal Name</dt><dd class="font-bold">Juan Dela Cruz</dd></div>
                                 <div class="flex items-center justify-between border-b border-outline-variant/40 pb-2"><dt class="text-on-surface-variant">Student Number</dt><dd class="font-mono font-semibold">2024-10492-OL</dd></div>
                                 <div class="flex items-center justify-between border-b border-outline-variant/40 pb-2"><dt class="text-on-surface-variant">Program</dt><dd class="font-semibold">BS Computer Science</dd></div>
                                 <div class="flex items-center justify-between border-b border-outline-variant/40 pb-2"><dt class="text-on-surface-variant">Year & Section</dt><dd class="font-semibold">3rd Year - BSCS 3A</dd></div>
-                                <div class="flex items-center justify-between"><dt class="text-on-surface-variant">Library Card Status</dt><dd class="font-bold text-primary-container">Active Patron</dd></div>
+                                <div class="flex items-center justify-between"><dt class="text-on-surface-variant">Library Card Status</dt><dd class="font-bold text-primary-container">Active Account</dd></div>
                             </dl>
                         </article>
 
                         <article class="rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm">
                             <div class="mb-4 flex items-center justify-between border-b border-outline-variant pb-3"><h2 class="font-headline flex items-center gap-2 text-base font-bold"><span class="material-symbols-outlined text-primary">alternate_email</span>Contact Channels</h2><button class="text-xs font-bold text-primary hover:underline" type="button">Edit</button></div>
                             <dl class="grid gap-3 text-sm">
-                                <div class="rounded-lg border border-outline-variant bg-surface-container-low p-3"><dt class="text-xs font-bold text-on-surface-variant">Institutional Email</dt><dd class="mt-1 font-semibold">juan.delacruz@clcst.edu.ph</dd></div>
+                                <div class="rounded-lg border border-outline-variant bg-surface-container-low p-3"><dt class="text-xs font-bold text-on-surface-variant">School Email</dt><dd class="mt-1 font-semibold">juan.delacruz@clcst.edu.ph</dd></div>
                                 <div class="rounded-lg border border-outline-variant bg-surface-container-low p-3"><dt class="text-xs font-bold text-on-surface-variant">Mobile Number</dt><dd class="mt-1 font-semibold">+63 917 123 4567</dd></div>
                                 <div class="rounded-lg border border-outline-variant bg-surface-container-low p-3"><dt class="text-xs font-bold text-on-surface-variant">Home Address</dt><dd class="mt-1 font-semibold">San Fernando, Pampanga</dd></div>
                             </dl>
                         </article>
                     </div>
 
-                    <article id="privileges" class="rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm">
+                    <article id="access" class="rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm">
                         <div class="mb-4 flex items-center justify-between border-b border-outline-variant pb-3">
-                            <div><h2 class="font-headline flex items-center gap-2 text-base font-bold"><span class="material-symbols-outlined text-primary">tune</span>Borrowing Privileges & Quota</h2><p class="text-xs text-on-surface-variant">Student circulation rules for undergraduate patrons</p></div>
+                            <div><h2 class="font-headline flex items-center gap-2 text-base font-bold"><span class="material-symbols-outlined text-primary">tune</span>Borrowing Access & Book Limit</h2><p class="text-xs text-on-surface-variant">Student borrowing rules for undergraduate students</p></div>
                             <span class="rounded bg-surface-container px-2 py-0.5 text-[10px] font-bold text-primary">{{ $activeLoanCount }} / 5 Active</span>
                         </div>
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -209,7 +209,7 @@
                         <div class="bg-primary-container p-4 text-on-primary">
                             <div class="mb-1 flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-on-primary/80">Digital Library Identity</span><span class="rounded bg-secondary-fixed px-2 py-0.5 text-[10px] font-bold text-on-secondary-container">ACTIVE</span></div>
                             <h3 class="font-headline text-base font-bold text-white">CLCST Library Borrower Pass</h3>
-                            <p class="mt-0.5 text-xs text-on-primary/90">RFID and barcode enabled</p>
+                            <p class="mt-0.5 text-xs text-on-primary/90">Barcode and barcode enabled</p>
                         </div>
                         <div class="space-y-4 p-5">
                             <div class="rounded-xl bg-gradient-to-br from-primary-container to-primary p-4 text-white shadow-md">

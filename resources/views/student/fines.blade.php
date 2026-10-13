@@ -85,7 +85,7 @@
                 @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm object-contain bg-white p-0.5'])
                 <div class="flex flex-col">
                     <span class="font-headline text-base font-bold leading-none tracking-wide text-primary">CLCST SCHOOL LIBRARY</span>
-                    <span class="mt-0.5 text-xs font-medium text-on-surface-variant">Automated Learning Resource Center</span>
+                    <span class="mt-0.5 text-xs font-medium text-on-surface-variant">Library Notifications</span>
                 </div>
             </div>
             <div class="hidden h-6 w-px bg-outline-variant lg:block"></div>
@@ -128,12 +128,12 @@
 
             <div class="flex flex-col justify-between gap-4 border-b border-outline-variant pb-2 md:flex-row md:items-end">
                 <div>
-                    <nav class="mb-1 flex items-center gap-2 text-xs text-on-surface-variant"><span>Student Portal</span><span class="material-symbols-outlined text-sm">chevron_right</span><span>Circulation & Accounts</span><span class="material-symbols-outlined text-sm">chevron_right</span><span class="font-semibold text-primary">Fines & Penalties</span></nav>
+                    <nav class="mb-1 flex items-center gap-2 text-xs text-on-surface-variant"><span>Student Portal</span><span class="material-symbols-outlined text-sm">chevron_right</span><span>Borrowing & Account</span><span class="material-symbols-outlined text-sm">chevron_right</span><span class="font-semibold text-primary">Fines & Penalties</span></nav>
                     <h1 class="font-headline text-3xl font-bold tracking-tight text-on-surface">Fines, Penalties & Library Clearance</h1>
                     <p class="mt-1 max-w-3xl text-sm text-on-surface-variant">Review overdue assessments, settled payments, waived grace-period charges, and clearance eligibility for Juan Dela Cruz.</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-2.5">
-                    <a class="inline-flex items-center gap-2 rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 text-sm font-semibold hover:bg-surface-container" href="{{ route('student.section', 'history') }}"><span class="material-symbols-outlined text-lg text-primary">receipt_long</span>View Borrowing Ledger</a>
+                    <a class="inline-flex items-center gap-2 rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 text-sm font-semibold hover:bg-surface-container" href="{{ route('student.section', 'history') }}"><span class="material-symbols-outlined text-lg text-primary">receipt_long</span>View Borrowing Record</a>
                     <a class="inline-flex items-center gap-2 rounded-lg bg-primary-container px-4 py-2 text-sm font-semibold text-on-primary shadow-sm hover:bg-primary" href="#payment-center"><span class="material-symbols-outlined text-lg">payments</span>Payment Center</a>
                 </div>
             </div>
@@ -159,7 +159,7 @@
             </section>
 
             <nav aria-label="Fine Sections" class="flex items-center gap-2 overflow-x-auto border-b border-outline-variant">
-                <a class="flex whitespace-nowrap border-b-2 border-primary px-4 py-2.5 text-sm font-bold text-primary" href="#ledger"><span class="material-symbols-outlined mr-2 text-lg" style="font-variation-settings: 'FILL' 1;">payments</span>Penalty Ledger</a>
+                <a class="flex whitespace-nowrap border-b-2 border-primary px-4 py-2.5 text-sm font-bold text-primary" href="#ledger"><span class="material-symbols-outlined mr-2 text-lg" style="font-variation-settings: 'FILL' 1;">payments</span>Penalty Record</a>
                 <a class="flex whitespace-nowrap border-b-2 border-transparent px-4 py-2.5 text-sm font-semibold text-on-surface-variant hover:text-on-surface" href="#payment-center"><span class="material-symbols-outlined mr-2 text-lg">point_of_sale</span>Payment Options</a>
                 <a class="flex whitespace-nowrap border-b-2 border-transparent px-4 py-2.5 text-sm font-semibold text-on-surface-variant hover:text-on-surface" href="#rules"><span class="material-symbols-outlined mr-2 text-lg">gavel</span>Penalty Rules</a>
             </nav>
@@ -174,7 +174,7 @@
                     </div>
 
                     <div id="ledger" class="overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest shadow-sm">
-                        <div class="flex items-center justify-between border-b border-outline-variant p-4"><div><h2 class="font-headline text-base font-bold">Fine Assessment Ledger</h2><p class="text-xs text-on-surface-variant">Official penalty, waiver, and payment records for this patron</p></div><span class="text-[10px] font-bold text-outline">Updated {{ now()->format('M d, Y h:i A') }}</span></div>
+                        <div class="flex items-center justify-between border-b border-outline-variant p-4"><div><h2 class="font-headline text-base font-bold">Fine Record</h2><p class="text-xs text-on-surface-variant">Official penalty, waiver, and payment records for this account</p></div><span class="text-[10px] font-bold text-outline">Updated {{ now()->format('M d, Y h:i A') }}</span></div>
                         <div class="overflow-x-auto">
                             <table class="w-full border-collapse text-left">
                                 <thead><tr class="border-b border-outline-variant bg-surface-container-low text-[10px] font-bold uppercase text-on-surface-variant"><th class="px-4 py-3">Book / Assessment</th><th class="px-4 py-3">Dates</th><th class="px-4 py-3">Computation</th><th class="px-4 py-3">Amount</th><th class="px-4 py-3">Status</th><th class="px-4 py-3 text-right">Action</th></tr></thead>

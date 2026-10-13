@@ -64,7 +64,7 @@
         $isFaculty = $portalRole === 'faculty';
         $currentUser = $isFaculty
             ? ['initials' => 'RM', 'name' => 'Engr. Roberto M. Mendoza, PECE', 'short' => 'Engr. Roberto Mendoza', 'id' => 'FAC-2018-0412', 'role' => 'Faculty Member', 'department' => 'CICT Dept Chair', 'subtitle' => 'Associate Professor & Chair, CICT & Computer Engineering']
-            : ['initials' => 'MS', 'name' => 'Maria Santos', 'short' => 'Maria Santos', 'id' => 'LIB-STAFF-042', 'role' => 'Library Staff', 'department' => 'Head Librarian', 'subtitle' => 'Circulation & Interlibrary Loan Desk'];
+            : ['initials' => 'MS', 'name' => 'Maria Santos', 'short' => 'Maria Santos', 'id' => 'LIB-STAFF-042', 'role' => 'Library Staff', 'department' => 'Head Librarian', 'subtitle' => 'Borrowing & Interlibrary Loan Desk'];
         $borrowedCount = $isFaculty ? max($stats['activeLoans'], 4) : $stats['activeLoans'];
         $reservationCount = $stats['pendingReservations'];
         $renewalCount = 1;
@@ -92,7 +92,7 @@
                 </span>
                 <input class="w-full rounded-lg border border-gray-200 bg-slate-50 py-2 pl-10 pr-28 text-sm text-gray-800 placeholder:text-gray-400 transition-all focus:border-[#135d2e] focus:outline-none focus:ring-1 focus:ring-[#135d2e]" name="q" placeholder="Search book catalog by title, author, category, ISBN, or call no..." type="text">
                 <div class="absolute right-2 flex items-center gap-1">
-                    <span class="rounded bg-gray-200 px-1.5 py-0.5 text-[10px] font-semibold text-gray-600">OPAC</span>
+                    <span class="rounded bg-gray-200 px-1.5 py-0.5 text-[10px] font-semibold text-gray-600">Book Catalog</span>
                     <button class="p-1 text-gray-400 transition-colors hover:text-[#135d2e]" title="Scan Barcode / ISBN" type="submit">
                         <span class="material-symbols-outlined text-[18px]">barcode_scanner</span>
                     </button>
@@ -151,7 +151,7 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 <span class="rounded-full border border-emerald-300 bg-emerald-100 px-2.5 py-0.5 text-[11px] font-bold text-[#135d2e]">{{ strtoupper($currentUser['role']) }} ID: {{ $currentUser['id'] }}</span>
                                 <span class="rounded-full bg-blue-100 px-2.5 py-0.5 text-[11px] font-semibold text-blue-800">1st Semester AY 2024-2025</span>
-                                <span class="rounded-full border border-amber-300 bg-amber-100 px-2.5 py-0.5 text-[11px] font-semibold text-amber-800">{{ $isFaculty ? 'Active Teaching Load - 60-Day Loan Privilege' : 'Authorized Desk Access - Circulation Privilege' }}</span>
+                                <span class="rounded-full border border-amber-300 bg-amber-100 px-2.5 py-0.5 text-[11px] font-semibold text-amber-800">{{ $isFaculty ? 'Active Teaching Load - 60-Day Loan Access' : 'Authorized Desk Access - Borrowing Access' }}</span>
                             </div>
                             <h1 class="font-headline text-2xl font-extrabold tracking-tight text-gray-900 md:text-3xl">Faculty & Staff Dashboard</h1>
                             <p class="text-sm font-medium text-gray-600">Welcome back, <strong class="font-semibold text-gray-900">{{ $currentUser['short'] }}</strong> ({{ $currentUser['role'] }} - {{ $currentUser['subtitle'] }}).</p>
@@ -190,10 +190,10 @@
                     <section class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm" id="borrowed">
                         <div class="mb-4 flex flex-col justify-between gap-3 border-b border-gray-200 pb-3 sm:flex-row sm:items-center">
                             <div>
-                                <h2 class="font-headline text-lg font-bold text-gray-900">{{ $isFaculty ? 'My Borrowed Books & Renewal Queue' : 'Circulation Queue & Loan Desk' }}</h2>
-                                <p class="text-xs text-gray-500">{{ $isFaculty ? 'Faculty loan privileges, due dates, and active renewal requests.' : 'Current items requiring counter action and patron follow-up.' }}</p>
+                                <h2 class="font-headline text-lg font-bold text-gray-900">{{ $isFaculty ? 'My Borrowed Books & Renewal List' : 'Borrowing List & Loan Desk' }}</h2>
+                                <p class="text-xs text-gray-500">{{ $isFaculty ? 'Faculty loan access, due dates, and active renewal requests.' : 'Current items requiring library desk action and borrower follow-up.' }}</p>
                             </div>
-                            <a class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#135d2e] px-3 py-2 text-xs font-bold text-white hover:bg-[#0c3b1d]" href="{{ route('staff.section', 'circulation') }}"><span class="material-symbols-outlined text-[16px]">open_in_new</span>Open Full Queue</a>
+                            <a class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#135d2e] px-3 py-2 text-xs font-bold text-white hover:bg-[#0c3b1d]" href="{{ route('staff.section', 'circulation') }}"><span class="material-symbols-outlined text-[16px]">open_in_new</span>Open Full List</a>
                         </div>
 
                         <div class="space-y-3">
@@ -230,13 +230,13 @@
 
                         <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
                             <article class="rounded-lg border border-gray-200 bg-slate-50/70 p-4" id="course-reserves">
-                                <div class="mb-2 flex items-center justify-between"><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] text-[#135d2e]">library_add</span><h3 class="text-xs font-bold uppercase tracking-wide text-gray-900">1. Course Reserves</h3></div><span class="text-[10px] font-medium text-gray-400">Reserve Shelf</span></div>
+                                <div class="mb-2 flex items-center justify-between"><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] text-[#135d2e]">library_add</span><h3 class="text-xs font-bold uppercase tracking-wide text-gray-900">1. Course Reserves</h3></div><span class="text-[10px] font-medium text-gray-400">Pickup Shelf</span></div>
                                 <div class="rounded border border-gray-200 bg-white p-3 text-xs"><div class="flex items-center justify-between gap-3"><span class="font-bold text-gray-900">{{ $firstBook['title'] ?? 'Introduction to Python Programming' }}</span><span class="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-800">Active</span></div><p class="mt-2 text-[11px] text-gray-600">Linked to CS 211 reading list. Copies are visible to students in the catalog and reserve desk.</p></div>
-                                <div class="mt-3 flex justify-end border-t border-gray-200 pt-2.5"><a class="text-xs font-semibold text-[#135d2e] hover:underline" href="{{ route('staff.section', 'course-reserves') }}">Manage Reserve Shelf</a></div>
+                                <div class="mt-3 flex justify-end border-t border-gray-200 pt-2.5"><a class="text-xs font-semibold text-[#135d2e] hover:underline" href="{{ route('staff.section', 'course-reserves') }}">Manage Pickup Shelf</a></div>
                             </article>
 
                             <article class="rounded-lg border border-gray-200 bg-slate-50/70 p-4" id="reading-lists">
-                                <div class="mb-2 flex items-center justify-between"><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] text-[#135d2e]">format_list_bulleted</span><h3 class="text-xs font-bold uppercase tracking-wide text-gray-900">2. Course Reading Lists</h3></div><span class="text-[10px] font-medium text-gray-400">OPAC Discoverable</span></div>
+                                <div class="mb-2 flex items-center justify-between"><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] text-[#135d2e]">format_list_bulleted</span><h3 class="text-xs font-bold uppercase tracking-wide text-gray-900">2. Course Reading Lists</h3></div><span class="text-[10px] font-medium text-gray-400">Visible to Students</span></div>
                                 <div class="rounded border border-gray-200 bg-white p-3 text-xs"><div class="flex items-center justify-between gap-3"><span class="font-bold text-gray-900">AY 2024-2025 1st Sem: BSCS Core Syllabus</span><span class="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-bold text-blue-800">Published</span></div><p class="mt-2 text-[11px] text-gray-600">12 titles linked for students to discover directly in the CLCST web catalog.</p></div>
                                 <div class="mt-3 flex items-center justify-between border-t border-gray-200 pt-2.5"><span class="text-[11px] text-gray-500">Student reads this term: <strong>214</strong></span><a class="text-xs font-semibold text-[#135d2e] hover:underline" href="{{ route('staff.section', 'reading-lists') }}">Manage Lists</a></div>
                             </article>
@@ -259,7 +259,7 @@
                 <aside class="space-y-6 lg:col-span-4">
                     <section class="relative overflow-hidden rounded-xl border border-[#135d2e]/30 bg-gradient-to-br from-[#135d2e] via-[#0c3b1d] to-[#05210e] p-5 text-white shadow-md">
                         <div class="pointer-events-none absolute right-[-15px] top-[-15px] text-8xl font-extrabold text-white/10">CL</div>
-                        <div class="relative z-10 flex items-center justify-between border-b border-white/20 pb-3"><div class="flex items-center gap-2">@include('partials.celtech-logo', ['class' => 'flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs font-extrabold text-[#135d2e] object-contain bg-white p-0.5'])<div><div class="text-[10px] font-black uppercase tracking-widest text-amber-300">CLCST Patron Card</div><div class="text-xs font-semibold text-white/90">{{ $isFaculty ? 'Faculty Library Access' : 'Staff Library Access' }}</div></div></div><span class="rounded bg-amber-400 px-2 py-0.5 text-[10px] font-black text-amber-950">RFID ACTIVE</span></div>
+                        <div class="relative z-10 flex items-center justify-between border-b border-white/20 pb-3"><div class="flex items-center gap-2">@include('partials.celtech-logo', ['class' => 'flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs font-extrabold text-[#135d2e] object-contain bg-white p-0.5'])<div><div class="text-[10px] font-black uppercase tracking-widest text-amber-300">CLCST Library User Card</div><div class="text-xs font-semibold text-white/90">{{ $isFaculty ? 'Faculty Library Access' : 'Staff Library Access' }}</div></div></div><span class="rounded bg-amber-400 px-2 py-0.5 text-[10px] font-black text-amber-950">Barcode ACTIVE</span></div>
                         <div class="relative z-10 mt-3 space-y-0.5"><div class="text-[10px] font-semibold uppercase tracking-wider text-emerald-200">{{ $currentUser['role'] }} / {{ $currentUser['department'] }}</div><div class="font-headline text-base font-bold tracking-tight text-white">{{ $currentUser['name'] }}</div><div class="text-xs text-white/80">{{ $currentUser['subtitle'] }}</div></div>
                         <div class="relative z-10 mt-4 rounded-lg bg-white p-3 text-center text-gray-900 shadow-inner"><div class="mb-1 font-mono text-[10px] font-bold tracking-wider text-gray-500">TURNSTILE CIRCULATION BARCODE</div><div class="flex h-11 w-full items-center justify-center gap-0.5 bg-white px-2">@foreach ([1,2,1,2,3,1,2,1,3,2,1,3,1,2,1,4,1,2,2,1,3,1,2,1,3,2] as $bar)<span class="h-9 bg-black" style="width: {{ $bar }}px"></span>@endforeach</div><div class="mt-1 font-mono text-xs font-extrabold tracking-widest text-gray-900">{{ $currentUser['id'] }}</div></div>
                         <div class="relative z-10 mt-3 flex items-center justify-between text-[11px] text-white/80"><span>Valid: AY 2024-2025</span><span class="flex items-center gap-1 font-semibold text-emerald-300"><span class="material-symbols-outlined text-[14px]">verified</span>Active Account</span></div>
@@ -280,9 +280,9 @@
                     </section>
 
                     <section class="space-y-3 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-                        <div class="flex items-center justify-between border-b border-gray-200 pb-2"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-[20px] text-[#135d2e]">admin_panel_settings</span><h3 class="font-headline text-sm font-bold text-gray-900">Privileges & Policy</h3></div><span class="rounded border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-[#135d2e]">Verified</span></div>
+                        <div class="flex items-center justify-between border-b border-gray-200 pb-2"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-[20px] text-[#135d2e]">admin_panel_settings</span><h3 class="font-headline text-sm font-bold text-gray-900">Access & Policy</h3></div><span class="rounded border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-[#135d2e]">Verified</span></div>
                         <ul class="space-y-2 text-xs text-gray-700">
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined mt-0.5 shrink-0 text-[16px] text-emerald-600">check_circle</span><span><strong>{{ $isFaculty ? '60-Day Loan Period:' : 'Desk Access:' }}</strong> {{ $isFaculty ? 'Applicable to instructional and research titles.' : 'Authorized for circulation, patron records, and reports.' }}</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined mt-0.5 shrink-0 text-[16px] text-emerald-600">check_circle</span><span><strong>{{ $isFaculty ? '60-Day Loan Period:' : 'Desk Access:' }}</strong> {{ $isFaculty ? 'Applicable to instructional and research titles.' : 'Authorized for borrowing records, borrower records, and reports.' }}</span></li>
                             <li class="flex items-start gap-2"><span class="material-symbols-outlined mt-0.5 shrink-0 text-[16px] text-emerald-600">check_circle</span><span><strong>Reserve Support:</strong> Course and hold shelf requests are routed to the library desk.</span></li>
                             <li class="flex items-start gap-2 rounded border border-amber-200 bg-amber-50 p-2 text-amber-900"><span class="material-symbols-outlined mt-0.5 shrink-0 text-[16px] text-amber-600">info</span><span><strong>Policy Rule:</strong> Physical counter scanning is required for official circulation checkout.</span></li>
                         </ul>
@@ -301,7 +301,7 @@
         <div class="w-full max-w-md space-y-4 rounded-xl border border-gray-200 bg-white p-6 shadow-xl">
             <div class="flex items-center justify-between border-b border-gray-200 pb-2"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#135d2e]">rate_review</span><h3 class="font-headline text-base font-bold text-gray-900">Library Feedback & Assistance</h3></div><button class="text-gray-400 hover:text-gray-600" onclick="document.getElementById('feedbackModal').classList.add('hidden')" type="button"><span class="material-symbols-outlined">close</span></button></div>
             <form class="space-y-3 text-xs" onsubmit="event.preventDefault(); alert('Feedback sent to Head Librarian Ms. Santos.'); document.getElementById('feedbackModal').classList.add('hidden');">
-                <div><label class="mb-1 block font-semibold text-gray-700">Inquiry / Feedback Category</label><select class="w-full rounded border-gray-300 text-xs focus:border-[#135d2e] focus:ring-[#135d2e]"><option>Course Reserves Question</option><option>Remote Access Assistance</option><option>Acquisition Request Follow-Up</option><option>General Library Feedback</option></select></div>
+                <div><label class="mb-1 block font-semibold text-gray-700">Inquiry / Feedback Category</label><select class="w-full rounded border-gray-300 text-xs focus:border-[#135d2e] focus:ring-[#135d2e]"><option>Course Reserves Question</option><option>Online Access Help</option><option>Acquisition Request Follow-Up</option><option>General Library Feedback</option></select></div>
                 <div><label class="mb-1 block font-semibold text-gray-700">Message</label><textarea class="w-full rounded border-gray-300 text-xs focus:border-[#135d2e] focus:ring-[#135d2e]" placeholder="Describe your concern or inquiry for the head librarian..." rows="3"></textarea></div>
                 <div class="flex items-center justify-end gap-2 pt-2"><button class="rounded px-3 py-1.5 text-xs text-gray-600 hover:bg-gray-100" onclick="document.getElementById('feedbackModal').classList.add('hidden')" type="button">Cancel</button><button class="rounded bg-[#135d2e] px-4 py-1.5 text-xs font-bold text-white hover:bg-[#0c3b1d]" type="submit">Submit Ticket</button></div>
             </form>

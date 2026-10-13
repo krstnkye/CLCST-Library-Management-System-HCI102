@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>CLCST Library Portal - Patron Registration</title>
+    <title>CLCST Library Portal - Library User Registration</title>
     @include('partials.favicon')
 
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -135,11 +135,11 @@
                 <div class="max-w-3xl">
                     <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-secondary-container/30 bg-secondary-container/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-secondary-fixed">
                         <span class="material-symbols-outlined text-[14px]">id_card</span>
-                        Official Institutional Enrolment Gateway - A.Y. 2024-2025
+                        Official Library Registration - A.Y. 2024-2025
                     </div>
-                    <h1 class="font-headline-xl text-3xl font-bold tracking-tight text-white md:text-4xl">Institutional Library Registration & Card Activation Gateway</h1>
+                    <h1 class="font-headline-xl text-3xl font-bold tracking-tight text-white md:text-4xl">Library Account Registration</h1>
                     <p class="mt-3 max-w-2xl text-sm leading-6 text-on-primary-container md:text-base">
-                        Create and synchronize your official patron account with the registrar to obtain your digital turnstile barcode, self-checkout authorization, and learning commons privileges.
+                        Create and connect your official library account with the registrar to obtain your digital library entry barcode, self-checkout authorization, and learning commons access.
                     </p>
                 </div>
                 <div class="flex items-center gap-3.5 self-start rounded-xl border border-on-primary-container/20 bg-primary/60 p-4 backdrop-blur-sm md:self-auto">
@@ -174,16 +174,16 @@
                     <div class="mb-4 flex items-center justify-between border-b border-outline-variant pb-3">
                         <div class="flex items-center gap-2.5">
                             <span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary-container text-xs font-bold text-white">1</span>
-                            <h2 class="font-headline-sm text-base font-bold text-primary">Select Patron Classification</h2>
+                            <h2 class="font-headline-sm text-base font-bold text-primary">Select Account Type</h2>
                         </div>
-                        <span class="hidden text-[10px] font-bold text-on-surface-variant sm:inline">Requirement for circulation rules & quota assignment</span>
+                        <span class="hidden text-[10px] font-bold text-on-surface-variant sm:inline">Used to set borrowing rules and book limits</span>
                     </div>
 
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-3" id="roleSelectorGrid">
                         @foreach ([
-                            'student' => ['title' => 'Student', 'icon' => 'school', 'desc' => 'Undergraduate, Senior High & Tech-Voc', 'items' => ['5 Books Quota', '14-Day Loan', 'Digital Turnstile Pass']],
-                            'faculty' => ['title' => 'Professor / Faculty', 'icon' => 'psychology', 'desc' => 'Faculty, Instructors & Researchers', 'items' => ['15 Books Quota', '60-Day Extended Loan', 'Research Repository Access']],
-                            'staff' => ['title' => 'Library Staff', 'icon' => 'local_library', 'desc' => 'Circulation Officers & Catalogers', 'items' => ['Circulation Desk Access', 'Barcode Scanner Station', 'Fine Assessment Authority']],
+                            'student' => ['title' => 'Student', 'icon' => 'school', 'desc' => 'Undergraduate, Senior High & Tech-Voc', 'items' => ['5 Books Quota', '14-Day Loan', 'Digital Library Entry Pass']],
+                            'faculty' => ['title' => 'Professor / Faculty', 'icon' => 'psychology', 'desc' => 'Faculty, Instructors & Researchers', 'items' => ['15 Books Quota', '60-Day Extended Loan', 'Research Resources Access']],
+                            'staff' => ['title' => 'Library Staff', 'icon' => 'local_library', 'desc' => 'Borrowing Officers & Catalogers', 'items' => ['Library Desk Access', 'Barcode Scanner Station', 'Fine Assessment Authority']],
                         ] as $role => $details)
                             <label class="role-option relative flex cursor-pointer flex-col rounded-xl border {{ old('patron_role', 'student') === $role ? 'border-primary bg-surface-container-low/50' : 'border-outline-variant bg-surface-container-lowest' }} p-4 transition-all hover:border-primary/60" data-role="{{ $role }}">
                                 <input class="sr-only" form="registrationForm" name="patron_role" type="radio" value="{{ $role }}" {{ old('patron_role', 'student') === $role ? 'checked' : '' }}>
@@ -218,13 +218,13 @@
                         <div class="flex items-center gap-2.5">
                             <span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary-container text-xs font-bold text-white">2</span>
                             <div>
-                                <h2 class="font-headline-sm text-base font-bold text-primary">Patron Enrolment & Institutional Credentials Verification</h2>
+                                <h2 class="font-headline-sm text-base font-bold text-primary">Account Registration & School ID Check</h2>
                                 <p class="text-xs text-on-surface-variant">Ensure details match your official registrar Certificate of Registration.</p>
                             </div>
                         </div>
                         <span class="hidden items-center gap-1 rounded border border-secondary-container/30 bg-secondary-container/20 px-2.5 py-1 text-[10px] font-semibold text-on-secondary-container md:inline-flex">
                             <span class="material-symbols-outlined text-[14px]">sync</span>
-                            Registrar Cross-Sync Active
+                            School Records Check Active
                         </span>
                     </div>
 
@@ -303,7 +303,7 @@
                                     <div>
                                         <label class="mb-1.5 block text-xs font-semibold text-on-surface">Access Level <span class="text-error">*</span></label>
                                         <select class="role-program-input w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="staffAccessSelect">
-                                            @foreach (['Circulation Desk - Level 1', 'Cataloging Office - Level 2', 'Library Administration - Level 3'] as $accessLevel)
+                                            @foreach (['Library Desk - Level 1', 'Cataloging Office - Level 2', 'Library Administration - Level 3'] as $accessLevel)
                                                 <option value="{{ $accessLevel }}" {{ old('program_or_department') === $accessLevel ? 'selected' : '' }}>{{ $accessLevel }}</option>
                                             @endforeach
                                         </select>
@@ -314,7 +314,7 @@
 
                         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
-                                <label class="mb-1.5 block text-xs font-semibold text-on-surface">Institutional Email <span class="text-error">*</span></label>
+                                <label class="mb-1.5 block text-xs font-semibold text-on-surface">School Email <span class="text-error">*</span></label>
                                 <div class="relative">
                                     <span class="material-symbols-outlined pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[18px] text-on-surface-variant">mail</span>
                                     <input class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest py-2.5 pl-10 pr-3.5 text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" name="email" placeholder="juan.delacruz@clcst.edu.ph" required type="email" value="{{ old('email') }}">
@@ -356,7 +356,7 @@
                         </div>
 
                         <div>
-                            <label class="mb-1.5 block text-xs font-semibold text-on-surface">Institutional Credential Verification (COR / School ID Scan)</label>
+                            <label class="mb-1.5 block text-xs font-semibold text-on-surface">School Document Upload (COR or School ID)</label>
                             <div class="rounded-xl border-2 border-dashed border-outline-variant bg-surface-container-low/40 p-6 text-center transition-colors hover:border-primary/80">
                                 <input accept=".pdf,.jpg,.jpeg,.png" class="sr-only" id="fileUpload" name="credential_file" type="file">
                                 <label class="flex cursor-pointer flex-col items-center" for="fileUpload">
@@ -376,7 +376,7 @@
                             <label class="flex cursor-pointer items-start gap-3">
                                 <input class="mt-1 h-4 w-4 rounded border-outline text-primary focus:ring-primary focus:ring-offset-0" name="privacy_consent" required type="checkbox" value="1" {{ old('privacy_consent') ? 'checked' : '' }}>
                                 <span class="text-xs leading-relaxed text-on-surface-variant">
-                                    I declare that all information entered is true and correct according to official records. I agree to CLCST Library Terms of Use and consent to patron account data processing under Republic Act No. 10173.
+                                    I declare that all information entered is true and correct according to official records. I agree to CLCST Library Terms of Use and consent to library account data processing under Republic Act No. 10173.
                                 </span>
                             </label>
                             @error('privacy_consent')<p class="mt-2 text-xs text-error">{{ $message }}</p>@enderror
@@ -400,9 +400,9 @@
                     <div class="mb-4 flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span class="material-symbols-outlined text-[20px] text-primary">badge</span>
-                            <span class="font-headline-sm text-base font-bold text-primary">Instant Pass Preview</span>
+                            <span class="font-headline-sm text-base font-bold text-primary">Digital Pass Preview</span>
                         </div>
-                        <span class="rounded bg-secondary-container px-2 py-0.5 text-[10px] font-bold uppercase text-on-secondary-container">Live Mockup</span>
+                        <span class="rounded bg-secondary-container px-2 py-0.5 text-[10px] font-bold uppercase text-on-secondary-container">Preview</span>
                     </div>
 
                     <div class="relative overflow-hidden rounded-xl border border-[#0E4723]/30 bg-gradient-to-br from-[#135d2e] via-[#0E4723] to-[#00210b] p-5 text-white shadow-lg">
@@ -424,7 +424,7 @@
                         <div class="relative z-10 pb-2 pt-4">
                             <div class="flex items-start justify-between gap-3">
                                 <div>
-                                    <p class="text-[10px] font-medium uppercase tracking-wider text-white/70">Patron Name</p>
+                                    <p class="text-[10px] font-medium uppercase tracking-wider text-white/70">Name</p>
                                     <p class="font-headline-md text-xl font-bold tracking-tight text-white" id="previewCardName">JUAN DELA CRUZ</p>
                                     <p class="mt-0.5 text-xs text-on-primary-container" id="previewCardProgram">BS in Computer Science (BSCS)</p>
                                 </div>
@@ -438,7 +438,7 @@
                                 </div>
                                 <div class="flex items-center gap-1 rounded bg-white/10 px-2 py-1 text-[11px] text-primary-fixed">
                                     <span class="material-symbols-outlined text-[14px]">check_circle</span>
-                                    Turnstile Ready
+                                    Entry Ready
                                 </div>
                             </div>
                         </div>
@@ -450,7 +450,7 @@
                                 @endforeach
                             </div>
                             <p class="mt-1 font-mono text-[11px] font-bold tracking-[0.25em] text-gray-800" id="barcodeText">*2024-10492-OL*</p>
-                            <p class="mt-0.5 text-[9px] text-gray-500">Hold phone under optical turnstile scanner at CLCST Library Gate</p>
+                            <p class="mt-0.5 text-[9px] text-gray-500">Hold phone under optical library entry scanner at CLCST Library Gate</p>
                         </div>
                     </div>
                 </section>
@@ -461,9 +461,9 @@
                         <h3 class="font-headline-sm text-base font-bold text-primary">Registration Verification Checklist</h3>
                     </div>
                     @foreach ([
-                        ['Institutional Information', 'Fill in legal name, official ID, program, and institutional email address.'],
-                        ['Automated Registrar Cross-Check', 'Your uploaded COR or ID is queued for matching against official records.'],
-                        ['Instant Pass Activation', 'After approval, use your digital barcode for turnstiles, OPAC, and self-checkout.'],
+                        ['School Information', 'Fill in legal name, official ID, program, and institutional email address.'],
+                        ['School Record Check', 'Your uploaded COR or ID is queued for matching against official records.'],
+                        ['Digital Pass Activation', 'After approval, use your digital barcode for library entry, Book Catalog, and self-checkout.'],
                     ] as $index => $item)
                         <div class="flex items-start gap-3 text-sm">
                             <div class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full {{ $index === 2 ? 'bg-secondary-container text-on-secondary-container' : 'bg-primary-container text-white' }} text-xs font-bold">{{ $index + 1 }}</div>
@@ -478,7 +478,7 @@
                 <section class="rounded-xl border border-outline-variant bg-surface-container-low p-5">
                     <div class="mb-2 flex items-center gap-2 font-bold text-primary">
                         <span class="material-symbols-outlined text-[20px]">support_agent</span>
-                        <h4 class="font-headline-sm text-base">Circulation Desk Inquiries</h4>
+                        <h4 class="font-headline-sm text-base">Library Desk Questions</h4>
                     </div>
                     <p class="mb-4 text-xs text-on-surface-variant">If your ID or COR is not validating automatically, contact technical support.</p>
                     <div class="space-y-2 text-xs text-on-surface">
@@ -506,7 +506,7 @@
                 <span class="text-outline-variant">|</span>
                 <a class="transition-colors hover:text-primary" href="#">Terms of Service</a>
                 <span class="text-outline-variant">|</span>
-                <a class="transition-colors hover:text-primary" href="#">OPAC Search</a>
+                <a class="transition-colors hover:text-primary" href="#">Book Search</a>
             </div>
         </div>
     </footer>

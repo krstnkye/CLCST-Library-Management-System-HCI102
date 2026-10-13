@@ -239,8 +239,8 @@ class HomeController extends Controller
             'account' => 'My Account',
             'support' => 'Help & Support',
             'scan' => 'Shelf Barcode Scanner',
-            'circulation-policy' => 'Circulation Policy',
-            'opac-guide' => 'OPAC Guide',
+            'circulation-policy' => 'Borrowing Policy',
+            'opac-guide' => 'Book Catalog Guide',
         ];
 
         if ($section === 'borrow-return') {
@@ -335,7 +335,7 @@ class HomeController extends Controller
     {
         $titles = [
             'circulation' => 'My Borrowed Books',
-            'patrons' => 'Patron Records',
+            'patrons' => 'Library User Records',
             'profile' => 'My Profile',
             'catalog' => 'Recommend a Book',
             'reservations' => 'My Reservations',
@@ -393,7 +393,7 @@ class HomeController extends Controller
         return [
             ['ticket' => 'CIR-1082', 'type' => 'Return Check-In', 'patron' => 'Juan Dela Cruz', 'item' => 'Clean Code', 'status' => 'Due in 2 days', 'priority' => 'High'],
             ['ticket' => 'CIR-1083', 'type' => 'Hold Pickup', 'patron' => 'Seanne Ynna Alonzo', 'item' => 'Computer Networks', 'status' => 'Shelf scan needed', 'priority' => 'Medium'],
-            ['ticket' => 'CIR-1084', 'type' => 'Renewal Review', 'patron' => 'Miguel Santos', 'item' => 'Introduction to Algorithms', 'status' => 'Eligible', 'priority' => 'Normal'],
+            ['ticket' => 'CIR-1084', 'type' => 'Renewal Review', 'patron' => 'Miguel Santos', 'item' => 'Introduction to Algorithms', 'status' => 'Allowed', 'priority' => 'Normal'],
         ];
     }
 
@@ -422,13 +422,13 @@ class HomeController extends Controller
                 'id' => 'python-programming',
                 'category' => 'Computer Studies & IT',
                 'subject' => 'Programming',
-                'publisher' => 'CLCST Main Stacks',
+                'publisher' => 'CLCST Main Shelves',
                 'title' => 'Introduction to Python Programming',
                 'author' => 'John Zelle',
                 'year' => '2021',
                 'call' => 'QA76.73.P98 Z45 2021',
                 'isbn' => '978-1590282755',
-                'location' => 'Stacks 2B, Shelf 04',
+                'location' => 'Shelves 2B, Shelf 04',
                 'loan' => 'Standard 7-Day Student Loan',
                 'policy' => 'circulating',
                 'cover' => 'from-emerald-700 to-slate-950',
@@ -436,11 +436,11 @@ class HomeController extends Controller
                 'icon' => 'code',
                 'badge' => 'Python',
                 'copies' => [
-                    ['copy' => 'PY-001', 'status' => 'available', 'location' => '2nd Flr Stacks 2B', 'barcode' => '1049281'],
-                    ['copy' => 'PY-002', 'status' => 'available', 'location' => '2nd Flr Stacks 2B', 'barcode' => '1049282'],
+                    ['copy' => 'PY-001', 'status' => 'available', 'location' => '2nd Flr Shelves 2B', 'barcode' => '1049281'],
+                    ['copy' => 'PY-002', 'status' => 'available', 'location' => '2nd Flr Shelves 2B', 'barcode' => '1049282'],
                     ['copy' => 'PY-003', 'status' => 'on_loan', 'location' => 'Due Oct 31, 2024', 'barcode' => '1049283'],
-                    ['copy' => 'PY-004', 'status' => 'available', 'location' => 'Reserve Desk', 'barcode' => '1049284'],
-                    ['copy' => 'PY-005', 'status' => 'available', 'location' => '2nd Flr Stacks 2B', 'barcode' => '1049285'],
+                    ['copy' => 'PY-004', 'status' => 'available', 'location' => 'Library Desk', 'barcode' => '1049284'],
+                    ['copy' => 'PY-005', 'status' => 'available', 'location' => '2nd Flr Shelves 2B', 'barcode' => '1049285'],
                 ],
             ],
             [
@@ -453,7 +453,7 @@ class HomeController extends Controller
                 'year' => '2008',
                 'call' => 'QA76.76.C64 M37',
                 'isbn' => '978-0132350884',
-                'location' => 'Stacks 2B, Shelf 06',
+                'location' => 'Shelves 2B, Shelf 06',
                 'loan' => 'Currently high demand',
                 'policy' => 'circulating',
                 'cover' => 'from-yellow-700 to-slate-950',
@@ -477,7 +477,7 @@ class HomeController extends Controller
                 'year' => '2022',
                 'call' => 'QA76.6 .I585',
                 'isbn' => '978-0262046305',
-                'location' => 'Stacks 2A, Shelf 01',
+                'location' => 'Shelves 2A, Shelf 01',
                 'loan' => 'Standard 7-Day Student Loan',
                 'policy' => 'circulating',
                 'cover' => 'from-blue-800 to-indigo-950',
@@ -485,7 +485,7 @@ class HomeController extends Controller
                 'icon' => 'functions',
                 'badge' => 'CLRS',
                 'copies' => [
-                    ['copy' => 'AL-001', 'status' => 'available', 'location' => 'Stacks 2A', 'barcode' => '3049201'],
+                    ['copy' => 'AL-001', 'status' => 'available', 'location' => 'Shelves 2A', 'barcode' => '3049201'],
                     ['copy' => 'AL-002', 'status' => 'on_loan', 'location' => 'Due Nov 01, 2024', 'barcode' => '3049202'],
                     ['copy' => 'AL-003', 'status' => 'on_loan', 'location' => 'Due Nov 06, 2024', 'barcode' => '3049203'],
                 ],
@@ -500,7 +500,7 @@ class HomeController extends Controller
                 'year' => '2020',
                 'call' => 'Q335 .R86 2020',
                 'isbn' => '978-0134610993',
-                'location' => 'Stacks 3A, Shelf 05',
+                'location' => 'Shelves 3A, Shelf 05',
                 'loan' => 'Standard 7-Day Student Loan',
                 'policy' => 'circulating',
                 'cover' => 'from-emerald-800 to-teal-950',
@@ -508,8 +508,8 @@ class HomeController extends Controller
                 'icon' => 'smart_toy',
                 'badge' => '4th Ed',
                 'copies' => [
-                    ['copy' => 'AI-001', 'status' => 'available', 'location' => 'Stacks 3A', 'barcode' => '4049301'],
-                    ['copy' => 'AI-002', 'status' => 'available', 'location' => 'Stacks 3A', 'barcode' => '4049302'],
+                    ['copy' => 'AI-001', 'status' => 'available', 'location' => 'Shelves 3A', 'barcode' => '4049301'],
+                    ['copy' => 'AI-002', 'status' => 'available', 'location' => 'Shelves 3A', 'barcode' => '4049302'],
                 ],
             ],
             [
@@ -544,7 +544,7 @@ class HomeController extends Controller
                 'year' => '2014',
                 'call' => 'QA76.758 .K86',
                 'isbn' => 'Available in catalog record',
-                'location' => 'Stacks 2B, Shelf 06',
+                'location' => 'Shelves 2B, Shelf 06',
                 'loan' => 'Standard 7-Day Student Loan',
                 'policy' => 'circulating',
                 'cover' => 'from-cyan-900 to-blue-950',
@@ -552,9 +552,9 @@ class HomeController extends Controller
                 'icon' => 'account_tree',
                 'badge' => 'Agile',
                 'copies' => [
-                    ['copy' => 'SE-001', 'status' => 'available', 'location' => 'Stacks 2B', 'barcode' => '6049501'],
-                    ['copy' => 'SE-002', 'status' => 'available', 'location' => 'Stacks 2B', 'barcode' => '6049502'],
-                    ['copy' => 'SE-003', 'status' => 'available', 'location' => 'Stacks 2B', 'barcode' => '6049503'],
+                    ['copy' => 'SE-001', 'status' => 'available', 'location' => 'Shelves 2B', 'barcode' => '6049501'],
+                    ['copy' => 'SE-002', 'status' => 'available', 'location' => 'Shelves 2B', 'barcode' => '6049502'],
+                    ['copy' => 'SE-003', 'status' => 'available', 'location' => 'Shelves 2B', 'barcode' => '6049503'],
                 ],
             ],
         ];

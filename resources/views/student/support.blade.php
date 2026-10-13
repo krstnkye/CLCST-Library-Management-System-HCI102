@@ -64,10 +64,10 @@
         $outstanding = collect($fineRows)->reject(fn ($fine) => isset($paidFines[$fine['id']]))->sum('amount');
         $ticketReference = 'CL-2024-' . str_pad((string) (842 + $activeLoanCount + $reservationCount), 4, '0', STR_PAD_LEFT);
         $supportTopics = [
-            ['label' => 'RFID Turnstile Issues', 'icon' => 'contactless', 'href' => '#digital-id'],
+            ['label' => 'Library ID or Barcode Issues', 'icon' => 'contactless', 'href' => '#digital-id'],
             ['label' => 'Book Return Box', 'icon' => 'inventory_2', 'href' => '#borrowing'],
             ['label' => 'Fine Appeals', 'icon' => 'gavel', 'href' => '#fines'],
-            ['label' => 'OPAC Search', 'icon' => 'menu_book', 'href' => route('books.catalog')],
+            ['label' => 'Book Search', 'icon' => 'menu_book', 'href' => route('books.catalog')],
             ['label' => 'Reservations', 'icon' => 'bookmark_added', 'href' => route('student.section', 'reservations')],
             ['label' => 'Borrowing History', 'icon' => 'history_edu', 'href' => route('student.section', 'history')],
         ];
@@ -121,22 +121,22 @@
                         <span class="text-on-surface">Help & Support</span>
                     </div>
                     <div class="flex flex-wrap items-center gap-3 text-xs font-semibold">
-                        <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-primary"><span class="h-2 w-2 rounded-full bg-primary"></span>OPAC Gateway Operational</span>
-                        <span class="inline-flex items-center gap-2 rounded-full bg-surface-container px-3 py-1 text-on-surface-variant"><span class="material-symbols-outlined text-sm text-secondary">schedule</span>Stacks: 7:30 AM - 6:30 PM</span>
+                        <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-primary"><span class="h-2 w-2 rounded-full bg-primary"></span>Book Search Online</span>
+                        <span class="inline-flex items-center gap-2 rounded-full bg-surface-container px-3 py-1 text-on-surface-variant"><span class="material-symbols-outlined text-sm text-secondary">schedule</span>Shelves: 7:30 AM - 6:30 PM</span>
                         <span class="inline-flex items-center gap-2 rounded-full bg-surface-container px-3 py-1 text-on-surface-variant"><span class="material-symbols-outlined text-sm text-primary">support_agent</span>Ms. Santos on duty</span>
                     </div>
                 </section>
 
                 <section class="relative overflow-hidden rounded-xl border border-primary bg-gradient-to-br from-primary via-primary-container to-[#08351a] p-6 text-white shadow-sm lg:p-8">
                     <div class="relative z-10 max-w-3xl space-y-4">
-                        <div class="inline-flex items-center gap-2 rounded-full bg-secondary-container px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-on-secondary-container"><span class="material-symbols-outlined text-sm">school</span>Academic Patron Knowledge Hub</div>
+                        <div class="inline-flex items-center gap-2 rounded-full bg-secondary-container px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-on-secondary-container"><span class="material-symbols-outlined text-sm">school</span>Student Help Center</div>
                         <div>
                             <h1 class="font-headline text-3xl font-extrabold tracking-tight lg:text-4xl">How can the CLCST Library help you today?</h1>
-                            <p class="mt-2 max-w-2xl text-sm leading-6 text-primary-fixed">Search patron documentation, turnstile ID guides, borrowing regulations, account notifications, and ticket support.</p>
+                            <p class="mt-2 max-w-2xl text-sm leading-6 text-primary-fixed">Search student account guides, library entry ID guides, borrowing rules, account notifications, and ticket support.</p>
                         </div>
                         <form class="relative flex items-center rounded-xl border-2 border-primary-fixed/40 bg-white shadow-lg" method="GET" action="{{ route('student.section', 'support') }}">
                             <span class="material-symbols-outlined absolute left-4 text-primary">search</span>
-                            <input class="h-14 w-full rounded-xl border-0 bg-transparent pl-12 pr-32 text-sm text-on-surface placeholder:text-outline focus:ring-0" name="q" value="{{ request('q') }}" placeholder="Ask a question, like renew loan, lost book fine, or turnstile red light...">
+                            <input class="h-14 w-full rounded-xl border-0 bg-transparent pl-12 pr-32 text-sm text-on-surface placeholder:text-outline focus:ring-0" name="q" value="{{ request('q') }}" placeholder="Ask a question, like renew loan, lost book fine, or library entry red light...">
                             <button class="absolute right-2 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-on-primary hover:bg-primary-container" type="submit">Search Hub</button>
                         </form>
                         <div class="flex flex-wrap items-center gap-2">
@@ -151,8 +151,8 @@
                 <section class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
                     <article class="rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm">
                         <div class="mb-4 flex items-center justify-between"><div class="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-container text-primary"><span class="material-symbols-outlined">desk</span></div><span class="rounded-full bg-primary-fixed px-2 py-0.5 text-[10px] font-bold uppercase text-primary">Active</span></div>
-                        <h2 class="font-headline text-base font-bold">Circulation Helpdesk</h2>
-                        <p class="mt-1 text-sm text-on-surface-variant">Live Desk Counter 01 and 02, Stacks Level 1.</p>
+                        <h2 class="font-headline text-base font-bold">Library Help Desk</h2>
+                        <p class="mt-1 text-sm text-on-surface-variant">Live Desk Counter 01 and 02, Library Shelves Level 1.</p>
                         <a class="mt-4 inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline" href="#directory">Directions<span class="material-symbols-outlined text-sm">chevron_right</span></a>
                     </article>
                     <article class="rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm">
@@ -164,7 +164,7 @@
                     <article class="rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm">
                         <div class="mb-4 flex items-center justify-between"><div class="flex h-10 w-10 items-center justify-center rounded-lg bg-tertiary-fixed text-tertiary"><span class="material-symbols-outlined">auto_stories</span></div><span class="rounded-full bg-surface-container px-2 py-0.5 text-[10px] font-bold uppercase text-tertiary">Guides</span></div>
                         <h2 class="font-headline text-base font-bold">Digital Library FAQ</h2>
-                        <p class="mt-1 text-sm text-on-surface-variant">Step-by-step guides for OPAC, reservations, and e-pass use.</p>
+                        <p class="mt-1 text-sm text-on-surface-variant">Step-by-step guides for Book Catalog, reservations, and e-pass use.</p>
                         <a class="mt-4 inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline" href="#faq-section">Browse Manuals<span class="material-symbols-outlined text-sm">chevron_right</span></a>
                     </article>
                     <article class="rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm">
@@ -179,29 +179,29 @@
                     <div class="space-y-5 lg:col-span-7" id="faq-section">
                         <div class="flex items-end justify-between border-b border-outline-variant pb-3">
                             <div>
-                                <h2 class="flex items-center gap-2 font-headline text-xl font-bold text-primary"><span class="material-symbols-outlined">quiz</span>Knowledge Base & Regulations</h2>
+                                <h2 class="flex items-center gap-2 font-headline text-xl font-bold text-primary"><span class="material-symbols-outlined">quiz</span>Help Guides & Rules</h2>
                                 <p class="text-sm text-on-surface-variant">Verified answers for common student library concerns.</p>
                             </div>
                             <span class="rounded bg-surface-container px-2.5 py-1 text-[10px] font-bold uppercase text-on-surface-variant">7 Articles</span>
                         </div>
 
                         <div class="space-y-3" id="borrowing">
-                            <h3 class="flex items-center gap-2 font-headline text-base font-bold text-primary"><span class="material-symbols-outlined text-xl">menu_book</span>Circulation & Book Borrowing</h3>
+                            <h3 class="flex items-center gap-2 font-headline text-base font-bold text-primary"><span class="material-symbols-outlined text-xl">menu_book</span>Borrowing & Book Borrowing</h3>
                             <details class="group overflow-hidden rounded-lg border border-outline-variant bg-surface-container-lowest" open>
                                 <summary class="flex cursor-pointer items-center justify-between gap-3 p-4 text-sm font-bold hover:bg-surface-container-low"><span>How many books can undergraduate students borrow?</span><span class="material-symbols-outlined text-outline transition group-open:rotate-180">expand_more</span></summary>
-                                <div class="border-t border-outline-variant/60 bg-background/50 px-5 py-4 text-sm leading-6 text-on-surface-variant">Undergraduate patrons may borrow <strong class="text-on-surface">up to 5 books</strong> for <strong class="text-on-surface">14 calendar days</strong>. Each loan can be renewed up to two times when no active reservation exists.</div>
+                                <div class="border-t border-outline-variant/60 bg-background/50 px-5 py-4 text-sm leading-6 text-on-surface-variant">Undergraduate students may borrow <strong class="text-on-surface">up to 5 books</strong> for <strong class="text-on-surface">14 calendar days</strong>. Each loan can be renewed up to two times when no active reservation exists.</div>
                             </details>
                             <details class="group overflow-hidden rounded-lg border border-outline-variant bg-surface-container-lowest">
                                 <summary class="flex cursor-pointer items-center justify-between gap-3 p-4 text-sm font-bold hover:bg-surface-container-low"><span>Where is the 24/7 book return drop box?</span><span class="material-symbols-outlined text-outline transition group-open:rotate-180">expand_more</span></summary>
-                                <div class="border-t border-outline-variant/60 bg-background/50 px-5 py-4 text-sm leading-6 text-on-surface-variant">The drop box is beside Main Campus Turnstile Gate 2. Returns are scanned by RFID and checked into the system during the next morning circulation run.</div>
+                                <div class="border-t border-outline-variant/60 bg-background/50 px-5 py-4 text-sm leading-6 text-on-surface-variant">The drop box is beside Main Campus Library Entry Gate 2. Returns are scanned by Barcode and checked into the system during the next morning circulation run.</div>
                             </details>
                         </div>
 
                         <div class="space-y-3" id="digital-id">
-                            <h3 class="flex items-center gap-2 font-headline text-base font-bold text-primary"><span class="material-symbols-outlined text-xl">badge</span>Digital Patron ID & Turnstiles</h3>
+                            <h3 class="flex items-center gap-2 font-headline text-base font-bold text-primary"><span class="material-symbols-outlined text-xl">badge</span>Digital Library ID & Library Entrys</h3>
                             <details class="group overflow-hidden rounded-lg border border-outline-variant bg-surface-container-lowest">
                                 <summary class="flex cursor-pointer items-center justify-between gap-3 p-4 text-sm font-bold hover:bg-surface-container-low"><span>My digital barcode is not scanning. What should I do?</span><span class="material-symbols-outlined text-outline transition group-open:rotate-180">expand_more</span></summary>
-                                <div class="border-t border-outline-variant/60 bg-background/50 px-5 py-4 text-sm leading-6 text-on-surface-variant">Increase screen brightness, hold the barcode flat over the scanner, and confirm your current semester status. If the gate flashes amber or red, bring your ID to the Circulation Desk for credential re-syncing.</div>
+                                <div class="border-t border-outline-variant/60 bg-background/50 px-5 py-4 text-sm leading-6 text-on-surface-variant">Increase screen brightness, hold the barcode flat over the scanner, and confirm your current semester status. If the gate flashes amber or red, bring your ID to the Library Desk for credential re-syncing.</div>
                             </details>
                             <details class="group overflow-hidden rounded-lg border border-outline-variant bg-surface-container-lowest">
                                 <summary class="flex cursor-pointer items-center justify-between gap-3 p-4 text-sm font-bold hover:bg-surface-container-low"><span>How do I sync my COR with the library database?</span><span class="material-symbols-outlined text-outline transition group-open:rotate-180">expand_more</span></summary>
@@ -229,14 +229,14 @@
                                     <h2 class="flex items-center gap-2 font-headline text-lg font-bold text-primary"><span class="material-symbols-outlined">support</span>Submit an Inquiry or Report</h2>
                                     <span class="rounded-full bg-secondary-container px-2.5 py-1 text-[10px] font-bold text-on-secondary-container">Direct SLA</span>
                                 </div>
-                                <p class="mt-1 text-sm text-on-surface-variant">Dispatch a verified ticket to the library technical and circulation desk.</p>
+                                <p class="mt-1 text-sm text-on-surface-variant">Send a verified ticket to the library technical support and library desk.</p>
                             </div>
 
                             <div class="my-4 flex items-center justify-between rounded-lg border border-outline-variant bg-surface-container-low p-3">
                                 <div class="flex items-center gap-2">
                                     <span class="material-symbols-outlined text-primary">verified_user</span>
                                     <div>
-                                        <div class="text-xs font-bold">Patron: Juan Dela Cruz (BSCS 3A)</div>
+                                        <div class="text-xs font-bold">Student: Juan Dela Cruz (BSCS 3A)</div>
                                         <div class="text-[11px] text-outline">Auto-linked ID: 2024-10492-OL</div>
                                     </div>
                                 </div>
@@ -249,7 +249,7 @@
                                     <label class="mb-1 block text-xs font-bold" for="issue-category">Issue Category <span class="text-error">*</span></label>
                                     <select class="h-11 w-full rounded-lg border border-outline-variant bg-white text-sm focus:border-primary focus:ring-1 focus:ring-primary" id="issue-category" name="category" required>
                                         <option value="">Select issue category...</option>
-                                        <option value="turnstile">Turnstile / RFID Pass Problem</option>
+                                        <option value="library entry">Library ID or Barcode Problem</option>
                                         <option value="barcode">Barcode Reading Error</option>
                                         <option value="fine">Fine / Payment Dispute</option>
                                         <option value="reservation">Book Reservation Inquiry</option>
@@ -259,7 +259,7 @@
                                 </div>
                                 <div>
                                     <label class="mb-1 block text-xs font-bold" for="ticket-subject">Subject Line <span class="text-error">*</span></label>
-                                    <input class="h-11 w-full rounded-lg border border-outline-variant bg-white text-sm placeholder:text-outline focus:border-primary focus:ring-1 focus:ring-primary" id="ticket-subject" name="subject" placeholder="Example: Turnstile rejects my digital barcode" required>
+                                    <input class="h-11 w-full rounded-lg border border-outline-variant bg-white text-sm placeholder:text-outline focus:border-primary focus:ring-1 focus:ring-primary" id="ticket-subject" name="subject" placeholder="Example: Library Entry rejects my digital barcode" required>
                                 </div>
                                 <div>
                                     <label class="mb-1 block text-xs font-bold">Priority Level</label>
@@ -287,7 +287,7 @@
                             <h2 class="flex items-center gap-2 font-headline text-lg font-bold text-primary"><span class="material-symbols-outlined">fact_check</span>Your Current Library Snapshot</h2>
                             <div class="mt-4 grid grid-cols-3 gap-2 text-center">
                                 <a class="rounded-lg bg-surface-container-low p-3 hover:bg-surface-container" href="{{ route('student.section', 'borrow-return') }}"><div class="font-headline text-xl font-bold">{{ $activeLoanCount }}</div><div class="text-[10px] font-bold uppercase text-outline">Loans</div></a>
-                                <a class="rounded-lg bg-surface-container-low p-3 hover:bg-surface-container" href="{{ route('student.section', 'reservations') }}"><div class="font-headline text-xl font-bold">{{ $reservationCount }}</div><div class="text-[10px] font-bold uppercase text-outline">Holds</div></a>
+                                <a class="rounded-lg bg-surface-container-low p-3 hover:bg-surface-container" href="{{ route('student.section', 'reservations') }}"><div class="font-headline text-xl font-bold">{{ $reservationCount }}</div><div class="text-[10px] font-bold uppercase text-outline">Reservations</div></a>
                                 <a class="rounded-lg bg-surface-container-low p-3 hover:bg-surface-container" href="{{ route('student.section', 'fines') }}"><div class="font-headline text-xl font-bold">PHP {{ number_format($outstanding, 0) }}</div><div class="text-[10px] font-bold uppercase text-outline">Fines</div></a>
                             </div>
                         </div>
@@ -297,10 +297,10 @@
                 <section class="rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm lg:p-6" id="directory">
                     <div class="flex flex-col justify-between gap-3 border-b border-outline-variant pb-4 md:flex-row md:items-center">
                         <div>
-                            <h2 class="flex items-center gap-2 font-headline text-xl font-bold text-primary"><span class="material-symbols-outlined">corporate_fare</span>Circulation Desk Contact & Campus Service Directory</h2>
+                            <h2 class="flex items-center gap-2 font-headline text-xl font-bold text-primary"><span class="material-symbols-outlined">corporate_fare</span>Library Desk Contact</h2>
                             <p class="text-sm text-on-surface-variant">Direct channels across CLCST central college departments and physical stacks.</p>
                         </div>
-                        <span class="inline-flex items-center gap-2 rounded-full border border-outline-variant bg-surface-container px-3 py-1 text-xs font-bold"><span class="h-2 w-2 rounded-full bg-primary"></span>Stacks Level 1 & 2</span>
+                        <span class="inline-flex items-center gap-2 rounded-full border border-outline-variant bg-surface-container px-3 py-1 text-xs font-bold"><span class="h-2 w-2 rounded-full bg-primary"></span>Library Shelves Level 1 & 2</span>
                     </div>
                     <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div class="rounded-lg border border-outline-variant bg-surface-container-low p-4">
@@ -312,7 +312,7 @@
                             <h3 class="mb-3 flex items-center gap-2 font-headline font-bold text-primary"><span class="material-symbols-outlined">call</span>Telephone & Digital</h3>
                             <div class="space-y-2 text-sm">
                                 <div class="flex justify-between gap-3"><span class="text-outline">Trunkline</span><strong>+63 (047) 224-1234</strong></div>
-                                <div class="flex justify-between gap-3"><span class="text-outline">Circulation</span><strong class="text-primary">Local 108</strong></div>
+                                <div class="flex justify-between gap-3"><span class="text-outline">Borrowing</span><strong class="text-primary">Local 108</strong></div>
                                 <div class="flex justify-between gap-3"><span class="text-outline">Technical Services</span><strong class="text-primary">Local 109</strong></div>
                                 <a class="inline-flex items-center gap-1 pt-2 text-sm font-bold text-primary hover:underline" href="mailto:library.support@clcst.edu.ph"><span class="material-symbols-outlined text-base">mail</span>library.support@clcst.edu.ph</a>
                             </div>
@@ -321,7 +321,7 @@
                             <h3 class="mb-3 flex items-center gap-2 font-headline font-bold text-primary"><span class="material-symbols-outlined">calendar_today</span>Operating Schedules</h3>
                             <div class="space-y-2 text-sm">
                                 <div class="flex justify-between gap-3 border-b border-outline-variant pb-2"><span>Monday to Friday</span><strong class="text-primary">7:30 AM - 6:30 PM</strong></div>
-                                <div class="flex justify-between gap-3 border-b border-outline-variant pb-2"><span>Saturday Stacks</span><strong class="text-primary">8:00 AM - 5:00 PM</strong></div>
+                                <div class="flex justify-between gap-3 border-b border-outline-variant pb-2"><span>Saturday Shelves</span><strong class="text-primary">8:00 AM - 5:00 PM</strong></div>
                                 <div class="flex justify-between gap-3 text-outline"><span>Sundays & Holidays</span><strong class="text-error">Closed</strong></div>
                             </div>
                         </div>

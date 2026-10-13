@@ -64,7 +64,7 @@
         $reservationCount = count($reservations);
         $activeLoanCount = count($activeLoans);
         $catalog = collect($catalogBooks)->keyBy('id');
-        $sessionHolds = collect($reservations)->map(function ($reservation, $bookId) use ($catalog) {
+        $sessionReservations = collect($reservations)->map(function ($reservation, $bookId) use ($catalog) {
             $book = $catalog->get($bookId);
 
             return [
@@ -73,23 +73,23 @@
                 'author' => $book['author'] ?? 'CLCST catalog record',
                 'call' => $book['call'] ?? 'Pending catalog lookup',
                 'copy' => collect($book['copies'] ?? [])->first()['copy'] ?? 'RES-001',
-                'location' => $book['location'] ?? 'Circulation Counter 1',
+                'location' => $book['location'] ?? 'Library Counter 1',
                 'requested_at' => $reservation['requested_at'],
                 'status' => 'ready',
-                'shelf' => 'Reserve Shelf B-04',
+                'shelf' => 'Pickup Shelf B-04',
                 'deadline' => now()->addHours(24)->format('M d, Y - 5:00 PM'),
                 'source' => 'session',
             ];
         })->values();
 
-        $sampleHolds = collect([
+        $sampleReservations = collect([
             [
                 'id' => 'computer-networks',
                 'title' => 'Computer Networks: A Systems Approach',
                 'author' => 'Larry L. Peterson & Bruce S. Davie',
                 'call' => 'TK5105.5 .P479 2021',
                 'copy' => 'CN-001',
-                'location' => '2nd Floor Stacks - Bay 4, Shelf 02',
+                'location' => '2nd Floor Shelves - Bay 4, Shelf 02',
                 'requested_at' => 'Oct 25, 2024 - 8:30 AM',
                 'status' => 'pulling',
                 'shelf' => 'Awaiting shelf scan',
@@ -105,13 +105,13 @@
                 'location' => 'Currently on loan',
                 'requested_at' => 'Oct 25, 2024 - 9:05 AM',
                 'status' => 'waitlist',
-                'shelf' => 'Queue position 1',
+                'shelf' => 'List position 1',
                 'deadline' => 'Expected after Oct 28',
                 'source' => 'sample',
             ],
         ]);
 
-        $holds = $sessionHolds->isNotEmpty() ? $sessionHolds->concat($sampleHolds)->values() : $sampleHolds->values();
+        $holds = $sessionReservations->isNotEmpty() ? $sessionReservations->concat($sampleReservations)->values() : $sampleReservations->values();
         $readyCount = $holds->where('status', 'ready')->count();
         $pullingCount = $holds->where('status', 'pulling')->count();
         $waitlistCount = $holds->where('status', 'waitlist')->count();
@@ -123,19 +123,19 @@
                 @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm object-contain bg-white p-0.5'])
                 <div>
                     <div class="font-headline text-base font-bold leading-tight tracking-wide text-primary">CLCST SCHOOL LIBRARY</div>
-                    <p class="flex items-center gap-1.5 text-xs text-on-surface-variant"><span class="h-2 w-2 rounded-full bg-primary"></span>Circulation & Lending Services - Reservations Desk</p>
+                    <p class="flex items-center gap-1.5 text-xs text-on-surface-variant"><span class="h-2 w-2 rounded-full bg-primary"></span>Borrowing Services - Reservations Desk</p>
                 </div>
             </div>
             <div class="hidden items-center gap-2 border-l border-outline-variant pl-4 xl:flex">
-                <span class="inline-flex items-center gap-1.5 rounded-full bg-surface-container px-2.5 py-1 text-[10px] font-bold"><span class="h-2 w-2 rounded-full bg-emerald-600"></span>Hold Locker 01: Online</span>
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-surface-container px-2.5 py-1 text-[10px] font-bold"><span class="h-2 w-2 rounded-full bg-emerald-600"></span>Pickup Shelf Online</span>
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-surface-container px-2.5 py-1 text-[10px] font-bold"><span class="material-symbols-outlined text-sm text-primary">shelves</span>Pickup Shelf: {{ $readyCount + 6 }}/30 Full</span>
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-surface-container px-2.5 py-1 text-[10px] font-bold text-outline"><span class="material-symbols-outlined text-sm">schedule</span>{{ now()->format('h:i A - M d, Y') }}</span>
             </div>
         </div>
         <div class="flex items-center gap-3">
             <nav class="hidden items-center rounded-lg border border-outline-variant/60 bg-surface-container-low p-1 2xl:flex">
-                <a class="rounded px-3 py-1.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container-lowest" href="{{ route('student.section', 'borrow-return') }}">Circulation</a>
-                <a class="rounded px-3 py-1.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container-lowest" href="{{ route('books.catalog') }}">OPAC Catalog</a>
+                <a class="rounded px-3 py-1.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container-lowest" href="{{ route('student.section', 'borrow-return') }}">Borrowing</a>
+                <a class="rounded px-3 py-1.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container-lowest" href="{{ route('books.catalog') }}">Book Catalog</a>
                 <a class="rounded border border-outline-variant/40 bg-surface-container-lowest px-3 py-1.5 text-xs font-semibold text-primary shadow-sm" href="{{ route('student.section', 'reservations') }}">Reservations</a>
                 <a class="rounded px-3 py-1.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container-lowest" href="{{ route('student.section', 'fines') }}">Fines</a>
             </nav>
@@ -148,7 +148,7 @@
                 <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-xs font-bold text-on-primary">JD</div>
                 <div class="hidden text-left sm:block">
                     <div class="text-xs font-semibold">Juan Dela Cruz</div>
-                    <span class="text-[10px] text-outline">Student Patron</span>
+                    <span class="text-[10px] text-outline">Student Account</span>
                 </div>
             </div>
         </div>
@@ -169,19 +169,19 @@
                             <span class="rounded-full bg-primary-container px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-on-primary">Student Hold Desk</span>
                             <span class="text-xs text-outline">Term 1 - A.Y. 2024-2025</span>
                         </div>
-                        <h1 class="font-headline mt-1 text-3xl font-bold text-primary">Book Reservations & Pickup Hold Shelf Management</h1>
+                        <h1 class="font-headline mt-1 text-3xl font-bold text-primary">Book Reservations & Pickup Shelf Management</h1>
                         <p class="text-sm text-on-surface-variant">Track your active holds, pickup windows, queue position, and reservation notices.</p>
                     </div>
                     <div class="flex shrink-0 items-center gap-3">
                         <a class="inline-flex items-center gap-2 rounded-lg border border-primary px-4 py-2.5 text-sm font-semibold text-primary hover:bg-primary-container/10" href="{{ route('student.section', 'borrow-return') }}"><span class="material-symbols-outlined text-lg">shopping_cart_checkout</span>Go to Borrow/Return</a>
-                        <a class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary shadow-sm hover:bg-primary-container" href="{{ route('books.catalog') }}"><span class="material-symbols-outlined text-lg">add_circle</span>Manual Hold Request</a>
+                        <a class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary shadow-sm hover:bg-primary-container" href="{{ route('books.catalog') }}"><span class="material-symbols-outlined text-lg">add_circle</span>New Reservation Request</a>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <div class="relative overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm"><div class="absolute -right-3 -top-3 flex h-16 w-16 items-center justify-center rounded-full bg-secondary-fixed/40"><span class="material-symbols-outlined text-2xl text-secondary">local_mall</span></div><p class="text-xs font-semibold text-outline">Ready for Pickup</p><div class="mt-1 flex items-baseline gap-2"><span class="font-headline text-3xl font-bold">{{ $readyCount }}</span><span class="text-xs text-on-surface-variant">Books shelved</span></div><div class="mt-2.5 rounded border border-amber-200 bg-amber-50 px-2 py-1 text-[10px] font-bold text-amber-800">Pickup before assigned deadline</div></div>
-                    <div class="relative overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm"><div class="absolute -right-3 -top-3 flex h-16 w-16 items-center justify-center rounded-full bg-primary-fixed/40"><span class="material-symbols-outlined text-2xl text-primary">layers</span></div><p class="text-xs font-semibold text-outline">Pending Stacks Retrieval</p><div class="mt-1 flex items-baseline gap-2"><span class="font-headline text-3xl font-bold text-primary">{{ $pullingCount }}</span><span class="text-xs text-on-surface-variant">Titles to pull</span></div><div class="mt-2.5 rounded bg-surface-container px-2 py-1 text-[10px] font-bold text-primary">Staff pulling route generated</div></div>
-                    <div class="relative overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm"><div class="absolute -right-3 -top-3 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100/70"><span class="material-symbols-outlined text-2xl text-blue-800">hourglass_top</span></div><p class="text-xs font-semibold text-outline">Waitlist / In Circulation</p><div class="mt-1 flex items-baseline gap-2"><span class="font-headline text-3xl font-bold">{{ $waitlistCount }}</span><span class="text-xs text-on-surface-variant">Active queued</span></div><div class="mt-2.5 rounded bg-surface-container-low px-2 py-1 text-[10px] font-bold text-outline">Auto-alert when returned</div></div>
+                    <div class="relative overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm"><div class="absolute -right-3 -top-3 flex h-16 w-16 items-center justify-center rounded-full bg-primary-fixed/40"><span class="material-symbols-outlined text-2xl text-primary">layers</span></div><p class="text-xs font-semibold text-outline">Waiting for Staff to Pull Book</p><div class="mt-1 flex items-baseline gap-2"><span class="font-headline text-3xl font-bold text-primary">{{ $pullingCount }}</span><span class="text-xs text-on-surface-variant">Titles to pull</span></div><div class="mt-2.5 rounded bg-surface-container px-2 py-1 text-[10px] font-bold text-primary">Staff pulling route generated</div></div>
+                    <div class="relative overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm"><div class="absolute -right-3 -top-3 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100/70"><span class="material-symbols-outlined text-2xl text-blue-800">hourglass_top</span></div><p class="text-xs font-semibold text-outline">Waiting List / Borrowed</p><div class="mt-1 flex items-baseline gap-2"><span class="font-headline text-3xl font-bold">{{ $waitlistCount }}</span><span class="text-xs text-on-surface-variant">Currently waiting</span></div><div class="mt-2.5 rounded bg-surface-container-low px-2 py-1 text-[10px] font-bold text-outline">Auto-alert when returned</div></div>
                     <div class="relative overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm"><div class="absolute -right-3 -top-3 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100/70"><span class="material-symbols-outlined text-2xl text-emerald-800">verified</span></div><p class="text-xs font-semibold text-outline">Active Reservations</p><div class="mt-1 flex items-baseline gap-2"><span class="font-headline text-3xl font-bold text-emerald-800">{{ $reservationCount }}</span><span class="text-xs text-on-surface-variant">From your account</span></div><div class="mt-2.5 rounded border border-emerald-200 bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-800">{{ $activeLoanCount }} current loans</div></div>
                 </div>
 
@@ -203,7 +203,7 @@
             <section class="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
                 <div id="queue" class="space-y-4 lg:col-span-7">
                     <div class="flex items-center justify-between">
-                        <h2 class="font-headline flex items-center gap-2 text-xl font-bold">Active Holds Queue <span class="text-xs font-normal text-outline">Sorted by pickup deadline urgency</span></h2>
+                        <h2 class="font-headline flex items-center gap-2 text-xl font-bold">Active Reservations <span class="text-xs font-normal text-outline">Sorted by pickup deadline urgency</span></h2>
                         <a class="rounded p-1 text-xs text-outline hover:text-primary" href="{{ route('student.section', 'reservations') }}"><span class="material-symbols-outlined text-base">sync</span></a>
                     </div>
 
@@ -225,7 +225,7 @@
                             <div class="flex flex-col items-start justify-between gap-3 border-b border-outline-variant/60 pb-3 sm:flex-row">
                                 <div class="flex flex-wrap items-center gap-2">
                                     <span class="flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-bold {{ $statusClass }}"><span class="h-2 w-2 rounded-full {{ $isReady ? 'bg-amber-500' : 'bg-primary' }}"></span>{{ $statusLabel }}</span>
-                                    <span class="rounded bg-surface-container px-2 py-0.5 font-mono text-[10px] text-on-surface-variant">Hold Ref: #HLD-{{ strtoupper(substr(md5($hold['id']), 0, 8)) }}</span>
+                                    <span class="rounded bg-surface-container px-2 py-0.5 font-mono text-[10px] text-on-surface-variant">Reservation No.: #HLD-{{ strtoupper(substr(md5($hold['id']), 0, 8)) }}</span>
                                 </div>
                                 <div class="rounded border border-amber-200 bg-amber-50 px-2 py-1 text-[10px] font-bold text-amber-900"><span class="material-symbols-outlined text-sm">timer</span> {{ $hold['deadline'] }}</div>
                             </div>
@@ -244,7 +244,7 @@
                                     </div>
                                     <div class="grid grid-cols-1 gap-2 text-xs sm:grid-cols-2">
                                         <div><span class="text-outline">Accession Barcode:</span><span class="ml-1 font-mono font-semibold">{{ $hold['copy'] }}</span></div>
-                                        <div><span class="text-outline">Call Number:</span><span class="ml-1 font-mono font-semibold">{{ $hold['call'] }}</span></div>
+                                        <div><span class="text-outline">Library Call Number:</span><span class="ml-1 font-mono font-semibold">{{ $hold['call'] }}</span></div>
                                     </div>
                                     <div class="flex flex-col justify-between gap-2 rounded-lg border border-outline-variant/70 bg-surface-container-low p-2.5 text-xs sm:flex-row sm:items-center">
                                         <div>
@@ -262,7 +262,7 @@
                                     @if ($hold['source'] === 'session')
                                         <form method="POST" action="{{ route('reservations.cancel', $hold['id']) }}">
                                             @csrf
-                                            <button class="flex items-center gap-1 rounded-lg border border-error-container px-2.5 py-1.5 text-xs font-semibold text-error hover:bg-error-container/30" type="submit"><span class="material-symbols-outlined text-base">cancel</span>Cancel Hold</button>
+                                            <button class="flex items-center gap-1 rounded-lg border border-error-container px-2.5 py-1.5 text-xs font-semibold text-error hover:bg-error-container/30" type="submit"><span class="material-symbols-outlined text-base">cancel</span>Cancel Reservation</button>
                                         </form>
                                     @endif
                                     <a class="flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-1.5 text-xs font-semibold text-on-primary shadow-sm hover:bg-primary-container" href="{{ route('student.section', 'borrow-return') }}"><span class="material-symbols-outlined text-base">check_circle</span>Fulfill & Check-Out</a>
@@ -275,7 +275,7 @@
                 <aside class="space-y-6 lg:col-span-5">
                     <section class="rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm">
                         <div class="flex items-center justify-between border-b border-outline-variant pb-3">
-                            <div><h3 class="font-headline flex items-center gap-2 text-base font-bold"><span class="material-symbols-outlined text-primary">shelves</span>Reserve Shelf Capacity & Layout</h3><p class="text-xs text-outline">Circulation Counter Behind Desk 02</p></div>
+                            <div><h3 class="font-headline flex items-center gap-2 text-base font-bold"><span class="material-symbols-outlined text-primary">shelves</span>Pickup Shelf Capacity & Layout</h3><p class="text-xs text-outline">Library Counter Behind Desk 02</p></div>
                             <span class="rounded bg-primary-fixed/50 px-2.5 py-1 text-xs font-bold text-primary">{{ $readyCount + 6 }} / 30 Full</span>
                         </div>
                         <div class="mt-4 space-y-4">
@@ -296,7 +296,7 @@
 
                     <section class="space-y-4 rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm">
                         <div class="flex items-center justify-between border-b border-outline-variant pb-3">
-                            <div><h3 class="font-headline flex items-center gap-2 text-base font-bold"><span class="material-symbols-outlined text-primary">badge</span>Patron Verification Kiosk</h3><p class="text-xs text-outline">Student ID barcode or turnstile pass</p></div>
+                            <div><h3 class="font-headline flex items-center gap-2 text-base font-bold"><span class="material-symbols-outlined text-primary">badge</span>Student ID Check Station</h3><p class="text-xs text-outline">Student ID barcode or library entry pass</p></div>
                             <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
                         </div>
                         <div class="relative">
@@ -309,16 +309,16 @@
                                 <div class="flex items-center gap-2.5">@include('partials.celtech-logo', ['class' => 'flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-bold object-contain bg-white p-0.5'])<div><div class="text-[10px] font-bold uppercase tracking-widest text-emerald-200">CLCST Library Borrower Pass</div><div class="text-xs font-bold">Central Luzon College of Sci & Tech</div></div></div>
                                 <span class="rounded bg-amber-400 px-2 py-0.5 text-[10px] font-extrabold text-slate-900">ACTIVE</span>
                             </div>
-                            <div class="relative z-10 mt-4 flex items-center gap-4"><div class="flex h-14 w-12 items-center justify-center rounded border border-white/40 bg-white/20 text-lg font-bold">JD</div><div><div class="font-headline text-base font-bold">Juan Dela Cruz</div><div class="text-xs text-emerald-100">BS Computer Science - 3rd Year</div><div class="mt-0.5 font-mono text-xs text-emerald-200">Patron ID: 2024-10492-OL</div></div></div>
+                            <div class="relative z-10 mt-4 flex items-center gap-4"><div class="flex h-14 w-12 items-center justify-center rounded border border-white/40 bg-white/20 text-lg font-bold">JD</div><div><div class="font-headline text-base font-bold">Juan Dela Cruz</div><div class="text-xs text-emerald-100">BS Computer Science - 3rd Year</div><div class="mt-0.5 font-mono text-xs text-emerald-200">Library ID: 2024-10492-OL</div></div></div>
                             <div class="relative z-10 mt-3 rounded bg-white p-2 text-center text-slate-900"><div class="font-mono text-xs font-bold tracking-[0.3em]">|||| ||| ||||| || ||||</div><span class="font-mono text-[9px] tracking-widest text-slate-700">*2024-10492-OL*</span></div>
                         </div>
                         <a class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-xs font-bold text-on-primary shadow-sm hover:bg-primary-container" href="{{ route('student.section', 'borrow-return') }}"><span class="material-symbols-outlined text-lg">shopping_cart_checkout</span>Convert Reservation to Loan</a>
                     </section>
 
                     <section class="space-y-3 rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm">
-                        <div class="flex items-center justify-between border-b border-outline-variant pb-2"><h3 class="font-headline flex items-center gap-2 text-base font-bold"><span class="material-symbols-outlined text-primary">mark_chat_unread</span>Automated Communication Log</h3><span class="text-[10px] font-bold text-outline">SMS & SMTP Gateway</span></div>
+                        <div class="flex items-center justify-between border-b border-outline-variant pb-2"><h3 class="font-headline flex items-center gap-2 text-base font-bold"><span class="material-symbols-outlined text-primary">mark_chat_unread</span>Message History</h3><span class="text-[10px] font-bold text-outline">SMS & SMTP Access</span></div>
                         <div class="space-y-2.5 text-xs">
-                            <div class="space-y-1 rounded-lg border border-emerald-200 bg-emerald-50 p-2.5 text-emerald-900"><div class="flex items-center justify-between font-bold"><span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-emerald-600"></span>SMS prepared for J. Dela Cruz</span><span class="font-normal text-outline">{{ now()->format('h:i A') }}</span></div><p class="text-emerald-800">Your reserved book is ready for pickup at the CLCST Library circulation desk.</p></div>
+                            <div class="space-y-1 rounded-lg border border-emerald-200 bg-emerald-50 p-2.5 text-emerald-900"><div class="flex items-center justify-between font-bold"><span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-emerald-600"></span>SMS prepared for J. Dela Cruz</span><span class="font-normal text-outline">{{ now()->format('h:i A') }}</span></div><p class="text-emerald-800">Your reserved book is ready for pickup at the CLCST Library desk.</p></div>
                             <div class="space-y-1 rounded-lg border border-blue-200 bg-blue-50 p-2.5 text-blue-900"><div class="flex items-center justify-between font-bold"><span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-blue-600"></span>Email notice queued</span><span class="font-normal text-outline">Today</span></div><p class="text-blue-800">Reservation queue status and pickup shelf details are available in the portal.</p></div>
                         </div>
                     </section>

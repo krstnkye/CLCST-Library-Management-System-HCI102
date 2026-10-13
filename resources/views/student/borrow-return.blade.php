@@ -81,7 +81,7 @@
             </div>
             <nav class="ml-4 hidden items-center gap-1 border-l border-outline-variant pl-5 xl:flex">
                 <a class="rounded-lg px-3 py-1.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container-low" href="{{ route('student.dashboard') }}">Dashboard</a>
-                <a class="rounded-lg px-3 py-1.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container-low" href="{{ route('books.catalog') }}">OPAC Catalog</a>
+                <a class="rounded-lg px-3 py-1.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container-low" href="{{ route('books.catalog') }}">Book Catalog</a>
                 <a class="rounded-lg bg-surface-container-low px-3 py-1.5 text-xs font-semibold text-primary ring-1 ring-outline-variant" href="{{ route('student.section', 'borrow-return') }}">Borrow/Return</a>
             </nav>
         </div>
@@ -130,7 +130,7 @@
 
                     <form class="grid grid-cols-1 items-end gap-3 md:grid-cols-12" method="GET" action="{{ route('books.catalog') }}">
                         <div class="md:col-span-5">
-                            <label class="mb-1 flex items-center justify-between text-xs font-semibold text-on-surface-variant"><span class="flex items-center gap-1"><span class="inline-flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-on-primary">1</span>Patron Identification</span><span class="text-primary-container">Verified</span></label>
+                            <label class="mb-1 flex items-center justify-between text-xs font-semibold text-on-surface-variant"><span class="flex items-center gap-1"><span class="inline-flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-on-primary">1</span>Student Identification</span><span class="text-primary-container">Verified</span></label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-3 top-3 text-primary-container">badge</span>
                                 <input class="w-full rounded-lg border-2 border-primary-container bg-surface-container-lowest py-2.5 pl-10 pr-3 text-sm font-medium" readonly value="2024-10492-OL - Juan Dela Cruz">
@@ -211,7 +211,7 @@
                                                         <div>
                                                             <div class="font-headline text-sm font-semibold">{{ $book['title'] }}</div>
                                                             <div class="text-xs text-on-surface-variant">Author: {{ $book['author'] }} - {{ $book['publisher'] }}</div>
-                                                            <span class="mt-1 inline-flex rounded bg-primary-fixed/60 px-2 py-0.5 text-[11px] font-bold text-primary">{{ $book['policy'] === 'reference' ? 'Reference Only' : 'General Circulation' }} - {{ $book['location'] }}</span>
+                                                            <span class="mt-1 inline-flex rounded bg-primary-fixed/60 px-2 py-0.5 text-[11px] font-bold text-primary">{{ $book['policy'] === 'reference' ? 'Use in Library Only' : 'General Borrowing' }} - {{ $book['location'] }}</span>
                                                         </div>
                                                     </div>
                                                 </td>

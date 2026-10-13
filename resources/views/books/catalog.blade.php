@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>CLCST Library - Search Books & OPAC Catalog Discovery</title>
+    <title>CLCST Library - Search Books & Book Catalog Discovery</title>
     @include('partials.favicon')
 
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -115,7 +115,7 @@
                 </span>
                 <input class="h-10 w-full rounded-lg border border-outline-variant bg-surface-container-low py-2 pl-10 pr-20 text-sm text-on-surface transition-all focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary" name="q" placeholder="Quick catalog lookup (Title, ISBN, Barcode, Author)..." type="text" value="{{ $query }}">
                 <div class="absolute inset-y-0 right-0 flex items-center gap-1.5 pr-2">
-                    <span class="hidden rounded border border-outline-variant bg-surface-container px-1.5 py-0.5 font-mono text-[11px] font-semibold text-outline sm:inline-flex">OPAC</span>
+                    <span class="hidden rounded border border-outline-variant bg-surface-container px-1.5 py-0.5 font-mono text-[11px] font-semibold text-outline sm:inline-flex">Book Catalog</span>
                     <button class="rounded p-1 text-outline transition-colors hover:bg-surface-container hover:text-primary" title="Scan Barcode" type="submit">
                         <span class="material-symbols-outlined text-[18px]">barcode_scanner</span>
                     </button>
@@ -126,7 +126,7 @@
         <div class="flex items-center gap-3">
             <div class="hidden items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 xl:flex">
                 <span class="h-2 w-2 animate-pulse rounded-full bg-emerald-600"></span>
-                <span class="text-[10px] font-semibold text-emerald-800">OPAC Node Online - Stacks v4.2</span>
+                <span class="text-[10px] font-semibold text-emerald-800">Book Catalog Online</span>
             </div>
             <a class="relative rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('staff.section', 'notifications') }}" title="Notifications">
                 <span class="material-symbols-outlined text-[22px]">notifications</span>
@@ -165,7 +165,7 @@
                 <nav class="mb-2 flex items-center gap-2 text-xs font-semibold text-outline">
                     <span>Academic Portal</span>
                     <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-                    <span>Catalog & OPAC</span>
+                    <span>Catalog & Books</span>
                     <span class="material-symbols-outlined text-[14px]">chevron_right</span>
                     <span class="font-semibold text-primary">Search Books</span>
                 </nav>
@@ -174,9 +174,9 @@
                     <div>
                         <div class="flex flex-wrap items-center gap-3">
                             <h1 class="font-headline-lg text-2xl font-bold tracking-tight text-on-surface">Search Books & Catalog Discovery</h1>
-                            <span class="rounded-full border border-primary/20 bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary">OPAC Live System</span>
+                            <span class="rounded-full border border-primary/20 bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary">Book Catalog Online</span>
                         </div>
-                        <p class="mt-1 max-w-3xl text-sm text-outline">Browse and search {{ number_format($totalCatalogCount) }}+ physical volumes, course syllabus references, and institutional e-books across CLCST Central and Extension Stacks.</p>
+                        <p class="mt-1 max-w-3xl text-sm text-outline">Browse and search {{ number_format($totalCatalogCount) }}+ physical volumes, course syllabus references, and institutional e-books across CLCST Central and Extension Shelves.</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-3">
                         <a class="flex h-9 items-center gap-2 rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 text-sm font-semibold text-on-surface shadow-sm transition-colors hover:bg-surface-container" href="{{ route('books.catalog', array_merge($currentParams, ['field' => 'all'])) }}">
@@ -185,7 +185,7 @@
                         </a>
                         <a class="flex h-9 items-center gap-2 rounded-lg border border-secondary-container bg-amber-50 px-3.5 text-sm font-semibold text-amber-950 transition-colors hover:bg-amber-100" href="{{ route('books.catalog', ['q' => '1049281']) }}">
                             <span class="material-symbols-outlined text-[18px] text-secondary">barcode</span>
-                            <span>RFID / ISBN Lookup</span>
+                            <span>Barcode / ISBN Lookup</span>
                         </a>
                     </div>
                 </div>
@@ -193,7 +193,7 @@
                 <form class="rounded-2xl border border-outline-variant bg-surface-container p-3 shadow-inner" method="GET" action="{{ route('books.catalog') }}">
                     <div class="grid grid-cols-1 gap-3 lg:grid-cols-[180px_1fr_160px]">
                         <select class="h-12 rounded-xl border border-outline-variant bg-surface-container-lowest px-3 text-sm font-semibold text-on-surface focus:border-primary focus:ring-primary" name="field">
-                            @foreach (['all' => 'All Fields', 'title' => 'Title', 'author' => 'Author', 'isbn' => 'ISBN / ISSN', 'call' => 'Call Number'] as $value => $label)
+                            @foreach (['all' => 'All Book Details', 'title' => 'Title', 'author' => 'Author', 'isbn' => 'ISBN / ISSN', 'call' => 'Library Call Number'] as $value => $label)
                                 <option value="{{ $value }}" @selected($field === $value)>{{ $label }}</option>
                             @endforeach
                         </select>
@@ -203,7 +203,7 @@
                         </div>
                         <button class="flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-on-primary shadow-sm transition-colors hover:bg-primary-container" type="submit">
                             <span class="material-symbols-outlined text-[18px]">manage_search</span>
-                            Search OPAC
+                            Search Books
                         </button>
                     </div>
                     <div class="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -214,9 +214,9 @@
                             @endforeach
                         </select>
                         <select class="rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 text-xs font-semibold text-on-surface" name="availability">
-                            <option value="all" @selected($availability === 'all')>All Availability</option>
-                            <option value="available" @selected($availability === 'available')>Available Today</option>
-                            <option value="reference" @selected($availability === 'reference')>Reference Only</option>
+                            <option value="all" @selected($availability === 'all')>Any Availability</option>
+                            <option value="available" @selected($availability === 'available')>Available Now</option>
+                            <option value="reference" @selected($availability === 'reference')>Use in Library Only</option>
                         </select>
                         <select class="rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 text-xs font-semibold text-on-surface" name="sort">
                             <option value="relevance" @selected($sort === 'relevance')>Sort: Relevance</option>
@@ -229,11 +229,11 @@
 
                 <div class="custom-scrollbar mt-4 flex items-center gap-2 overflow-x-auto pb-1">
                     <span class="pr-1 text-[10px] font-bold uppercase text-outline">Quick Filters:</span>
-                    <a class="rounded-full px-3.5 py-1.5 text-xs font-semibold {{ $category === 'all' && $availability === 'all' ? 'bg-primary text-on-primary shadow-sm' : 'border border-outline-variant bg-surface-container text-on-surface hover:bg-surface-container-high' }}" href="{{ route('books.catalog', array_merge($currentParams, ['category' => 'all', 'availability' => 'all'])) }}">All Titles</a>
+                    <a class="rounded-full px-3.5 py-1.5 text-xs font-semibold {{ $category === 'all' && $availability === 'all' ? 'bg-primary text-on-primary shadow-sm' : 'border border-outline-variant bg-surface-container text-on-surface hover:bg-surface-container-high' }}" href="{{ route('books.catalog', array_merge($currentParams, ['category' => 'all', 'availability' => 'all'])) }}">All Books</a>
                     @foreach ($categories as $filterCategory)
                         <a class="rounded-full px-3.5 py-1.5 text-xs font-semibold {{ $category === $filterCategory ? 'bg-primary text-on-primary shadow-sm' : 'border border-outline-variant bg-surface-container text-on-surface hover:bg-surface-container-high' }}" href="{{ route('books.catalog', array_merge($currentParams, ['category' => $filterCategory, 'availability' => 'all'])) }}">{{ $filterCategory }}</a>
                     @endforeach
-                    <a class="rounded-full px-3.5 py-1.5 text-xs font-semibold {{ $availability === 'available' ? 'bg-primary text-on-primary shadow-sm' : 'border border-outline-variant bg-surface-container text-on-surface hover:bg-surface-container-high' }}" href="{{ route('books.catalog', array_merge($currentParams, ['availability' => 'available'])) }}">Available Today</a>
+                    <a class="rounded-full px-3.5 py-1.5 text-xs font-semibold {{ $availability === 'available' ? 'bg-primary text-on-primary shadow-sm' : 'border border-outline-variant bg-surface-container text-on-surface hover:bg-surface-container-high' }}" href="{{ route('books.catalog', array_merge($currentParams, ['availability' => 'available'])) }}">Available Now</a>
                 </div>
             </section>
 
@@ -242,12 +242,12 @@
                     <div class="space-y-4">
                         <div class="flex flex-col justify-between gap-3 rounded-xl border border-outline-variant bg-surface-container-lowest px-4 py-3 shadow-sm sm:flex-row sm:items-center">
                             <div>
-                                <p class="text-xs font-semibold uppercase tracking-wider text-secondary">OPAC Search Results</p>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-secondary">Book Search Results</p>
                                 <h2 class="font-headline-sm text-lg font-bold text-on-surface">{{ $books->count() }} titles matched your query</h2>
                             </div>
                             <span class="inline-flex items-center gap-1 rounded-lg bg-surface-container px-3 py-1.5 text-xs font-bold text-primary">
                                 <span class="material-symbols-outlined text-[16px]">sensors</span>
-                                RFID stack inventory synced
+                                Book copy list updated
                             </span>
                         </div>
 
@@ -258,8 +258,8 @@
                                 $isReserved = array_key_exists($book['id'], $reservations);
                                 $statusTone = $book['policy'] === 'reference' ? 'blue' : ($available > 0 ? 'emerald' : 'amber');
                                 $statusText = $book['policy'] === 'reference'
-                                    ? 'Course Reserve / Reference Use'
-                                    : ($available > 0 ? 'Available - '.$available.' of '.$total.' Copies on Shelf' : 'All Copies Borrowed - Join Hold Queue');
+                                    ? 'For Class Use / In-Library Use'
+                                    : ($available > 0 ? 'Available - '.$available.' of '.$total.' Copies on Shelf' : 'All Copies Borrowed - Join Waiting List');
                             @endphp
                             <article class="rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm transition-all hover:border-primary/60 hover:shadow-md">
                                 <div class="flex flex-col gap-5 sm:flex-row">
@@ -300,7 +300,7 @@
                                                 </div>
                                                 <div class="flex items-center gap-2 text-sm">
                                                     <span class="material-symbols-outlined text-[18px] text-secondary">label</span>
-                                                    <div><span class="block text-[10px] font-bold uppercase text-outline">LC / Call Number</span><span class="font-mono font-semibold text-on-surface">{{ $book['call'] }}</span></div>
+                                                    <div><span class="block text-[10px] font-bold uppercase text-outline">Library Library Call Number</span><span class="font-mono font-semibold text-on-surface">{{ $book['call'] }}</span></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -312,7 +312,7 @@
                                                         @csrf
                                                         <button class="flex h-9 items-center gap-1.5 rounded-lg px-4 text-xs font-bold shadow-sm transition-all {{ $isReserved ? 'bg-emerald-100 text-emerald-800' : ($available > 0 ? 'bg-primary text-on-primary hover:bg-primary-container' : 'bg-secondary-container text-on-secondary-container hover:bg-amber-400') }}" type="submit" @disabled($isReserved)>
                                                             <span class="material-symbols-outlined text-[16px]">{{ $isReserved ? 'bookmark_added' : ($available > 0 ? 'book_online' : 'notification_add') }}</span>
-                                                            {{ $isReserved ? 'Reserved' : ($available > 0 ? 'Reserve / Place Hold' : 'Join Hold Queue') }}
+                                                            {{ $isReserved ? 'Reserved' : ($available > 0 ? 'Reserve This Book' : 'Join Waiting List') }}
                                                         </button>
                                                     </form>
                                                 @else
@@ -350,11 +350,11 @@
                                 <div>
                                     <div class="flex items-center gap-2">
                                         <span class="material-symbols-outlined text-[20px] text-primary">inventory_2</span>
-                                        <h3 class="font-headline-sm text-base font-bold text-on-surface">Physical Copy Tracking & Shelf Audit</h3>
+                                        <h3 class="font-headline-sm text-base font-bold text-on-surface">Book Copies & Shelf Location</h3>
                                     </div>
                                     <p class="text-xs text-outline">Selected volume: <strong class="text-on-surface">{{ $selectedBook['title'] }}</strong></p>
                                 </div>
-                                <span class="inline-flex items-center gap-1 rounded bg-surface-container px-2.5 py-1 text-[10px] font-semibold text-on-surface-variant"><span class="material-symbols-outlined text-[14px] text-primary">sensors</span>RFID Synced</span>
+                                <span class="inline-flex items-center gap-1 rounded bg-surface-container px-2.5 py-1 text-[10px] font-semibold text-on-surface-variant"><span class="material-symbols-outlined text-[14px] text-primary">sensors</span>Updated</span>
                             </div>
 
                             <div class="mt-4 flex items-center gap-3">
@@ -399,7 +399,7 @@
                                 @csrf
                                 <button class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary-container px-4 py-2.5 text-xs font-bold text-on-primary shadow-sm hover:bg-primary disabled:cursor-not-allowed disabled:bg-emerald-100 disabled:text-emerald-800" type="submit" @disabled(array_key_exists($selectedBook['id'], $reservations) || $selectedBook['policy'] === 'reference')>
                                     <span class="material-symbols-outlined text-base">bookmark_added</span>
-                                    {{ array_key_exists($selectedBook['id'], $reservations) ? 'Reservation Requested' : ($selectedBook['policy'] === 'reference' ? 'Reference Only' : 'Request Book Reservation') }}
+                                    {{ array_key_exists($selectedBook['id'], $reservations) ? 'Reservation Sent' : ($selectedBook['policy'] === 'reference' ? 'Use in Library Only' : 'Reserve This Book') }}
                                 </button>
                             </form>
                         </section>
@@ -410,9 +410,9 @@
                                     <span class="material-symbols-outlined text-[24px]">hub</span>
                                 </div>
                                 <div>
-                                    <h4 class="text-sm font-bold text-white">Institutional Online Database Subscriptions</h4>
-                                    <p class="mt-1 text-xs text-slate-300">Authenticated access to IEEE Xplore, ScienceDirect, ACM Digital Library, and national repositories.</p>
-                                    <a class="mt-3 inline-flex rounded-lg bg-secondary-container px-3 py-2 text-xs font-bold text-on-secondary-container hover:bg-amber-400" href="{{ route('staff.section', 'support') }}">OpenAthens Single Sign-On</a>
+                                    <h4 class="text-sm font-bold text-white">Online Research Databases</h4>
+                                    <p class="mt-1 text-xs text-slate-300">Signed-in access to IEEE Xplore, ScienceDirect, ACM Digital Library, and national repositories.</p>
+                                    <a class="mt-3 inline-flex rounded-lg bg-secondary-container px-3 py-2 text-xs font-bold text-on-secondary-container hover:bg-amber-400" href="{{ route('staff.section', 'support') }}">Open Online Library Access</a>
                                 </div>
                             </div>
                         </section>

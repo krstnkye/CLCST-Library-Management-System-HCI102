@@ -56,7 +56,7 @@
                     <span class="material-symbols-outlined">local_library</span>
                 </div>
                 <div>
-                    <p class="text-xs font-bold text-[#064E3B]">Central Stacks</p>
+                    <p class="text-xs font-bold text-[#064E3B]">Central Shelves</p>
                     <p class="text-[10px] text-[#64748B]">Olongapo Main Campus</p>
                 </div>
             </div>
@@ -69,7 +69,7 @@
 
         <nav class="space-y-5" aria-label="Faculty and staff navigation">
             <section>
-                <p class="mb-2 px-2 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Catalog & Circulation</p>
+                <p class="mb-2 px-2 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Catalog & Borrowing</p>
                 <div class="space-y-1">
                     @foreach ($mainItems as $item)
                         @php

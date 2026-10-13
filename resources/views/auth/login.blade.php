@@ -101,7 +101,7 @@
                         <span class="font-headline-sm text-base font-bold tracking-tight text-primary">CLCST Library Portal</span>
                         <span class="rounded-full bg-secondary-fixed px-2 py-0.5 text-[10px] font-bold text-on-secondary-fixed">EST. 1959</span>
                     </div>
-                    <p class="text-xs font-medium text-on-surface-variant sm:text-sm">Central Luzon College of Science & Technology - Learning Commons Gateway</p>
+                    <p class="text-xs font-medium text-on-surface-variant sm:text-sm">Central Luzon College of Science & Technology - Library Access</p>
                 </div>
             </div>
 
@@ -139,9 +139,9 @@
                     <span class="material-symbols-outlined text-sm">vpn_key</span>
                     SINGLE SIGN-ON & TURNSTILE AUTHORIZATION
                 </div>
-                <h1 class="font-headline-xl text-3xl font-bold tracking-tight text-white md:text-4xl">Unified Academic Access Gateway</h1>
+                <h1 class="font-headline-xl text-3xl font-bold tracking-tight text-white md:text-4xl">Library Sign In</h1>
                 <p class="mt-3 max-w-2xl text-sm leading-6 text-primary-fixed md:text-base">
-                    Select your institutional credential domain to access circulation, digital repository indexes, journal archives, and contactless turnstile entry privileges.
+                    Select your institutional credential domain to access circulation, digital repository indexes, journal archives, and contactless library entry entry access.
                 </p>
             </div>
         </section>
@@ -160,7 +160,7 @@
                             <span class="material-symbols-outlined text-primary">switch_account</span>
                             Select Institutional Role
                         </label>
-                        <span class="text-[10px] font-bold text-on-surface-variant sm:text-xs">3 Privilege Profiles Configured</span>
+                        <span class="text-[10px] font-bold text-on-surface-variant sm:text-xs">3 Account Types Available</span>
                     </div>
 
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-3" id="role-selector-container">
@@ -173,7 +173,7 @@
                                     <span class="role-check material-symbols-outlined inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary text-sm text-white" id="badge-student">check</span>
                                 </div>
                                 <h2 class="text-sm font-bold text-on-surface">Student</h2>
-                                <p class="mt-1 text-[11px] leading-tight text-on-surface-variant">Undergraduate, SHS & Tech-Voc patrons</p>
+                                <p class="mt-1 text-[11px] leading-tight text-on-surface-variant">Undergraduate, SHS & Tech-Voc students</p>
                             </div>
                             <div class="mt-3 flex items-center gap-1 border-t border-outline-variant/30 pt-2 text-[10px] font-semibold text-primary">
                                 <span class="material-symbols-outlined text-xs">book</span>
@@ -207,7 +207,7 @@
                                     <span class="role-check material-symbols-outlined hidden h-5 w-5 items-center justify-center rounded-full bg-primary text-sm text-white" id="badge-staff">check</span>
                                 </div>
                                 <h2 class="text-sm font-bold text-on-surface">Librarian</h2>
-                                <p class="mt-1 text-[11px] leading-tight text-on-surface-variant">Circulation Desk & Catalogers</p>
+                                <p class="mt-1 text-[11px] leading-tight text-on-surface-variant">Library Desk & Catalogers</p>
                             </div>
                             <div class="mt-3 flex items-center gap-1 border-t border-outline-variant/30 pt-2 text-[10px] font-semibold text-on-surface-variant">
                                 <span class="material-symbols-outlined text-xs">barcode_scanner</span>
@@ -225,7 +225,7 @@
                                 <span class="text-sm text-on-surface-variant">- Campus Network Active</span>
                             </div>
                             <p class="mt-1 text-sm text-on-surface" id="active-role-desc">
-                                Authenticate using your Registered Student ID Number as printed on your COR or Smart RFID ID.
+                                Authenticate using your Registered Student ID Number as printed on your COR or Smart Barcode ID.
                             </p>
                         </div>
                         <span class="material-symbols-outlined hidden text-2xl text-primary sm:block" id="role-hero-icon">school</span>
@@ -256,7 +256,7 @@
                         <div>
                             <div class="mb-1.5 flex items-center justify-between">
                                 <label class="text-sm font-semibold text-on-surface" for="password-input" id="password-label">Library PIN / Password</label>
-                                <button class="text-xs font-semibold text-primary hover:underline" data-alert="Please visit the Circulation Helpdesk Ground Floor or email library@clcst.edu.ph with your Certificate of Registration." type="button">
+                                <button class="text-xs font-semibold text-primary hover:underline" data-alert="Please visit the Library Help Desk Ground Floor or email library@clcst.edu.ph with your Certificate of Registration." type="button">
                                     Forgot PIN / Password?
                                 </button>
                             </div>
@@ -284,7 +284,7 @@
                             </label>
                             <div class="inline-flex items-center gap-1.5 text-[10px] font-bold text-secondary">
                                 <span class="material-symbols-outlined text-base">qr_code_scanner</span>
-                                Turnstile Fast-Pass Ready
+                                Library Entry Pass Ready
                             </div>
                         </div>
 
@@ -295,14 +295,14 @@
                             </label>
                             <span class="flex items-center gap-1 text-[10px] font-semibold text-primary">
                                 <span class="material-symbols-outlined text-xs">verified</span>
-                                Academic Journal Token
+                                Online Journal Access
                             </span>
                         </div>
 
                         <div class="hidden flex-col gap-3 pt-1" id="staff-context-options">
                             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                 <div>
-                                    <label class="mb-1 block text-[10px] font-semibold text-on-surface-variant">Circulation Terminal ID</label>
+                                    <label class="mb-1 block text-[10px] font-semibold text-on-surface-variant">Borrowing Terminal ID</label>
                                     <input class="w-full rounded border border-outline-variant/60 bg-surface-container-low px-3 py-1.5 font-mono text-xs font-medium text-on-surface" readonly type="text" value="TERM-DESK-04-OL">
                                 </div>
                                 <div>
@@ -326,14 +326,14 @@
                         </div>
 
                         <div class="flex flex-wrap items-center justify-between gap-2 border-t border-outline-variant/40 pt-4 text-xs">
-                            <span class="text-on-surface-variant">First-time library patron?</span>
+                            <span class="text-on-surface-variant">First-time library user?</span>
                             <div class="flex items-center gap-3">
                                 <a class="flex items-center gap-1 font-bold text-primary hover:underline" href="{{ route('register') }}">
                                     <span class="material-symbols-outlined text-sm">how_to_reg</span>
                                     Activate Card / Web Pass
                                 </a>
                                 <span class="text-outline">|</span>
-                                <button class="text-on-surface-variant transition-colors hover:text-primary" data-alert="Circulation Desk Support: Local Ext. 108 / 109 | library@clcst.edu.ph" type="button">Help Desk</button>
+                                <button class="text-on-surface-variant transition-colors hover:text-primary" data-alert="Library Desk Support: Local Ext. 108 / 109 | library@clcst.edu.ph" type="button">Help Desk</button>
                             </div>
                         </div>
                     </form>
@@ -347,7 +347,7 @@
                             <span class="material-symbols-outlined text-primary">contactless</span>
                             CLCST Digital Library Pass
                         </span>
-                        <span class="rounded-full bg-primary-fixed px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-on-primary-fixed-variant">NFC / Barcode</span>
+                        <span class="rounded-full bg-primary-fixed px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-on-primary-fixed-variant">ID / Barcode</span>
                     </div>
 
                     <div class="relative overflow-hidden rounded-xl border border-primary-fixed/30 bg-gradient-to-br from-primary-container via-primary to-[#082813] p-5 text-on-primary shadow-md">
@@ -384,7 +384,7 @@
                             </div>
                             <p class="mt-1 font-mono text-[10px] font-bold tracking-widest text-slate-800" id="card-barcode-text">*202301984OL*</p>
                         </div>
-                        <p class="mt-2 text-center text-[9px] text-primary-fixed/80">Optical scanners at entrance turnstiles accept mobile screens at 100% brightness.</p>
+                        <p class="mt-2 text-center text-[9px] text-primary-fixed/80">Entrance scanners accept mobile screens at 100% brightness.</p>
                     </div>
                 </div>
 
@@ -404,7 +404,7 @@
                         <div class="rounded-lg border border-outline-variant/30 bg-surface-container-low p-2.5">
                             <p class="font-semibold text-on-surface">Monday - Friday</p>
                             <p class="mt-0.5 font-bold text-primary">8:00 AM - 8:00 PM</p>
-                            <p class="text-[10px] text-on-surface-variant">Full Circulation & Stacks</p>
+                            <p class="text-[10px] text-on-surface-variant">Full Borrowing & Shelves</p>
                         </div>
                         <div class="rounded-lg border border-outline-variant/30 bg-surface-container-low p-2.5">
                             <p class="font-semibold text-on-surface">Saturday</p>
@@ -425,7 +425,7 @@
 
                     <div class="flex flex-col gap-2 pt-2 text-xs text-on-surface-variant">
                         <div class="flex items-center justify-between gap-3">
-                            <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-primary">call</span>Circulation Desk:</span>
+                            <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-primary">call</span>Library Desk:</span>
                             <span class="font-semibold text-on-surface">(047) 222-2432 local 108</span>
                         </div>
                         <div class="flex items-center justify-between gap-3">
@@ -454,9 +454,9 @@
             <div class="flex flex-wrap items-center justify-center gap-4 font-medium">
                 <a class="transition-colors hover:text-primary" href="#">Privacy Policy</a>
                 <span class="text-outline-variant">|</span>
-                <a class="transition-colors hover:text-primary" href="#">Turnstile ID Assistance</a>
+                <a class="transition-colors hover:text-primary" href="#">Library ID Help</a>
                 <span class="text-outline-variant">|</span>
-                <a class="transition-colors hover:text-primary" href="#">OPAC Public Search</a>
+                <a class="transition-colors hover:text-primary" href="#">Public Book Search</a>
             </div>
         </div>
     </footer>

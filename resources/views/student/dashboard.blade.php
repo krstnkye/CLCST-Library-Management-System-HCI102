@@ -174,7 +174,7 @@
                 <div class="relative z-10 max-w-3xl space-y-3">
                     <div class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/15 px-3 py-1 text-[10px] font-bold text-white backdrop-blur-sm">
                         <span class="material-symbols-outlined text-xs text-[#FDE047]">verified</span>
-                        <span>CLCST Library Management System - Patron Access</span>
+                        <span>CLCST Library Management System - Student Access</span>
                     </div>
                     <h1 class="font-headline-xl text-3xl font-bold text-white md:text-4xl">Welcome back, Juan Dela Cruz!</h1>
                     <p class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-100">
@@ -182,12 +182,12 @@
                         <span>-</span>
                         <span>BS Computer Science (3rd Year)</span>
                         <span>-</span>
-                        <span class="rounded-full bg-[#FDE047] px-2.5 py-0.5 text-[10px] font-bold text-[#0F172A]">Patron Quota: 2 / 5 Books Borrowed</span>
+                        <span class="rounded-full bg-[#FDE047] px-2.5 py-0.5 text-[10px] font-bold text-[#0F172A]">Borrowing Limit: 2 / 5 Books Borrowed</span>
                     </p>
                     <div class="mt-4 flex items-start gap-3 rounded-xl border border-white/20 bg-white/10 p-3 backdrop-blur-md">
                         <span class="material-symbols-outlined mt-0.5 text-lg text-[#FDE047]">info</span>
                         <p class="text-xs leading-5 text-slate-200">
-                            <strong class="text-white">Student Patron Mode:</strong> Read and self-service only. Inventory additions, cataloging, and physical checkout clearances are authorized by Circulation Desk librarians.
+                            <strong class="text-white">Student Account Mode:</strong> Read and self-service only. Inventory additions, cataloging, and physical checkout clearances are authorized by Library Desk librarians.
                         </p>
                     </div>
                 </div>
@@ -205,7 +205,7 @@
                         <h3 class="font-headline-lg text-2xl font-semibold text-on-surface">2 Active Loans</h3>
                         <div class="mt-2 space-y-1.5">
                             <div class="flex justify-between text-[10px] font-bold text-[#64748B]">
-                                <span>Patron Quota Used</span>
+                                <span>Borrowing Limit Used</span>
                                 <span class="text-primary-container">2 / 5 Books</span>
                             </div>
                             <div class="h-2 w-full overflow-hidden rounded-full bg-[#E2E8F0]">
@@ -382,10 +382,10 @@
 
                         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                             @foreach ([
-                                ['available' => true, 'status' => 'Available (5 Copies)', 'shelf' => '005.13 P9', 'title' => 'Introduction to Python Programming', 'author' => 'J. Smith', 'isbn' => '978-0134076430', 'location' => 'Stack A-3', 'action' => 'Request to Reserve / Hold'],
-                                ['available' => true, 'status' => 'Available (3 Copies)', 'shelf' => '005.74 D2', 'title' => 'Database Systems: Design, Implementation & Management', 'author' => 'Coronel & Morris', 'isbn' => '978-1337627900', 'location' => 'Stack B-1', 'action' => 'Request to Reserve / Hold'],
+                                ['available' => true, 'status' => 'Available (5 Copies)', 'shelf' => '005.13 P9', 'title' => 'Introduction to Python Programming', 'author' => 'J. Smith', 'isbn' => '978-0134076430', 'location' => 'Stack A-3', 'action' => 'Request to Reserve'],
+                                ['available' => true, 'status' => 'Available (3 Copies)', 'shelf' => '005.74 D2', 'title' => 'Database Systems: Design, Implementation & Management', 'author' => 'Coronel & Morris', 'isbn' => '978-1337627900', 'location' => 'Stack B-1', 'action' => 'Request to Reserve'],
                                 ['available' => false, 'status' => 'All Copies Checked Out', 'shelf' => '004.6 T2', 'title' => 'Computer Networks (6th Edition)', 'author' => 'Tanenbaum & Wetherall', 'isbn' => '978-0133766189', 'location' => 'Expected Nov 4', 'action' => 'Notify When Available'],
-                                ['available' => true, 'status' => 'Available (2 Copies)', 'shelf' => '005.43 M6', 'title' => 'Modern Operating Systems', 'author' => 'Tanenbaum', 'isbn' => '978-0133591620', 'location' => 'Stack A-1', 'action' => 'Request to Reserve / Hold'],
+                                ['available' => true, 'status' => 'Available (2 Copies)', 'shelf' => '005.43 M6', 'title' => 'Modern Operating Systems', 'author' => 'Tanenbaum', 'isbn' => '978-0133591620', 'location' => 'Stack A-1', 'action' => 'Request to Reserve'],
                             ] as $book)
                                 <article class="flex flex-col justify-between rounded-xl border {{ $book['available'] ? 'border-[#E2E8F0] bg-white hover:border-primary-container/40' : 'border-[#FEE2E2] bg-[#FFF5F5]' }} p-4 transition-all hover:shadow-sm">
                                     <div>
@@ -419,14 +419,14 @@
                                 @include('partials.celtech-logo', ['class' => 'flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-white text-xs font-extrabold text-primary object-contain bg-white p-0.5'])
                                 <div>
                                     <h5 class="text-[10px] font-bold uppercase tracking-wide text-[#FDE047]">CLCST Digital Library Pass</h5>
-                                    <p class="text-[10px] text-slate-200">Optical Turnstile & Self-Service Kiosk</p>
+                                    <p class="text-[10px] text-slate-200">Optical Library Entry & Self-Service Check Station</p>
                                 </div>
                             </div>
                             <span class="rounded bg-white/20 px-2 py-0.5 text-[10px] font-bold tracking-widest text-[#AAF4B5]">VALID AY 24-25</span>
                         </div>
 
                         <div class="space-y-1 rounded-xl border border-white/20 bg-white/10 p-3.5 text-center backdrop-blur-sm">
-                            <p class="text-[11px] uppercase tracking-widest text-slate-300">Registered Patron</p>
+                            <p class="text-[11px] uppercase tracking-widest text-slate-300">Registered Library User</p>
                             <h3 class="font-headline-md text-xl font-extrabold tracking-wide text-white">JUAN DELA CRUZ</h3>
                             <p class="font-mono text-xs font-bold text-[#FDE047]">2024-10492-OL</p>
                             <p class="text-[11px] text-slate-200">BS Computer Science - Level 3</p>
@@ -439,7 +439,7 @@
                         </div>
 
                         <div class="flex items-center justify-between pt-1 text-[11px] text-slate-300">
-                            <span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-[#4ADE80]"></span> Active Patron Pass</span>
+                            <span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-[#4ADE80]"></span> Active Account Pass</span>
                             <span>Max Quota: 5 Books</span>
                         </div>
                     </section>
@@ -465,15 +465,15 @@
                             <div class="space-y-1 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-3.5">
                                 <div class="flex items-center gap-1.5 text-[10px] font-bold text-[#334155]">
                                     <span class="material-symbols-outlined text-sm text-primary-container">meeting_room</span>
-                                    Circulation Desk Hours
+                                    Library Desk Hours
                                 </div>
-                                <p class="text-xs text-[#64748B]">Mon - Fri: 8:00 AM - 8:00 PM<br>Physical returns accepted at Main Ground Floor Turnstile drop box 24/7.</p>
+                                <p class="text-xs text-[#64748B]">Mon - Fri: 8:00 AM - 8:00 PM<br>Physical returns accepted at Main Ground Floor Library Entry drop box 24/7.</p>
                             </div>
                         </div>
                     </section>
 
                     <section class="space-y-3 rounded-2xl border border-[#E2E8F0] bg-surface-container-lowest p-5 shadow-sm">
-                        <h3 class="font-headline-sm text-base font-bold text-on-surface">Quick Patron Actions</h3>
+                        <h3 class="font-headline-sm text-base font-bold text-on-surface">Quick Library User Actions</h3>
                         <div class="space-y-2">
                             @foreach ([
                                 ['icon' => 'history', 'title' => 'View Borrowing History', 'desc' => 'Check returned books and logs', 'color' => 'bg-[#EFF6FF] text-[#1D4ED8]'],

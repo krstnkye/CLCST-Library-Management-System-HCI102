@@ -128,13 +128,13 @@
                 <span class="h-2 w-2 animate-pulse rounded-full bg-emerald-600"></span>
                 <span class="text-[10px] font-semibold text-emerald-800">OPAC Node Online - Stacks v4.2</span>
             </div>
-            <a class="relative rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'notifications') }}" title="Notifications">
+            <a class="relative rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('staff.section', 'notifications') }}" title="Notifications">
                 <span class="material-symbols-outlined text-[22px]">notifications</span>
                 @if ($reservationCount > 0)
                     <span class="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[10px] font-bold text-white">{{ $reservationCount }}</span>
                 @endif
             </a>
-            <a class="rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'support') }}" title="Help Desk">
+            <a class="rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('staff.section', 'support') }}" title="Help Desk">
                 <span class="material-symbols-outlined text-[22px]">help</span>
             </a>
             <div class="mx-1 h-6 w-px bg-outline-variant"></div>
@@ -152,83 +152,9 @@
     </header>
 
     <div class="flex flex-1 overflow-hidden">
-        <aside class="custom-scrollbar hidden w-64 flex-shrink-0 flex-col justify-between overflow-y-auto border-r border-outline-variant bg-surface-container-lowest md:flex">
-            <div class="space-y-5 p-4">
-                <div class="flex items-center gap-3 rounded-xl border border-outline-variant bg-surface-container-low p-2.5">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-container text-on-primary shadow-sm">
-                        <span class="material-symbols-outlined text-[20px]">local_library</span>
-                    </div>
-                    <div class="overflow-hidden">
-                        <h2 class="truncate text-xs font-bold leading-tight text-primary">Central Stacks</h2>
-                        <p class="truncate text-[10px] leading-tight text-outline">Olongapo Main Campus</p>
-                    </div>
-                </div>
+        @include('partials.staff-sidebar', ['activePage' => 'search-books'])
 
-                <a class="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-primary px-3.5 text-xs font-bold text-on-primary shadow-sm transition-all hover:bg-[#0E4723]" href="{{ route('books.catalog', ['q' => '1049281']) }}">
-                    <span class="material-symbols-outlined text-[18px]">qr_code_scanner</span>
-                    <span>Scan Barcode</span>
-                </a>
-
-                <nav aria-label="Library Navigation" class="space-y-1">
-                    <div class="px-2 py-1 text-[11px] font-bold uppercase tracking-wider text-outline">Catalog & Circulation</div>
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('faculty.dashboard') }}">
-                        <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[20px]">dashboard</span><span class="text-sm font-medium">Dashboard</span></span>
-                    </a>
-                    <a class="flex items-center justify-between rounded-lg bg-primary-container px-3 py-2.5 font-semibold text-on-primary shadow-sm" href="{{ route('books.catalog') }}">
-                        <span class="flex items-center gap-3"><span class="material-symbols-outlined fill-1 text-[20px]">menu_book</span><span class="text-sm font-semibold">Search Books</span></span>
-                        <span class="h-2 w-2 rounded-full bg-secondary-container"></span>
-                    </a>
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('staff.section', 'circulation') }}">
-                        <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[20px]">swap_horiz</span><span class="text-sm font-medium">My Borrowed Books</span></span>
-                        <span class="rounded-full bg-surface-container-high px-1.5 py-0.5 text-[10px] font-bold text-primary">{{ $activeLoanCount }}</span>
-                    </a>
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('staff.section', 'reservations') }}">
-                        <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[20px]">book_online</span><span class="text-sm font-medium">My Reservations</span></span>
-                        <span class="rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-900">{{ $reservationCount }}</span>
-                    </a>
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('staff.section', 'reports') }}">
-                        <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[20px]">update</span><span class="text-sm font-medium">Renewal Requests</span></span>
-                        <span class="rounded-full bg-rose-100 px-1.5 py-0.5 text-[10px] font-bold text-rose-800">1</span>
-                    </a>
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'history') }}">
-                        <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[20px]">history</span><span class="text-sm font-medium">Borrowing History</span></span>
-                    </a>
-                    <div class="px-2 pb-1 pt-3 text-[11px] font-bold uppercase tracking-wider text-outline">Academics & Faculty</div>
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('staff.section', 'catalog') }}">
-                        <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[20px]">post_add</span><span class="text-sm font-medium">Recommend a Book</span></span>
-                    </a>
-                    <details class="group">
-                        <summary class="flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-on-surface-variant transition-colors hover:bg-surface-container">
-                            <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[20px]">school</span><span class="text-sm font-medium">Faculty Academic Requests</span></span>
-                            <span class="material-symbols-outlined text-[16px] text-outline transition-transform group-open:rotate-180">expand_more</span>
-                        </summary>
-                        <div class="space-y-1 py-1 pl-9 pr-2">
-                            <a class="block py-1 text-[13px] text-outline hover:text-primary" href="{{ route('staff.section', 'reservations') }}">Course Reserves Setup</a>
-                            <a class="block py-1 text-[13px] text-outline hover:text-primary" href="{{ route('staff.section', 'catalog') }}">Syllabus References</a>
-                            <a class="block py-1 text-[13px] text-outline hover:text-primary" href="{{ route('staff.section', 'support') }}">Inter-Library Loan</a>
-                        </div>
-                    </details>
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('staff.section', 'support') }}">
-                        <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="text-sm font-medium">Notifications</span></span>
-                        <span class="rounded-full bg-error-container px-1.5 py-0.5 text-[10px] font-bold text-error">3</span>
-                    </a>
-                    <a class="flex items-center justify-between rounded-lg px-3 py-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('staff.section', 'patrons') }}">
-                        <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[20px]">manage_accounts</span><span class="text-sm font-medium">My Profile</span></span>
-                    </a>
-                </nav>
-            </div>
-
-            <div class="space-y-1 border-t border-outline-variant bg-surface-container-low/50 p-4">
-                <a class="flex items-center gap-3 rounded-lg px-3 py-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('staff.section', 'support') }}">
-                    <span class="material-symbols-outlined text-[20px]">help_outline</span><span class="text-sm font-medium">Library Policies</span>
-                </a>
-                <a class="flex items-center gap-3 rounded-lg px-3 py-2 text-error transition-colors hover:bg-error-container/40" href="{{ route('login') }}">
-                    <span class="material-symbols-outlined text-[20px]">logout</span><span class="text-sm font-semibold">Log Out</span>
-                </a>
-            </div>
-        </aside>
-
-        <main class="custom-scrollbar flex flex-1 flex-col overflow-y-auto bg-[#F8FAFC]">
+        <main class="custom-scrollbar md:ml-64 flex flex-1 flex-col overflow-y-auto bg-[#F8FAFC]">
             <section class="border-b border-outline-variant bg-surface-container-lowest px-4 pb-6 pt-6 shadow-sm lg:px-8">
                 @if (session('status'))
                     <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">

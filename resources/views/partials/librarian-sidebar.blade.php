@@ -2,7 +2,6 @@
     $itemClass = fn (string $page) => $activePage === $page
         ? 'bg-[#0F5C2E] text-white shadow-sm'
         : 'text-[#24352C] hover:bg-[#EEF5F0] hover:text-[#0F5C2E]';
-    $groupOpen = fn (array $pages) => collect($pages)->contains($activePage);
 @endphp
 
 <aside id="librarian-sidebar" class="fixed bottom-0 left-0 top-16 z-30 hidden w-72 border-r border-[#D6DED8] bg-white md:flex md:flex-col">
@@ -23,16 +22,16 @@
             </a>
 
             @foreach ([
-                ['label' => 'Books', 'icon' => 'menu_book', 'pages' => [['books', 'Book Catalog'], ['add-book', 'Add New Book'], ['categories', 'Categories'], ['inventory', 'Inventory']]],
-                ['label' => 'Transactions', 'icon' => 'swap_horiz', 'pages' => [['borrow-requests', 'Borrow Requests'], ['returns', 'Return Books'], ['overdue', 'Overdue Books']]],
-                ['label' => 'Users', 'icon' => 'group', 'pages' => [['users', 'User Accounts'], ['verification', 'Account Verification'], ['memberships', 'Memberships']]],
+                ['label' => 'Books', 'pages' => [['books', 'menu_book', 'Book Catalog'], ['add-book', 'library_add', 'Add New Book'], ['categories', 'category', 'Categories'], ['inventory', 'inventory_2', 'Inventory']]],
+                ['label' => 'Transactions', 'pages' => [['borrow-requests', 'outbox', 'Borrow Requests'], ['returns', 'assignment_return', 'Return Books'], ['overdue', 'schedule', 'Overdue Books']]],
+                ['label' => 'Users', 'pages' => [['users', 'group', 'User Accounts'], ['verification', 'how_to_reg', 'Account Verification'], ['memberships', 'card_membership', 'Memberships']]],
             ] as $group)
                 <section>
                     <p class="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-[#718078]">{{ $group['label'] }}</p>
                     <div class="space-y-1">
-                        @foreach ($group['pages'] as [$page, $label])
+                        @foreach ($group['pages'] as [$page, $icon, $label])
                             <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ route('librarian.section', $page) }}">
-                                <span class="material-symbols-outlined text-xl">{{ $loop->first ? $group['icon'] : 'chevron_right' }}</span><span>{{ $label }}</span>
+                                <span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span>
                             </a>
                         @endforeach
                     </div>

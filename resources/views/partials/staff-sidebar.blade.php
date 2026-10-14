@@ -18,7 +18,7 @@
         ['key' => 'course-reserves', 'label' => 'Course Reserves Setup', 'icon' => 'assignment', 'href' => route('staff.section', 'course-reserves')],
         ['key' => 'reading-lists', 'label' => 'Syllabus References', 'icon' => 'format_list_bulleted', 'href' => route('staff.section', 'reading-lists')],
         ['key' => 'instruction-sessions', 'label' => 'Library Class Sessions', 'icon' => 'cast_for_education', 'href' => route('staff.section', 'instruction-sessions')],
-        ['key' => 'support', 'label' => 'Inter-Library Loan', 'icon' => 'sync_alt', 'href' => route('staff.section', 'support')],
+        ['key' => 'inter-library-loan', 'label' => 'Inter-Library Loan', 'icon' => 'sync_alt', 'href' => route('staff.section', 'support')],
     ];
 
     $lowerItems = [

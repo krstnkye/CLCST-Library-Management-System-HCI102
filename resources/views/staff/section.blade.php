@@ -2717,6 +2717,167 @@
                         </section>
                     </aside>
                 </section>
+            @elseif ($section === 'support')
+                <section class="grid grid-cols-1 gap-5 md:grid-cols-3">
+                    <article class="group flex min-h-44 flex-col justify-between rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm transition hover:border-[#22C55E] hover:shadow-md">
+                        <div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#065F2A] transition group-hover:bg-[#065F2A] group-hover:text-white">
+                                <span class="material-symbols-outlined">description</span>
+                            </span>
+                            <h2 class="mt-4 font-display text-lg font-bold text-[#0F172A]">Daily Summary</h2>
+                            <p class="mt-2 text-sm leading-6 text-[#64748B]">Review borrowed books, pending reservations, open fines, and catalog activity from today.</p>
+                        </div>
+                        <div class="mt-4 flex items-center justify-between border-t border-[#E2E8F0] pt-3 text-xs">
+                            <span class="font-medium text-[#64748B]">142 checked out today</span>
+                            <a class="font-bold text-[#065F2A] hover:underline" href="{{ route('staff.section', 'history') }}">View Log</a>
+                        </div>
+                    </article>
+
+                    <article class="group flex min-h-44 flex-col justify-between rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm transition hover:border-[#22C55E] hover:shadow-md">
+                        <div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#065F2A] transition group-hover:bg-[#065F2A] group-hover:text-white">
+                                <span class="material-symbols-outlined">verified_user</span>
+                            </span>
+                            <h2 class="mt-4 font-display text-lg font-bold text-[#0F172A]">Access Control</h2>
+                            <p class="mt-2 text-sm leading-6 text-[#64748B]">Keep staff-only pages limited to authorized library personnel and verified faculty accounts.</p>
+                        </div>
+                        <div class="mt-4 flex items-center justify-between border-t border-[#E2E8F0] pt-3 text-xs">
+                            <span class="inline-flex items-center font-medium text-[#047857]"><span class="mr-1.5 h-2 w-2 rounded-full bg-[#22C55E]"></span>ID gates synced</span>
+                            <a class="font-bold text-[#065F2A] hover:underline" href="{{ route('staff.section', 'profile') }}">Staff Roles</a>
+                        </div>
+                    </article>
+
+                    <article class="group flex min-h-44 flex-col justify-between rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm transition hover:border-[#22C55E] hover:shadow-md">
+                        <div>
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#065F2A] transition group-hover:bg-[#065F2A] group-hover:text-white">
+                                <span class="material-symbols-outlined">support_agent</span>
+                            </span>
+                            <h2 class="mt-4 font-display text-lg font-bold text-[#0F172A]">Desk Support</h2>
+                            <p class="mt-2 text-sm leading-6 text-[#64748B]">Use this area for library desk notes, help requests, device issues, and operating procedures.</p>
+                        </div>
+                        <div class="mt-4 flex items-center justify-between border-t border-[#E2E8F0] pt-3 text-xs">
+                            <span class="font-medium text-[#64748B]">1 open desk note</span>
+                            <a class="font-bold text-[#065F2A] hover:underline" href="#staff-support-queue">Desk SOP</a>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="grid grid-cols-1 gap-6 lg:grid-cols-3" id="staff-support-queue">
+                    <article class="lg:col-span-2 rounded-2xl border border-[#CBD5E1] bg-white p-6 shadow-sm">
+                        <div class="flex flex-col justify-between gap-3 border-b border-[#E2E8F0] pb-4 sm:flex-row sm:items-start">
+                            <div>
+                                <h2 class="font-display text-lg font-bold text-[#0F172A]">Live Support Queue & Hardware Status</h2>
+                                <p class="mt-1 text-sm leading-6 text-[#64748B]">Track library desk equipment issues, faculty requests, and service inquiries in one place.</p>
+                            </div>
+                            <a class="inline-flex items-center justify-center gap-2 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#E2E8F0]" href="{{ route('staff.section', 'feedback') }}">
+                                <span class="material-symbols-outlined text-base">add</span>
+                                New Incident
+                            </a>
+                        </div>
+
+                        <div class="mt-4 overflow-x-auto">
+                            <table class="w-full min-w-[640px] text-left text-xs">
+                                <thead>
+                                    <tr class="border-b border-[#E2E8F0] text-[10px] uppercase tracking-wider text-[#64748B]">
+                                        <th class="px-2 py-3">Ticket / Item</th>
+                                        <th class="px-2 py-3">Location</th>
+                                        <th class="px-2 py-3">Priority</th>
+                                        <th class="px-2 py-3">Status</th>
+                                        <th class="px-2 py-3 text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#E2E8F0]">
+                                    @foreach ([
+                                        ['item' => 'Barcode Scanner Station 3', 'note' => 'USB connection is unstable during book returns.', 'location' => 'Library Desk', 'priority' => 'Medium', 'priorityClass' => 'bg-[#FEF3C7] text-[#92400E]', 'status' => 'Checking', 'statusClass' => 'text-[#92400E]', 'dot' => 'bg-[#F59E0B]', 'route' => route('staff.section', 'feedback'), 'action' => 'Inspect'],
+                                        ['item' => 'Library Entry Gate 2 ID Sync', 'note' => 'Student ID tap delay was resolved after device update.', 'location' => 'Main Entrance', 'priority' => 'Normal', 'priorityClass' => 'bg-[#DCFCE7] text-[#166534]', 'status' => 'Working', 'statusClass' => 'text-[#047857]', 'dot' => 'bg-[#22C55E]', 'route' => route('staff.section', 'history'), 'action' => 'Log'],
+                                        ['item' => 'Faculty Reserve: Engineering 402 Syllabus', 'note' => 'Requested four textbook copies for the two-hour reserve shelf.', 'location' => '2nd Floor Reserves', 'priority' => 'Academic', 'priorityClass' => 'bg-[#DBEAFE] text-[#1D4ED8]', 'status' => 'Assigned', 'statusClass' => 'text-[#1D4ED8]', 'dot' => 'bg-[#3B82F6]', 'route' => route('staff.section', 'academic'), 'action' => 'Review'],
+                                    ] as $ticket)
+                                        <tr class="hover:bg-[#F8FAFC]">
+                                            <td class="px-2 py-4">
+                                                <div class="font-bold text-[#0F172A]">{{ $ticket['item'] }}</div>
+                                                <div class="mt-0.5 text-xs text-[#64748B]">{{ $ticket['note'] }}</div>
+                                            </td>
+                                            <td class="px-2 py-4 font-medium text-[#334155]">{{ $ticket['location'] }}</td>
+                                            <td class="px-2 py-4"><span class="{{ $ticket['priorityClass'] }} rounded-full px-2 py-1 text-[10px] font-bold">{{ $ticket['priority'] }}</span></td>
+                                            <td class="px-2 py-4"><span class="{{ $ticket['statusClass'] }} inline-flex items-center text-xs font-bold"><span class="{{ $ticket['dot'] }} mr-1.5 h-1.5 w-1.5 rounded-full"></span>{{ $ticket['status'] }}</span></td>
+                                            <td class="px-2 py-4 text-right"><a class="font-bold text-[#065F2A] hover:underline" href="{{ $ticket['route'] }}">{{ $ticket['action'] }}</a></td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-4 flex flex-col justify-between gap-2 border-t border-[#E2E8F0] pt-3 text-xs text-[#64748B] sm:flex-row">
+                            <span>Server sync runs every 60 seconds on the campus network.</span>
+                            <span class="font-mono text-[#334155]">Local gateway: 127.0.0.1:8001</span>
+                        </div>
+                    </article>
+
+                    <aside class="space-y-6">
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-6 shadow-sm">
+                            <h2 class="font-display text-lg font-bold text-[#0F172A]">Duty Desk & Quick Contacts</h2>
+                            <p class="mt-1 text-sm leading-6 text-[#64748B]">Use these contacts for urgent desk support and system issues.</p>
+
+                            <div class="mt-4 space-y-3">
+                                <div class="flex items-start gap-3 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-3">
+                                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#DCFCE7] text-xs font-bold text-[#065F2A]">CL</span>
+                                    <div>
+                                        <h3 class="text-sm font-bold text-[#0F172A]">Chief Librarian Office</h3>
+                                        <p class="text-xs text-[#64748B]">Local 104 - Room 201</p>
+                                        <a class="text-xs font-bold text-[#065F2A] hover:underline" href="mailto:library@clcst.edu.ph">library@clcst.edu.ph</a>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start gap-3 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-3">
+                                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#DBEAFE] text-xs font-bold text-[#1D4ED8]">IT</span>
+                                    <div>
+                                        <h3 class="text-sm font-bold text-[#0F172A]">MIS & IT Helpdesk</h3>
+                                        <p class="text-xs text-[#64748B]">Local 112 - Main Server Room</p>
+                                        <a class="text-xs font-bold text-[#1D4ED8] hover:underline" href="mailto:mis@clcst.edu.ph">mis@clcst.edu.ph</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#BBF7D0] bg-[#F0FDF4] p-5 shadow-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[#065F2A]">info</span>
+                                <h2 class="font-display text-lg font-bold text-[#064E3B]">Fine Rules</h2>
+                            </div>
+                            <div class="mt-3 space-y-2 text-sm leading-6 text-[#166534]">
+                                <p><strong>Regular borrowed books:</strong> PHP 5.00 per day for each overdue title.</p>
+                                <p><strong>Reserve books:</strong> PHP 2.00 per hour for hourly loans returned late.</p>
+                            </div>
+                            <a class="mt-4 inline-flex text-xs font-bold text-[#065F2A] hover:underline" href="{{ route('staff.section', 'reports') }}">Review Renewal Requests</a>
+                        </section>
+                    </aside>
+                </section>
+
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-6 shadow-sm">
+                    <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+                        <div>
+                            <h2 class="font-display text-lg font-bold text-[#0F172A]">Staff Operations References</h2>
+                            <p class="mt-1 max-w-3xl text-sm leading-6 text-[#64748B]">Quick links for common help topics, support requests, and library operations pages.</p>
+                        </div>
+                        <a class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#065F2A] px-4 py-2 text-sm font-bold text-white hover:bg-[#064E3B]" href="{{ route('books.catalog') }}">
+                            <span class="material-symbols-outlined text-base">menu_book</span>
+                            Open Book Catalog
+                        </a>
+                    </div>
+                    <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                        @foreach ([
+                            ['route' => route('staff.section', 'circulation'), 'icon' => 'swap_horiz', 'label' => 'Check Borrowed Books'],
+                            ['route' => route('staff.section', 'reservations'), 'icon' => 'book_online', 'label' => 'View Reservations'],
+                            ['route' => route('staff.section', 'academic'), 'icon' => 'school', 'label' => 'Academic Requests'],
+                            ['route' => route('staff.section', 'notifications'), 'icon' => 'notifications', 'label' => 'Notification Center'],
+                        ] as $tool)
+                            <a class="flex items-center justify-between rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] p-3 text-sm font-bold text-[#334155] hover:bg-[#E2E8F0]" href="{{ $tool['route'] }}">
+                                <span class="flex items-center gap-2"><span class="material-symbols-outlined text-base text-[#065F2A]">{{ $tool['icon'] }}</span>{{ $tool['label'] }}</span>
+                                <span class="material-symbols-outlined text-base text-[#64748B]">chevron_right</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </section>
             @else
                 <section class="grid grid-cols-1 gap-4 lg:grid-cols-3">
                     @foreach ([

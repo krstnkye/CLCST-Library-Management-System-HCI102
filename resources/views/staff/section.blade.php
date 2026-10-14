@@ -2717,6 +2717,247 @@
                         </section>
                     </aside>
                 </section>
+            @elseif ($section === 'inter-library-loan')
+                <section class="rounded-2xl border border-[#CBD5E1] bg-white p-6 shadow-sm">
+                    <div class="flex flex-col justify-between gap-4 xl:flex-row xl:items-start">
+                        <div>
+                            <nav aria-label="Breadcrumb" class="mb-2 flex flex-wrap items-center gap-2 text-xs font-medium text-[#64748B]">
+                                <span>Academic Portal</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span>Faculty Services</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span>Faculty Academic Requests</span>
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                <span class="font-bold text-[#065F2A]">Inter-Library Loan</span>
+                            </nav>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="inline-flex rounded-full bg-[#DCFCE7] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#166534]">Faculty Research Service</span>
+                                <span class="inline-flex rounded-full border border-[#CBD5E1] bg-[#F8FAFC] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#475569]">6 of 8 Requests Available</span>
+                            </div>
+                            <h1 class="mt-4 max-w-5xl font-display text-3xl font-bold leading-tight text-[#0F172A] md:text-4xl">Inter-Library Loan & Consortium Document Delivery</h1>
+                            <p class="mt-3 max-w-4xl text-sm leading-6 text-[#475569]">Request academic books, peer-reviewed journal papers, and conference proceedings that are not available at the CLCST Main Campus through partner libraries and academic repositories.</p>
+                        </div>
+                        <div class="flex shrink-0 flex-wrap gap-3">
+                            <a class="inline-flex items-center justify-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-4 py-2 text-xs font-bold text-[#334155] shadow-sm hover:bg-[#F8FAFC]" href="{{ route('books.catalog') }}">
+                                <span class="material-symbols-outlined text-base">search</span>
+                                Search Books
+                            </a>
+                            <a class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#065F2A] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#064E3B]" href="#ill-request-form">
+                                <span class="material-symbols-outlined text-base">add_circle</span>
+                                New Loan Request
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 gap-4 md:grid-cols-4">
+                    @foreach ([
+                        ['label' => 'Available Requests', 'value' => '6 / 8', 'meta' => 'Faculty monthly allocation', 'icon' => 'inventory_2', 'tone' => 'green'],
+                        ['label' => 'Partner Libraries', 'value' => '4', 'meta' => 'Online consortium hubs', 'icon' => 'hub', 'tone' => 'blue'],
+                        ['label' => 'Ready Items', 'value' => '2', 'meta' => '1 download, 1 pickup', 'icon' => 'task_alt', 'tone' => 'green'],
+                        ['label' => 'Average Delivery', 'value' => '3-5 days', 'meta' => 'Digital or courier based', 'icon' => 'local_shipping', 'tone' => 'amber'],
+                    ] as $metric)
+                        <article class="rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <p class="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">{{ $metric['label'] }}</p>
+                                    <h2 class="mt-1 font-display text-2xl font-bold text-[#0F172A]">{{ $metric['value'] }}</h2>
+                                    <p class="mt-2 text-xs leading-5 text-[#64748B]">{{ $metric['meta'] }}</p>
+                                </div>
+                                <span class="{{ $metric['tone'] === 'blue' ? 'bg-[#DBEAFE] text-[#1D4ED8]' : ($metric['tone'] === 'amber' ? 'bg-[#FEF3C7] text-[#92400E]' : 'bg-[#DCFCE7] text-[#166534]') }} flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
+                                    <span class="material-symbols-outlined">{{ $metric['icon'] }}</span>
+                                </span>
+                            </div>
+                        </article>
+                    @endforeach
+                </section>
+
+                <section class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+                    <div class="space-y-6 xl:col-span-8">
+                        <section id="ill-request-form" class="rounded-2xl border border-[#CBD5E1] bg-white p-6 shadow-sm">
+                            <div class="flex flex-col justify-between gap-3 border-b border-[#E2E8F0] pb-4 md:flex-row md:items-start">
+                                <div>
+                                    <h2 class="font-display text-xl font-bold text-[#0F172A]">Request a Book or Research Paper</h2>
+                                    <p class="mt-1 text-sm leading-6 text-[#64748B]">Fill in the request details so the library desk can check partner libraries and send the item for approval.</p>
+                                </div>
+                                <span class="inline-flex w-fit rounded-full bg-[#FEF3C7] px-3 py-1 text-[10px] font-bold uppercase text-[#92400E]">No payment needed for CICT faculty</span>
+                            </div>
+
+                            <form class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2" method="GET" action="{{ route('staff.section', 'inter-library-loan') }}">
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Material Type
+                                    <select class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" name="material_type">
+                                        <option>Book / Monograph</option>
+                                        <option>Journal Article PDF</option>
+                                        <option>Conference Paper</option>
+                                        <option>Thesis or Dissertation</option>
+                                    </select>
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Needed For
+                                    <select class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" name="purpose">
+                                        <option>Faculty Research</option>
+                                        <option>Course Reading List</option>
+                                        <option>Capstone Advising</option>
+                                        <option>Laboratory Reference</option>
+                                    </select>
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A] md:col-span-2">Title or Citation
+                                    <input class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" name="title" placeholder="Enter book title, article title, DOI, ISBN, or complete citation" value="FPGA-Accelerated Deep Neural Networks: Architectures and Tools">
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Preferred Partner Library
+                                    <select class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" name="partner">
+                                        <option>Any Available Partner</option>
+                                        <option>UP Diliman Main Library</option>
+                                        <option>DLSU Libraries Manila</option>
+                                        <option>CLSU Central Library</option>
+                                        <option>CLCST San Fernando Campus</option>
+                                    </select>
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A]">Delivery Format
+                                    <select class="w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" name="delivery">
+                                        <option>Digital PDF if allowed</option>
+                                        <option>Physical copy pickup</option>
+                                        <option>Either digital or physical</option>
+                                    </select>
+                                </label>
+                                <label class="space-y-1 text-xs font-bold text-[#0F172A] md:col-span-2">Research Notes
+                                    <textarea class="min-h-24 w-full rounded-lg border-[#CBD5E1] text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" name="notes" placeholder="Add course code, research topic, deadline, or special request">Needed for CPE research consultation and embedded systems reference review.</textarea>
+                                </label>
+                                <div class="flex flex-wrap justify-end gap-3 md:col-span-2">
+                                    <a class="inline-flex items-center justify-center gap-2 rounded-lg border border-[#CBD5E1] px-4 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'inter-library-loan') }}">Clear Draft</a>
+                                    <button class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#065F2A] px-5 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" type="submit">
+                                        <span class="material-symbols-outlined text-base">send</span>
+                                        Submit Inter-Library Request
+                                    </button>
+                                </div>
+                            </form>
+                        </section>
+
+                        <section class="overflow-hidden rounded-2xl border border-[#CBD5E1] bg-white shadow-sm">
+                            <div class="flex flex-col justify-between gap-3 border-b border-[#E2E8F0] bg-[#F8FAFC] px-6 py-4 md:flex-row md:items-center">
+                                <div>
+                                    <h2 class="font-display text-xl font-bold text-[#0F172A]">Active Inter-Library Requests</h2>
+                                    <p class="mt-1 text-sm text-[#64748B]">Track courier, download, and pickup status for requested academic materials.</p>
+                                </div>
+                                <a class="inline-flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#E2E8F0]" href="{{ route('staff.section', 'history') }}">
+                                    <span class="material-symbols-outlined text-base">history</span>
+                                    View Archive
+                                </a>
+                            </div>
+
+                            <div class="divide-y divide-[#E2E8F0]">
+                                @foreach ([
+                                    ['badge' => 'In Transit via Regional Courier', 'badgeClass' => 'bg-[#DBEAFE] text-[#1D4ED8]', 'icon' => 'local_shipping', 'id' => 'ILL-2024-0391', 'title' => 'FPGA-Accelerated Deep Neural Networks: Architectures and Tools', 'partner' => 'University of the Philippines Diliman Main Library', 'meta' => 'Dispatched Nov 11 - Expected Nov 14 at Olongapo', 'detail' => 'Waybill LBC-PRALC-992014 - 45 days loan', 'primary' => 'Track Waybill', 'secondary' => 'View Voucher'],
+                                    ['badge' => 'Ready to Download', 'badgeClass' => 'bg-[#DCFCE7] text-[#166534]', 'icon' => 'picture_as_pdf', 'id' => 'ILL-2024-0388', 'title' => 'IEEE Transactions on Computers: Special Issue on Neuromorphic Architectures', 'partner' => 'De La Salle University Manila Henry Sy Sr. Hall', 'meta' => 'Delivered Nov 10 - PDF valid for 30 days', 'detail' => 'DOI 10.1109/TC.2024.1089201 - Watermarked copy', 'primary' => 'Download PDF', 'secondary' => 'Cite Article'],
+                                    ['badge' => 'Ready for Pickup', 'badgeClass' => 'bg-[#FEF3C7] text-[#92400E]', 'icon' => 'book_2', 'id' => 'ILL-2024-0374', 'title' => 'Embedded Real-Time Operating Systems for Robotics 4th Edition', 'partner' => 'Central Luzon State University Science Library', 'meta' => 'Shelf Slip SHELF-ILL-B3 - Hold expires Nov 17', 'detail' => 'Pickup at Library Desk - 45 days loan', 'primary' => 'Claim Code', 'secondary' => 'Extend Hold'],
+                                ] as $request)
+                                    <article class="p-6 transition hover:bg-[#F8FAFC]">
+                                        <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
+                                            <div class="flex min-w-0 items-start gap-4">
+                                                <span class="flex h-16 w-12 shrink-0 flex-col items-center justify-center rounded-lg border border-[#CBD5E1] bg-[#F1F5F9] text-[#065F2A]">
+                                                    <span class="material-symbols-outlined text-3xl">{{ $request['icon'] }}</span>
+                                                </span>
+                                                <div class="min-w-0">
+                                                    <div class="flex flex-wrap items-center gap-2">
+                                                        <span class="{{ $request['badgeClass'] }} inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-bold uppercase">{{ $request['badge'] }}</span>
+                                                        <span class="text-xs text-[#64748B]">Request ID: <code class="font-mono font-bold text-[#0F172A]">{{ $request['id'] }}</code></span>
+                                                    </div>
+                                                    <h3 class="mt-2 font-display text-lg font-bold text-[#0F172A]">{{ $request['title'] }}</h3>
+                                                    <p class="mt-1 text-sm text-[#64748B]">Lending Partner: <strong class="text-[#0F172A]">{{ $request['partner'] }}</strong></p>
+                                                    <div class="mt-3 flex flex-wrap gap-3 text-xs text-[#64748B]">
+                                                        <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base text-[#065F2A]">calendar_today</span>{{ $request['meta'] }}</span>
+                                                        <span>{{ $request['detail'] }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex shrink-0 flex-wrap gap-2">
+                                                <a class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#065F2A] px-3 py-2 text-xs font-bold text-white hover:bg-[#064E3B]" href="{{ route('staff.section', 'inter-library-loan') }}">
+                                                    <span class="material-symbols-outlined text-base">task_alt</span>{{ $request['primary'] }}
+                                                </a>
+                                                <a class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#E2E8F0]" href="{{ route('staff.section', 'inter-library-loan') }}">{{ $request['secondary'] }}</a>
+                                            </div>
+                                        </div>
+                                    </article>
+                                @endforeach
+                            </div>
+                        </section>
+                    </div>
+
+                    <aside class="space-y-6 xl:col-span-4">
+                        <section class="overflow-hidden rounded-2xl border border-[#065F2A]/40 bg-gradient-to-br from-[#135D2E] via-[#0E4723] to-[#082E16] p-5 text-white shadow-md">
+                            <div class="flex items-start justify-between border-b border-white/20 pb-3">
+                                <div class="flex items-center gap-3">
+                                    @include('partials.celtech-logo', ['class' => 'flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white p-1'])
+                                    <div>
+                                        <h2 class="font-display text-sm font-extrabold uppercase tracking-wide">CLCST Digital Faculty Pass</h2>
+                                        <p class="text-[10px] font-bold uppercase tracking-wider text-[#FDE68A]">Main Library Access</p>
+                                    </div>
+                                </div>
+                                <span class="rounded bg-[#FDE68A] px-2 py-1 text-[10px] font-extrabold text-[#713F12]">ACTIVE</span>
+                            </div>
+                            <div class="py-4">
+                                <p class="text-[10px] uppercase tracking-wider text-white/70">Faculty Borrower</p>
+                                <h3 class="mt-1 font-display text-lg font-extrabold">Engr. Roberto M. Mendoza, PECE</h3>
+                                <p class="mt-1 text-xs text-white/85">Department Chairperson - CICT & Computer Engineering</p>
+                                <p class="mt-2 text-xs text-white/80">Faculty ID: <strong class="text-white">FAC-2018-0412</strong></p>
+                            </div>
+                            <div class="rounded-xl bg-white p-3 text-center text-[#0F172A]">
+                                <div class="mx-auto h-10 w-full max-w-xs bg-[repeating-linear-gradient(90deg,#0F172A_0_2px,transparent_2px_5px,#0F172A_5px_7px,transparent_7px_10px)]"></div>
+                                <p class="mt-2 font-mono text-xs font-bold tracking-[0.22em]">FAC-2018-0412-LIB</p>
+                            </div>
+                            <div class="mt-3 flex items-center justify-between text-[11px] text-white/75">
+                                <span>Fast-pass authorized</span>
+                                <span>Expires Oct 2025</span>
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h2 class="font-display text-lg font-bold text-[#0F172A]">Regional Partner Libraries</h2>
+                                    <p class="mt-1 text-xs text-[#64748B]">Current consortium delivery status</p>
+                                </div>
+                                <span class="material-symbols-outlined text-[#64748B]">sync</span>
+                            </div>
+                            <div class="mt-4 space-y-3">
+                                @foreach ([
+                                    ['name' => 'UP Diliman Main Library', 'meta' => 'Next courier run: Wed 2:00 PM', 'tag' => 'Online'],
+                                    ['name' => 'DLSU Libraries Manila', 'meta' => 'Digital PDF delivery active', 'tag' => 'Direct'],
+                                    ['name' => 'CLSU Central Library', 'meta' => 'Northern Luzon partner hub', 'tag' => 'Regional'],
+                                    ['name' => 'CLCST San Fernando Campus', 'meta' => 'Daily campus shuttle link', 'tag' => 'Intranet'],
+                                ] as $hub)
+                                    <div class="flex items-start justify-between gap-3 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-3">
+                                        <div>
+                                            <h3 class="flex items-center gap-2 text-sm font-bold text-[#0F172A]"><span class="h-2 w-2 rounded-full bg-[#22C55E]"></span>{{ $hub['name'] }}</h3>
+                                            <p class="mt-1 text-xs text-[#64748B]">{{ $hub['meta'] }}</p>
+                                        </div>
+                                        <span class="rounded bg-[#DCFCE7] px-2 py-1 text-[10px] font-bold uppercase text-[#166534]">{{ $hub['tag'] }}</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#CBD5E1] bg-white p-5 shadow-sm">
+                            <h2 class="flex items-center gap-2 font-display text-lg font-bold text-[#0F172A]"><span class="material-symbols-outlined text-[#065F2A]">policy</span>Faculty Loan Rules</h2>
+                            <ul class="mt-4 space-y-3 text-sm leading-6 text-[#475569]">
+                                <li><strong class="text-[#0F172A]">Loan duration:</strong> physical items may be borrowed for 45 calendar days.</li>
+                                <li><strong class="text-[#0F172A]">Renewal:</strong> one renewal is allowed if no other borrower is waiting.</li>
+                                <li><strong class="text-[#0F172A]">Copyright:</strong> digital copies follow RA 8293 and partner-library access rules.</li>
+                            </ul>
+                        </section>
+
+                        <section class="rounded-2xl border border-[#FEF08A] bg-[#FEFCE8] p-5 shadow-sm">
+                            <div class="flex items-start gap-3">
+                                <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#FEF08A] text-[#854D0E]"><span class="material-symbols-outlined">support_agent</span></span>
+                                <div>
+                                    <h2 class="font-display text-base font-bold text-[#713F12]">Inter-Library Loan Desk</h2>
+                                    <p class="mt-1 text-sm leading-6 text-[#854D0E]">Room 201, 2nd Floor Shelves - Local 108</p>
+                                    <p class="mt-2 text-sm text-[#854D0E]"><strong>Coordinator:</strong> Ms. Maria Santos, RL</p>
+                                    <a class="text-sm font-bold text-[#713F12] underline" href="mailto:ill-desk@clcst.edu.ph">ill-desk@clcst.edu.ph</a>
+                                </div>
+                            </div>
+                        </section>
+                    </aside>
+                </section>
             @elseif ($section === 'support')
                 <section class="grid grid-cols-1 gap-5 md:grid-cols-3">
                     <article class="group flex min-h-44 flex-col justify-between rounded-xl border border-[#CBD5E1] bg-white p-5 shadow-sm transition hover:border-[#22C55E] hover:shadow-md">

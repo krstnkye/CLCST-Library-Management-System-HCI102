@@ -345,6 +345,7 @@ class HomeController extends Controller
             'course-reserves' => 'Course Reserves',
             'reading-lists' => 'Reading Lists',
             'instruction-sessions' => 'Library Class Sessions',
+            'inter-library-loan' => 'Inter-Library Loan',
             'notifications' => 'Faculty Notifications',
             'feedback' => 'Library Feedback',
             'settings' => 'System Settings',

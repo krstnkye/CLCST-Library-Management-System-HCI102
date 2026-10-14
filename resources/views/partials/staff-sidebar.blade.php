@@ -18,7 +18,7 @@
         ['key' => 'course-reserves', 'label' => 'Course Reserves Setup', 'icon' => 'assignment', 'href' => route('staff.section', 'course-reserves')],
         ['key' => 'reading-lists', 'label' => 'Syllabus References', 'icon' => 'format_list_bulleted', 'href' => route('staff.section', 'reading-lists')],
         ['key' => 'instruction-sessions', 'label' => 'Library Class Sessions', 'icon' => 'cast_for_education', 'href' => route('staff.section', 'instruction-sessions')],
-        ['key' => 'inter-library-loan', 'label' => 'Inter-Library Loan', 'icon' => 'sync_alt', 'href' => route('staff.section', 'support')],
+        ['key' => 'inter-library-loan', 'label' => 'Inter-Library Loan', 'icon' => 'sync_alt', 'href' => route('staff.section', 'inter-library-loan')],
     ];
 
     $lowerItems = [
@@ -28,7 +28,7 @@
         ['key' => 'support', 'label' => 'Help & Support', 'icon' => 'help_outline', 'href' => route('staff.section', 'support')],
     ];
 
-    $academicActive = in_array($activePage, ['academic', 'catalog', 'course-reserves', 'reading-lists', 'instruction-sessions'], true);
+    $academicActive = in_array($activePage, ['academic', 'catalog', 'course-reserves', 'reading-lists', 'instruction-sessions', 'inter-library-loan'], true);
 
     $badgeClass = function (?string $tone): string {
         return match ($tone) {

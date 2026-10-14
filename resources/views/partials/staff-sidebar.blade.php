@@ -136,10 +136,13 @@
     </div>
 
     <div class="border-t border-[#CBD5E1] bg-white p-5">
-        <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-[#B91C1C] hover:bg-[#FEE2E2]" href="{{ route('login') }}">
-            <span class="material-symbols-outlined text-[20px]">logout</span>
-            <span>Log Out</span>
-        </a>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-[#B91C1C] hover:bg-[#FEE2E2]" type="submit">
+                <span class="material-symbols-outlined text-[20px]">logout</span>
+                <span>Log Out</span>
+            </button>
+        </form>
     </div>
 </aside>
 

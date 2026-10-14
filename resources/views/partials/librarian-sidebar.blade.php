@@ -77,9 +77,12 @@
     </div>
 
     <div class="border-t border-[#D6DED8] p-4">
-        <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-50" href="{{ route('login') }}">
-            <span class="material-symbols-outlined text-xl">logout</span><span>Log Out</span>
-        </a>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-50" type="submit">
+                <span class="material-symbols-outlined text-xl">logout</span><span>Log Out</span>
+            </button>
+        </form>
     </div>
 </aside>
 

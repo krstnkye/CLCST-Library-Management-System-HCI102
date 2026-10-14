@@ -27,10 +27,17 @@ class HomeController extends Controller
 
     public function authenticate(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'role' => ['required', 'in:student,faculty,staff,superadmin'],
             'identifier' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string', 'max:255'],
+        ]);
+
+        $request->session()->regenerate();
+        $request->session()->put([
+            'portal_role' => $credentials['role'],
+            'portal_identifier' => $credentials['identifier'],
+            'portal_signed_in_at' => now()->toIso8601String(),
         ]);
 
         if ($request->input('role') === 'student') {
@@ -46,6 +53,16 @@ class HomeController extends Controller
         }
 
         return redirect()->route('staff.dashboard')->with('status', 'Welcome back to the librarian operations dashboard.');
+    }
+
+    public function logout(Request $request)
+    {
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()
+            ->route('login')
+            ->with('status', 'You have been logged out safely.');
     }
 
     public function register()
@@ -76,13 +93,21 @@ class HomeController extends Controller
             'program' => $request->input('program_or_department'),
             'registered_at' => now()->format('M d, Y h:i A'),
         ]);
+        if ($request->input('patron_role') !== 'superadmin') {
+            $request->session()->regenerate();
+            $request->session()->put([
+                'portal_role' => $request->input('patron_role'),
+                'portal_identifier' => $request->input('patron_id'),
+                'portal_signed_in_at' => now()->toIso8601String(),
+            ]);
+        }
 
         $status = 'Registration submitted successfully. Your digital library pass has been issued for verification.';
 
         return match ($request->input('patron_role')) {
             'faculty' => redirect()->route('faculty.dashboard')->with('status', $status),
             'staff' => redirect()->route('staff.dashboard')->with('status', $status),
-            'superadmin' => redirect()->route('superadmin.dashboard')->with('status', 'Super Admin registration submitted for institutional approval.'),
+            'superadmin' => redirect()->route('login')->with('status', 'Super Admin registration submitted. An authorized school administrator must approve the account before sign-in.'),
             default => redirect()->route('student.dashboard')->with('status', $status),
         };
     }

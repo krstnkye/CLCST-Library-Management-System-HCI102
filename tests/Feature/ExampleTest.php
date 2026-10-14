@@ -52,6 +52,49 @@ class ExampleTest extends TestCase
             'password' => 'secure-password',
             'password_confirmation' => 'secure-password',
             'privacy_consent' => '1',
-        ])->assertRedirect(route('superadmin.dashboard'));
+        ])->assertRedirect(route('login'))
+            ->assertSessionMissing('portal_role');
+    }
+
+    public function test_logout_blocks_browser_history_access_for_every_dashboard(): void
+    {
+        $dashboards = [
+            'student' => 'student.dashboard',
+            'faculty' => 'faculty.dashboard',
+            'staff' => 'librarian.dashboard',
+            'superadmin' => 'superadmin.dashboard',
+        ];
+
+        foreach ($dashboards as $role => $dashboardRoute) {
+            $this->post('/login', [
+                'role' => $role,
+                'identifier' => strtoupper($role).'-TEST-001',
+                'password' => 'secure-password',
+            ])->assertRedirect();
+
+            $dashboard = $this->get(route($dashboardRoute));
+            $dashboard->assertOk();
+            $this->assertStringContainsString('no-store', (string) $dashboard->headers->get('Cache-Control'));
+
+            $this->post(route('logout'))
+                ->assertRedirect(route('login'))
+                ->assertSessionMissing('portal_role');
+
+            $this->get(route($dashboardRoute))
+                ->assertRedirect(route('login'));
+        }
+    }
+
+    public function test_roles_cannot_open_another_roles_dashboard(): void
+    {
+        $this->post('/login', [
+            'role' => 'student',
+            'identifier' => '2024-10492-OL',
+            'password' => 'secure-password',
+        ]);
+
+        $this->get(route('faculty.dashboard'))->assertForbidden();
+        $this->get(route('librarian.dashboard'))->assertForbidden();
+        $this->get(route('superadmin.dashboard'))->assertForbidden();
     }
 }

@@ -19,7 +19,7 @@
             @include('partials.celtech-logo', ['class' => 'h-10 w-10 rounded-full object-contain'])
             <div><p class="font-display text-sm font-extrabold text-[#0F5C2E] sm:text-base">CLCST Library Management System</p><p class="text-[11px] font-medium text-[#68766E]">Super Admin Control Center</p></div>
         </a>
-        <div class="flex items-center gap-3"><div class="hidden text-right sm:block"><p class="text-xs font-bold">System Administrator</p><p class="text-[11px] text-[#68766E]">Full System Access</p></div><div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#17251D] text-xs font-bold text-white">SA</div><a class="rounded-lg p-2 text-red-700 hover:bg-red-50" href="{{ route('login') }}" title="Log out"><span class="material-symbols-outlined">logout</span></a></div>
+        <div class="flex items-center gap-3"><div class="hidden text-right sm:block"><p class="text-xs font-bold">System Administrator</p><p class="text-[11px] text-[#68766E]">Full System Access</p></div><div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#17251D] text-xs font-bold text-white">SA</div><form method="POST" action="{{ route('logout') }}">@csrf<button class="rounded-lg p-2 text-red-700 hover:bg-red-50" title="Log out" type="submit"><span class="material-symbols-outlined">logout</span></button></form></div>
     </header>
 
     <main class="mx-auto max-w-7xl p-4 md:p-8">

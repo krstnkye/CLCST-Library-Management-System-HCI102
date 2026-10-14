@@ -102,9 +102,12 @@
             <span class="material-symbols-outlined" @if ($activePage === 'support') style="font-variation-settings: 'FILL' 1;" @endif>help_outline</span>
             <span class="text-xs font-semibold">Help & Support</span>
         </a>
-        <a class="flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-error hover:bg-error-container/30" href="{{ route('login') }}">
-            <span class="material-symbols-outlined">logout</span><span class="text-xs font-semibold">Log Out</span>
-        </a>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button class="flex w-full items-center gap-3 rounded-lg px-3 py-2 font-medium text-error hover:bg-error-container/30" type="submit">
+                <span class="material-symbols-outlined">logout</span><span class="text-xs font-semibold">Log Out</span>
+            </button>
+        </form>
         <p class="px-3 pt-2 text-[10px] leading-tight text-outline">Student Mode: Read and search only. Borrowing handled at Counter 1.</p>
     </div>
 </aside>

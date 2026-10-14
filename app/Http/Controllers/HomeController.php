@@ -28,7 +28,7 @@ class HomeController extends Controller
     public function authenticate(Request $request)
     {
         $request->validate([
-            'role' => ['required', 'in:student,faculty,staff'],
+            'role' => ['required', 'in:student,faculty,staff,superadmin'],
             'identifier' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string', 'max:255'],
         ]);
@@ -39,6 +39,10 @@ class HomeController extends Controller
 
         if ($request->input('role') === 'faculty') {
             return redirect()->route('faculty.dashboard')->with('status', 'Welcome back to your faculty library dashboard.');
+        }
+
+        if ($request->input('role') === 'superadmin') {
+            return redirect()->route('superadmin.dashboard')->with('status', 'Welcome back to the Super Admin control center.');
         }
 
         return redirect()->route('staff.dashboard')->with('status', 'Welcome back to the librarian operations dashboard.');
@@ -52,7 +56,7 @@ class HomeController extends Controller
     public function storeRegistration(Request $request)
     {
         $request->validate([
-            'patron_role' => ['required', 'in:student,faculty,staff'],
+            'patron_role' => ['required', 'in:student,faculty,staff,superadmin'],
             'last_name' => ['required', 'string', 'max:100'],
             'first_name' => ['required', 'string', 'max:100'],
             'middle_initial' => ['nullable', 'string', 'max:5'],
@@ -78,6 +82,7 @@ class HomeController extends Controller
         return match ($request->input('patron_role')) {
             'faculty' => redirect()->route('faculty.dashboard')->with('status', $status),
             'staff' => redirect()->route('staff.dashboard')->with('status', $status),
+            'superadmin' => redirect()->route('superadmin.dashboard')->with('status', 'Super Admin registration submitted for institutional approval.'),
             default => redirect()->route('student.dashboard')->with('status', $status),
         };
     }
@@ -100,6 +105,18 @@ class HomeController extends Controller
     public function librarianDashboard()
     {
         return view('librarian.dashboard', $this->librarianDashboardData('dashboard'));
+    }
+
+    public function superAdminDashboard()
+    {
+        return view('admin.dashboard', [
+            'systemStats' => [
+                'users' => count($this->patronRecords()) + 4,
+                'librarians' => 3,
+                'bookTitles' => count($this->catalogBooks()),
+                'openRequests' => count($this->circulationQueue()),
+            ],
+        ]);
     }
 
     public function librarianSection(string $section)

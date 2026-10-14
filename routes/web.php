@@ -14,6 +14,7 @@ Route::get('/student/dashboard', [HomeController::class, 'studentDashboard'])->n
 Route::get('/faculty/dashboard', [HomeController::class, 'facultyDashboard'])->name('faculty.dashboard');
 Route::get('/staff/dashboard', [HomeController::class, 'staffDashboard'])->name('staff.dashboard');
 Route::get('/librarian/dashboard', [HomeController::class, 'librarianDashboard'])->name('librarian.dashboard');
+Route::get('/super-admin/dashboard', [HomeController::class, 'superAdminDashboard'])->name('superadmin.dashboard');
 Route::get('/librarian/{section}', [HomeController::class, 'librarianSection'])
     ->whereIn('section', [
         'books', 'add-book', 'categories', 'inventory',

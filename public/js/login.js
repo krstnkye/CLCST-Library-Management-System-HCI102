@@ -53,6 +53,24 @@ const roleConfig = {
         cardDept: 'Head of Circulation Services',
         barcode: '*STAFFLIB009OL*',
     },
+    superadmin: {
+        tag: 'SUPER ADMINISTRATOR',
+        tagClass: 'inline-flex items-center rounded-md bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold text-amber-900',
+        desc: 'Manage system accounts, librarian permissions, security settings, audit logs, and institution-wide configuration.',
+        label: 'Super Admin ID / Official Email',
+        placeholder: 'e.g., SYS-ADMIN-001 or admin@clcst.edu.ph',
+        hint: 'Restricted',
+        icon: 'shield_person',
+        heroIcon: 'admin_panel_settings',
+        submit: 'Sign In as Super Admin',
+        password: 'Super Admin Password',
+        context: 'superadmin-context-options',
+        sso: false,
+        cardName: 'SYSTEM ADMINISTRATOR',
+        cardId: 'ADMIN: SYS-001',
+        cardDept: 'Information Systems Office',
+        barcode: '*SUPERADMIN001*',
+    },
 };
 
 function setRole(role) {
@@ -84,7 +102,7 @@ function setRole(role) {
     document.getElementById('submit-button-text').textContent = config.submit;
     document.getElementById('password-label').textContent = config.password;
 
-    ['student-context-options', 'faculty-context-options', 'staff-context-options'].forEach((id) => {
+    ['student-context-options', 'faculty-context-options', 'staff-context-options', 'superadmin-context-options'].forEach((id) => {
         document.getElementById(id).classList.toggle('hidden', id !== config.context);
     });
 

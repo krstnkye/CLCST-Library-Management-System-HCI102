@@ -160,10 +160,10 @@
                             <span class="material-symbols-outlined text-primary">switch_account</span>
                             Select Institutional Role
                         </label>
-                        <span class="text-[10px] font-bold text-on-surface-variant sm:text-xs">3 Account Types Available</span>
+                        <span class="text-[10px] font-bold text-on-surface-variant sm:text-xs">4 Account Types Available</span>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3" id="role-selector-container">
+                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4" id="role-selector-container">
                         <button class="role-btn flex h-full flex-col justify-between rounded-xl border-2 border-primary bg-surface-container-lowest p-3.5 text-left shadow-sm ring-1 ring-primary transition-all" id="btn-role-student" type="button" data-role="student">
                             <div>
                                 <div class="mb-2 flex items-center justify-between">
@@ -212,6 +212,23 @@
                             <div class="mt-3 flex items-center gap-1 border-t border-outline-variant/30 pt-2 text-[10px] font-semibold text-on-surface-variant">
                                 <span class="material-symbols-outlined text-xs">barcode_scanner</span>
                                 Admin Clearance & ILS
+                            </div>
+                        </button>
+
+                        <button class="role-btn flex h-full flex-col justify-between rounded-xl border-2 border-outline-variant/60 bg-surface-container-lowest p-3.5 text-left shadow-sm transition-all hover:border-outline" id="btn-role-superadmin" type="button" data-role="superadmin">
+                            <div>
+                                <div class="mb-2 flex items-center justify-between">
+                                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-container-high text-on-surface-variant">
+                                        <span class="material-symbols-outlined text-lg">shield_person</span>
+                                    </div>
+                                    <span class="role-check material-symbols-outlined hidden h-5 w-5 items-center justify-center rounded-full bg-primary text-sm text-white" id="badge-superadmin">check</span>
+                                </div>
+                                <h2 class="text-sm font-bold text-on-surface">Super Admin</h2>
+                                <p class="mt-1 text-[11px] leading-tight text-on-surface-variant">Authorized system administrators</p>
+                            </div>
+                            <div class="mt-3 flex items-center gap-1 border-t border-outline-variant/30 pt-2 text-[10px] font-semibold text-on-surface-variant">
+                                <span class="material-symbols-outlined text-xs">security</span>
+                                Full System Control
                             </div>
                         </button>
                     </div>
@@ -309,6 +326,13 @@
                                     <label class="mb-1 block text-[10px] font-semibold text-on-surface-variant">2FA TOTP Token</label>
                                     <input class="w-full rounded border border-outline-variant px-3 py-1.5 font-mono text-xs text-on-surface" maxlength="6" placeholder="6-digit code" type="text">
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="hidden flex-col gap-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900" id="superadmin-context-options">
+                            <div class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-lg">verified_user</span>
+                                <p><strong>Restricted access:</strong> Super Admin sign-in is intended only for institution-approved system administrators. All administrative actions are recorded.</p>
                             </div>
                         </div>
 

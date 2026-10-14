@@ -15,7 +15,9 @@ function setBlockState(blockId, enabled) {
 function roleFieldIds(role) {
     return {
         id: `${role}IdInput`,
-        program: role === 'student' ? 'programSelect' : (role === 'faculty' ? 'facultyDepartmentSelect' : 'staffAccessSelect'),
+        program: role === 'student'
+            ? 'programSelect'
+            : (role === 'faculty' ? 'facultyDepartmentSelect' : (role === 'staff' ? 'staffAccessSelect' : 'superadminAccessSelect')),
     };
 }
 
@@ -53,6 +55,7 @@ function handleRoleChange(role) {
     setBlockState('studentFieldsBlock', role === 'student');
     setBlockState('facultyFieldsBlock', role === 'faculty');
     setBlockState('staffFieldsBlock', role === 'staff');
+    setBlockState('superadminFieldsBlock', role === 'superadmin');
     document.getElementById('previewCardRoleBadge').innerText = role.toUpperCase();
 
     syncSelectedRoleFields();

@@ -179,11 +179,12 @@
                         <span class="hidden text-[10px] font-bold text-on-surface-variant sm:inline">Used to set borrowing rules and book limits</span>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-3" id="roleSelectorGrid">
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4" id="roleSelectorGrid">
                         @foreach ([
                             'student' => ['title' => 'Student', 'icon' => 'school', 'desc' => 'Undergraduate, Senior High & Tech-Voc', 'items' => ['5 Books Quota', '14-Day Loan', 'Digital Library Entry Pass']],
                             'faculty' => ['title' => 'Professor / Faculty', 'icon' => 'psychology', 'desc' => 'Faculty, Instructors & Researchers', 'items' => ['15 Books Quota', '60-Day Extended Loan', 'Research Resources Access']],
                             'staff' => ['title' => 'Library Staff', 'icon' => 'local_library', 'desc' => 'Borrowing Officers & Catalogers', 'items' => ['Library Desk Access', 'Barcode Scanner Station', 'Fine Assessment Authority']],
+                            'superadmin' => ['title' => 'Super Admin', 'icon' => 'shield_person', 'desc' => 'Approved System Administrators', 'items' => ['User & Role Management', 'System Configuration', 'Audit Log Access']],
                         ] as $role => $details)
                             <label class="role-option relative flex cursor-pointer flex-col rounded-xl border {{ old('patron_role', 'student') === $role ? 'border-primary bg-surface-container-low/50' : 'border-outline-variant bg-surface-container-lowest' }} p-4 transition-all hover:border-primary/60" data-role="{{ $role }}">
                                 <input class="sr-only" form="registrationForm" name="patron_role" type="radio" value="{{ $role }}" {{ old('patron_role', 'student') === $role ? 'checked' : '' }}>
@@ -305,6 +306,27 @@
                                         <select class="role-program-input w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="staffAccessSelect">
                                             @foreach (['Library Desk - Level 1', 'Cataloging Office - Level 2', 'Library Administration - Level 3'] as $accessLevel)
                                                 <option value="{{ $accessLevel }}" {{ old('program_or_department') === $accessLevel ? 'selected' : '' }}>{{ $accessLevel }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="hidden space-y-4" id="superadminFieldsBlock">
+                                <div class="mb-3 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-900">
+                                    <span class="material-symbols-outlined text-lg">security</span>
+                                    <p>Super Admin accounts require approval from the school’s authorized system owner before access is activated.</p>
+                                </div>
+                                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                    <div>
+                                        <label class="mb-1.5 block text-xs font-semibold text-on-surface">Administrator ID <span class="text-error">*</span></label>
+                                        <input class="role-id-input w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 font-mono text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="superadminIdInput" placeholder="SYS-ADMIN-001" type="text" value="{{ old('patron_id') }}">
+                                    </div>
+                                    <div>
+                                        <label class="mb-1.5 block text-xs font-semibold text-on-surface">Administrative Assignment <span class="text-error">*</span></label>
+                                        <select class="role-program-input w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 text-sm text-on-surface transition-all focus:border-primary focus:ring-2 focus:ring-primary" id="superadminAccessSelect">
+                                            @foreach (['System Owner', 'Information Systems Administrator', 'Library System Administrator'] as $assignment)
+                                                <option value="{{ $assignment }}" {{ old('program_or_department') === $assignment ? 'selected' : '' }}>{{ $assignment }}</option>
                                             @endforeach
                                         </select>
                                     </div>

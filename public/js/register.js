@@ -1,5 +1,5 @@
 function selectedRole() {
-    return document.querySelector('input[name="patron_role"]:checked')?.value || 'student';
+    return document.querySelector('input[name="account_type_selector"]:checked')?.value || 'student';
 }
 
 function setBlockState(blockId, enabled) {
@@ -28,7 +28,9 @@ function syncSelectedRoleFields() {
     const visibleProgram = document.getElementById(fields.program);
     const submittedId = document.getElementById('selectedPatronId');
     const submittedProgram = document.getElementById('selectedProgramOrDepartment');
+    const submittedRole = document.getElementById('selectedPatronRole');
 
+    submittedRole.value = role;
     submittedId.value = visibleId?.value?.trim() || '';
     submittedProgram.value = visibleProgram?.value || '';
 
@@ -77,7 +79,7 @@ function updateLiveBarcode(value) {
     document.getElementById('barcodeText').innerText = `*${clean}*`;
 }
 
-document.querySelectorAll('input[name="patron_role"]').forEach((input) => {
+document.querySelectorAll('input[name="account_type_selector"]').forEach((input) => {
     input.addEventListener('change', () => handleRoleChange(input.value));
 });
 

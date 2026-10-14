@@ -52,7 +52,7 @@ class HomeController extends Controller
             return redirect()->route('superadmin.dashboard')->with('status', 'Welcome back to the Super Admin control center.');
         }
 
-        return redirect()->route('staff.dashboard')->with('status', 'Welcome back to the librarian operations dashboard.');
+        return redirect()->route('librarian.dashboard')->with('status', 'Welcome back to the librarian operations dashboard.');
     }
 
     public function logout(Request $request)
@@ -106,7 +106,7 @@ class HomeController extends Controller
 
         return match ($request->input('patron_role')) {
             'faculty' => redirect()->route('faculty.dashboard')->with('status', $status),
-            'staff' => redirect()->route('staff.dashboard')->with('status', $status),
+            'staff' => redirect()->route('librarian.dashboard')->with('status', $status),
             'superadmin' => redirect()->route('login')->with('status', 'Super Admin registration submitted. An authorized school administrator must approve the account before sign-in.'),
             default => redirect()->route('student.dashboard')->with('status', $status),
         };

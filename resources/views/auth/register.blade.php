@@ -187,7 +187,7 @@
                             'superadmin' => ['title' => 'Super Admin', 'icon' => 'shield_person', 'desc' => 'Approved System Administrators', 'items' => ['User & Role Management', 'System Configuration', 'Audit Log Access']],
                         ] as $role => $details)
                             <label class="role-option relative flex cursor-pointer flex-col rounded-xl border {{ old('patron_role', 'student') === $role ? 'border-primary bg-surface-container-low/50' : 'border-outline-variant bg-surface-container-lowest' }} p-4 transition-all hover:border-primary/60" data-role="{{ $role }}">
-                                <input class="sr-only" form="registrationForm" name="patron_role" type="radio" value="{{ $role }}" {{ old('patron_role', 'student') === $role ? 'checked' : '' }}>
+                                <input class="account-type-selector sr-only" name="account_type_selector" type="radio" value="{{ $role }}" {{ old('patron_role', 'student') === $role ? 'checked' : '' }}>
                                 <div class="mb-2.5 flex items-center justify-between">
                                     <div class="flex h-10 w-10 items-center justify-center rounded-lg {{ old('patron_role', 'student') === $role ? 'bg-primary-container text-white' : 'bg-surface-container text-primary' }}">
                                         <span class="material-symbols-outlined text-[24px]">{{ $details['icon'] }}</span>
@@ -231,6 +231,7 @@
 
                     <form class="space-y-6" id="registrationForm" method="POST" action="{{ route('register.store') }}" enctype="multipart/form-data">
                         @csrf
+                        <input id="selectedPatronRole" name="patron_role" type="hidden" value="{{ old('patron_role', 'student') }}">
                         <input id="selectedPatronId" name="patron_id" type="hidden" value="{{ old('patron_id') }}">
                         <input id="selectedProgramOrDepartment" name="program_or_department" type="hidden" value="{{ old('program_or_department') }}">
 

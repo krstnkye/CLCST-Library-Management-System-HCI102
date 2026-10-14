@@ -56,6 +56,28 @@ class ExampleTest extends TestCase
             ->assertSessionMissing('portal_role');
     }
 
+    public function test_librarian_registration_opens_the_librarian_dashboard(): void
+    {
+        $this->post('/register', [
+            'patron_role' => 'staff',
+            'last_name' => 'Reyes',
+            'first_name' => 'Maria',
+            'middle_initial' => 'C',
+            'patron_id' => 'LIB-STAFF-042',
+            'program_or_department' => 'Library Administration - Level 3',
+            'email' => 'maria.reyes@clcst.edu.ph',
+            'mobile_number' => '9171234567',
+            'password' => 'secure-password',
+            'password_confirmation' => 'secure-password',
+            'privacy_consent' => '1',
+        ])->assertRedirect(route('librarian.dashboard'))
+            ->assertSessionHas('portal_role', 'staff');
+
+        $this->get(route('librarian.dashboard'))
+            ->assertOk()
+            ->assertSee('Librarian Dashboard');
+    }
+
     public function test_logout_blocks_browser_history_access_for_every_dashboard(): void
     {
         $dashboards = [

@@ -13,6 +13,17 @@ Route::post('/register', [HomeController::class, 'storeRegistration'])->name('re
 Route::get('/student/dashboard', [HomeController::class, 'studentDashboard'])->name('student.dashboard');
 Route::get('/faculty/dashboard', [HomeController::class, 'facultyDashboard'])->name('faculty.dashboard');
 Route::get('/staff/dashboard', [HomeController::class, 'staffDashboard'])->name('staff.dashboard');
+Route::get('/librarian/dashboard', [HomeController::class, 'librarianDashboard'])->name('librarian.dashboard');
+Route::get('/librarian/{section}', [HomeController::class, 'librarianSection'])
+    ->whereIn('section', [
+        'books', 'add-book', 'categories', 'inventory',
+        'borrow-requests', 'returns', 'overdue',
+        'users', 'verification', 'memberships', 'reservations',
+        'digital-resources', 'fines', 'reports', 'announcements',
+        'feedback', 'staff-management', 'activity-logs', 'settings',
+        'notifications', 'profile', 'support',
+    ])
+    ->name('librarian.section');
 Route::get('/books/catalog', [HomeController::class, 'booksCatalog'])->name('books.catalog');
 Route::post('/books/{book}/hold', [HomeController::class, 'holdBook'])->name('books.hold');
 Route::post('/reservations/{book}/cancel', [HomeController::class, 'cancelReservation'])->name('reservations.cancel');

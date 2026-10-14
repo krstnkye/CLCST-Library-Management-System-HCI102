@@ -94,7 +94,27 @@ class HomeController extends Controller
 
     public function staffDashboard()
     {
-        return view('staff.dashboard', $this->staffDashboardData('staff', 'dashboard'));
+        return redirect()->route('librarian.dashboard');
+    }
+
+    public function librarianDashboard()
+    {
+        return view('librarian.dashboard', $this->librarianDashboardData('dashboard'));
+    }
+
+    public function librarianSection(string $section)
+    {
+        $pages = $this->librarianPages();
+
+        abort_unless(isset($pages[$section]), 404);
+
+        return view('librarian.section', array_merge(
+            $this->librarianDashboardData($section),
+            [
+                'section' => $section,
+                'page' => $pages[$section],
+            ],
+        ));
     }
 
     public function booksCatalog()
@@ -386,6 +406,64 @@ class HomeController extends Controller
             'circulationQueue' => $this->circulationQueue(),
             'facultyRequests' => $this->facultyRequests(),
             'patronRecords' => $this->patronRecords(),
+        ];
+    }
+
+    private function librarianDashboardData(string $activePage): array
+    {
+        $books = $this->catalogBooks();
+        $activeLoans = $this->activeLoans();
+        $patrons = $this->patronRecords();
+        $availableCopies = collect($books)->sum(fn (array $book) => $this->availableCopies($book));
+
+        return [
+            'activePage' => $activePage,
+            'catalogBooks' => $books,
+            'activeLoans' => $activeLoans,
+            'patronRecords' => $patrons,
+            'circulationQueue' => $this->circulationQueue(),
+            'stats' => [
+                'titles' => count($books),
+                'availableCopies' => $availableCopies,
+                'borrowedBooks' => count($activeLoans),
+                'overdueBooks' => 1,
+                'registeredUsers' => count($patrons),
+                'pendingRequests' => count($this->circulationQueue()),
+            ],
+            'activities' => [
+                ['time' => '9:42 AM', 'action' => 'Book returned', 'detail' => 'Introduction to Python Programming - Copy PY-002', 'icon' => 'assignment_return'],
+                ['time' => '9:18 AM', 'action' => 'Loan approved', 'detail' => 'Computer Networks for Juan Dela Cruz', 'icon' => 'check_circle'],
+                ['time' => '8:55 AM', 'action' => 'New account submitted', 'detail' => 'Student registration awaiting document review', 'icon' => 'person_add'],
+                ['time' => '8:30 AM', 'action' => 'Inventory updated', 'detail' => 'Four copies verified in Computer Studies shelves', 'icon' => 'inventory_2'],
+            ],
+        ];
+    }
+
+    private function librarianPages(): array
+    {
+        return [
+            'books' => ['title' => 'Book Catalog', 'description' => 'Search, review, and update all library books.', 'icon' => 'menu_book', 'action' => 'Add Book'],
+            'add-book' => ['title' => 'Add New Book', 'description' => 'Create a catalog record and enter copy information.', 'icon' => 'library_add', 'action' => 'Save Book'],
+            'categories' => ['title' => 'Book Categories', 'description' => 'Manage the categories used to organize library materials.', 'icon' => 'category', 'action' => 'Add Category'],
+            'inventory' => ['title' => 'Book Inventory', 'description' => 'Track available, borrowed, damaged, lost, and missing copies.', 'icon' => 'inventory_2', 'action' => 'Update Inventory'],
+            'borrow-requests' => ['title' => 'Borrow Requests', 'description' => 'Review requests and issue approved books to borrowers.', 'icon' => 'outbox', 'action' => 'Issue Book'],
+            'returns' => ['title' => 'Return Books', 'description' => 'Check in returned books and record their condition.', 'icon' => 'assignment_return', 'action' => 'Record Return'],
+            'overdue' => ['title' => 'Overdue Books', 'description' => 'Review late books, reminders, and payment status.', 'icon' => 'schedule', 'action' => 'Send Reminder'],
+            'users' => ['title' => 'Library Users', 'description' => 'Manage student, faculty, staff, and researcher accounts.', 'icon' => 'group', 'action' => 'Add User'],
+            'verification' => ['title' => 'Account Verification', 'description' => 'Review documents and approve new library accounts.', 'icon' => 'how_to_reg', 'action' => 'Review Next'],
+            'memberships' => ['title' => 'Memberships', 'description' => 'Track active, expired, and renewal requests.', 'icon' => 'card_membership', 'action' => 'Renew Membership'],
+            'reservations' => ['title' => 'Reservations', 'description' => 'Manage pending requests, pickup notices, and waiting lists.', 'icon' => 'bookmark', 'action' => 'Review Queue'],
+            'digital-resources' => ['title' => 'Digital Resources', 'description' => 'Manage e-books, journals, papers, and online references.', 'icon' => 'cloud_upload', 'action' => 'Add Resource'],
+            'fines' => ['title' => 'Fines and Payments', 'description' => 'Record charges, payments, and official receipts.', 'icon' => 'payments', 'action' => 'Record Payment'],
+            'reports' => ['title' => 'Reports and Analytics', 'description' => 'Review book, user, transaction, and payment reports.', 'icon' => 'monitoring', 'action' => 'Create Report'],
+            'announcements' => ['title' => 'Announcements', 'description' => 'Publish library schedules, notices, events, and new arrivals.', 'icon' => 'campaign', 'action' => 'New Announcement'],
+            'feedback' => ['title' => 'Feedback and Requests', 'description' => 'Respond to questions, suggestions, complaints, and book requests.', 'icon' => 'forum', 'action' => 'Open Inbox'],
+            'staff-management' => ['title' => 'Library Staff', 'description' => 'Manage librarian roles, permissions, and staff accounts.', 'icon' => 'badge', 'action' => 'Add Staff'],
+            'activity-logs' => ['title' => 'Activity Logs', 'description' => 'Review important system actions and account activity.', 'icon' => 'history', 'action' => 'Export Log'],
+            'settings' => ['title' => 'Library Settings', 'description' => 'Set borrowing limits, due dates, fine rates, and permissions.', 'icon' => 'settings', 'action' => 'Save Settings'],
+            'notifications' => ['title' => 'Notifications', 'description' => 'Review alerts that need librarian attention.', 'icon' => 'notifications', 'action' => 'Mark All Read'],
+            'profile' => ['title' => 'My Profile', 'description' => 'Update your account details, password, and notification choices.', 'icon' => 'account_circle', 'action' => 'Edit Profile'],
+            'support' => ['title' => 'Help and Support', 'description' => 'Find answers and contact technical support.', 'icon' => 'help', 'action' => 'Contact Support'],
         ];
     }
 

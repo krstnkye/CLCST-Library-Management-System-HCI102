@@ -1,48 +1,40 @@
-<!DOCTYPE html>
-<html class="h-full bg-[#F4F6F5]" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Super Admin Dashboard - CLCST Library Management System</title>
-    @include('partials.favicon')
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Plus Jakarta Sans', 'sans-serif'] } } } };</script>
-    <style>.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 450, 'GRAD' 0, 'opsz' 24; line-height: 1; }</style>
-</head>
-<body class="min-h-full bg-[#F4F6F5] font-sans text-[#18251D] antialiased">
-    <header class="flex h-16 items-center justify-between border-b border-[#D5DED8] bg-white px-4 shadow-sm md:px-8">
-        <a class="flex items-center gap-3" href="{{ route('superadmin.dashboard') }}">
-            @include('partials.celtech-logo', ['class' => 'h-10 w-10 rounded-full object-contain'])
-            <div><p class="font-display text-sm font-extrabold text-[#0F5C2E] sm:text-base">CLCST Library Management System</p><p class="text-[11px] font-medium text-[#68766E]">Super Admin Control Center</p></div>
-        </a>
-        <div class="flex items-center gap-3"><div class="hidden text-right sm:block"><p class="text-xs font-bold">System Administrator</p><p class="text-[11px] text-[#68766E]">Full System Access</p></div><div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#17251D] text-xs font-bold text-white">SA</div><form method="POST" action="{{ route('logout') }}">@csrf<button class="rounded-lg p-2 text-red-700 hover:bg-red-50" title="Log out" type="submit"><span class="material-symbols-outlined">logout</span></button></form></div>
-    </header>
+@extends('admin.layout')
+@section('title', 'Super Admin Dashboard')
+@section('content')
+    <section class="flex flex-col justify-between gap-4 border-b border-[#D5DED8] pb-6 lg:flex-row lg:items-end">
+        <div><div class="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-700"><span class="material-symbols-outlined text-lg">verified_user</span>Restricted administrative access</div><h1 class="font-display text-2xl font-extrabold md:text-3xl">Super Admin Dashboard</h1><p class="mt-1 text-sm text-[#617068]">System-wide account, security, configuration, and activity overview.</p></div>
+        <div class="flex flex-wrap gap-2"><a class="inline-flex items-center gap-2 rounded-lg border border-[#BCC8C0] bg-white px-4 py-2.5 text-sm font-bold text-[#17251D] hover:bg-[#EEF2EF]" href="{{ route('superadmin.section', 'reports') }}"><span class="material-symbols-outlined text-lg">monitoring</span>View Reports</a><a class="inline-flex items-center gap-2 rounded-lg bg-[#17251D] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#0F5C2E]" href="{{ route('superadmin.section', 'library-staff') }}"><span class="material-symbols-outlined text-lg">person_add</span>Add Staff Account</a></div>
+    </section>
 
-    <main class="mx-auto max-w-7xl p-4 md:p-8">
-        @if (session('status'))<div class="mb-5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-900">{{ session('status') }}</div>@endif
-        <section class="flex flex-col justify-between gap-4 border-b border-[#D5DED8] pb-6 md:flex-row md:items-end">
-            <div><div class="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-700"><span class="material-symbols-outlined text-lg">verified_user</span>Restricted administrative access</div><h1 class="font-display text-2xl font-extrabold md:text-3xl">Super Admin Dashboard</h1><p class="mt-1 text-sm text-[#617068]">Manage system accounts, roles, security, and library-wide settings.</p></div>
-            <a class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0F5C2E] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#0A4421]" href="{{ route('librarian.section', 'activity-logs') }}"><span class="material-symbols-outlined text-lg">history</span>View Activity Logs</a>
+    <section class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
+        @foreach ([
+            ['Total Users',$systemStats['users'],'group','bg-emerald-50 text-[#0F5C2E]'],
+            ['Librarians and Staff',$systemStats['staff'],'badge','bg-blue-50 text-blue-700'],
+            ['Students and Faculty',$systemStats['patrons'],'school','bg-violet-50 text-violet-700'],
+            ['Book Titles',$systemStats['bookTitles'],'menu_book','bg-cyan-50 text-cyan-700'],
+            ['Transactions',$systemStats['transactions'],'sync_alt','bg-slate-100 text-slate-700'],
+            ['Pending Approvals',$systemStats['pendingApprovals'],'approval','bg-amber-50 text-amber-700'],
+        ] as [$label,$value,$icon,$tone])
+            <article class="rounded-lg border border-[#D5DED8] bg-white p-4 shadow-sm"><div class="flex items-start justify-between gap-3"><div><p class="text-xs font-semibold text-[#68766E]">{{ $label }}</p><p class="mt-2 font-display text-2xl font-extrabold">{{ $value }}</p></div><span class="material-symbols-outlined rounded-lg p-2 {{ $tone }}">{{ $icon }}</span></div></article>
+        @endforeach
+    </section>
+
+    <div class="mt-6 grid gap-6 xl:grid-cols-12">
+        <section class="rounded-lg border border-[#D5DED8] bg-white shadow-sm xl:col-span-8">
+            <div class="flex items-center justify-between border-b border-[#E2E8E4] px-5 py-4"><div><h2 class="font-display text-lg font-bold">Recent System Activity</h2><p class="mt-0.5 text-xs text-[#68766E]">Important actions recorded across all portals.</p></div><a class="text-sm font-bold text-[#0F5C2E] hover:underline" href="{{ route('superadmin.section', 'audit-logs') }}">View audit logs</a></div>
+            <div class="overflow-x-auto"><table class="w-full min-w-[720px] text-left text-sm"><thead class="bg-[#F4F7F5] text-xs uppercase text-[#68766E]"><tr><th class="px-5 py-3">Time</th><th class="px-5 py-3">User</th><th class="px-5 py-3">Action</th><th class="px-5 py-3">Area</th></tr></thead><tbody class="divide-y divide-[#E2E8E4]">@foreach ($systemActivities as $activity)<tr class="hover:bg-[#F8FAF9]"><td class="whitespace-nowrap px-5 py-4 text-xs text-[#68766E]">{{ $activity['time'] }}</td><td class="px-5 py-4 font-bold">{{ $activity['user'] }}</td><td class="px-5 py-4"><span class="mr-2 inline-flex rounded-lg bg-[#EEF2EF] p-1.5 align-middle text-[#0F5C2E]"><span class="material-symbols-outlined text-base">{{ $activity['icon'] }}</span></span>{{ $activity['action'] }}</td><td class="px-5 py-4"><span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">{{ $activity['area'] }}</span></td></tr>@endforeach</tbody></table></div>
         </section>
 
-        <section class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            @foreach ([['Registered Users', $systemStats['users'], 'group'], ['Librarian Accounts', $systemStats['librarians'], 'badge'], ['Book Titles', $systemStats['bookTitles'], 'menu_book'], ['Open Requests', $systemStats['openRequests'], 'pending_actions']] as [$label, $value, $icon])
-                <article class="rounded-lg border border-[#D5DED8] bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><div><p class="text-xs font-semibold text-[#68766E]">{{ $label }}</p><p class="mt-2 font-display text-3xl font-extrabold">{{ $value }}</p></div><span class="material-symbols-outlined rounded-lg bg-[#E9F2EC] p-2.5 text-[#0F5C2E]">{{ $icon }}</span></div></article>
-            @endforeach
+        <section class="rounded-lg border border-[#D5DED8] bg-white shadow-sm xl:col-span-4">
+            <div class="border-b border-[#E2E8E4] px-5 py-4"><h2 class="font-display text-lg font-bold">System Alerts</h2><p class="mt-0.5 text-xs text-[#68766E]">Items requiring review or confirmation.</p></div>
+            <div class="space-y-3 p-4">@foreach ($systemAlerts as $alert)<article class="flex gap-3 rounded-lg border {{ $alert['tone'] === 'amber' ? 'border-amber-200 bg-amber-50' : ($alert['tone'] === 'blue' ? 'border-blue-200 bg-blue-50' : 'border-emerald-200 bg-emerald-50') }} p-3"><span class="material-symbols-outlined mt-0.5 {{ $alert['tone'] === 'amber' ? 'text-amber-700' : ($alert['tone'] === 'blue' ? 'text-blue-700' : 'text-emerald-700') }}">{{ $alert['icon'] }}</span><div><p class="text-xs font-bold uppercase tracking-wide">{{ $alert['level'] }}</p><p class="mt-1 text-xs leading-5 text-[#4F5E56]">{{ $alert['message'] }}</p></div></article>@endforeach</div>
         </section>
+    </div>
 
-        <section class="mt-6 rounded-lg border border-[#D5DED8] bg-white p-5 shadow-sm">
-            <h2 class="font-display text-lg font-bold">System Administration</h2><p class="mt-1 text-sm text-[#68766E]">Select an area to review or configure.</p>
-            <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                @foreach ([['staff-management', 'manage_accounts', 'Accounts and Roles'], ['settings', 'settings', 'System Settings'], ['activity-logs', 'policy', 'Audit and Activity Logs'], ['reports', 'monitoring', 'System Reports'], ['announcements', 'campaign', 'Announcements'], ['support', 'support_agent', 'Technical Support']] as [$page, $icon, $label])
-                    <a class="flex items-center gap-3 rounded-lg border border-[#D5DED8] bg-[#F8FAF9] p-4 font-bold hover:border-[#0F5C2E] hover:bg-[#EDF5F0]" href="{{ route('librarian.section', $page) }}"><span class="material-symbols-outlined text-[#0F5C2E]">{{ $icon }}</span>{{ $label }}<span class="material-symbols-outlined ml-auto text-lg text-[#718078]">arrow_forward</span></a>
-                @endforeach
-            </div>
-        </section>
-    </main>
-</body>
-</html>
+    <section class="mt-6 rounded-lg border border-[#D5DED8] bg-white p-5 shadow-sm">
+        <div class="mb-4"><h2 class="font-display text-lg font-bold">Quick Actions</h2><p class="mt-0.5 text-xs text-[#68766E]">Common system administration tasks.</p></div>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            @foreach ([['users','manage_accounts','Manage Users'],['roles','admin_panel_settings','Roles and Permissions'],['database-backup','backup','Create Backup'],['system-policies','settings','Configure Settings']] as [$page,$icon,$label])<a class="flex items-center gap-3 rounded-lg border border-[#D5DED8] bg-[#F8FAF9] p-4 font-bold hover:border-[#0F5C2E] hover:bg-[#EEF2EF]" href="{{ route('superadmin.section', $page) }}"><span class="material-symbols-outlined text-[#0F5C2E]">{{ $icon }}</span>{{ $label }}<span class="material-symbols-outlined ml-auto text-lg text-[#718078]">arrow_forward</span></a>@endforeach
+        </div>
+    </section>
+@endsection

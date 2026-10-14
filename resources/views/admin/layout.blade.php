@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html class="h-full bg-[#F4F6F5]" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'Super Admin') - CLCST Library Management System</title>
+    @include('partials.favicon')
+    <link href="https://fonts.googleapis.com" rel="preconnect"><link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Plus Jakarta Sans', 'sans-serif'] } } } };</script>
+    <style>.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 450,'GRAD' 0,'opsz' 24;line-height:1}.custom-scrollbar::-webkit-scrollbar{width:6px;height:6px}.custom-scrollbar::-webkit-scrollbar-thumb{background:#b9c7be;border-radius:999px}</style>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+</head>
+<body class="min-h-full bg-[#F4F6F5] font-sans text-[#18251D] antialiased">
+    <header class="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#D5DED8] bg-white px-4 shadow-sm md:px-6">
+        <div class="flex min-w-0 items-center gap-3">
+            <button aria-label="Open navigation" class="rounded-md p-2 text-[#17251D] hover:bg-[#EEF2EF] md:hidden" id="admin-menu-button" type="button"><span class="material-symbols-outlined">menu</span></button>
+            <a class="flex min-w-0 items-center gap-3" href="{{ route('superadmin.dashboard') }}">@include('partials.celtech-logo', ['class' => 'h-10 w-10 shrink-0 rounded-full object-contain'])<div class="min-w-0"><p class="truncate font-display text-sm font-extrabold text-[#0F5C2E] sm:text-base">CLCST Library Management System</p><p class="truncate text-[11px] font-medium text-[#68766E]">Super Admin Control Center</p></div></a>
+        </div>
+        <form class="mx-6 hidden max-w-xl flex-1 lg:block" method="GET" action="{{ route('superadmin.section', 'users') }}"><label class="relative block"><span class="material-symbols-outlined pointer-events-none absolute left-3 top-2.5 text-xl text-[#6D7C74]">search</span><input class="w-full rounded-lg border-[#CBD6CF] bg-[#F7F9F8] py-2 pl-10 pr-3 text-sm focus:border-[#0F5C2E] focus:ring-[#0F5C2E]" name="q" placeholder="Search users, staff, activity, or settings" type="search"></label></form>
+        <div class="flex items-center gap-2"><a aria-label="Notifications" class="relative rounded-lg p-2 text-[#44534B] hover:bg-[#EEF2EF]" href="{{ route('superadmin.section', 'notifications') }}"><span class="material-symbols-outlined">notifications</span><span class="absolute right-1 top-1 h-2 w-2 rounded-full bg-amber-500 ring-2 ring-white"></span></a><div class="hidden text-right sm:block"><p class="text-xs font-bold">System Administrator</p><p class="text-[11px] text-[#68766E]">Full System Access</p></div><a aria-label="Open profile" class="flex h-9 w-9 items-center justify-center rounded-full bg-[#17251D] text-xs font-bold text-white" href="{{ route('superadmin.section', 'profile') }}">SA</a></div>
+    </header>
+
+    @include('partials.admin-sidebar', ['activePage' => $activePage])
+    <div class="fixed inset-0 z-20 hidden bg-black/30 md:hidden" id="admin-menu-overlay"></div>
+    <main class="min-h-screen pt-16 md:ml-72"><div class="mx-auto max-w-[1600px] p-4 md:p-6 lg:p-8">@if (session('status'))<div class="mb-5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-900">{{ session('status') }}</div>@endif @yield('content')</div></main>
+    <script>(()=>{const button=document.getElementById('admin-menu-button');const sidebar=document.getElementById('admin-sidebar');const overlay=document.getElementById('admin-menu-overlay');if(!button||!sidebar||!overlay)return;const toggle=()=>{sidebar.classList.toggle('hidden');sidebar.classList.toggle('flex');overlay.classList.toggle('hidden')};button.addEventListener('click',toggle);overlay.addEventListener('click',toggle)})();</script>
+</body>
+</html>

@@ -44,6 +44,15 @@ Route::middleware('portal:staff,superadmin')->group(function (): void {
 
 Route::middleware('portal:superadmin')->group(function (): void {
     Route::get('/super-admin/dashboard', [HomeController::class, 'superAdminDashboard'])->name('superadmin.dashboard');
+    Route::get('/super-admin/{section}', [HomeController::class, 'superAdminSection'])
+        ->whereIn('section', [
+            'users', 'roles', 'approvals', 'librarians', 'library-staff', 'branches',
+            'borrowing-rules', 'fine-settings', 'system-policies', 'reports',
+            'database-backup', 'database-restore', 'data-export', 'security',
+            'audit-logs', 'announcements', 'content', 'notifications',
+            'maintenance', 'profile',
+        ])
+        ->name('superadmin.section');
 });
 
 Route::middleware('portal:student,faculty')->group(function (): void {

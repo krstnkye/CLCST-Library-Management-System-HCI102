@@ -119,4 +119,25 @@ class ExampleTest extends TestCase
         $this->get(route('librarian.dashboard'))->assertForbidden();
         $this->get(route('superadmin.dashboard'))->assertForbidden();
     }
+
+    public function test_super_admin_can_open_every_administration_module(): void
+    {
+        $this->post('/login', [
+            'role' => 'superadmin',
+            'identifier' => 'SYS-ADMIN-001',
+            'password' => 'secure-password',
+        ]);
+
+        $sections = [
+            'users', 'roles', 'approvals', 'librarians', 'library-staff', 'branches',
+            'borrowing-rules', 'fine-settings', 'system-policies', 'reports',
+            'database-backup', 'database-restore', 'data-export', 'security',
+            'audit-logs', 'announcements', 'content', 'notifications',
+            'maintenance', 'profile',
+        ];
+
+        foreach ($sections as $section) {
+            $this->get(route('superadmin.section', $section))->assertOk();
+        }
+    }
 }

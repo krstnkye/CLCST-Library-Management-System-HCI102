@@ -134,14 +134,22 @@ class HomeController extends Controller
 
     public function superAdminDashboard()
     {
-        return view('admin.dashboard', [
-            'systemStats' => [
-                'users' => count($this->patronRecords()) + 4,
-                'librarians' => 3,
-                'bookTitles' => count($this->catalogBooks()),
-                'openRequests' => count($this->circulationQueue()),
+        return view('admin.dashboard', $this->superAdminData('dashboard'));
+    }
+
+    public function superAdminSection(string $section)
+    {
+        $pages = $this->superAdminPages();
+
+        abort_unless(isset($pages[$section]), 404);
+
+        return view('admin.section', array_merge(
+            $this->superAdminData($section),
+            [
+                'section' => $section,
+                'page' => $pages[$section],
             ],
-        ]);
+        ));
     }
 
     public function librarianSection(string $section)
@@ -478,6 +486,62 @@ class HomeController extends Controller
                 ['time' => '8:55 AM', 'action' => 'New account submitted', 'detail' => 'Student registration awaiting document review', 'icon' => 'person_add'],
                 ['time' => '8:30 AM', 'action' => 'Inventory updated', 'detail' => 'Four copies verified in Computer Studies shelves', 'icon' => 'inventory_2'],
             ],
+        ];
+    }
+
+    private function superAdminData(string $activePage): array
+    {
+        $patrons = $this->patronRecords();
+        $books = $this->catalogBooks();
+        $transactions = $this->circulationQueue();
+
+        return [
+            'activePage' => $activePage,
+            'systemStats' => [
+                'users' => count($patrons) + 4,
+                'staff' => 3,
+                'patrons' => count($patrons) + 1,
+                'bookTitles' => count($books),
+                'transactions' => count($transactions) + count($this->activeLoans()),
+                'pendingApprovals' => 2,
+            ],
+            'systemActivities' => [
+                ['time' => '10:42 AM', 'user' => 'Maria Santos', 'action' => 'Updated a librarian account', 'area' => 'User Management', 'icon' => 'manage_accounts'],
+                ['time' => '10:18 AM', 'user' => 'System', 'action' => 'Completed scheduled data backup', 'area' => 'Database', 'icon' => 'backup'],
+                ['time' => '9:55 AM', 'user' => 'Roberto Mendoza', 'action' => 'Signed in to the faculty portal', 'area' => 'Security', 'icon' => 'login'],
+                ['time' => '9:31 AM', 'user' => 'Maria Santos', 'action' => 'Changed borrowing request status', 'area' => 'Transactions', 'icon' => 'sync_alt'],
+            ],
+            'systemAlerts' => [
+                ['level' => 'Review', 'message' => 'Two administrator account requests require approval.', 'icon' => 'person_alert', 'tone' => 'amber'],
+                ['level' => 'Healthy', 'message' => 'Latest scheduled backup completed successfully.', 'icon' => 'cloud_done', 'tone' => 'green'],
+                ['level' => 'Security', 'message' => 'No unusual sign-in activity detected today.', 'icon' => 'verified_user', 'tone' => 'blue'],
+            ],
+        ];
+    }
+
+    private function superAdminPages(): array
+    {
+        return [
+            'users' => ['title' => 'All Users', 'description' => 'Manage every registered student, faculty, staff, librarian, and administrator account.', 'icon' => 'group', 'action' => 'Add User'],
+            'roles' => ['title' => 'Roles and Permissions', 'description' => 'Control what each account type can view and manage.', 'icon' => 'admin_panel_settings', 'action' => 'Create Role'],
+            'approvals' => ['title' => 'Account Approvals', 'description' => 'Review pending registrations before granting system access.', 'icon' => 'approval', 'action' => 'Review Next'],
+            'librarians' => ['title' => 'Librarians', 'description' => 'Manage librarian accounts, assignments, and account status.', 'icon' => 'local_library', 'action' => 'Add Librarian'],
+            'library-staff' => ['title' => 'Library Staff', 'description' => 'Manage library assistants, desk staff, and assigned responsibilities.', 'icon' => 'badge', 'action' => 'Add Staff'],
+            'branches' => ['title' => 'Library Branches', 'description' => 'Manage campus library locations, branch details, and assigned staff.', 'icon' => 'account_balance', 'action' => 'Add Branch'],
+            'borrowing-rules' => ['title' => 'Borrowing Rules', 'description' => 'Set book limits, borrowing periods, and renewal limits for each role.', 'icon' => 'rule', 'action' => 'Save Rules'],
+            'fine-settings' => ['title' => 'Fine Settings', 'description' => 'Set overdue charges, maximum penalties, and payment rules.', 'icon' => 'payments', 'action' => 'Save Settings'],
+            'system-policies' => ['title' => 'System Policies', 'description' => 'Manage registration requirements, password rules, and approval settings.', 'icon' => 'policy', 'action' => 'Update Policies'],
+            'reports' => ['title' => 'Reports and Analytics', 'description' => 'Review system-wide user, library, staff, and usage reports.', 'icon' => 'monitoring', 'action' => 'Create Report'],
+            'database-backup' => ['title' => 'Database Backup', 'description' => 'Create backups and review the backup schedule and history.', 'icon' => 'backup', 'action' => 'Create Backup'],
+            'database-restore' => ['title' => 'Restore Database', 'description' => 'Restore system data from a verified previous backup.', 'icon' => 'settings_backup_restore', 'action' => 'Choose Backup'],
+            'data-export' => ['title' => 'Data Export', 'description' => 'Export books, users, transactions, and reports in standard formats.', 'icon' => 'download', 'action' => 'Export Data'],
+            'security' => ['title' => 'Security Management', 'description' => 'Manage password policies, sessions, access monitoring, and sign-in security.', 'icon' => 'security', 'action' => 'Review Security'],
+            'audit-logs' => ['title' => 'Audit Logs', 'description' => 'Track sign-ins, account changes, deleted records, and permission updates.', 'icon' => 'history', 'action' => 'Export Logs'],
+            'announcements' => ['title' => 'Announcements', 'description' => 'Create and schedule system-wide notices and policy updates.', 'icon' => 'campaign', 'action' => 'New Announcement'],
+            'content' => ['title' => 'Content Management', 'description' => 'Manage library information, frequently asked questions, policies, and terms.', 'icon' => 'article', 'action' => 'Add Content'],
+            'notifications' => ['title' => 'Notification Management', 'description' => 'Configure overdue, approval, announcement, and maintenance alerts.', 'icon' => 'notifications', 'action' => 'Save Notifications'],
+            'maintenance' => ['title' => 'System Maintenance', 'description' => 'Monitor system status, temporary data, and maintenance settings.', 'icon' => 'build', 'action' => 'Run System Check'],
+            'profile' => ['title' => 'Super Admin Profile', 'description' => 'Update your profile, password, and personal security settings.', 'icon' => 'account_circle', 'action' => 'Edit Profile'],
         ];
     }
 

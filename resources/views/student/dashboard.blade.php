@@ -136,7 +136,7 @@
         <div class="flex items-center gap-3 lg:gap-4">
             <div class="hidden items-center gap-2 rounded-full border border-[#BBF7D0] bg-[#F0FDF4] px-3 py-1.5 md:flex">
                 <span class="h-2 w-2 animate-pulse rounded-full bg-[#16A34A]"></span>
-                <span class="text-[10px] font-bold text-[#166534]">STUDENT PATRON PORTAL - IM101 READY</span>
+                <span class="text-[10px] font-bold text-[#166534]">STUDENT PATRON PORTAL - HCI102 PROJECT</span>
             </div>
 
             <a aria-label="Notifications" class="relative rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'notifications') }}">

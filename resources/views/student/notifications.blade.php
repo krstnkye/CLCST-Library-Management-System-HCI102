@@ -83,7 +83,7 @@
             </div>
             <div class="hidden items-center gap-2 border-l border-outline-variant pl-4 lg:flex">
                 <span class="flex items-center gap-1 rounded-full bg-surface-container px-2.5 py-0.5 text-[10px] font-bold text-primary"><span class="h-1.5 w-1.5 rounded-full bg-primary-container"></span>AY 2024-2025 - 1st Sem</span>
-                <span class="rounded px-2 py-0.5 text-[10px] font-bold text-outline">IM101 Student Portal</span>
+                <span class="rounded px-2 py-0.5 text-[10px] font-bold text-outline">HCI102 Student Portal</span>
             </div>
         </div>
 

@@ -76,12 +76,12 @@
             @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm object-contain bg-white p-0.5'])
             <div class="flex flex-col">
                 <span class="font-headline text-base font-bold leading-tight tracking-wide text-primary">CLCST SCHOOL LIBRARY</span>
-                <span class="text-xs font-medium text-on-surface-variant">Integrated Library System - IM101 Student Portal</span>
+                <span class="text-xs font-medium text-on-surface-variant">Integrated Library System - HCI102 Project</span>
             </div>
             <div class="ml-4 hidden items-center border-l border-outline-variant pl-4 lg:flex">
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-surface-container px-2.5 py-1 text-xs font-semibold text-primary">
                     <span class="h-2 w-2 rounded-full bg-primary-container"></span>
-                    Student Account Portal - IM101 Ready
+                    Student Account Portal - HCI102 Project
                 </span>
             </div>
         </div>

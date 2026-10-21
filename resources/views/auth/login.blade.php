@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Symbols+Outlined&display=swap" rel="stylesheet">
     <style>body{font-family:Inter,sans-serif}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 450,'GRAD' 0,'opsz' 24}</style>
+    @include('partials.ui-motion')
 </head>
 <body class="min-h-full text-slate-900">
 <header class="border-b border-slate-200 bg-white"><div class="mx-auto flex max-w-6xl items-center gap-3 px-4 py-4">@include('partials.celtech-logo', ['class'=>'h-11 w-11 rounded-full object-contain'])<div><p class="font-bold text-emerald-900">CLCST Library Management System</p><p class="text-xs text-slate-500">Secure library access</p></div></div></header>

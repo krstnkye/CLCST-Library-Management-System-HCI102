@@ -121,7 +121,7 @@
             );
         }
     </style>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @include('partials.ui-motion')
 </head>
 <body class="h-full bg-[#F8FAFC] text-on-surface antialiased">
     <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-[#E2E8F0] bg-surface-container-lowest px-4 shadow-sm lg:px-6">

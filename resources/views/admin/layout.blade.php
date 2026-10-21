@@ -12,7 +12,7 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Plus Jakarta Sans', 'sans-serif'] } } } };</script>
     <style>.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 450,'GRAD' 0,'opsz' 24;line-height:1}.custom-scrollbar::-webkit-scrollbar{width:6px;height:6px}.custom-scrollbar::-webkit-scrollbar-thumb{background:#b9c7be;border-radius:999px}</style>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @include('partials.ui-motion')
 </head>
 <body class="min-h-full bg-[#F4F6F5] font-sans text-[#18251D] antialiased">
     <header class="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#D5DED8] bg-white px-4 shadow-sm md:px-6">

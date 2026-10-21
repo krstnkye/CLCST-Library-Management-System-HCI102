@@ -9,7 +9,7 @@
     @include('partials.favicon')
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @include('partials.ui-motion')
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased">
     <main class="min-h-screen px-6 py-12">

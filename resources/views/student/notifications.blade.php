@@ -57,7 +57,7 @@
         ::-webkit-scrollbar-track { background: #faf8ff; }
         ::-webkit-scrollbar-thumb { background: #c0c9bd; border-radius: 9999px; }
     </style>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @include('partials.ui-motion')
 </head>
 <body class="flex h-full flex-col overflow-x-hidden bg-background font-body text-on-surface antialiased">
     @php

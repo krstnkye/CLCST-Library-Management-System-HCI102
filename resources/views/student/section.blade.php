@@ -6,6 +6,7 @@
     <title>{{ $title }} - CLCST Library Portal</title>
     @include('partials.favicon')
     <script src="https://cdn.tailwindcss.com"></script>
+    @include('partials.ui-motion')
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-900">
     <main class="mx-auto max-w-4xl px-6 py-10">

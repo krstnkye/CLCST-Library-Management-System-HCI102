@@ -19,7 +19,7 @@
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #b9c7be; border-radius: 999px; }
     </style>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @include('partials.ui-motion')
 </head>
 <body class="min-h-full bg-[#F5F7F6] font-sans text-[#17251D] antialiased">
     <header class="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#D6DED8] bg-white px-4 shadow-sm md:px-6">

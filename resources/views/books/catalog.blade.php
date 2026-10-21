@@ -88,7 +88,7 @@
             transform: perspective(900px) rotateY(-5deg);
         }
     </style>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @include('partials.ui-motion')
 </head>
 <body class="flex min-h-screen flex-col bg-[#F8FAFC] font-body-md text-on-surface antialiased">
     @php

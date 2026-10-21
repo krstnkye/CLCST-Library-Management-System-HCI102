@@ -57,7 +57,7 @@
             background: repeating-linear-gradient(90deg, #131b2e, #131b2e 2px, transparent 2px, transparent 4px, #131b2e 4px, #131b2e 7px, transparent 7px, transparent 9px, #131b2e 9px, #131b2e 13px, transparent 13px, transparent 15px);
         }
     </style>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @include('partials.ui-motion')
 </head>
 <body class="h-full overflow-x-hidden bg-surface font-body text-on-surface antialiased">
     @php

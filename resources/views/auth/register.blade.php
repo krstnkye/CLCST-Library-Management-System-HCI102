@@ -22,6 +22,7 @@
         input[type=radio]:checked+.role-card .role-icon{background:#146b37;color:#fff}
         input[type=radio]:checked+.role-card .role-check{display:inline-flex}
     </style>
+    @include('partials.ui-motion')
 </head>
 <body class="min-h-full bg-[#f7f9f7] font-sans text-slate-900 antialiased">
 <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">

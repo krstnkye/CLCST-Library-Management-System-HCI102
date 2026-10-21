@@ -57,7 +57,7 @@
             border-radius: 9999px;
         }
     </style>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @include('partials.ui-motion')
 </head>
 <body class="flex min-h-screen flex-col bg-[#f8fafc] font-sans text-on-surface antialiased selection:bg-[#135d2e] selection:text-white">
     @php

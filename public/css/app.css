@@ -1,3 +1,155 @@
 body {
     min-width: 320px;
 }
+
+:root {
+    --ui-motion-fast: 160ms;
+    --ui-motion-base: 260ms;
+    --ui-motion-slow: 520ms;
+    --ui-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --ui-focus: rgba(20, 107, 55, 0.28);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    text-rendering: optimizeLegibility;
+}
+
+a,
+button,
+input,
+select,
+textarea,
+summary {
+    transition:
+        color var(--ui-motion-fast) ease,
+        background-color var(--ui-motion-fast) ease,
+        border-color var(--ui-motion-fast) ease,
+        box-shadow var(--ui-motion-fast) ease,
+        opacity var(--ui-motion-fast) ease,
+        transform var(--ui-motion-fast) ease;
+}
+
+button:not(:disabled),
+a[href],
+summary {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:not(:disabled):active,
+a[href].ui-action:active {
+    transform: translateY(1px) scale(0.985);
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible,
+a:focus-visible,
+summary:focus-visible {
+    outline: 3px solid var(--ui-focus);
+    outline-offset: 2px;
+}
+
+main article,
+main section,
+main form,
+main table {
+    backface-visibility: hidden;
+}
+
+@keyframes ui-fade-up {
+    from { opacity: 0; transform: translate3d(0, 14px, 0); }
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes ui-header-in {
+    from { opacity: 0; transform: translate3d(0, -8px, 0); }
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes ui-status-in {
+    0% { opacity: 0; transform: translate3d(0, -8px, 0) scale(0.985); }
+    100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes ui-live-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.25); }
+    50% { box-shadow: 0 0 0 5px rgba(22, 163, 74, 0); }
+}
+
+.ui-motion-ready > header {
+    animation: ui-header-in var(--ui-motion-slow) var(--ui-motion-ease) both;
+}
+
+.ui-motion-ready .ui-reveal {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+}
+
+.ui-motion-ready .ui-reveal.is-visible {
+    animation: ui-fade-up var(--ui-motion-slow) var(--ui-motion-ease) both;
+    animation-delay: var(--ui-delay, 0ms);
+}
+
+.ui-motion-ready .ui-status {
+    animation: ui-status-in 380ms var(--ui-motion-ease) both;
+}
+
+.ui-motion-ready aside nav a:hover {
+    transform: translateX(3px);
+}
+
+.ui-motion-ready main article:hover,
+.ui-motion-ready main .ui-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.ui-motion-ready tbody tr {
+    transition: background-color var(--ui-motion-fast) ease;
+}
+
+.ui-motion-ready tbody tr:hover {
+    background-color: rgba(240, 253, 244, 0.72);
+}
+
+.ui-motion-ready .animate-pulse,
+.ui-motion-ready [class*="bg-emerald-500"][class*="rounded-full"],
+.ui-motion-ready [class*="bg-green-500"][class*="rounded-full"] {
+    animation-duration: 2.2s;
+}
+
+.ui-motion-ready [data-live-indicator] {
+    animation: ui-live-pulse 2.2s ease-in-out infinite;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .ui-motion-ready main a[class*="rounded"]:hover,
+    .ui-motion-ready main button:not(:disabled):hover {
+        transform: translateY(-1px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .ui-motion-ready .ui-reveal {
+        opacity: 1;
+        transform: none;
+    }
+}

@@ -33,7 +33,7 @@
             vertical-align: middle;
         }
     </style>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @include('partials.ui-motion')
 </head>
 <body class="h-full bg-[#F8FAFC] text-[#0F172A] antialiased">
     <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-[#CBD5E1] bg-white px-4 shadow-sm lg:px-6">

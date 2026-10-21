@@ -10,15 +10,24 @@ class EnsurePortalAccess
 {
     public function handle(Request $request, Closure $next, string ...$allowedRoles): Response
     {
-        $role = $request->session()->get('portal_role');
+        $user = $request->user();
 
-        if (! is_string($role)) {
+        if (! $user) {
             return redirect()
                 ->route('login')
                 ->with('status', 'Please sign in to continue.');
         }
 
-        if ($allowedRoles !== [] && ! in_array($role, $allowedRoles, true)) {
+        if (! $user->isActive()) {
+            auth()->logout();
+            $request->session()->invalidate();
+
+            return redirect()->route('login')->withErrors([
+                'identifier' => 'This account is awaiting approval or has been disabled. Contact the library office.',
+            ]);
+        }
+
+        if ($allowedRoles !== [] && ! $user->hasAnyRole($allowedRoles)) {
             abort(403, 'Your account does not have permission to open this page.');
         }
 

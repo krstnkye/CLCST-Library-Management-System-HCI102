@@ -73,6 +73,9 @@
                 </div>
             </section>
         </nav>
+        <div class="mt-5 border-t border-[#D6DED8] pt-4">
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-[#29372F] hover:bg-[#EEF2EF] hover:text-[#0F5C2E]" href="{{ route('management.data.index') }}"><span class="material-symbols-outlined text-xl">upload_file</span><span>Import and Export</span></a>
+        </div>
     </div>
 
     <div class="border-t border-[#D6DED8] p-4">

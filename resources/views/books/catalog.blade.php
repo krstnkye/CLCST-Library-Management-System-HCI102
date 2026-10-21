@@ -97,6 +97,23 @@
         $selectedAvailable = collect($selectedBook['copies'])->where('status', 'available')->count();
         $currentParams = request()->except('page');
         $totalCatalogCount = collect($categories)->count() * 520 + 14250;
+        $catalogUser = auth()->user();
+        $isStudentPortal = $catalogUser->role === 'student';
+        $notificationRoute = $isStudentPortal
+            ? route('student.section', 'notifications')
+            : route('staff.section', 'notifications');
+        $supportRoute = $isStudentPortal
+            ? route('student.section', 'support')
+            : route('staff.section', 'support');
+        $portalLabel = $isStudentPortal ? 'Student Portal' : 'Faculty Portal';
+        $userInitials = collect(preg_split('/\s+/', trim($catalogUser->name)))
+            ->filter()
+            ->take(2)
+            ->map(fn ($namePart) => mb_strtoupper(mb_substr($namePart, 0, 1)))
+            ->implode('');
+        $userSubtitle = $isStudentPortal
+            ? trim(($catalogUser->patron_id ?: 'Student account').' - Student')
+            : ($catalogUser->program_or_department ?: 'Faculty account');
     @endphp
 
     <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-outline-variant bg-surface-container-lowest px-4 shadow-sm md:px-6">
@@ -128,23 +145,23 @@
                 <span class="h-2 w-2 animate-pulse rounded-full bg-emerald-600"></span>
                 <span class="text-[10px] font-semibold text-emerald-800">Book Catalog Online</span>
             </div>
-            <a class="relative rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('staff.section', 'notifications') }}" title="Notifications">
+            <a class="relative rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ $notificationRoute }}" title="Notifications">
                 <span class="material-symbols-outlined text-[22px]">notifications</span>
                 @if ($reservationCount > 0)
                     <span class="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[10px] font-bold text-white">{{ $reservationCount }}</span>
                 @endif
             </a>
-            <a class="rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('staff.section', 'support') }}" title="Help Desk">
+            <a class="rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ $supportRoute }}" title="Help and support">
                 <span class="material-symbols-outlined text-[22px]">help</span>
             </a>
             <div class="mx-1 h-6 w-px bg-outline-variant"></div>
             <div class="flex items-center gap-3 pl-1">
                 <div class="hidden text-right sm:block">
-                    <p class="text-xs font-semibold leading-tight text-on-surface">Engr. Roberto M. Mendoza</p>
-                    <p class="text-[10px] leading-tight text-outline">CICT Faculty - BSCS Chair</p>
+                    <p class="text-xs font-semibold leading-tight text-on-surface">{{ $catalogUser->name }}</p>
+                    <p class="text-[10px] leading-tight text-outline">{{ $userSubtitle }}</p>
                 </div>
                 <div class="relative">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary font-headline-sm text-xs font-bold text-on-primary shadow-sm ring-2 ring-secondary-container">RM</div>
+                    <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary font-headline-sm text-xs font-bold text-on-primary shadow-sm ring-2 ring-secondary-container">{{ $userInitials }}</div>
                     <span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
                 </div>
             </div>
@@ -152,7 +169,11 @@
     </header>
 
     <div class="flex flex-1 overflow-hidden">
-        @include('partials.staff-sidebar', ['activePage' => 'search-books'])
+        @if(auth()->user()->role === 'student')
+            @include('partials.student-sidebar', ['activePage' => 'catalog'])
+        @else
+            @include('partials.staff-sidebar', ['activePage' => 'search-books', 'portalRole' => 'faculty'])
+        @endif
 
         <main class="custom-scrollbar md:ml-64 flex flex-1 flex-col overflow-y-auto bg-[#F8FAFC]">
             <section class="border-b border-outline-variant bg-surface-container-lowest px-4 pb-6 pt-6 shadow-sm lg:px-8">
@@ -163,7 +184,7 @@
                 @endif
 
                 <nav class="mb-2 flex items-center gap-2 text-xs font-semibold text-outline">
-                    <span>Academic Portal</span>
+                    <span>{{ $portalLabel }}</span>
                     <span class="material-symbols-outlined text-[14px]">chevron_right</span>
                     <span>Catalog & Books</span>
                     <span class="material-symbols-outlined text-[14px]">chevron_right</span>
@@ -412,7 +433,7 @@
                                 <div>
                                     <h4 class="text-sm font-bold text-white">Online Research Databases</h4>
                                     <p class="mt-1 text-xs text-slate-300">Signed-in access to IEEE Xplore, ScienceDirect, ACM Digital Library, and national repositories.</p>
-                                    <a class="mt-3 inline-flex rounded-lg bg-secondary-container px-3 py-2 text-xs font-bold text-on-secondary-container hover:bg-amber-400" href="{{ route('staff.section', 'support') }}">Open Online Library Access</a>
+                                    <a class="mt-3 inline-flex rounded-lg bg-secondary-container px-3 py-2 text-xs font-bold text-on-secondary-container hover:bg-amber-400" href="{{ $supportRoute }}">Open Online Library Access</a>
                                 </div>
                             </div>
                         </section>

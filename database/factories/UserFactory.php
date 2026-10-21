@@ -25,12 +25,28 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'patron_id' => fake()->unique()->bothify('ID-####-??'),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'role' => 'student',
+            'status' => 'active',
+            'program_or_department' => 'General Studies',
+            'mobile_number' => '09171234567',
+            'approved_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
+    }
+
+    public function role(string $role): static
+    {
+        return $this->state(fn () => ['role' => $role]);
+    }
+
+    public function pending(): static
+    {
+        return $this->state(fn () => ['status' => 'pending', 'approved_at' => null]);
     }
 
     /**

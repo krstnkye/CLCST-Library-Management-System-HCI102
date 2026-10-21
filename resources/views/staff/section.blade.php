@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <a class="hidden rounded-lg border border-[#CBD5E1] px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC] sm:inline-flex" href="{{ route('staff.dashboard') }}">Staff Dashboard</a>
+            <a class="hidden rounded-lg border border-[#CBD5E1] px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC] sm:inline-flex" href="{{ route('faculty.dashboard') }}">Faculty Dashboard</a>
             <div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#065F2A] text-sm font-bold text-white">MS</div>
         </div>
     </header>

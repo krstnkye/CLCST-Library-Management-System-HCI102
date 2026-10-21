@@ -74,7 +74,7 @@
     @endphp
 
     <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm md:px-6">
-        <a class="flex items-center gap-2.5" href="{{ $isFaculty ? route('faculty.dashboard') : route('staff.dashboard') }}">
+        <a class="flex items-center gap-2.5" href="{{ route('faculty.dashboard') }}">
             @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 items-center justify-center rounded-full bg-[#135d2e] font-headline text-sm font-extrabold text-white ring-2 ring-amber-400 object-contain bg-white p-0.5'])
             <div>
                 <div class="flex items-center gap-2">

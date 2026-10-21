@@ -1,7 +1,7 @@
 @php
-    $portalRole = $portalRole ?? 'staff';
+    $portalRole = $portalRole ?? auth()->user()?->role ?? 'faculty';
     $activePage = $activePage ?? ($section ?? 'dashboard');
-    $homeRoute = $portalRole === 'faculty' ? route('faculty.dashboard') : route('staff.dashboard');
+    $homeRoute = route('faculty.dashboard');
     $pendingReservations = $stats['pendingReservations'] ?? count($reservations ?? []);
     $borrowedCount = $stats['activeLoans'] ?? count($activeLoans ?? []);
 

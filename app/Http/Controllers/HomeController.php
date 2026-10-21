@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLog;
+use App\Models\LibraryBook;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -18,98 +21,6 @@ class HomeController extends Controller
         ]);
 
         return response('Generated successfully');
-    }
-
-    public function login()
-    {
-        return view('auth.login');
-    }
-
-    public function authenticate(Request $request)
-    {
-        $credentials = $request->validate([
-            'role' => ['required', 'in:student,faculty,staff,superadmin'],
-            'identifier' => ['required', 'string', 'max:255'],
-            'password' => ['required', 'string', 'max:255'],
-        ]);
-
-        $request->session()->regenerate();
-        $request->session()->put([
-            'portal_role' => $credentials['role'],
-            'portal_identifier' => $credentials['identifier'],
-            'portal_signed_in_at' => now()->toIso8601String(),
-        ]);
-
-        if ($request->input('role') === 'student') {
-            return redirect()->route('student.dashboard')->with('status', 'Welcome back to your student library dashboard.');
-        }
-
-        if ($request->input('role') === 'faculty') {
-            return redirect()->route('faculty.dashboard')->with('status', 'Welcome back to your faculty library dashboard.');
-        }
-
-        if ($request->input('role') === 'superadmin') {
-            return redirect()->route('superadmin.dashboard')->with('status', 'Welcome back to the Super Admin control center.');
-        }
-
-        return redirect()->route('librarian.dashboard')->with('status', 'Welcome back to the librarian operations dashboard.');
-    }
-
-    public function logout(Request $request)
-    {
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()
-            ->route('login')
-            ->with('status', 'You have been logged out safely.');
-    }
-
-    public function register()
-    {
-        return view('auth.register');
-    }
-
-    public function storeRegistration(Request $request)
-    {
-        $request->validate([
-            'patron_role' => ['required', 'in:student,faculty,staff,superadmin'],
-            'last_name' => ['required', 'string', 'max:100'],
-            'first_name' => ['required', 'string', 'max:100'],
-            'middle_initial' => ['nullable', 'string', 'max:5'],
-            'patron_id' => ['required', 'string', 'max:100'],
-            'program_or_department' => ['required', 'string', 'max:150'],
-            'email' => ['required', 'email', 'max:150'],
-            'mobile_number' => ['required', 'string', 'max:30'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
-            'credential_file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
-            'privacy_consent' => ['accepted'],
-        ]);
-
-        $request->session()->put('registered_patron', [
-            'role' => $request->input('patron_role'),
-            'name' => trim($request->input('first_name').' '.$request->input('last_name')),
-            'id' => $request->input('patron_id'),
-            'program' => $request->input('program_or_department'),
-            'registered_at' => now()->format('M d, Y h:i A'),
-        ]);
-        if ($request->input('patron_role') !== 'superadmin') {
-            $request->session()->regenerate();
-            $request->session()->put([
-                'portal_role' => $request->input('patron_role'),
-                'portal_identifier' => $request->input('patron_id'),
-                'portal_signed_in_at' => now()->toIso8601String(),
-            ]);
-        }
-
-        $status = 'Registration submitted successfully. Your digital library pass has been issued for verification.';
-
-        return match ($request->input('patron_role')) {
-            'faculty' => redirect()->route('faculty.dashboard')->with('status', $status),
-            'staff' => redirect()->route('librarian.dashboard')->with('status', $status),
-            'superadmin' => redirect()->route('login')->with('status', 'Super Admin registration submitted. An authorized school administrator must approve the account before sign-in.'),
-            default => redirect()->route('student.dashboard')->with('status', $status),
-        };
     }
 
     public function studentDashboard()
@@ -132,6 +43,26 @@ class HomeController extends Controller
         return view('librarian.dashboard', $this->librarianDashboardData('dashboard'));
     }
 
+    public function adminDashboard()
+    {
+        return view('administrator.dashboard', $this->administratorData('dashboard'));
+    }
+
+    public function adminSection(string $section)
+    {
+        $pages = $this->administratorPages();
+        abort_unless(isset($pages[$section]), 404);
+
+        if ($section === 'bulk-data') {
+            return redirect()->route('management.data.index');
+        }
+
+        return view('administrator.section', array_merge(
+            $this->administratorData($section),
+            ['section' => $section, 'page' => $pages[$section]],
+        ));
+    }
+
     public function superAdminDashboard()
     {
         return view('admin.dashboard', $this->superAdminData('dashboard'));
@@ -139,6 +70,14 @@ class HomeController extends Controller
 
     public function superAdminSection(string $section)
     {
+        if (in_array($section, ['users', 'approvals'], true)) {
+            return redirect()->route('management.accounts.index');
+        }
+
+        if ($section === 'data-export') {
+            return redirect()->route('management.data.index');
+        }
+
         $pages = $this->superAdminPages();
 
         abort_unless(isset($pages[$section]), 404);
@@ -154,6 +93,10 @@ class HomeController extends Controller
 
     public function librarianSection(string $section)
     {
+        if ($section === 'verification') {
+            return redirect()->route('management.accounts.index');
+        }
+
         $pages = $this->librarianPages();
 
         abort_unless(isset($pages[$section]), 404);
@@ -423,7 +366,7 @@ class HomeController extends Controller
         ];
 
         return view('staff.section', array_merge(
-            $this->staffDashboardData('staff', $section),
+            $this->staffDashboardData('faculty', $section),
             [
                 'title' => $titles[$section],
                 'section' => $section,
@@ -464,7 +407,11 @@ class HomeController extends Controller
         $books = $this->catalogBooks();
         $activeLoans = $this->activeLoans();
         $patrons = $this->patronRecords();
-        $availableCopies = collect($books)->sum(fn (array $book) => $this->availableCopies($book));
+        $storedBooks = LibraryBook::query();
+        $hasStoredBooks = $storedBooks->exists();
+        $availableCopies = $hasStoredBooks
+            ? (clone $storedBooks)->sum('available_copies')
+            : collect($books)->sum(fn (array $book) => $this->availableCopies($book));
 
         return [
             'activePage' => $activePage,
@@ -473,12 +420,12 @@ class HomeController extends Controller
             'patronRecords' => $patrons,
             'circulationQueue' => $this->circulationQueue(),
             'stats' => [
-                'titles' => count($books),
+                'titles' => $hasStoredBooks ? (clone $storedBooks)->count() : count($books),
                 'availableCopies' => $availableCopies,
                 'borrowedBooks' => count($activeLoans),
                 'overdueBooks' => 1,
-                'registeredUsers' => count($patrons),
-                'pendingRequests' => count($this->circulationQueue()),
+                'registeredUsers' => User::count() ?: count($patrons),
+                'pendingRequests' => User::where('status', 'pending')->count(),
             ],
             'activities' => [
                 ['time' => '9:42 AM', 'action' => 'Book returned', 'detail' => 'Introduction to Python Programming - Copy PY-002', 'icon' => 'assignment_return'],
@@ -491,31 +438,65 @@ class HomeController extends Controller
 
     private function superAdminData(string $activePage): array
     {
-        $patrons = $this->patronRecords();
-        $books = $this->catalogBooks();
-        $transactions = $this->circulationQueue();
+        $pending = User::where('status', 'pending')->count();
+        $activities = AuditLog::query()->latest()->limit(8)->get()->map(function (AuditLog $log): array {
+            return [
+                'time' => $log->created_at->format('M d, g:i A'),
+                'user' => $log->user_id ? (User::find($log->user_id)?->name ?? 'Former user') : 'System',
+                'action' => $log->description,
+                'area' => str_starts_with($log->event, 'login') ? 'Security' : 'System',
+                'icon' => str_starts_with($log->event, 'login') ? 'login' : 'history',
+            ];
+        })->all();
 
         return [
             'activePage' => $activePage,
             'systemStats' => [
-                'users' => count($patrons) + 4,
-                'staff' => 3,
-                'patrons' => count($patrons) + 1,
-                'bookTitles' => count($books),
-                'transactions' => count($transactions) + count($this->activeLoans()),
-                'pendingApprovals' => 2,
+                'users' => User::count(),
+                'staff' => User::whereIn('role', ['librarian', 'admin', 'superadmin'])->count(),
+                'patrons' => User::whereIn('role', ['student', 'faculty'])->count(),
+                'bookTitles' => LibraryBook::count(),
+                'transactions' => AuditLog::count(),
+                'pendingApprovals' => $pending,
             ],
-            'systemActivities' => [
-                ['time' => '10:42 AM', 'user' => 'Maria Santos', 'action' => 'Updated a librarian account', 'area' => 'User Management', 'icon' => 'manage_accounts'],
-                ['time' => '10:18 AM', 'user' => 'System', 'action' => 'Completed scheduled data backup', 'area' => 'Database', 'icon' => 'backup'],
-                ['time' => '9:55 AM', 'user' => 'Roberto Mendoza', 'action' => 'Signed in to the faculty portal', 'area' => 'Security', 'icon' => 'login'],
-                ['time' => '9:31 AM', 'user' => 'Maria Santos', 'action' => 'Changed borrowing request status', 'area' => 'Transactions', 'icon' => 'sync_alt'],
-            ],
+            'systemActivities' => $activities,
             'systemAlerts' => [
-                ['level' => 'Review', 'message' => 'Two administrator account requests require approval.', 'icon' => 'person_alert', 'tone' => 'amber'],
-                ['level' => 'Healthy', 'message' => 'Latest scheduled backup completed successfully.', 'icon' => 'cloud_done', 'tone' => 'green'],
-                ['level' => 'Security', 'message' => 'No unusual sign-in activity detected today.', 'icon' => 'verified_user', 'tone' => 'blue'],
+                ['level' => 'Review', 'message' => $pending.' account request(s) require verification.', 'icon' => 'person_alert', 'tone' => 'amber'],
+                ['level' => 'Security', 'message' => 'Role checks, account status checks, and sign-in throttling are active.', 'icon' => 'verified_user', 'tone' => 'blue'],
+                ['level' => 'Data', 'message' => LibraryBook::count().' database-backed book record(s) are available for managed import and export.', 'icon' => 'database', 'tone' => 'green'],
             ],
+        ];
+    }
+
+    private function administratorData(string $activePage): array
+    {
+        return [
+            'activePage' => $activePage,
+            'stats' => [
+                'users' => User::count(),
+                'pending' => User::where('status', 'pending')->count(),
+                'books' => LibraryBook::count(),
+                'activeBooks' => LibraryBook::where('status', 'active')->count(),
+            ],
+            'recentUsers' => User::query()->latest()->limit(6)->get(),
+            'recentActivity' => AuditLog::query()->latest()->limit(8)->get(),
+            'users' => User::query()->orderByRaw("CASE status WHEN 'pending' THEN 0 WHEN 'active' THEN 1 ELSE 2 END")->orderBy('name')->limit(100)->get(),
+            'storedBooks' => LibraryBook::query()->orderBy('title')->limit(100)->get(),
+        ];
+    }
+
+    private function administratorPages(): array
+    {
+        return [
+            'users' => ['title' => 'User Accounts', 'description' => 'Find, review, and update library user accounts.', 'icon' => 'group'],
+            'approvals' => ['title' => 'Account Approvals', 'description' => 'Review identity documents before activating accounts.', 'icon' => 'how_to_reg'],
+            'books' => ['title' => 'Book Records', 'description' => 'Maintain catalog records and copy counts.', 'icon' => 'menu_book'],
+            'circulation' => ['title' => 'Library Transactions', 'description' => 'Review borrowing, returns, renewals, and reservations.', 'icon' => 'sync_alt'],
+            'reports' => ['title' => 'Reports', 'description' => 'View clear summaries of library use and collection activity.', 'icon' => 'bar_chart'],
+            'bulk-data' => ['title' => 'Import and Export', 'description' => 'Move user and book records using checked CSV files.', 'icon' => 'upload_file'],
+            'audit-logs' => ['title' => 'Activity Log', 'description' => 'Review important security and data-management actions.', 'icon' => 'history'],
+            'announcements' => ['title' => 'Announcements', 'description' => 'Publish clear notices for library users.', 'icon' => 'campaign'],
+            'profile' => ['title' => 'My Profile', 'description' => 'Review your administrator account details.', 'icon' => 'account_circle'],
         ];
     }
 

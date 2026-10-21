@@ -43,7 +43,7 @@
                         ['security', 'security', 'Security Management'],
                         ['audit-logs', 'history', 'Audit Logs'],
                     ] as [$page, $icon, $label])
-                        <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ route('superadmin.section', $page) }}"><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
+                        <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ $page === 'data-export' ? route('management.data.index') : route('superadmin.section', $page) }}"><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
                     @endforeach
                 </div>
             </section>
@@ -69,6 +69,7 @@
         <form method="POST" action="{{ route('logout') }}">@csrf<button class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-50" type="submit"><span class="material-symbols-outlined text-xl">logout</span><span>Log Out</span></button></form>
     </div>
 </aside>
+
 
 <script>
     (() => {

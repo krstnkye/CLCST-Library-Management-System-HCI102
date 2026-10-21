@@ -96,6 +96,21 @@ class AccessControlTest extends TestCase
         $this->get(route('student.dashboard'))->assertRedirect(route('login'));
     }
 
+    public function test_registration_page_exposes_every_role_and_secure_upload_form(): void
+    {
+        $response = $this->get(route('register'));
+
+        $response->assertOk()
+            ->assertSee('Create your CLCST library account')
+            ->assertSee('value="student"', false)
+            ->assertSee('value="faculty"', false)
+            ->assertSee('value="librarian"', false)
+            ->assertSee('value="admin"', false)
+            ->assertSee('value="superadmin"', false)
+            ->assertSee('enctype="multipart/form-data"', false)
+            ->assertSee('name="privacy_consent"', false);
+    }
+
     public function test_registration_creates_a_pending_account_and_keeps_the_user_signed_out(): void
     {
         Storage::fake('local');

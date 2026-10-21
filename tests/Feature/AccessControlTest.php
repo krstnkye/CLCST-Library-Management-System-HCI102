@@ -108,6 +108,7 @@ class AccessControlTest extends TestCase
             ->assertSee('value="admin"', false)
             ->assertSee('value="superadmin"', false)
             ->assertSee('enctype="multipart/form-data"', false)
+            ->assertSee('id="password-match-message"', false)
             ->assertSee('name="privacy_consent"', false);
     }
 

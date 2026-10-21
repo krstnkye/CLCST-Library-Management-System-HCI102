@@ -107,7 +107,17 @@
                 <div class="flex items-center gap-2 border-b border-slate-200 pb-4"><span class="flex h-7 w-7 items-center justify-center rounded-full bg-clcst-700 text-sm font-bold text-white">3</span><div><h2 class="text-lg font-extrabold text-clcst-900">Security and verification</h2><p class="mt-1 text-xs text-slate-500">Create a strong password and attach proof of your CLCST affiliation.</p></div></div>
                 <div class="mt-5 grid gap-4 sm:grid-cols-2">
                     <div><label class="mb-1.5 block text-sm font-bold" for="password">Password <span class="text-red-600">*</span></label><div class="relative"><input id="password" name="password" required type="password" autocomplete="new-password" class="w-full rounded-md border-slate-300 pr-11 text-sm focus:border-clcst-600 focus:ring-clcst-600 @error('password') border-red-500 @enderror"><button class="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-slate-500 hover:text-clcst-700" type="button" data-password-toggle="password" aria-label="Show password"><span class="material-symbols-outlined text-lg">visibility</span></button></div><p class="mt-1 text-xs leading-5 text-slate-500">At least 10 characters with uppercase, lowercase, and a number.</p>@error('password')<p class="mt-1 text-xs text-red-700">{{ $message }}</p>@enderror</div>
-                    <div><label class="mb-1.5 block text-sm font-bold" for="password_confirmation">Confirm password <span class="text-red-600">*</span></label><div class="relative"><input id="password_confirmation" name="password_confirmation" required type="password" autocomplete="new-password" class="w-full rounded-md border-slate-300 pr-11 text-sm focus:border-clcst-600 focus:ring-clcst-600"><button class="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-slate-500 hover:text-clcst-700" type="button" data-password-toggle="password_confirmation" aria-label="Show password confirmation"><span class="material-symbols-outlined text-lg">visibility</span></button></div></div>
+                    <div>
+                        <label class="mb-1.5 block text-sm font-bold" for="password_confirmation">Confirm password <span class="text-red-600">*</span></label>
+                        <div class="relative">
+                            <input id="password_confirmation" name="password_confirmation" required type="password" autocomplete="new-password" aria-describedby="password-match-message" class="w-full rounded-md border-slate-300 pr-11 text-sm focus:border-clcst-600 focus:ring-clcst-600">
+                            <button class="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-slate-500 hover:text-clcst-700" type="button" data-password-toggle="password_confirmation" aria-label="Show password confirmation"><span class="material-symbols-outlined text-lg">visibility</span></button>
+                        </div>
+                        <p id="password-match-message" class="mt-1 hidden items-center gap-1 text-xs font-semibold" aria-live="polite">
+                            <span class="material-symbols-outlined text-sm" aria-hidden="true"></span>
+                            <span data-password-match-text></span>
+                        </p>
+                    </div>
                     <div class="sm:col-span-2">
                         <label class="mb-1.5 block text-sm font-bold" for="credential_file">Supporting school document <span class="text-red-600">*</span></label>
                         <label class="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 px-5 py-7 text-center transition hover:border-clcst-600 hover:bg-clcst-50" for="credential_file"><span class="flex h-11 w-11 items-center justify-center rounded-full bg-clcst-100 text-clcst-800"><span class="material-symbols-outlined">upload_file</span></span><span class="mt-3 text-sm font-bold text-slate-800">Choose your COR, school ID, or employee ID</span><span class="mt-1 text-xs text-slate-500">PDF, JPG, or PNG. Maximum file size: 10 MB.</span><span id="file-name" class="mt-2 hidden rounded bg-white px-3 py-1 text-xs font-semibold text-clcst-800"></span></label>
@@ -151,6 +161,43 @@
             button.setAttribute('aria-label',hidden?'Hide password':'Show password');
         });
     });
+
+    const passwordInput=document.getElementById('password');
+    const passwordConfirmation=document.getElementById('password_confirmation');
+    const passwordMatchMessage=document.getElementById('password-match-message');
+    const passwordMatchIcon=passwordMatchMessage.querySelector('.material-symbols-outlined');
+    const passwordMatchText=passwordMatchMessage.querySelector('[data-password-match-text]');
+
+    const updatePasswordMatch=()=>{
+        const confirmationStarted=passwordConfirmation.value.length>0;
+        const passwordsMatch=passwordInput.value===passwordConfirmation.value;
+
+        passwordMatchMessage.classList.toggle('hidden',!confirmationStarted);
+        passwordMatchMessage.classList.toggle('flex',confirmationStarted);
+        passwordConfirmation.setCustomValidity(confirmationStarted&&!passwordsMatch?'Passwords do not match.':'');
+        passwordConfirmation.setAttribute('aria-invalid',confirmationStarted&&!passwordsMatch?'true':'false');
+        passwordConfirmation.classList.toggle('border-red-500',confirmationStarted&&!passwordsMatch);
+        passwordConfirmation.classList.toggle('focus:border-red-500',confirmationStarted&&!passwordsMatch);
+        passwordConfirmation.classList.toggle('focus:ring-red-500',confirmationStarted&&!passwordsMatch);
+        passwordConfirmation.classList.toggle('border-emerald-600',confirmationStarted&&passwordsMatch);
+        passwordMatchMessage.classList.toggle('text-red-700',confirmationStarted&&!passwordsMatch);
+        passwordMatchMessage.classList.toggle('text-emerald-700',confirmationStarted&&passwordsMatch);
+
+        if(!confirmationStarted){
+            passwordMatchIcon.textContent='';
+            passwordMatchText.textContent='';
+        }else if(passwordsMatch){
+            passwordMatchIcon.textContent='check_circle';
+            passwordMatchText.textContent='Passwords match.';
+        }else{
+            passwordMatchIcon.textContent='error';
+            passwordMatchText.textContent='Passwords do not match.';
+        }
+    };
+
+    passwordInput.addEventListener('input',updatePasswordMatch);
+    passwordConfirmation.addEventListener('input',updatePasswordMatch);
+
     const credentialInput=document.getElementById('credential_file');
     const fileName=document.getElementById('file-name');
     credentialInput.addEventListener('change',()=>{

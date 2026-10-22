@@ -112,6 +112,23 @@ class AccessControlTest extends TestCase
             ->assertSee('name="privacy_consent"', false);
     }
 
+    public function test_login_page_exposes_the_real_role_based_sign_in_form(): void
+    {
+        $response = $this->get(route('login'));
+
+        $response->assertOk()
+            ->assertSee('Unified Academic Access Gateway')
+            ->assertSee('data-role="student"', false)
+            ->assertSee('data-role="faculty"', false)
+            ->assertSee('data-role="librarian"', false)
+            ->assertSee('data-role="admin"', false)
+            ->assertSee('data-role="superadmin"', false)
+            ->assertSee('name="role"', false)
+            ->assertSee('name="identifier"', false)
+            ->assertSee('name="password"', false)
+            ->assertSee(route('login.authenticate'), false);
+    }
+
     public function test_registration_creates_a_pending_account_and_keeps_the_user_signed_out(): void
     {
         Storage::fake('local');

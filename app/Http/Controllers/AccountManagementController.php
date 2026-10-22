@@ -6,7 +6,9 @@ use App\Models\AuditLog;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -49,12 +51,17 @@ class AccountManagementController extends Controller
     public function approve(Request $request, User $user): RedirectResponse
     {
         $this->authorizeChange($request->user(), $user);
-        $user->update([
-            'status' => 'active',
-            'approved_at' => now(),
-            'approved_by' => $request->user()->id,
-        ]);
-        $this->audit($request, 'account.approved', 'Approved '.$user->name.' ('.$user->role.').', $user);
+        abort_if($request->user()->is($user), 422, 'You cannot approve your own account.');
+        abort_unless($user->status === 'pending', 422, 'Only pending accounts can be approved.');
+
+        DB::transaction(function () use ($request, $user): void {
+            $user->forceFill([
+                'status' => 'active',
+                'approved_at' => now(),
+                'approved_by' => $request->user()->id,
+            ])->save();
+            $this->audit($request, 'account.approved', 'Approved '.$user->name.' ('.$user->role.').', $user);
+        });
 
         return back()->with('status', $user->name.' can now sign in.');
     }
@@ -63,8 +70,16 @@ class AccountManagementController extends Controller
     {
         $this->authorizeChange($request->user(), $user);
         abort_if($request->user()->is($user), 422, 'You cannot suspend your own account.');
-        $user->update(['status' => 'suspended']);
-        $this->audit($request, 'account.suspended', 'Suspended '.$user->name.' ('.$user->role.').', $user);
+        abort_if($user->status === 'suspended', 422, 'This account is already suspended.');
+
+        DB::transaction(function () use ($request, $user): void {
+            $user->forceFill([
+                'status' => 'suspended',
+                'remember_token' => Str::random(60),
+            ])->save();
+            DB::table('sessions')->where('user_id', $user->id)->delete();
+            $this->audit($request, 'account.suspended', 'Suspended '.$user->name.' ('.$user->role.').', $user);
+        });
 
         return back()->with('status', $user->name.' has been suspended.');
     }

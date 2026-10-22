@@ -24,8 +24,8 @@
                                 @if ($user->credential_path)
                                     <a class="rounded-md border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50" href="{{ route('management.accounts.credential', $user) }}" target="_blank" rel="noopener">View ID</a>
                                 @endif
-                                @if ($user->status !== 'active')
-                                    <form method="POST" action="{{ route('management.accounts.approve', $user) }}">@csrf<button class="rounded-md bg-emerald-900 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-800" type="submit">{{ $user->status === 'pending' ? 'Approve' : 'Reactivate' }}</button></form>
+                                @if ($user->status === 'pending')
+                                    <form method="POST" action="{{ route('management.accounts.approve', $user) }}">@csrf<button class="rounded-md bg-emerald-900 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-800" type="submit">Approve</button></form>
                                 @endif
                                 @if ($user->status !== 'suspended' && ! auth()->user()->is($user))
                                     <form method="POST" action="{{ route('management.accounts.suspend', $user) }}" onsubmit="return confirm('{{ $user->status === 'pending' ? 'Reject this application?' : 'Suspend this account? The user will be signed out.' }}')">@csrf<button class="rounded-md border border-red-200 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-50" type="submit">{{ $user->status === 'pending' ? 'Reject' : 'Suspend' }}</button></form>

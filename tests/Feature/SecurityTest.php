@@ -93,7 +93,7 @@ class SecurityTest extends TestCase
         $user = User::factory()->role('student')->create();
         $this->actingAs($user)->get(route('student.dashboard'))->assertOk();
 
-        $user->update(['status' => 'suspended']);
+        $user->forceFill(['status' => 'suspended'])->save();
         $this->actingAs($user->fresh())->get(route('student.dashboard'))->assertRedirect(route('login'));
         $this->assertGuest();
     }

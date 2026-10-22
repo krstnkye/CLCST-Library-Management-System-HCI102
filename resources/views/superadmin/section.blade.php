@@ -64,7 +64,7 @@
                         ['how_to_reg', 'Approval before access', 'New accounts stay pending until a librarian or administrator with authority over that role reviews the uploaded ID.'],
                         ['password', 'Password rules', 'At least 10 characters with upper and lower case letters and a number. Passwords are stored as one-way bcrypt hashes.'],
                         ['timer', 'Sign-in throttling', 'Five failed attempts lock the account and device pair for 60 seconds, and each route allows at most 10 sign-in requests per minute.'],
-                        ['cookie', 'Sessions', 'Sessions are encrypted, HTTP-only, SameSite=Lax, expire after '.config('session.lifetime').' minutes, and are regenerated at sign-in.'],
+                        ['cookie', 'Sessions', 'Sessions are encrypted, HTTP-only, SameSite='.ucfirst((string) config('session.same_site')).', expire after '.config('session.lifetime').' minutes, and are regenerated at sign-in.'],
                         ['shield_lock', 'Request protection', 'Every form carries a CSRF token, output is HTML-escaped, database queries are parameterized, and security headers are sent on every response.'],
                     ] as [$icon, $title, $body])
                         <article class="rounded-lg border border-[#D5DED8] bg-white p-5 shadow-sm"><h2 class="flex items-center gap-2 font-display text-base font-bold"><span class="material-symbols-outlined text-[#0F5C2E]">{{ $icon }}</span>{{ $title }}</h2><p class="mt-2 text-sm leading-6 text-[#44534B]">{{ $body }}</p></article>

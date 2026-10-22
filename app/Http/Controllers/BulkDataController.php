@@ -43,7 +43,10 @@ class BulkDataController extends Controller
         }
 
         $expected = $type === 'users' ? self::USER_HEADERS : self::BOOK_HEADERS;
-        $headers = array_map(fn ($value) => Str::snake(trim((string) $value)), fgetcsv($handle) ?: []);
+        $headers = array_map(
+            fn ($value) => Str::snake(ltrim(trim((string) $value), "\xEF\xBB\xBF")),
+            fgetcsv($handle) ?: [],
+        );
         if ($headers !== $expected) {
             fclose($handle);
             throw ValidationException::withMessages([
@@ -68,14 +71,17 @@ class BulkDataController extends Controller
         }
         fclose($handle);
 
+        if ($rows === []) {
+            throw ValidationException::withMessages(['csv_file' => 'The CSV file does not contain any records to import.']);
+        }
+
         $actor = $request->user();
-        DB::transaction(function () use ($type, $rows, $actor): void {
+        DB::transaction(function () use ($request, $type, $rows, $actor): void {
             foreach ($rows as $index => $row) {
                 $type === 'users' ? $this->importUser($row, $index + 2, $actor) : $this->importBook($row, $index + 2);
             }
+            $this->audit($request, "Imported ".count($rows)." {$type} records.", ['type' => $type, 'count' => count($rows)]);
         });
-
-        $this->audit($request, "Imported ".count($rows)." {$type} records.", ['type' => $type, 'count' => count($rows)]);
 
         return back()->with('status', count($rows)." {$type} records were imported successfully.");
     }
@@ -117,13 +123,16 @@ class BulkDataController extends Controller
 
     private function importUser(array $row, int $line, User $actor): void
     {
+        $email = mb_strtolower(trim($row['email']));
+        $patronId = mb_strtoupper(trim($row['patron_id']));
+
         if (! in_array($row['role'], User::ROLES, true) || ! in_array($row['status'], ['pending', 'active', 'suspended'], true)) {
             throw ValidationException::withMessages(['csv_file' => "Invalid role or status on line {$line}."]);
         }
-        if (! filter_var($row['email'], FILTER_VALIDATE_EMAIL) || $row['patron_id'] === '' || $row['name'] === '') {
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL) || $patronId === '' || $row['name'] === '' || mb_strlen($email) > 255 || mb_strlen($patronId) > 100 || mb_strlen($row['name']) > 255 || mb_strlen($row['program_or_department']) > 150 || mb_strlen($row['mobile_number']) > 30) {
             throw ValidationException::withMessages(['csv_file' => "Missing or invalid user information on line {$line}."]);
         }
-        if (! User::isInstitutionalEmail($row['email'])) {
+        if (! User::isInstitutionalEmail($email)) {
             throw ValidationException::withMessages(['csv_file' => "The email on line {$line} is not a school email (@".config('library.allowed_email_domain').').']);
         }
 
@@ -131,18 +140,21 @@ class BulkDataController extends Controller
             throw ValidationException::withMessages(['csv_file' => "You cannot import the account role on line {$line}."]);
         }
 
-        $user = User::firstOrNew(['email' => mb_strtolower($row['email'])]);
+        $user = User::firstOrNew(['email' => $email]);
         if ($user->exists && (! $actor->canManageRole($user->role) || $actor->is($user))) {
             throw ValidationException::withMessages(['csv_file' => "You cannot change the existing account on line {$line}."]);
         }
 
-        $patronOwner = User::whereRaw('UPPER(patron_id) = ?', [strtoupper($row['patron_id'])])->first();
-        if ($patronOwner && ! $patronOwner->is($user)) {
-            throw ValidationException::withMessages(['csv_file' => "The school ID on line {$line} already belongs to another account."]);
+        $patronIdInUse = User::query()
+            ->where('patron_id', $patronId)
+            ->when($user->exists, fn ($query) => $query->where('id', '!=', $user->getKey()))
+            ->exists();
+        if ($patronIdInUse) {
+            throw ValidationException::withMessages(['csv_file' => "The patron ID on line {$line} is already assigned to another account."]);
         }
 
-        $user->fill([
-            'patron_id' => strtoupper($row['patron_id']),
+        $user->forceFill([
+            'patron_id' => $patronId,
             'name' => $row['name'],
             'role' => $row['role'],
             'status' => $row['status'],
@@ -161,7 +173,15 @@ class BulkDataController extends Controller
     {
         $total = filter_var($row['total_copies'], FILTER_VALIDATE_INT);
         $available = filter_var($row['available_copies'], FILTER_VALIDATE_INT);
-        if ($row['title'] === '' || $row['author'] === '' || $row['isbn'] === '' || $total === false || $available === false || $available < 0 || $total < $available) {
+        $year = $row['publication_year'] === '' ? null : filter_var($row['publication_year'], FILTER_VALIDATE_INT);
+        $validLengths = mb_strlen($row['title']) <= 255
+            && mb_strlen($row['author']) <= 255
+            && mb_strlen($row['isbn']) <= 32
+            && mb_strlen($row['call_number']) <= 80
+            && mb_strlen($row['category']) <= 100
+            && mb_strlen($row['shelf_location']) <= 100;
+        $validYear = $year === null || ($year !== false && $year >= 1000 && $year <= (int) date('Y') + 1);
+        if ($row['title'] === '' || $row['author'] === '' || $row['isbn'] === '' || ! $validLengths || ! $validYear || $total === false || $available === false || $total < 0 || $available < 0 || $total < $available || $total > 500 || ! in_array($row['status'], ['active', 'archived'], true)) {
             throw ValidationException::withMessages(['csv_file' => "Invalid book information on line {$line}."]);
         }
 
@@ -170,9 +190,9 @@ class BulkDataController extends Controller
             'author' => $row['author'],
             'call_number' => $row['call_number'] ?: null,
             'category' => $row['category'] ?: null,
-            'publication_year' => $row['publication_year'] !== '' ? (int) $row['publication_year'] : null,
+            'publication_year' => $year,
             'shelf_location' => $row['shelf_location'] ?: null,
-            'status' => in_array($row['status'], ['active', 'archived'], true) ? $row['status'] : 'active',
+            'status' => $row['status'],
         ]);
 
         // Copies are tracked one by one, so create any the file adds. Copies

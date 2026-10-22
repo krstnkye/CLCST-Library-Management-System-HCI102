@@ -8,11 +8,15 @@ use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -85,7 +89,7 @@ class AuthController extends Controller
             $welcome .= ' Your account is registered as '.$user->roleLabel().', so we opened that portal for you.';
         }
 
-        return redirect()->intended(route($user->dashboardRouteName()))->with('status', $welcome);
+        return redirect()->route($user->dashboardRouteName())->with('status', $welcome);
     }
 
     public function destroy(Request $request): RedirectResponse
@@ -121,8 +125,8 @@ class AuthController extends Controller
             'program_or_department' => ['required', 'string', 'max:150'],
             'email' => ['required', 'email:rfc', 'max:150', 'ends_with:@'.$domain, 'unique:users,email'],
             'mobile_number' => ['required', 'string', 'regex:/^(09|\+639)\d{9}$/'],
-            'password' => ['required', 'confirmed', Password::defaults()],
-            'credential_file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
+            'password' => ['required', 'string', 'max:128', 'confirmed', Password::defaults()],
+            'credential_file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'mimetypes:application/pdf,image/jpeg,image/png', 'max:10240'],
             'privacy_consent' => ['accepted'],
         ], [
             'email.ends_with' => 'Use your school-registered email address ending in @'.$domain.'.',
@@ -134,24 +138,35 @@ class AuthController extends Controller
         ]);
 
         $path = $request->file('credential_file')->store('credentials', 'local');
-        $user = User::create([
-            'patron_id' => strtoupper(trim($validated['patron_id'])),
-            'name' => trim($validated['first_name'].' '.$validated['last_name']),
-            'first_name' => trim($validated['first_name']),
-            'last_name' => trim($validated['last_name']),
-            'middle_initial' => isset($validated['middle_initial']) ? strtoupper(trim($validated['middle_initial'])) : null,
-            'email' => mb_strtolower(trim($validated['email'])),
-            'role' => $validated['patron_role'],
-            'status' => 'pending',
-            'program_or_department' => $validated['program_or_department'],
-            'mobile_number' => $validated['mobile_number'],
-            'credential_path' => $path,
-            'password' => $validated['password'],
-        ]);
+        if (! is_string($path) || $path === '') {
+            throw ValidationException::withMessages(['credential_file' => 'The verification document could not be stored. Please try again.']);
+        }
 
-        AuditLog::record($user, 'registration.submitted', 'A new account application was submitted.', [
-            'role' => $user->role,
-        ]);
+        try {
+            DB::transaction(function () use ($validated, $path): void {
+                $user = User::forceCreate([
+                    'patron_id' => $validated['patron_id'],
+                    'name' => trim($validated['first_name'].' '.$validated['last_name']),
+                    'first_name' => trim($validated['first_name']),
+                    'last_name' => trim($validated['last_name']),
+                    'middle_initial' => isset($validated['middle_initial']) ? mb_strtoupper(trim($validated['middle_initial'])) : null,
+                    'email' => $validated['email'],
+                    'role' => $validated['patron_role'],
+                    'status' => 'pending',
+                    'program_or_department' => trim($validated['program_or_department']),
+                    'mobile_number' => trim($validated['mobile_number']),
+                    'credential_path' => $path,
+                    'password' => $validated['password'],
+                ]);
+
+                AuditLog::record($user, 'registration.submitted', 'A new account application was submitted.', [
+                    'role' => $user->role,
+                ]);
+            });
+        } catch (Throwable $exception) {
+            Storage::disk('local')->delete($path);
+            throw $exception;
+        }
 
         return redirect()->route('login')->with(
             'status',

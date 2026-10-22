@@ -26,7 +26,8 @@ class DatabaseSeeder extends Seeder
 
         foreach ($accounts as [$patronId, $name, $email, $role, $department]) {
             [$first, $last] = explode(' ', $name, 2);
-            User::updateOrCreate(['email' => $email], [
+            $user = User::firstOrNew(['email' => $email]);
+            $user->forceFill([
                 'patron_id' => $patronId,
                 'name' => $name,
                 'first_name' => $first,
@@ -37,11 +38,11 @@ class DatabaseSeeder extends Seeder
                 'mobile_number' => '09171234567',
                 'approved_at' => now(),
                 'password' => Hash::make('LibraryDemo2026!'),
-            ]);
+            ])->save();
         }
 
         // One application waiting in Account Review.
-        User::updateOrCreate(['email' => 'applicant@clcst.edu.ph'], [
+        User::firstOrNew(['email' => 'applicant@clcst.edu.ph'])->forceFill([
             'patron_id' => 'STU-2026-014',
             'name' => 'Ana Reyes',
             'first_name' => 'Ana',
@@ -51,7 +52,7 @@ class DatabaseSeeder extends Seeder
             'program_or_department' => 'BS Information Technology',
             'mobile_number' => '09181234567',
             'password' => Hash::make(Str::password(20)),
-        ]);
+        ])->save();
 
         DB::transaction(fn () => $this->call(LibraryDemoSeeder::class));
     }

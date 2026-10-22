@@ -97,6 +97,12 @@ class AuthController extends Controller
 
     public function storeRegistration(Request $request): RedirectResponse
     {
+        // Normalize before the unique checks so "Ana@..." cannot slip past an existing "ana@...".
+        $request->merge([
+            'email' => mb_strtolower(trim((string) $request->input('email'))),
+            'patron_id' => strtoupper(trim((string) $request->input('patron_id'))),
+        ]);
+
         $validated = $request->validate([
             'patron_role' => ['required', 'in:'.implode(',', User::ROLES)],
             'last_name' => ['required', 'string', 'max:100'],

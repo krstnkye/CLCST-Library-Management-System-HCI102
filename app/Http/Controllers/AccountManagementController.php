@@ -6,7 +6,9 @@ use App\Models\AuditLog;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AccountManagementController extends Controller
 {
@@ -21,6 +23,17 @@ class AccountManagementController extends Controller
                 ->orderBy('name')
                 ->limit(200)
                 ->get(),
+        ]);
+    }
+
+    public function credential(Request $request, User $user): StreamedResponse
+    {
+        $this->authorizeChange($request->user(), $user);
+        abort_unless($user->credential_path && Storage::disk('local')->exists($user->credential_path), 404, 'No document was uploaded for this account.');
+        $this->audit($request, 'account.credential_viewed', 'Viewed the uploaded document of '.$user->name.'.', $user);
+
+        return Storage::disk('local')->response($user->credential_path, null, [
+            'Cache-Control' => 'no-store, private',
         ]);
     }
 

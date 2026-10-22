@@ -133,6 +133,11 @@ class BulkDataController extends Controller
             throw ValidationException::withMessages(['csv_file' => "You cannot change the existing account on line {$line}."]);
         }
 
+        $patronOwner = User::whereRaw('UPPER(patron_id) = ?', [strtoupper($row['patron_id'])])->first();
+        if ($patronOwner && ! $patronOwner->is($user)) {
+            throw ValidationException::withMessages(['csv_file' => "The school ID on line {$line} already belongs to another account."]);
+        }
+
         $user->fill([
             'patron_id' => strtoupper($row['patron_id']),
             'name' => $row['name'],

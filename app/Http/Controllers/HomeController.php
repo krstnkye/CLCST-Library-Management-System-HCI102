@@ -113,11 +113,13 @@ class HomeController extends Controller
     public function booksCatalog()
     {
         $books = collect($this->catalogBooks());
-        $query = trim((string) request('q', ''));
-        $field = request('field', 'all');
-        $category = request('category', 'all');
-        $availability = request('availability', 'all');
-        $sort = request('sort', 'relevance');
+        // Ignore malformed values such as ?q[]=x instead of failing with a server error.
+        $text = fn (string $key, string $default) => is_string(request($key)) ? request($key) : $default;
+        $query = trim($text('q', ''));
+        $field = $text('field', 'all');
+        $category = $text('category', 'all');
+        $availability = $text('availability', 'all');
+        $sort = $text('sort', 'relevance');
 
         $filteredBooks = $books
             ->filter(function (array $book) use ($query, $field) {

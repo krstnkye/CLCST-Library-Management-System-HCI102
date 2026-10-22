@@ -78,6 +78,6 @@ Route::middleware(['auth', 'portal:librarian,admin,superadmin'])->prefix('manage
 
 Route::middleware(['auth', 'portal:librarian,admin,superadmin'])->prefix('management/accounts')->name('management.accounts.')->group(function (): void {
     Route::get('/', [AccountManagementController::class, 'index'])->name('index');
-    Route::post('/{user}/approve', [AccountManagementController::class, 'approve'])->name('approve');
-    Route::post('/{user}/suspend', [AccountManagementController::class, 'suspend'])->name('suspend');
+    Route::post('/{user}/approve', [AccountManagementController::class, 'approve'])->middleware('throttle:30,1')->name('approve');
+    Route::post('/{user}/suspend', [AccountManagementController::class, 'suspend'])->middleware('throttle:30,1')->name('suspend');
 });

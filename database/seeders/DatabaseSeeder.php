@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($accounts as [$patronId, $name, $email, $role, $department]) {
-            User::updateOrCreate(['email' => $email], [
+            $user = User::firstOrNew(['email' => $email]);
+            $user->forceFill([
                 'patron_id' => $patronId,
                 'name' => $name,
                 'role' => $role,
@@ -32,7 +33,7 @@ class DatabaseSeeder extends Seeder
                 'mobile_number' => '09171234567',
                 'approved_at' => now(),
                 'password' => Hash::make('LibraryDemo2026!'),
-            ]);
+            ])->save();
         }
     }
 }

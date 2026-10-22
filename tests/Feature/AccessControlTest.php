@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -47,6 +48,28 @@ class AccessControlTest extends TestCase
         ])->assertSessionHasErrors('identifier');
 
         $this->assertGuest();
+    }
+
+    public function test_privileged_account_fields_are_not_mass_assignable(): void
+    {
+        $user = new User;
+
+        $this->assertFalse($user->isFillable('role'));
+        $this->assertFalse($user->isFillable('status'));
+        $this->assertFalse($user->isFillable('approved_by'));
+        $this->assertFalse($user->isFillable('last_login_at'));
+    }
+
+    public function test_login_always_redirects_to_the_authenticated_users_own_portal(): void
+    {
+        $student = User::factory()->role('student')->create(['password' => Hash::make('SecurePass2026')]);
+
+        $this->get(route('librarian.dashboard'))->assertRedirect(route('login'));
+        $this->post(route('login.authenticate'), [
+            'role' => 'student',
+            'identifier' => $student->email,
+            'password' => 'SecurePass2026',
+        ])->assertRedirect(route('student.dashboard'));
     }
 
     public function test_pending_accounts_cannot_sign_in(): void
@@ -156,6 +179,29 @@ class AccessControlTest extends TestCase
         ]);
     }
 
+    public function test_registration_normalizes_identifiers_before_checking_for_duplicates(): void
+    {
+        Storage::fake('local');
+        User::factory()->create(['email' => 'existing@clcst.edu.ph', 'patron_id' => 'STU-EXISTING']);
+
+        $this->post(route('register.store'), [
+            'patron_role' => 'student',
+            'first_name' => 'Test',
+            'last_name' => 'User',
+            'patron_id' => 'stu-new-001',
+            'program_or_department' => 'Computer Studies',
+            'email' => 'EXISTING@CLCST.EDU.PH',
+            'mobile_number' => '09171234567',
+            'password' => 'SecurePass2026',
+            'password_confirmation' => 'SecurePass2026',
+            'credential_file' => UploadedFile::fake()->createWithContent('school-id.pdf', '%PDF-1.4 test document'),
+            'privacy_consent' => '1',
+        ])->assertSessionHasErrors('email');
+
+        $this->assertDatabaseCount('users', 1);
+        Storage::disk('local')->assertDirectoryEmpty('credentials');
+    }
+
     public function test_administrators_can_import_and_export_books(): void
     {
         $admin = User::factory()->role('admin')->create();
@@ -172,6 +218,23 @@ class AccessControlTest extends TestCase
         $this->actingAs($admin)->get(route('management.data.export', 'books'))
             ->assertOk()
             ->assertDownload();
+    }
+
+    public function test_bulk_book_import_rejects_invalid_ranges_and_statuses_atomically(): void
+    {
+        $admin = User::factory()->role('admin')->create();
+        $csv = implode("\n", [
+            'title,author,isbn,call_number,category,publication_year,total_copies,available_copies,shelf_location,status',
+            'Valid Book,Valid Author,9780000000100,QA1,Reference,2024,2,2,Stacks A1,active',
+            'Invalid Book,Valid Author,9780000000101,QA2,Reference,3026,1,2,Stacks A2,unknown',
+        ]);
+
+        $this->actingAs($admin)->post(route('management.data.import', 'books'), [
+            'csv_file' => UploadedFile::fake()->createWithContent('books.csv', $csv),
+        ])->assertSessionHasErrors('csv_file');
+
+        $this->assertDatabaseMissing('library_books', ['isbn' => '9780000000100']);
+        $this->assertDatabaseMissing('library_books', ['isbn' => '9780000000101']);
     }
 
     public function test_librarians_cannot_import_or_export_user_accounts(): void
@@ -241,6 +304,40 @@ class AccessControlTest extends TestCase
             ->post(route('management.accounts.approve', $administrator))
             ->assertForbidden();
         $this->assertDatabaseHas('users', ['id' => $administrator->id, 'status' => 'pending']);
+    }
+
+    public function test_suspending_an_account_revokes_its_sessions_and_remember_token(): void
+    {
+        $administrator = User::factory()->role('admin')->create();
+        $student = User::factory()->role('student')->create();
+        $oldToken = $student->remember_token;
+        DB::table('sessions')->insert([
+            'id' => 'student-session',
+            'user_id' => $student->id,
+            'ip_address' => '127.0.0.1',
+            'user_agent' => 'PHPUnit',
+            'payload' => 'test',
+            'last_activity' => now()->timestamp,
+        ]);
+
+        $this->actingAs($administrator)
+            ->post(route('management.accounts.suspend', $student))
+            ->assertRedirect();
+
+        $student->refresh();
+        $this->assertSame('suspended', $student->status);
+        $this->assertNotSame($oldToken, $student->remember_token);
+        $this->assertDatabaseMissing('sessions', ['user_id' => $student->id]);
+    }
+
+    public function test_security_headers_are_sent_on_web_responses(): void
+    {
+        $response = $this->get(route('login'));
+
+        $response->assertHeader('X-Content-Type-Options', 'nosniff')
+            ->assertHeader('Cross-Origin-Opener-Policy', 'same-origin')
+            ->assertHeader('X-DNS-Prefetch-Control', 'off')
+            ->assertHeader('Content-Security-Policy');
     }
 
     public function test_student_sidebar_destinations_are_reachable(): void

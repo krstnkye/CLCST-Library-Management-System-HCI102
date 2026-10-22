@@ -7,10 +7,14 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -75,7 +79,7 @@ class AuthController extends Controller
         $user->forceFill(['last_login_at' => now()])->save();
         $this->audit($request, $user, 'login.succeeded', 'User signed in successfully.');
 
-        return redirect()->intended(route($user->dashboardRouteName()))
+        return redirect()->route($user->dashboardRouteName())
             ->with('status', 'Welcome back, '.$user->name.'.');
     }
 
@@ -97,6 +101,11 @@ class AuthController extends Controller
 
     public function storeRegistration(Request $request): RedirectResponse
     {
+        $request->merge([
+            'patron_id' => mb_strtoupper(trim((string) $request->input('patron_id'))),
+            'email' => mb_strtolower(trim((string) $request->input('email'))),
+        ]);
+
         $validated = $request->validate([
             'patron_role' => ['required', 'in:'.implode(',', User::ROLES)],
             'last_name' => ['required', 'string', 'max:100'],
@@ -106,30 +115,41 @@ class AuthController extends Controller
             'program_or_department' => ['required', 'string', 'max:150'],
             'email' => ['required', 'email:rfc', 'max:150', 'unique:users,email'],
             'mobile_number' => ['required', 'string', 'max:30'],
-            'password' => ['required', 'confirmed', Password::min(10)->mixedCase()->letters()->numbers()],
-            'credential_file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
+            'password' => ['required', 'string', 'max:128', 'confirmed', Password::min(10)->mixedCase()->letters()->numbers()],
+            'credential_file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'mimetypes:application/pdf,image/jpeg,image/png', 'max:10240'],
             'privacy_consent' => ['accepted'],
         ]);
 
         $path = $request->file('credential_file')->store('credentials', 'local');
-        $user = User::create([
-            'patron_id' => strtoupper(trim($validated['patron_id'])),
-            'name' => trim($validated['first_name'].' '.$validated['last_name']),
-            'first_name' => trim($validated['first_name']),
-            'last_name' => trim($validated['last_name']),
-            'middle_initial' => $validated['middle_initial'] ?: null,
-            'email' => mb_strtolower(trim($validated['email'])),
-            'role' => $validated['patron_role'],
-            'status' => 'pending',
-            'program_or_department' => $validated['program_or_department'],
-            'mobile_number' => $validated['mobile_number'],
-            'credential_path' => $path,
-            'password' => $validated['password'],
-        ]);
+        if (! is_string($path) || $path === '') {
+            throw ValidationException::withMessages(['credential_file' => 'The verification document could not be stored. Please try again.']);
+        }
 
-        $this->audit($request, $user, 'registration.submitted', 'A new account application was submitted.', [
-            'role' => $user->role,
-        ]);
+        try {
+            DB::transaction(function () use ($request, $validated, $path): void {
+                $user = User::forceCreate([
+                    'patron_id' => $validated['patron_id'],
+                    'name' => trim($validated['first_name'].' '.$validated['last_name']),
+                    'first_name' => trim($validated['first_name']),
+                    'last_name' => trim($validated['last_name']),
+                    'middle_initial' => $validated['middle_initial'] ?: null,
+                    'email' => $validated['email'],
+                    'role' => $validated['patron_role'],
+                    'status' => 'pending',
+                    'program_or_department' => trim($validated['program_or_department']),
+                    'mobile_number' => trim($validated['mobile_number']),
+                    'credential_path' => $path,
+                    'password' => $validated['password'],
+                ]);
+
+                $this->audit($request, $user, 'registration.submitted', 'A new account application was submitted.', [
+                    'role' => $user->role,
+                ]);
+            });
+        } catch (Throwable $exception) {
+            Storage::disk('local')->delete($path);
+            throw $exception;
+        }
 
         return redirect()->route('login')->with(
             'status',

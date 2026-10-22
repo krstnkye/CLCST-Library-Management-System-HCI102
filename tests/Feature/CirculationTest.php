@@ -9,6 +9,7 @@ use App\Models\Loan;
 use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 class CirculationTest extends TestCase
@@ -204,6 +205,31 @@ class CirculationTest extends TestCase
 
         $this->flushSession();
         $this->actingAs($faculty)->get(route('staff.section', 'course-reserves'))->assertSee('Placed on the reserve shelf.');
+    }
+
+    public function test_book_imports_create_trackable_copies(): void
+    {
+        $librarian = User::factory()->role('librarian')->create();
+        $csv = "title,author,isbn,call_number,category,publication_year,total_copies,available_copies,shelf_location,status\n"
+            ."Imported Title,Some Author,978-1111111111,QA1,Imported,2024,3,2,Shelf 1,active";
+
+        $this->actingAs($librarian)->post(route('management.data.import', 'books'), [
+            'csv_file' => UploadedFile::fake()->createWithContent('books.csv', $csv),
+        ])->assertSessionHasNoErrors();
+
+        $book = LibraryBook::where('isbn', '978-1111111111')->firstOrFail();
+        $this->assertSame(3, $book->copies()->count());
+        $this->assertSame(2, $book->available_copies);
+    }
+
+    public function test_uncollected_holds_expire(): void
+    {
+        $student = User::factory()->role('student')->create();
+        $reservation = Reservation::create(['user_id' => $student->id, 'library_book_id' => $this->book()->id, 'status' => 'ready', 'ready_until' => now()->subDay()]);
+
+        $this->artisan('library:expire-holds')->assertSuccessful();
+
+        $this->assertSame('expired', $reservation->fresh()->status);
     }
 
     public function test_super_admins_can_change_the_policy_and_others_cannot(): void

@@ -89,7 +89,7 @@ class LibrarianController extends Controller
 
         $book = DB::transaction(function () use ($data, $copies): LibraryBook {
             $book = LibraryBook::create($data + ['status' => 'active']);
-            $this->addCopies($book, $copies);
+            $book->addCopies($copies);
 
             return $book;
         });
@@ -127,7 +127,7 @@ class LibrarianController extends Controller
     public function storeCopies(Request $request, LibraryBook $book): RedirectResponse
     {
         $count = (int) $request->validate(['copies' => ['required', 'integer', 'min:1', 'max:50']])['copies'];
-        DB::transaction(fn () => $this->addCopies($book, $count));
+        DB::transaction(fn () => $book->addCopies($count));
         AuditLog::record($request->user(), 'book.copies_added', 'Added '.$count.' copies of "'.$book->title.'".', ['book_id' => $book->id]);
 
         return back()->with('status', $count.' new '.Str::plural('copy', $count).' added.');
@@ -366,30 +366,6 @@ class LibrarianController extends Controller
             'shelf_location' => ['nullable', 'string', 'max:100'],
             'loan_policy' => ['required', Rule::in(['circulating', 'reference'])],
         ], ['isbn.regex' => 'Enter a 10 or 13 digit ISBN (digits and dashes only).']);
-    }
-
-    private function addCopies(LibraryBook $book, int $count): void
-    {
-        $prefix = strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $book->title), 0, 2)) ?: 'BK';
-        $next = $book->copies()->count() + 1;
-        for ($i = 0; $i < $count; $i++, $next++) {
-            $book->copies()->create([
-                'barcode' => $this->uniqueBarcode(),
-                'copy_code' => sprintf('%s-%03d', $prefix, $next),
-                'status' => $book->isReference() ? 'reference' : 'available',
-                'location' => $book->shelf_location,
-            ]);
-        }
-        $book->syncCopyCounts();
-    }
-
-    private function uniqueBarcode(): string
-    {
-        do {
-            $barcode = (string) random_int(10000000, 99999999);
-        } while (BookCopy::where('barcode', $barcode)->exists());
-
-        return $barcode;
     }
 
     private function findPatron(string $identifier): User

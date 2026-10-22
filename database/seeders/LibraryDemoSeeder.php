@@ -41,7 +41,7 @@ class LibraryDemoSeeder extends Seeder
                 'title' => $title, 'author' => $author, 'publisher' => $publisher, 'call_number' => $call,
                 'category' => $category, 'subject' => $subject, 'publication_year' => $year,
                 'shelf_location' => $shelf, 'status' => 'active', 'loan_policy' => $policy,
-                'cover_url' => 'https://covers.openlibrary.org/b/isbn/'.str_replace('-', '', $isbn).'-M.jpg',
+                'cover_url' => 'https://covers.openlibrary.org/b/isbn/'.str_replace('-', '', $isbn).'-M.jpg?default=false',
             ]);
 
             for ($copy = 1; $copy <= $copies; $copy++) {

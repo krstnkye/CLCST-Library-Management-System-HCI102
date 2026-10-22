@@ -166,10 +166,8 @@
 
         <main class="custom-scrollbar md:ml-64 flex flex-1 flex-col overflow-y-auto bg-[#F8FAFC]">
             <section class="border-b border-outline-variant bg-surface-container-lowest px-4 pb-6 pt-6 shadow-sm lg:px-8">
-                @if (session('status'))
-                    <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
-                        {{ session('status') }}
-                    </div>
+                @if (session('status') || $errors->any())
+                    <div class="mb-4 space-y-2">@include('partials.flash')</div>
                 @endif
 
                 <nav class="mb-2 flex items-center gap-2 text-xs font-semibold text-outline">
@@ -380,7 +378,7 @@
 
                             <div class="mt-4 flex items-center gap-3">
                                 <div class="book-cover relative h-24 w-16 flex-shrink-0 overflow-hidden rounded bg-primary-container text-white">
-                                    <img alt="{{ $selectedBook->title }} cover" class="h-full w-full object-cover" loading="lazy" src="{{ $selectedBook->cover_url }}">
+                                    <img alt="{{ $selectedBook->title }} cover" class="h-full w-full object-cover" loading="lazy" onerror="this.style.visibility='hidden'" src="{{ $selectedBook->cover_url }}">
                                 </div>
                                 <div>
                                     <h4 class="line-clamp-2 text-sm font-bold text-on-surface">{{ $selectedBook->title }}</h4>

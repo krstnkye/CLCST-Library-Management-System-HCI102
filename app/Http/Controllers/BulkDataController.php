@@ -165,17 +165,24 @@ class BulkDataController extends Controller
             throw ValidationException::withMessages(['csv_file' => "Invalid book information on line {$line}."]);
         }
 
-        LibraryBook::updateOrCreate(['isbn' => $row['isbn']], [
+        $book = LibraryBook::updateOrCreate(['isbn' => $row['isbn']], [
             'title' => $row['title'],
             'author' => $row['author'],
             'call_number' => $row['call_number'] ?: null,
             'category' => $row['category'] ?: null,
             'publication_year' => $row['publication_year'] !== '' ? (int) $row['publication_year'] : null,
-            'total_copies' => $total,
-            'available_copies' => $available,
             'shelf_location' => $row['shelf_location'] ?: null,
             'status' => in_array($row['status'], ['active', 'archived'], true) ? $row['status'] : 'active',
         ]);
+
+        // Copies are tracked one by one, so create any the file adds. Copies
+        // beyond the available count start as "maintenance" (not yet shelved).
+        $missing = $total - $book->copies()->whereNot('status', 'lost')->count();
+        if ($missing > 0) {
+            $shelved = max(0, min($missing, $available - $book->copies()->where('status', 'available')->count()));
+            $book->addCopies($shelved);
+            $book->addCopies($missing - $shelved, 'maintenance');
+        }
     }
 
     private function safeCsvValue(mixed $value): string

@@ -41,6 +41,30 @@ class LibraryBook extends Model
     }
 
     /**
+     * Create physical copies, each with its own unique barcode and copy code.
+     */
+    public function addCopies(int $count, string $status = 'available'): void
+    {
+        $prefix = strtoupper(substr((string) preg_replace('/[^A-Za-z]/', '', $this->title), 0, 2)) ?: 'BK';
+        $next = $this->copies()->count() + 1;
+
+        for ($i = 0; $i < $count; $i++, $next++) {
+            do {
+                $barcode = (string) random_int(10000000, 99999999);
+            } while (BookCopy::where('barcode', $barcode)->exists());
+
+            $this->copies()->create([
+                'barcode' => $barcode,
+                'copy_code' => sprintf('%s-%03d', $prefix, $next),
+                'status' => $this->isReference() && $status === 'available' ? 'reference' : $status,
+                'location' => $this->shelf_location,
+            ]);
+        }
+
+        $this->syncCopyCounts();
+    }
+
+    /**
      * Keep the summary counters used by lists and exports in step with the
      * individual copy records.
      */

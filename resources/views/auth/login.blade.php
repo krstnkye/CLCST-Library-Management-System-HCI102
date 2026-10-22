@@ -63,10 +63,11 @@
                             'superadmin' => ['security', 'Super Administrator', 'Roles and system security'],
                         ];
                         $selectedRole = old('role', 'student');
+                        $chosenRole = old('role', '');
                     @endphp
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5" aria-label="Account type" role="group">
                         @foreach($roles as $value => [$icon, $label, $description])
-                            <button id="role-{{ $value }}" class="role-card relative flex min-h-28 flex-col rounded-md border-2 border-slate-200 bg-white p-3 text-left transition hover:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2" type="button" data-role="{{ $value }}" aria-pressed="{{ $selectedRole === $value ? 'true' : 'false' }}">
+                            <button id="role-{{ $value }}" class="role-card relative flex min-h-28 flex-col rounded-md border-2 border-slate-200 bg-white p-3 text-left transition hover:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2" type="button" data-role="{{ $value }}" aria-label="{{ $label }}: {{ $description }}" aria-pressed="{{ $selectedRole === $value ? 'true' : 'false' }}">
                                 <span class="role-check absolute right-3 top-3 hidden h-5 w-5 items-center justify-center rounded-full bg-emerald-800 text-xs font-bold text-white" aria-hidden="true">&#10003;</span>
                                 <span class="role-icon flex h-9 w-9 items-center justify-center rounded-md bg-emerald-50 text-emerald-800"><span class="material-symbols-outlined text-xl">{{ $icon }}</span></span>
                                 <span class="mt-3 text-sm font-bold">{{ $label }}</span><span class="mt-1 text-xs leading-4 text-slate-600">{{ $description }}</span>
@@ -81,7 +82,7 @@
                         </div>
                         <form class="mt-6 space-y-5" method="POST" action="{{ route('login.authenticate') }}">
                             @csrf
-                            <input id="role-input" type="hidden" name="role" value="{{ $selectedRole }}">
+                            <input id="role-input" type="hidden" name="role" value="{{ $chosenRole }}">
                             <div>
                                 <label id="identifier-label" for="identifier" class="mb-1.5 block text-sm font-semibold">Student ID or school email</label>
                                 <div class="relative"><span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xl text-slate-500">badge</span><input id="identifier" name="identifier" value="{{ old('identifier') }}" required autocomplete="username" maxlength="150" class="w-full rounded-md border-slate-300 py-3 pl-11 pr-4 text-sm focus:border-emerald-700 focus:ring-emerald-700" placeholder="Example: STU-2026-001"></div>
@@ -134,8 +135,8 @@ librarian:{tag:'LIBRARIAN PORTAL',icon:'local_library',description:'Manage books
 admin:{tag:'ADMINISTRATOR PORTAL',icon:'admin_panel_settings',description:'Manage library records, staff workflows, reports, and approved administrative settings.',identifier:'Administrator ID or school email',placeholder:'Example: ADM-2026-001',submit:'Sign In as Administrator'},
 superadmin:{tag:'SUPER ADMINISTRATOR PORTAL',icon:'security',description:'Manage roles, permissions, security settings, audits, and system-wide configuration.',identifier:'System administrator ID or school email',placeholder:'Example: SYS-2026-001',submit:'Sign In as Super Administrator'}};
 const roleInput=document.getElementById('role-input');const roleCards=document.querySelectorAll('[data-role]');
-function selectRole(role){const d=roleDetails[role]||roleDetails.student;roleInput.value=role;roleCards.forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.role===role)));document.getElementById('active-role-tag').textContent=d.tag;document.getElementById('active-role-icon').textContent=d.icon;document.getElementById('active-role-description').textContent=d.description;document.getElementById('identifier-label').textContent=d.identifier;document.getElementById('identifier').placeholder=d.placeholder;document.getElementById('submit-label').textContent=d.submit}
-roleCards.forEach(c=>c.addEventListener('click',()=>selectRole(c.dataset.role)));selectRole(roleInput.value);
+function selectRole(role,picked){const d=roleDetails[role]||roleDetails.student;if(picked){roleInput.value=role}roleCards.forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.role===role)));document.getElementById('active-role-tag').textContent=d.tag;document.getElementById('active-role-icon').textContent=d.icon;document.getElementById('active-role-description').textContent=d.description;document.getElementById('identifier-label').textContent=d.identifier;document.getElementById('identifier').placeholder=d.placeholder;document.getElementById('submit-label').textContent=d.submit}
+roleCards.forEach(c=>c.addEventListener('click',()=>selectRole(c.dataset.role,true)));selectRole(roleInput.value||'student',false);
 document.getElementById('password-toggle').addEventListener('click',function(){const p=document.getElementById('password');const show=p.type==='password';p.type=show?'text':'password';document.getElementById('password-toggle-icon').textContent=show?'visibility_off':'visibility';this.setAttribute('aria-label',show?'Hide password':'Show password');this.setAttribute('title',show?'Hide password':'Show password')});
 </script>
 </body>

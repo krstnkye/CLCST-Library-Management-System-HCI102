@@ -22,10 +22,12 @@ class BulkDataController extends Controller
 
     public function index(Request $request): View
     {
+        $actor = $request->user();
+
         return view('management.bulk-data', [
-            'userCount' => User::count(),
+            'userCount' => User::query()->whereIn('role', $actor->manageableRoles())->count(),
             'bookCount' => LibraryBook::count(),
-            'canManageUsers' => $request->user()->hasAnyRole(['admin', 'superadmin']),
+            'canManageUsers' => $actor->hasAnyRole(['admin', 'superadmin']),
         ]);
     }
 
@@ -66,9 +68,10 @@ class BulkDataController extends Controller
         }
         fclose($handle);
 
-        DB::transaction(function () use ($type, $rows): void {
+        $actor = $request->user();
+        DB::transaction(function () use ($type, $rows, $actor): void {
             foreach ($rows as $index => $row) {
-                $type === 'users' ? $this->importUser($row, $index + 2) : $this->importBook($row, $index + 2);
+                $type === 'users' ? $this->importUser($row, $index + 2, $actor) : $this->importBook($row, $index + 2);
             }
         });
 
@@ -84,7 +87,7 @@ class BulkDataController extends Controller
 
         $headers = $type === 'users' ? self::USER_HEADERS : self::BOOK_HEADERS;
         $records = $type === 'users'
-            ? User::query()->orderBy('name')->get($headers)
+            ? User::query()->whereIn('role', $request->user()->manageableRoles())->orderBy('name')->get($headers)
             : LibraryBook::query()->orderBy('title')->get($headers);
 
         $this->audit($request, "Exported {$type} records.", ['type' => $type, 'count' => $records->count()]);
@@ -112,7 +115,7 @@ class BulkDataController extends Controller
         }, $type.'-import-template.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
 
-    private function importUser(array $row, int $line): void
+    private function importUser(array $row, int $line, User $actor): void
     {
         if (! in_array($row['role'], User::ROLES, true) || ! in_array($row['status'], ['pending', 'active', 'suspended'], true)) {
             throw ValidationException::withMessages(['csv_file' => "Invalid role or status on line {$line}."]);
@@ -121,7 +124,15 @@ class BulkDataController extends Controller
             throw ValidationException::withMessages(['csv_file' => "Missing or invalid user information on line {$line}."]);
         }
 
+        if (! $actor->canManageRole($row['role'])) {
+            throw ValidationException::withMessages(['csv_file' => "You cannot import the account role on line {$line}."]);
+        }
+
         $user = User::firstOrNew(['email' => mb_strtolower($row['email'])]);
+        if ($user->exists && (! $actor->canManageRole($user->role) || $actor->is($user))) {
+            throw ValidationException::withMessages(['csv_file' => "You cannot change the existing account on line {$line}."]);
+        }
+
         $user->fill([
             'patron_id' => strtoupper($row['patron_id']),
             'name' => $row['name'],
@@ -130,6 +141,7 @@ class BulkDataController extends Controller
             'program_or_department' => $row['program_or_department'] ?: null,
             'mobile_number' => $row['mobile_number'] ?: null,
             'approved_at' => $row['status'] === 'active' ? ($user->approved_at ?? now()) : null,
+            'approved_by' => $row['status'] === 'active' ? ($user->approved_by ?? $actor->id) : null,
         ]);
         if (! $user->exists) {
             $user->password = Hash::make(Str::password(20));

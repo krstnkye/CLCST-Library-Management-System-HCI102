@@ -124,6 +124,10 @@
     @include('partials.ui-motion')
 </head>
 <body class="h-full bg-[#F8FAFC] text-on-surface antialiased">
+    @php
+        $student = auth()->user();
+        $studentProgram = $student->program_or_department ?: 'Program not specified';
+    @endphp
     <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-[#E2E8F0] bg-surface-container-lowest px-4 shadow-sm lg:px-6">
         <div class="flex items-center gap-3">
             @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-extrabold text-white shadow-sm object-contain bg-white p-0.5'])
@@ -143,17 +147,17 @@
                 <span class="material-symbols-outlined">notifications</span>
                 <span class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-[#EAB308] ring-2 ring-white"></span>
             </a>
-            <button aria-label="Help and Support" class="rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" type="button">
+            <a aria-label="Help and Support" class="rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'support') }}">
                 <span class="material-symbols-outlined">help</span>
-            </button>
+            </a>
 
             <div class="h-6 w-px bg-[#E2E8F0]"></div>
 
             <div class="flex items-center gap-3">
-                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-sm font-bold text-on-primary shadow-sm ring-2 ring-[#DCFCE7]">JD</div>
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-sm font-bold text-on-primary shadow-sm ring-2 ring-[#DCFCE7]">{{ $student->initials() }}</div>
                 <div class="hidden text-left lg:block">
-                    <p class="text-xs font-semibold leading-tight text-on-surface">Juan Dela Cruz</p>
-                    <p class="text-xs text-[#64748B]">2024-10492-OL (BSCS-3A)</p>
+                    <p class="text-xs font-semibold leading-tight text-on-surface">{{ $student->name }}</p>
+                    <p class="text-xs text-[#64748B]">{{ $student->patron_id }} ({{ $studentProgram }})</p>
                 </div>
             </div>
         </div>
@@ -176,11 +180,11 @@
                         <span class="material-symbols-outlined text-xs text-[#FDE047]">verified</span>
                         <span>CLCST Library Management System - Student Access</span>
                     </div>
-                    <h1 class="font-headline-xl text-3xl font-bold text-white md:text-4xl">Welcome back, Juan Dela Cruz!</h1>
+                    <h1 class="font-headline-xl text-3xl font-bold text-white md:text-4xl">Welcome back, {{ $student->name }}!</h1>
                     <p class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-100">
-                        <span><strong>Student ID:</strong> 2024-10492-OL</span>
+                        <span><strong>Student ID:</strong> {{ $student->patron_id }}</span>
                         <span>-</span>
-                        <span>BS Computer Science (3rd Year)</span>
+                        <span>{{ $studentProgram }}</span>
                         <span>-</span>
                         <span class="rounded-full bg-[#FDE047] px-2.5 py-0.5 text-[10px] font-bold text-[#0F172A]">Borrowing Limit: 2 / 5 Books Borrowed</span>
                     </p>
@@ -271,7 +275,7 @@
                         <div class="flex flex-col justify-between gap-2 border-b border-[#E2E8F0] pb-4 sm:flex-row sm:items-center">
                             <div>
                                 <h2 class="font-headline-md text-xl font-bold text-on-surface">My Active Loans & Due-Date Deadlines</h2>
-                                <p class="text-xs text-[#64748B]">Currently checked out academic texts under student account 2024-10492-OL</p>
+                                <p class="text-xs text-[#64748B]">Currently checked out academic texts under student account {{ $student->patron_id }}</p>
                             </div>
                             <span class="inline-flex items-center gap-1.5 self-start rounded-full bg-[#DCFCE7] px-3 py-1 text-[10px] font-bold text-[#166534] sm:self-auto">
                                 <span class="h-2 w-2 rounded-full bg-[#16A34A]"></span>
@@ -427,14 +431,14 @@
 
                         <div class="space-y-1 rounded-xl border border-white/20 bg-white/10 p-3.5 text-center backdrop-blur-sm">
                             <p class="text-[11px] uppercase tracking-widest text-slate-300">Registered Library User</p>
-                            <h3 class="font-headline-md text-xl font-extrabold tracking-wide text-white">JUAN DELA CRUZ</h3>
-                            <p class="font-mono text-xs font-bold text-[#FDE047]">2024-10492-OL</p>
-                            <p class="text-[11px] text-slate-200">BS Computer Science - Level 3</p>
+                            <h3 class="font-headline-md text-xl font-extrabold tracking-wide text-white">{{ mb_strtoupper($student->name) }}</h3>
+                            <p class="font-mono text-xs font-bold text-[#FDE047]">{{ $student->patron_id }}</p>
+                            <p class="text-[11px] text-slate-200">{{ $studentProgram }}</p>
                         </div>
 
                         <div class="flex flex-col items-center justify-center space-y-1 rounded-xl border border-slate-200 bg-white p-3 shadow-inner">
                             <div class="barcode-lines h-14 w-full rounded"></div>
-                            <span class="font-mono text-xs font-bold tracking-[0.25em] text-slate-900">2024-10492-OL</span>
+                            <span class="font-mono text-xs font-bold tracking-[0.25em] text-slate-900">{{ $student->patron_id }}</span>
                             <span class="text-[10px] font-medium text-slate-500">Flash code under barcode scanner to enter</span>
                         </div>
 
@@ -476,11 +480,11 @@
                         <h3 class="font-headline-sm text-base font-bold text-on-surface">Quick Library User Actions</h3>
                         <div class="space-y-2">
                             @foreach ([
-                                ['icon' => 'history', 'title' => 'View Borrowing History', 'desc' => 'Check returned books and logs', 'color' => 'bg-[#EFF6FF] text-[#1D4ED8]'],
-                                ['icon' => 'chair', 'title' => 'Reserve Study Carrel', 'desc' => 'Book 2nd floor quiet station', 'color' => 'bg-[#F0FDF4] text-[#166534]'],
-                                ['icon' => 'policy', 'title' => 'Library Guidelines & Policies', 'desc' => 'Fines, renewals and conduct', 'color' => 'bg-[#FEF3C7] text-[#92400E]'],
+                                ['icon' => 'history', 'title' => 'View Borrowing History', 'desc' => 'Check returned books and logs', 'color' => 'bg-[#EFF6FF] text-[#1D4ED8]', 'href' => route('student.section', 'history')],
+                                ['icon' => 'chair', 'title' => 'Reserve Study Carrel', 'desc' => 'Book a quiet study station', 'color' => 'bg-[#F0FDF4] text-[#166534]', 'href' => route('student.section', 'reservations')],
+                                ['icon' => 'policy', 'title' => 'Library Guidelines & Policies', 'desc' => 'Fines, renewals, and conduct', 'color' => 'bg-[#FEF3C7] text-[#92400E]', 'href' => route('student.section', 'circulation-policy')],
                             ] as $action)
-                                <a class="flex items-center justify-between rounded-xl border border-[#E2E8F0] p-3 text-on-surface transition-colors hover:bg-slate-50" href="#">
+                                <a class="flex items-center justify-between rounded-xl border border-[#E2E8F0] p-3 text-on-surface transition-colors hover:bg-slate-50" href="{{ $action['href'] }}">
                                     <span class="flex items-center gap-3">
                                         <span class="rounded-lg p-2 {{ $action['color'] }}">
                                             <span class="material-symbols-outlined text-sm">{{ $action['icon'] }}</span>

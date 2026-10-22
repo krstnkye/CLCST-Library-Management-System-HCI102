@@ -167,6 +167,48 @@ class AccessControlTest extends TestCase
         ])->assertForbidden();
     }
 
+    public function test_administrators_cannot_import_or_modify_privileged_accounts(): void
+    {
+        $admin = User::factory()->role('admin')->create();
+        $superadmin = User::factory()->role('superadmin')->create(['email' => 'owner@clcst.edu.ph']);
+        $headers = 'patron_id,name,email,role,status,program_or_department,mobile_number';
+
+        $createCsv = implode("\n", [
+            $headers,
+            'SA-NEW,New Owner,new-owner@clcst.edu.ph,superadmin,active,Administration,09170000000',
+        ]);
+        $this->actingAs($admin)->post(route('management.data.import', 'users'), [
+            'csv_file' => UploadedFile::fake()->createWithContent('users.csv', $createCsv),
+        ])->assertSessionHasErrors('csv_file');
+        $this->assertDatabaseMissing('users', ['email' => 'new-owner@clcst.edu.ph']);
+
+        $modifyCsv = implode("\n", [
+            $headers,
+            "{$superadmin->patron_id},{$superadmin->name},{$superadmin->email},student,active,Administration,09170000000",
+        ]);
+        $this->actingAs($admin)->post(route('management.data.import', 'users'), [
+            'csv_file' => UploadedFile::fake()->createWithContent('users.csv', $modifyCsv),
+        ])->assertSessionHasErrors('csv_file');
+        $this->assertDatabaseHas('users', ['id' => $superadmin->id, 'role' => 'superadmin']);
+    }
+
+    public function test_user_exports_follow_the_account_role_hierarchy(): void
+    {
+        $admin = User::factory()->role('admin')->create(['name' => 'Current Administrator']);
+        User::factory()->role('student')->create(['name' => 'Visible Student']);
+        User::factory()->role('librarian')->create(['name' => 'Visible Librarian']);
+        User::factory()->role('superadmin')->create(['name' => 'Hidden Super Administrator']);
+
+        $response = $this->actingAs($admin)->get(route('management.data.export', 'users'));
+
+        $response->assertOk()->assertDownload();
+        $csv = $response->streamedContent();
+        $this->assertStringContainsString('Visible Student', $csv);
+        $this->assertStringContainsString('Visible Librarian', $csv);
+        $this->assertStringNotContainsString('Current Administrator', $csv);
+        $this->assertStringNotContainsString('Hidden Super Administrator', $csv);
+    }
+
     public function test_account_approval_follows_the_role_hierarchy(): void
     {
         $librarian = User::factory()->role('librarian')->create();

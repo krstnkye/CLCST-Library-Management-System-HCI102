@@ -63,6 +63,10 @@
 </head>
 <body class="h-full overflow-x-hidden bg-background font-body text-on-surface antialiased">
     @php
+        $student = auth()->user();
+        $studentProgram = $student->program_or_department ?: 'Program not specified';
+    @endphp
+    @php
         $activeLoanCount = count($activeLoans);
         $reservationCount = count($reservations);
         $totalRows = count($historyRows);
@@ -102,10 +106,10 @@
             <a class="rounded-lg p-2 text-on-surface-variant hover:bg-surface-container-low" href="{{ route('student.section', 'support') }}" title="Help"><span class="material-symbols-outlined text-xl">help</span></a>
             <div class="flex items-center gap-3 border-l border-outline-variant pl-3">
                 <div class="hidden text-right sm:block">
-                    <p class="text-xs font-bold leading-tight">Juan Dela Cruz</p>
-                    <p class="text-[10px] text-on-surface-variant">2024-10492-OL - BSCS-3A</p>
+                    <p class="text-xs font-bold leading-tight">{{ $student->name }}</p>
+                    <p class="text-[10px] text-on-surface-variant">{{ $student->patron_id }} - {{ $studentProgram }}</p>
                 </div>
-                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-xs font-bold text-on-primary ring-2 ring-primary-fixed">JD</div>
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-xs font-bold text-on-primary ring-2 ring-primary-fixed">{{ $student->initials() }}</div>
             </div>
         </div>
     </header>
@@ -124,7 +128,7 @@
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div>
                         <h1 class="font-headline text-3xl font-bold tracking-tight text-primary">Borrowing History & Academic Reading Record</h1>
-                        <p class="mt-1 max-w-3xl text-sm text-on-surface-variant">Complete audit record of physical textbooks, journals, and thesis manuscripts borrowed, returned, renewed, or cleared by <span class="font-semibold text-on-surface">Juan Dela Cruz</span>.</p>
+                        <p class="mt-1 max-w-3xl text-sm text-on-surface-variant">Complete record of physical textbooks, journals, and thesis manuscripts borrowed, returned, renewed, or cleared by <span class="font-semibold text-on-surface">{{ $student->name }}</span>.</p>
                     </div>
                     <div class="flex shrink-0 items-center gap-3">
                         <a class="inline-flex items-center gap-2 rounded-lg border border-primary px-3.5 py-2.5 text-sm font-semibold text-primary hover:bg-surface-container-low" href="{{ route('student.section', 'history', ['export' => 'csv']) }}"><span class="material-symbols-outlined text-lg">download</span>Export History (.CSV)</a>
@@ -154,7 +158,7 @@
                             </div>
                         </div>
                         <div class="flex flex-wrap items-center justify-between gap-2 border-t border-outline-variant/50 pt-2">
-                            <div class="flex flex-wrap items-center gap-2"><span class="mr-1 text-[10px] font-bold text-on-surface-variant">Category:</span><a class="rounded-md bg-primary-container px-2.5 py-1 text-[10px] font-bold text-on-primary" href="#">All ({{ $totalRows }})</a><a class="rounded-md bg-surface-container px-2.5 py-1 text-[10px] font-bold text-on-surface-variant hover:text-on-surface" href="#">Computer Science</a><a class="rounded-md bg-surface-container px-2.5 py-1 text-[10px] font-bold text-on-surface-variant hover:text-on-surface" href="#">Mathematics</a></div>
+                            <div class="flex flex-wrap items-center gap-2"><span class="mr-1 text-[10px] font-bold text-on-surface-variant">Category:</span><span class="rounded-md bg-primary-container px-2.5 py-1 text-[10px] font-bold text-on-primary">All ({{ $totalRows }})</span><span class="rounded-md bg-surface-container px-2.5 py-1 text-[10px] font-bold text-on-surface-variant">Computer Science</span><span class="rounded-md bg-surface-container px-2.5 py-1 text-[10px] font-bold text-on-surface-variant">Mathematics</span></div>
                             <div class="flex items-center gap-2"><span class="text-[10px] font-bold text-on-surface-variant">Sort:</span><select class="rounded border-none bg-surface-container py-1 pl-2 pr-6 text-[10px] font-bold"><option>Newest Borrow Date</option><option>Oldest Borrow Date</option><option>Title A-Z</option></select></div>
                         </div>
                     </div>
@@ -253,9 +257,9 @@
                                 <div class="grid h-16 w-16 shrink-0 grid-cols-4 gap-0.5 rounded-lg border border-outline-variant bg-white p-1.5 shadow-sm">@for ($i = 0; $i < 16; $i++)<div class="{{ in_array($i, [2,5,7,8,13]) ? 'bg-surface' : 'bg-primary' }} rounded-[1px]"></div>@endfor</div>
                             </div>
                             <div class="space-y-2.5 pt-1 text-sm">
-                                <div class="flex items-center justify-between border-b border-outline-variant/40 py-1"><span class="text-on-surface-variant">Name</span><span class="font-bold">Juan Dela Cruz</span></div>
-                                <div class="flex items-center justify-between border-b border-outline-variant/40 py-1"><span class="text-on-surface-variant">Student Number</span><span class="font-mono font-medium">2024-10492-OL</span></div>
-                                <div class="flex items-center justify-between border-b border-outline-variant/40 py-1"><span class="text-on-surface-variant">Degree Program</span><span class="font-medium">BS Computer Science (3A)</span></div>
+                                <div class="flex items-center justify-between border-b border-outline-variant/40 py-1"><span class="text-on-surface-variant">Name</span><span class="font-bold">{{ $student->name }}</span></div>
+                                <div class="flex items-center justify-between border-b border-outline-variant/40 py-1"><span class="text-on-surface-variant">Student Number</span><span class="font-mono font-medium">{{ $student->patron_id }}</span></div>
+                                <div class="flex items-center justify-between border-b border-outline-variant/40 py-1"><span class="text-on-surface-variant">Degree Program</span><span class="font-medium">{{ $studentProgram }}</span></div>
                                 <div class="flex items-center justify-between border-b border-outline-variant/40 py-1"><span class="text-on-surface-variant">Overdue Copies Held</span><span class="font-bold text-primary-container">0 Books</span></div>
                                 <div class="flex items-center justify-between border-b border-outline-variant/40 py-1"><span class="text-on-surface-variant">Outstanding Fines</span><span class="font-bold text-primary-container">PHP 0.00</span></div>
                             </div>

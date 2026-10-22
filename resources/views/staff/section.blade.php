@@ -36,6 +36,10 @@
     @include('partials.ui-motion')
 </head>
 <body class="h-full bg-[#F8FAFC] text-[#0F172A] antialiased">
+    @php
+        $faculty = auth()->user();
+        $facultyDepartment = $faculty->program_or_department ?: 'Department not specified';
+    @endphp
     <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-[#CBD5E1] bg-white px-4 shadow-sm lg:px-6">
         <div class="flex items-center gap-3">
             @include('partials.celtech-logo', ['class' => 'flex h-10 w-10 items-center justify-center rounded-full bg-[#065F2A] text-sm font-extrabold text-white shadow-sm object-contain bg-white p-0.5'])
@@ -46,7 +50,7 @@
         </div>
         <div class="flex items-center gap-3">
             <a class="hidden rounded-lg border border-[#CBD5E1] px-3 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC] sm:inline-flex" href="{{ route('faculty.dashboard') }}">Faculty Dashboard</a>
-            <div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#065F2A] text-sm font-bold text-white">MS</div>
+            <div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#065F2A] text-sm font-bold text-white">{{ $faculty->initials() }}</div>
         </div>
     </header>
 
@@ -262,20 +266,20 @@
                                         @include('partials.celtech-logo', ['class' => 'h-8 w-8 rounded-full bg-white object-contain p-0.5'])
                                         <div>
                                             <h3 class="text-xs font-bold uppercase tracking-wide">CLCST Digital Pass</h3>
-                                            <p class="text-[10px] text-[#AAF4B5]">Library Library Entry Verified</p>
+                                            <p class="text-[10px] text-[#AAF4B5]">Library Entry Verified</p>
                                         </div>
                                     </div>
                                     <span class="inline-flex items-center gap-1 rounded-full border border-[#AAF4B5]/40 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-[#AAF4B5]"><span class="h-1.5 w-1.5 rounded-full bg-[#8FD79B]"></span>Active</span>
                                 </div>
                                 <div class="mt-4">
                                     <span class="block text-[10px] font-bold uppercase tracking-wider text-[#AAF4B5]">Authorized User</span>
-                                    <p class="mt-1 font-display text-lg font-bold">Engr. Roberto M. Mendoza</p>
-                                    <p class="text-xs text-white/80">College of Computer Studies - Faculty / Researcher</p>
-                                    <p class="mt-1 text-[11px] text-white/70">ID: <span class="font-mono font-bold text-white">2024-10492-OL</span></p>
+                                    <p class="mt-1 font-display text-lg font-bold">{{ $faculty->name }}</p>
+                                    <p class="text-xs text-white/80">{{ $facultyDepartment }} - Faculty / Researcher</p>
+                                    <p class="mt-1 text-[11px] text-white/70">ID: <span class="font-mono font-bold text-white">{{ $faculty->patron_id }}</span></p>
                                 </div>
                                 <div class="mt-5 rounded-xl bg-white p-4 text-center text-black shadow-inner">
                                     <div class="font-mono text-lg font-black tracking-[0.35em]">|||| |||| ||||| ||||</div>
-                                    <div class="mt-2 border-t border-slate-100 pt-2 text-[10px] font-mono font-bold tracking-wider">CLCST*2018042*LIB</div>
+                                    <div class="mt-2 border-t border-slate-100 pt-2 text-[10px] font-mono font-bold tracking-wider">{{ $faculty->patron_id }}</div>
                                 </div>
                                 <div class="mt-4 grid grid-cols-2 gap-2">
                                     <button class="rounded-lg bg-white/10 px-3 py-2 text-xs font-bold hover:bg-white/20" type="button">Enlarge</button>
@@ -408,7 +412,7 @@
                                 </label>
                                 <div class="rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] p-4 md:col-span-2">
                                     <span class="block text-sm font-bold text-[#166534]">Priority Faculty Verification</span>
-                                    <span class="mt-1 block text-xs text-[#166534]">Submit with authenticated credentials: Engr. Roberto M. Mendoza, PECE</span>
+                                    <span class="mt-1 block text-xs text-[#166534]">Submit with authenticated credentials: {{ $faculty->name }}</span>
                                 </div>
                                 <div class="flex justify-end gap-3 md:col-span-2">
                                     <button class="rounded-lg border border-[#CBD5E1] px-4 py-2 text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" type="reset">Clear Draft</button>
@@ -454,13 +458,13 @@
                                     @include('partials.celtech-logo', ['class' => 'flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white p-1'])
                                     <div>
                                         <p class="text-xs font-bold uppercase text-[#BBF7D0]">Digital Faculty Pass</p>
-                                        <h3 class="font-display text-lg font-bold">Engr. Roberto M. Mendoza, PECE</h3>
+                                        <h3 class="font-display text-lg font-bold">{{ $faculty->name }}</h3>
                                         <p class="text-xs text-[#D1FAE5]">Authenticated Faculty Evaluator</p>
                                     </div>
                                 </div>
                                 <div class="mt-5 rounded-xl bg-white p-4 text-center text-[#0F172A]">
                                     <div class="mx-auto h-10 w-full max-w-xs bg-[repeating-linear-gradient(90deg,#0F172A_0_2px,transparent_2px_5px,#0F172A_5px_7px,transparent_7px_10px)]"></div>
-                                    <p class="mt-2 font-mono text-xs font-bold tracking-[0.25em]">FAC-FEEDBACK-0412</p>
+                                    <p class="mt-2 font-mono text-xs font-bold tracking-[0.25em]">{{ $faculty->patron_id }}</p>
                                 </div>
                             </div>
                         </section>
@@ -553,10 +557,10 @@
                                     </div>
                                     <div class="min-w-0 flex-1">
                                         <p class="text-xs font-bold uppercase tracking-wider text-[#FACC15]">CLCST Faculty Digital Library Pass</p>
-                                        <h2 class="mt-1 font-display text-2xl font-bold">Engr. Roberto M. Mendoza, PECE</h2>
-                                        <p class="mt-1 text-sm text-[#D1FAE5]">Department Chair, CICT & Computer Engineering</p>
+                                        <h2 class="mt-1 font-display text-2xl font-bold">{{ $faculty->name }}</h2>
+                                        <p class="mt-1 text-sm text-[#D1FAE5]">{{ $facultyDepartment }}</p>
                                         <div class="mt-3 flex flex-wrap gap-2 text-[10px] font-bold uppercase">
-                                            <span class="rounded-full bg-white/15 px-2.5 py-1">Faculty ID: FAC-2018-0412</span>
+                                            <span class="rounded-full bg-white/15 px-2.5 py-1">Faculty ID: {{ $faculty->patron_id }}</span>
                                             <span class="rounded-full bg-white/15 px-2.5 py-1">Active Account</span>
                                             <span class="rounded-full bg-[#FACC15] px-2.5 py-1 text-[#5A4300]">Full Access</span>
                                         </div>
@@ -564,7 +568,7 @@
                                 </div>
                                 <div class="mt-6 rounded-xl bg-white p-4 text-center text-[#0F172A]">
                                     <div class="mx-auto h-12 w-full max-w-md bg-[repeating-linear-gradient(90deg,#0F172A_0_2px,transparent_2px_5px,#0F172A_5px_9px,transparent_9px_11px,#0F172A_11px_14px,transparent_14px_18px)]"></div>
-                                    <p class="mt-2 font-mono text-xs font-bold tracking-[0.25em]">FAC-2018-0412-LIB</p>
+                                    <p class="mt-2 font-mono text-xs font-bold tracking-[0.25em]">{{ $faculty->patron_id }}</p>
                                 </div>
                             </div>
                         </section>
@@ -576,12 +580,12 @@
                             </div>
                             <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
                                 @foreach ([
-                                    ['Faculty Rank & Assignment', 'Professional Electronics Engineer - Department Chair'],
-                                    ['School Email', 'rmendoza@clcst.edu.ph'],
-                                    ['On-Campus Faculty Office', 'Room 302, CICT Faculty Wing, Tech Bldg.'],
-                                    ['Mobile / Desk Contact', '+63 917 555 0412 - local 302'],
-                                    ['Academic Department', 'College of Computer Studies and Engineering'],
-                                    ['Research Areas', 'Embedded systems, IoT engineering, engineering education'],
+                                    ['Account Type', 'Faculty / Academic Staff'],
+                                    ['School Email', $faculty->email],
+                                    ['School or Employee ID', $faculty->patron_id],
+                                    ['Mobile Number', $faculty->mobile_number ?: 'Not provided'],
+                                    ['Academic Department', $facultyDepartment],
+                                    ['Account Status', ucfirst($faculty->status)],
                                 ] as $field)
                                     <div class="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4">
                                         <label class="block text-[10px] font-bold uppercase tracking-wider text-[#64748B]">{{ $field[0] }}</label>
@@ -617,7 +621,7 @@
                                 <span class="rounded-full bg-[#DCFCE7] px-2.5 py-1 text-[10px] font-bold uppercase text-[#166534]">Connected</span>
                             </div>
                             <div class="mt-4 grid gap-4 md:grid-cols-3">
-                                <div class="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4"><p class="text-[10px] font-bold uppercase text-[#64748B]">Card Serial</p><p class="mt-1 font-mono text-sm font-bold">Barcode-FAC-0412</p></div>
+                                <div class="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4"><p class="text-[10px] font-bold uppercase text-[#64748B]">Card Serial</p><p class="mt-1 font-mono text-sm font-bold">{{ $faculty->patron_id }}</p></div>
                                 <div class="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4"><p class="text-[10px] font-bold uppercase text-[#64748B]">Last Sync</p><p class="mt-1 text-sm font-bold">Oct 09, 2026 - 9:44 AM</p></div>
                                 <div class="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4"><p class="text-[10px] font-bold uppercase text-[#64748B]">Access Levels</p><p class="mt-1 text-sm font-bold">Faculty Lounge, Shelves 1-4, Media Room, Archival Vault</p></div>
                             </div>
@@ -642,7 +646,7 @@
                             <div class="mt-4 space-y-3 text-sm">
                                 <div class="flex justify-between border-b border-[#E2E8F0] py-2"><span>SSO domain</span><strong>clcst.edu.ph</strong></div>
                                 <div class="flex justify-between border-b border-[#E2E8F0] py-2"><span>Two-factor status</span><strong class="text-[#065F2A]">Enabled</strong></div>
-                                <div class="flex justify-between py-2"><span>Last login</span><strong>Today, 9:31 AM</strong></div>
+                                <div class="flex justify-between py-2"><span>Last login</span><strong>{{ $faculty->last_login_at?->format('M d, Y g:i A') ?? 'Not recorded' }}</strong></div>
                             </div>
                             <div class="mt-4 flex gap-2">
                                 <a class="flex-1 rounded-lg border border-[#CBD5E1] px-3 py-2 text-center text-xs font-bold text-[#334155] hover:bg-[#F8FAFC]" href="{{ route('staff.section', 'support') }}">Reset PIN</a>
@@ -853,8 +857,8 @@
                                     <div class="flex items-center gap-2">@include('partials.celtech-logo', ['class' => 'h-7 w-7 rounded-full bg-white object-contain p-0.5'])<span class="text-xs font-bold uppercase tracking-wider text-[#FDC425]">CLCST Digital Pass</span></div>
                                     <span class="rounded bg-white/10 px-2 py-0.5 text-[10px] font-bold">Faculty / PECE</span>
                                 </div>
-                                <div class="my-4"><p class="text-[11px] uppercase tracking-wider text-white/70">Faculty Borrower Name</p><h3 class="font-display text-lg font-bold">Engr. Roberto M. Mendoza</h3><p class="text-xs text-[#FDC425]">Chair, CICT & Computer Engineering</p><p class="mt-1 font-mono text-[11px] text-white/80">ID: FAC-2018-0412 - Main Campus</p></div>
-                                <div class="rounded-lg bg-white p-3 text-center text-black"><div class="h-12 bg-[repeating-linear-gradient(90deg,#000,#000_2px,transparent_2px,transparent_4px,#000_4px,#000_7px,transparent_7px,transparent_9px,#000_9px,#000_12px)]"></div><p class="mt-1.5 font-mono text-[11px] font-bold tracking-widest">*FAC-2018-0412-LIB-CLCST*</p><div class="mt-2 flex items-center justify-between border-t border-slate-100 pt-2 text-[10px] text-slate-500"><span>Library Entry Pass</span><span class="font-bold text-[#065F2A]">VALID AY 2024-2025</span></div></div>
+                                <div class="my-4"><p class="text-[11px] uppercase tracking-wider text-white/70">Faculty Borrower Name</p><h3 class="font-display text-lg font-bold">{{ $faculty->name }}</h3><p class="text-xs text-[#FDC425]">{{ $facultyDepartment }}</p><p class="mt-1 font-mono text-[11px] text-white/80">ID: {{ $faculty->patron_id }} - Main Campus</p></div>
+                                <div class="rounded-lg bg-white p-3 text-center text-black"><div class="h-12 bg-[repeating-linear-gradient(90deg,#000,#000_2px,transparent_2px,transparent_4px,#000_4px,#000_7px,transparent_7px,transparent_9px,#000_9px,#000_12px)]"></div><p class="mt-1.5 font-mono text-[11px] font-bold tracking-widest">*{{ $faculty->patron_id }}*</p><div class="mt-2 flex items-center justify-between border-t border-slate-100 pt-2 text-[10px] text-slate-500"><span>Library Entry Pass</span><span class="font-bold text-[#065F2A]">VALID AY 2024-2025</span></div></div>
                             </div>
                         </section>
 

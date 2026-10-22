@@ -22,6 +22,9 @@
     @include('partials.ui-motion')
 </head>
 <body class="min-h-full bg-[#F5F7F6] font-sans text-[#17251D] antialiased">
+    @php
+        $librarian = auth()->user();
+    @endphp
     <header class="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#D6DED8] bg-white px-4 shadow-sm md:px-6">
         <div class="flex min-w-0 items-center gap-3">
             <button aria-label="Open navigation" class="rounded-md p-2 text-[#0F5C2E] hover:bg-[#EEF5F0] md:hidden" id="librarian-menu-button" type="button">
@@ -49,10 +52,10 @@
                 <span class="absolute right-1 top-1 h-2 w-2 rounded-full bg-amber-500 ring-2 ring-white"></span>
             </a>
             <div class="hidden text-right sm:block">
-                <p class="text-xs font-bold text-[#17251D]">Maria Santos</p>
-                <p class="text-[11px] text-[#66756D]">Head Librarian</p>
+                <p class="text-xs font-bold text-[#17251D]">{{ $librarian->name }}</p>
+                <p class="text-[11px] text-[#66756D]">{{ $librarian->program_or_department ?: 'Library Staff' }}</p>
             </div>
-            <a aria-label="Open profile" class="flex h-9 w-9 items-center justify-center rounded-full bg-[#0F5C2E] text-xs font-bold text-white" href="{{ route('librarian.section', 'profile') }}">MS</a>
+            <a aria-label="Open profile" class="flex h-9 w-9 items-center justify-center rounded-full bg-[#0F5C2E] text-xs font-bold text-white" href="{{ route('librarian.section', 'profile') }}">{{ $librarian->initials() }}</a>
         </div>
     </header>
 

@@ -62,9 +62,16 @@
 <body class="flex min-h-screen flex-col bg-[#f8fafc] font-sans text-on-surface antialiased selection:bg-[#135d2e] selection:text-white">
     @php
         $isFaculty = $portalRole === 'faculty';
-        $currentUser = $isFaculty
-            ? ['initials' => 'RM', 'name' => 'Engr. Roberto M. Mendoza, PECE', 'short' => 'Engr. Roberto Mendoza', 'id' => 'FAC-2018-0412', 'role' => 'Faculty Member', 'department' => 'CICT Dept Chair', 'subtitle' => 'Associate Professor & Chair, CICT & Computer Engineering']
-            : ['initials' => 'MS', 'name' => 'Maria Santos', 'short' => 'Maria Santos', 'id' => 'LIB-STAFF-042', 'role' => 'Library Staff', 'department' => 'Head Librarian', 'subtitle' => 'Borrowing & Interlibrary Loan Desk'];
+        $signedInUser = auth()->user();
+        $currentUser = [
+            'initials' => $signedInUser->initials(),
+            'name' => $signedInUser->name,
+            'short' => $signedInUser->name,
+            'id' => $signedInUser->patron_id,
+            'role' => $isFaculty ? 'Faculty Member' : 'Library Staff',
+            'department' => $signedInUser->program_or_department ?: 'Department not specified',
+            'subtitle' => $signedInUser->program_or_department ?: 'CLCST Library account',
+        ];
         $borrowedCount = $isFaculty ? max($stats['activeLoans'], 4) : $stats['activeLoans'];
         $reservationCount = $stats['pendingReservations'];
         $renewalCount = 1;

@@ -48,6 +48,30 @@ class User extends Authenticatable
         return in_array($this->role, $roles, true);
     }
 
+    public function manageableRoles(): array
+    {
+        return match ($this->role) {
+            'librarian' => ['student', 'faculty'],
+            'admin' => ['student', 'faculty', 'librarian'],
+            'superadmin' => self::ROLES,
+            default => [],
+        };
+    }
+
+    public function canManageRole(string $role): bool
+    {
+        return in_array($role, $this->manageableRoles(), true);
+    }
+
+    public function initials(): string
+    {
+        return collect(preg_split('/\s+/', trim($this->name)) ?: [])
+            ->filter()
+            ->take(2)
+            ->map(fn (string $part) => mb_strtoupper(mb_substr($part, 0, 1)))
+            ->implode('') ?: 'U';
+    }
+
     public function dashboardRouteName(): string
     {
         return match ($this->role) {

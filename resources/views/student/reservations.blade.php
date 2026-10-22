@@ -61,6 +61,10 @@
 </head>
 <body class="min-h-screen overflow-x-hidden bg-background font-body text-on-surface antialiased">
     @php
+        $student = auth()->user();
+        $studentProgram = $student->program_or_department ?: 'Program not specified';
+    @endphp
+    @php
         $reservationCount = count($reservations);
         $activeLoanCount = count($activeLoans);
         $catalog = collect($catalogBooks)->keyBy('id');
@@ -145,9 +149,9 @@
             </a>
             <a class="rounded-lg p-2 text-on-surface-variant hover:bg-surface-container-low" href="{{ route('student.section', 'support') }}" title="Help"><span class="material-symbols-outlined">help</span></a>
             <div class="flex items-center gap-2 border-l border-outline-variant pl-3">
-                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-xs font-bold text-on-primary">JD</div>
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-xs font-bold text-on-primary">{{ $student->initials() }}</div>
                 <div class="hidden text-left sm:block">
-                    <div class="text-xs font-semibold">Juan Dela Cruz</div>
+                    <div class="text-xs font-semibold">{{ $student->name }}</div>
                     <span class="text-[10px] text-outline">Student Account</span>
                 </div>
             </div>
@@ -248,8 +252,8 @@
                                     </div>
                                     <div class="flex flex-col justify-between gap-2 rounded-lg border border-outline-variant/70 bg-surface-container-low p-2.5 text-xs sm:flex-row sm:items-center">
                                         <div>
-                                            <div class="flex items-center gap-1.5 font-semibold"><span class="material-symbols-outlined text-base text-primary">person</span>Juan Dela Cruz <span class="text-outline">(BSCS 3rd Year)</span></div>
-                                            <div class="mt-0.5 text-outline">ID: <span class="font-mono text-on-surface">2024-10492-OL</span> - Requested: {{ $hold['requested_at'] }}</div>
+                                            <div class="flex items-center gap-1.5 font-semibold"><span class="material-symbols-outlined text-base text-primary">person</span>{{ $student->name }} <span class="text-outline">({{ $studentProgram }})</span></div>
+                                            <div class="mt-0.5 text-outline">ID: <span class="font-mono text-on-surface">{{ $student->patron_id }}</span> - Requested: {{ $hold['requested_at'] }}</div>
                                         </div>
                                         <div class="text-left sm:border-l sm:border-outline-variant/60 sm:pl-3 sm:text-right"><span class="block text-[10px] font-bold text-outline">Shelf Assigned</span><span class="rounded bg-primary-fixed/50 px-2 py-0.5 text-xs font-bold text-primary">{{ $hold['shelf'] }}</span></div>
                                     </div>
@@ -300,7 +304,7 @@
                             <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
                         </div>
                         <div class="relative">
-                            <input class="w-full rounded-lg border-2 border-primary/40 bg-surface py-2.5 pl-9 pr-20 font-mono text-xs focus:ring-2 focus:ring-primary" readonly value="2024-10492-OL">
+                            <input class="w-full rounded-lg border-2 border-primary/40 bg-surface py-2.5 pl-9 pr-20 font-mono text-xs focus:ring-2 focus:ring-primary" readonly value="{{ $student->patron_id }}">
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-lg text-primary">barcode</span>
                             <span class="absolute right-2.5 top-1/2 -translate-y-1/2 rounded bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">VERIFIED</span>
                         </div>
@@ -309,8 +313,8 @@
                                 <div class="flex items-center gap-2.5">@include('partials.celtech-logo', ['class' => 'flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-bold object-contain bg-white p-0.5'])<div><div class="text-[10px] font-bold uppercase tracking-widest text-emerald-200">CLCST Library Borrower Pass</div><div class="text-xs font-bold">Central Luzon College of Sci & Tech</div></div></div>
                                 <span class="rounded bg-amber-400 px-2 py-0.5 text-[10px] font-extrabold text-slate-900">ACTIVE</span>
                             </div>
-                            <div class="relative z-10 mt-4 flex items-center gap-4"><div class="flex h-14 w-12 items-center justify-center rounded border border-white/40 bg-white/20 text-lg font-bold">JD</div><div><div class="font-headline text-base font-bold">Juan Dela Cruz</div><div class="text-xs text-emerald-100">BS Computer Science - 3rd Year</div><div class="mt-0.5 font-mono text-xs text-emerald-200">Library ID: 2024-10492-OL</div></div></div>
-                            <div class="relative z-10 mt-3 rounded bg-white p-2 text-center text-slate-900"><div class="font-mono text-xs font-bold tracking-[0.3em]">|||| ||| ||||| || ||||</div><span class="font-mono text-[9px] tracking-widest text-slate-700">*2024-10492-OL*</span></div>
+                            <div class="relative z-10 mt-4 flex items-center gap-4"><div class="flex h-14 w-12 items-center justify-center rounded border border-white/40 bg-white/20 text-lg font-bold">{{ $student->initials() }}</div><div><div class="font-headline text-base font-bold">{{ $student->name }}</div><div class="text-xs text-emerald-100">{{ $studentProgram }}</div><div class="mt-0.5 font-mono text-xs text-emerald-200">Library ID: {{ $student->patron_id }}</div></div></div>
+                            <div class="relative z-10 mt-3 rounded bg-white p-2 text-center text-slate-900"><div class="font-mono text-xs font-bold tracking-[0.3em]">|||| ||| ||||| || ||||</div><span class="font-mono text-[9px] tracking-widest text-slate-700">*{{ $student->patron_id }}*</span></div>
                         </div>
                         <a class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-xs font-bold text-on-primary shadow-sm hover:bg-primary-container" href="{{ route('student.section', 'borrow-return') }}"><span class="material-symbols-outlined text-lg">shopping_cart_checkout</span>Convert Reservation to Loan</a>
                     </section>

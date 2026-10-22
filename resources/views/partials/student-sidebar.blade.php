@@ -3,6 +3,7 @@
     $reservationCount = $reservationCount ?? count($reservations ?? []);
     $outstanding = $outstanding ?? 0;
     $activePage = $activePage ?? (request()->routeIs('books.catalog') ? 'catalog' : ($section ?? 'dashboard'));
+    $student = auth()->user();
 
     $navItems = [
         ['key' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'dashboard', 'href' => route('student.dashboard')],
@@ -24,7 +25,7 @@
             </div>
             <div class="overflow-hidden">
                 <p class="truncate text-xs font-bold text-primary">CLCST e-Pass</p>
-                <p class="truncate text-[10px] text-on-surface-variant">ID: 2024-10492-OL</p>
+                <p class="truncate text-[10px] text-on-surface-variant">ID: {{ $student->patron_id }}</p>
             </div>
         </a>
 

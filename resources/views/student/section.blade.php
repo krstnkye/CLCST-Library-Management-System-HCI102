@@ -9,6 +9,9 @@
     @include('partials.ui-motion')
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-900">
+    @php
+        $student = auth()->user();
+    @endphp
     <main class="mx-auto max-w-4xl px-6 py-10">
         <div class="mb-6 flex items-center justify-between">
             <div>
@@ -49,8 +52,8 @@
             @elseif ($section === 'account')
                 <h2 class="text-lg font-bold">My Account</h2>
                 <dl class="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-                    <div><dt class="font-semibold text-slate-500">Name</dt><dd>Juan Dela Cruz</dd></div>
-                    <div><dt class="font-semibold text-slate-500">Student ID</dt><dd>2024-10492-OL</dd></div>
+                    <div><dt class="font-semibold text-slate-500">Name</dt><dd>{{ $student->name }}</dd></div>
+                    <div><dt class="font-semibold text-slate-500">Student ID</dt><dd>{{ $student->patron_id }}</dd></div>
                     <div><dt class="font-semibold text-slate-500">Program</dt><dd>BS Computer Science III</dd></div>
                     <div><dt class="font-semibold text-slate-500">Loan quota</dt><dd>{{ count($activeLoans) }} / 5 active loans</dd></div>
                 </dl>

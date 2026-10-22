@@ -21,6 +21,7 @@ class EnsurePortalAccess
         if (! $user->isActive()) {
             auth()->logout();
             $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
             return redirect()->route('login')->withErrors([
                 'identifier' => 'This account is awaiting approval or has been disabled. Contact the library office.',

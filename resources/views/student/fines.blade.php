@@ -61,6 +61,10 @@
 </head>
 <body class="h-full overflow-x-hidden bg-surface font-body text-on-surface antialiased">
     @php
+        $student = auth()->user();
+        $studentProgram = $student->program_or_department ?: 'Program not specified';
+    @endphp
+    @php
         $activeLoanCount = count($activeLoans);
         $reservationCount = count($reservations);
         $paidFineIds = array_keys($paidFines);
@@ -109,10 +113,10 @@
             <a class="rounded-lg p-2 text-on-surface-variant hover:bg-surface-container-low" href="{{ route('student.section', 'support') }}" title="Help"><span class="material-symbols-outlined text-xl">help</span></a>
             <div class="h-6 w-px bg-outline-variant"></div>
             <a class="flex items-center gap-3 rounded-lg py-1 pl-1 pr-2 hover:bg-surface-container-low" href="{{ route('student.section', 'account') }}">
-                <div class="relative"><div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-on-primary shadow-sm">JD</div><span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-primary-container ring-2 ring-surface-container-lowest"></span></div>
+                <div class="relative"><div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-on-primary shadow-sm">{{ $student->initials() }}</div><span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-primary-container ring-2 ring-surface-container-lowest"></span></div>
                 <div class="hidden flex-col text-left sm:flex">
-                    <div class="flex items-center gap-1.5"><span class="text-sm font-bold leading-tight">Juan Dela Cruz</span><span class="rounded bg-primary-fixed px-1.5 py-0.5 text-[10px] font-bold uppercase text-primary">Verified</span></div>
-                    <span class="text-xs text-on-surface-variant">2024-10492-OL - 3rd Year BSCS</span>
+                    <div class="flex items-center gap-1.5"><span class="text-sm font-bold leading-tight">{{ $student->name }}</span><span class="rounded bg-primary-fixed px-1.5 py-0.5 text-[10px] font-bold uppercase text-primary">Verified</span></div>
+                    <span class="text-xs text-on-surface-variant">{{ $student->patron_id }} - {{ $studentProgram }}</span>
                 </div>
             </a>
         </div>
@@ -130,7 +134,7 @@
                 <div>
                     <nav class="mb-1 flex items-center gap-2 text-xs text-on-surface-variant"><span>Student Portal</span><span class="material-symbols-outlined text-sm">chevron_right</span><span>Borrowing & Account</span><span class="material-symbols-outlined text-sm">chevron_right</span><span class="font-semibold text-primary">Fines & Penalties</span></nav>
                     <h1 class="font-headline text-3xl font-bold tracking-tight text-on-surface">Fines, Penalties & Library Clearance</h1>
-                    <p class="mt-1 max-w-3xl text-sm text-on-surface-variant">Review overdue assessments, settled payments, waived grace-period charges, and clearance eligibility for Juan Dela Cruz.</p>
+                    <p class="mt-1 max-w-3xl text-sm text-on-surface-variant">Review overdue charges, settled payments, waived charges, and clearance eligibility for {{ $student->name }}.</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-2.5">
                     <a class="inline-flex items-center gap-2 rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 text-sm font-semibold hover:bg-surface-container" href="{{ route('student.section', 'history') }}"><span class="material-symbols-outlined text-lg text-primary">receipt_long</span>View Borrowing Record</a>
@@ -142,10 +146,10 @@
                 <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-primary-container/5"></div>
                 <div class="relative z-10 flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
                     <div class="flex items-start gap-5 sm:items-center">
-                        <div class="relative shrink-0"><div class="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-container to-primary font-headline text-3xl font-bold text-on-primary shadow-md ring-4 ring-primary-fixed/50">JD</div><div class="absolute -bottom-1 -right-1 rounded-full bg-surface-container-lowest p-0.5 shadow"><span class="material-symbols-outlined block text-xl text-primary-container" style="font-variation-settings: 'FILL' 1;">verified</span></div></div>
+                        <div class="relative shrink-0"><div class="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-container to-primary font-headline text-3xl font-bold text-on-primary shadow-md ring-4 ring-primary-fixed/50">{{ $student->initials() }}</div><div class="absolute -bottom-1 -right-1 rounded-full bg-surface-container-lowest p-0.5 shadow"><span class="material-symbols-outlined block text-xl text-primary-container" style="font-variation-settings: 'FILL' 1;">verified</span></div></div>
                         <div class="space-y-1">
-                            <div class="flex flex-wrap items-center gap-2.5"><h2 class="font-headline text-2xl font-bold">Juan Dela Cruz</h2><span class="rounded-full bg-primary-fixed px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">Undergraduate - Regular</span><span class="rounded-full bg-secondary-fixed px-2.5 py-0.5 text-[10px] font-bold text-on-secondary-container">AY 2024-2025</span></div>
-                            <p class="text-sm font-medium text-on-surface-variant">Student ID: <span class="font-mono font-semibold text-on-surface">2024-10492-OL</span> - College of Information and Communications Technology</p>
+                            <div class="flex flex-wrap items-center gap-2.5"><h2 class="font-headline text-2xl font-bold">{{ $student->name }}</h2><span class="rounded-full bg-primary-fixed px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">Active Student</span><span class="rounded-full bg-secondary-fixed px-2.5 py-0.5 text-[10px] font-bold text-on-secondary-container">AY 2024-2025</span></div>
+                            <p class="text-sm font-medium text-on-surface-variant">Student ID: <span class="font-mono font-semibold text-on-surface">{{ $student->patron_id }}</span> - {{ $studentProgram }}</p>
                             <p class="font-headline text-base font-semibold text-primary">Bachelor of Science in Computer Science (BSCS)</p>
                         </div>
                     </div>

@@ -59,6 +59,7 @@
 </head>
 <body class="flex h-full flex-col bg-background font-body text-on-surface antialiased">
     @php
+        $student = auth()->user();
         $activeLoanCount = count($activeLoans);
         $reservationCount = count($reservations);
         $slotsLeft = max(0, 5 - $activeLoanCount);
@@ -95,10 +96,10 @@
                 <span class="material-symbols-outlined">help</span>
             </a>
             <div class="flex items-center gap-2 border-l border-outline-variant pl-3">
-                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-xs font-bold text-on-primary">JD</div>
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-xs font-bold text-on-primary">{{ $student->initials() }}</div>
                 <div class="hidden text-left sm:block">
-                    <div class="text-xs font-semibold text-primary">Juan Dela Cruz</div>
-                    <div class="text-[10px] text-on-surface-variant">2024-10492-OL</div>
+                    <div class="text-xs font-semibold text-primary">{{ $student->name }}</div>
+                    <div class="text-[10px] text-on-surface-variant">{{ $student->patron_id }}</div>
                 </div>
             </div>
         </div>
@@ -133,7 +134,7 @@
                             <label class="mb-1 flex items-center justify-between text-xs font-semibold text-on-surface-variant"><span class="flex items-center gap-1"><span class="inline-flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-on-primary">1</span>Student Identification</span><span class="text-primary-container">Verified</span></label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-3 top-3 text-primary-container">badge</span>
-                                <input class="w-full rounded-lg border-2 border-primary-container bg-surface-container-lowest py-2.5 pl-10 pr-3 text-sm font-medium" readonly value="2024-10492-OL - Juan Dela Cruz">
+                                <input class="w-full rounded-lg border-2 border-primary-container bg-surface-container-lowest py-2.5 pl-10 pr-3 text-sm font-medium" readonly value="{{ $student->patron_id }} - {{ $student->name }}">
                             </div>
                         </div>
                         <div class="hidden justify-center pb-2 md:col-span-1 md:flex"><span class="material-symbols-outlined text-outline">arrow_forward</span></div>
@@ -159,12 +160,12 @@
                             <div class="pointer-events-none absolute -bottom-8 -right-8 h-36 w-36 rounded-full bg-primary/5"></div>
                             <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                                 <div class="flex items-start gap-4 sm:items-center">
-                                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-container to-primary text-lg font-bold text-on-primary shadow-sm">JD</div>
+                                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-container to-primary text-lg font-bold text-on-primary shadow-sm">{{ $student->initials() }}</div>
                                     <div>
                                         <div class="flex flex-wrap items-center gap-2">
-                                            <h1 class="font-headline text-xl font-bold text-on-surface">Juan Dela Cruz</h1>
+                                            <h1 class="font-headline text-xl font-bold text-on-surface">{{ $student->name }}</h1>
                                             <span class="inline-flex items-center gap-1 rounded-full border border-primary-container/30 bg-primary-fixed px-2.5 py-0.5 text-[11px] font-bold text-primary"><span class="h-1.5 w-1.5 rounded-full bg-primary-container"></span>Clear Standing</span>
-                                            <span class="rounded bg-surface-container px-2 py-0.5 font-mono text-[11px] text-on-surface-variant">ID: 2024-10492-OL</span>
+                                            <span class="rounded bg-surface-container px-2 py-0.5 font-mono text-[11px] text-on-surface-variant">ID: {{ $student->patron_id }}</span>
                                         </div>
                                         <p class="mt-0.5 text-sm text-on-surface-variant">College of Information and Communications Technology - BS Computer Science (3rd Year)</p>
                                     </div>

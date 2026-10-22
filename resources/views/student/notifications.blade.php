@@ -61,14 +61,16 @@
 </head>
 <body class="flex h-full flex-col overflow-x-hidden bg-background font-body text-on-surface antialiased">
     @php
+        $student = auth()->user();
+        $studentProgram = $student->program_or_department ?: 'Program not specified';
         $activeLoanCount = count($activeLoans);
         $reservationCount = count($reservations);
         $notifications = [
             ['type' => 'Overdue & Fine Notice', 'title' => 'Daily Fine Accruing: Discrete Mathematics and Its Applications', 'body' => 'The checkout period for barcode DM-082 expired on Oct 20, 2024. The book is overdue by 4 days. Current unsettled balance: PHP 20.00.', 'time' => 'Today, 8:30 AM', 'source' => 'Automated Borrowing', 'icon' => 'warning', 'tone' => 'error', 'primary' => 'Pay Fine', 'secondary' => 'View Fine Record', 'href' => route('student.section', 'fines')],
-            ['type' => 'Ready for Pickup for Pickup', 'title' => 'Book Ready for Pickup: Database System Concepts', 'body' => 'Your reserved title has been pulled from Library Shelves Level 2 and placed at Pickup Shelf B-04. Please claim this item before the pickup window expires.', 'time' => 'Yesterday, 3:15 PM', 'source' => 'Reservations Desk', 'icon' => 'inventory_2', 'tone' => 'success', 'primary' => 'View Pickup Pass', 'secondary' => 'Open Reservations', 'href' => route('student.section', 'reservations')],
+            ['type' => 'Ready for Pickup', 'title' => 'Book Ready for Pickup: Database System Concepts', 'body' => 'Your reserved title has been pulled from Library Shelves Level 2 and placed at Pickup Shelf B-04. Please claim this item before the pickup window expires.', 'time' => 'Yesterday, 3:15 PM', 'source' => 'Reservations Desk', 'icon' => 'inventory_2', 'tone' => 'success', 'primary' => 'View Pickup Pass', 'secondary' => 'Open Reservations', 'href' => route('student.section', 'reservations')],
             ['type' => 'Due Date Reminder', 'title' => 'Return Reminder: Clean Code', 'body' => 'Barcode CLEAN-001 is due in 2 days. Return the book at the library desk or renew online if no reservation exists.', 'time' => 'Yesterday, 9:00 AM', 'source' => 'Loan Monitoring', 'icon' => 'notification_important', 'tone' => 'warning', 'primary' => 'Renew Loan', 'secondary' => 'Borrow/Return', 'href' => route('student.section', 'borrow-return')],
             ['type' => 'Advisory / Schedule', 'title' => 'Midterm Examination Extended Library Hours', 'body' => 'The CLCST Main Library reference area and discussion carrels will extend operational hours until 9:00 PM from Oct 28 to Nov 4.', 'time' => 'Oct 22, 2024', 'source' => 'Office of University Librarian', 'icon' => 'campaign', 'tone' => 'info', 'primary' => 'View Schedule', 'secondary' => 'Catalog', 'href' => route('books.catalog')],
-            ['type' => 'SMS & Email Synced', 'title' => 'SMS Due Alert Sent to +63 917 123 4567', 'body' => 'Automated SMS delivery confirmed via telco gateway for loan account 2024-10492-OL.', 'time' => 'Oct 21, 2024', 'source' => 'Message Service', 'icon' => 'sms', 'tone' => 'muted', 'primary' => 'Preferences', 'secondary' => 'Profile', 'href' => route('student.section', 'account')],
+            ['type' => 'SMS & Email Synced', 'title' => 'Due-date alert sent to your saved mobile number', 'body' => 'The message service confirmed delivery for library account '.$student->patron_id.'.', 'time' => 'Oct 21, 2024', 'source' => 'Message Service', 'icon' => 'sms', 'tone' => 'muted', 'primary' => 'Preferences', 'secondary' => 'Profile', 'href' => route('student.section', 'account')],
         ];
     @endphp
 
@@ -104,10 +106,10 @@
             <div class="mx-1 h-6 w-px bg-outline-variant"></div>
             <a class="flex items-center gap-3" href="{{ route('student.section', 'account') }}">
                 <div class="hidden text-right sm:block">
-                    <div class="flex items-center justify-end gap-1.5"><span class="text-xs font-semibold">Juan Dela Cruz</span><span class="rounded bg-surface-container px-1.5 py-0.5 text-[9px] font-bold uppercase text-primary">Verified</span></div>
-                    <span class="block text-[11px] text-outline">2024-10492-OL - 3rd Year BSCS</span>
+                    <div class="flex items-center justify-end gap-1.5"><span class="text-xs font-semibold">{{ $student->name }}</span><span class="rounded bg-surface-container px-1.5 py-0.5 text-[9px] font-bold uppercase text-primary">Verified</span></div>
+                    <span class="block text-[11px] text-outline">{{ $student->patron_id }} - {{ $studentProgram }}</span>
                 </div>
-                <div class="relative"><div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-sm font-semibold text-on-primary shadow-sm ring-2 ring-surface-container-lowest">JD</div><span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-surface-container-lowest"></span></div>
+                <div class="relative"><div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-sm font-semibold text-on-primary shadow-sm ring-2 ring-surface-container-lowest">{{ $student->initials() }}</div><span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-surface-container-lowest"></span></div>
             </a>
         </div>
     </header>

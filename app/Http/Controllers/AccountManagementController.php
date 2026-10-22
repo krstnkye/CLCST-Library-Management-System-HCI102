@@ -12,12 +12,7 @@ class AccountManagementController extends Controller
 {
     public function index(Request $request): View
     {
-        $roles = match ($request->user()->role) {
-            'librarian' => ['student', 'faculty'],
-            'admin' => ['student', 'faculty', 'librarian'],
-            'superadmin' => User::ROLES,
-            default => [],
-        };
+        $roles = $request->user()->manageableRoles();
 
         return view('management.accounts', [
             'users' => User::query()
@@ -54,14 +49,7 @@ class AccountManagementController extends Controller
 
     private function authorizeChange(User $actor, User $target): void
     {
-        $allowedTargets = match ($actor->role) {
-            'librarian' => ['student', 'faculty'],
-            'admin' => ['student', 'faculty', 'librarian'],
-            'superadmin' => User::ROLES,
-            default => [],
-        };
-
-        abort_unless(in_array($target->role, $allowedTargets, true), 403, 'You cannot change this account type.');
+        abort_unless($actor->canManageRole($target->role), 403, 'You cannot change this account type.');
     }
 
     private function audit(Request $request, string $event, string $description, User $target): void

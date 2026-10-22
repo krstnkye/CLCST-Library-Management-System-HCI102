@@ -59,6 +59,10 @@
 </head>
 <body class="flex h-full flex-col overflow-x-hidden bg-background font-body text-on-surface antialiased">
     @php
+        $student = auth()->user();
+        $studentProgram = $student->program_or_department ?: 'Program not specified';
+    @endphp
+    @php
         $activeLoanCount = count($activeLoans);
         $reservationCount = count($reservations);
         $outstanding = collect($fineRows)->reject(fn ($fine) => isset($paidFines[$fine['id']]))->sum('amount');
@@ -99,10 +103,10 @@
             <div class="hidden h-7 w-px bg-outline-variant sm:block"></div>
             <a class="flex items-center gap-3" href="{{ route('student.section', 'account') }}">
                 <div class="hidden text-right sm:block">
-                    <div class="text-xs font-bold">Juan Dela Cruz</div>
-                    <div class="text-[11px] text-outline">BSCS 3A - ID: 2024-10492-OL</div>
+                    <div class="text-xs font-bold">{{ $student->name }}</div>
+                    <div class="text-[11px] text-outline">{{ $studentProgram }} - ID: {{ $student->patron_id }}</div>
                 </div>
-                <div class="relative flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-sm font-bold text-on-primary shadow-sm">JD<span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-primary-fixed ring-2 ring-white"></span></div>
+                <div class="relative flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-sm font-bold text-on-primary shadow-sm">{{ $student->initials() }}<span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-primary-fixed ring-2 ring-white"></span></div>
             </a>
         </div>
     </header>
@@ -236,8 +240,8 @@
                                 <div class="flex items-center gap-2">
                                     <span class="material-symbols-outlined text-primary">verified_user</span>
                                     <div>
-                                        <div class="text-xs font-bold">Student: Juan Dela Cruz (BSCS 3A)</div>
-                                        <div class="text-[11px] text-outline">Auto-linked ID: 2024-10492-OL</div>
+                                        <div class="text-xs font-bold">Student: {{ $student->name }} ({{ $studentProgram }})</div>
+                                        <div class="text-[11px] text-outline">Linked ID: {{ $student->patron_id }}</div>
                                     </div>
                                 </div>
                                 <span class="rounded bg-primary-fixed px-2 py-0.5 text-[10px] font-bold text-primary">Active</span>

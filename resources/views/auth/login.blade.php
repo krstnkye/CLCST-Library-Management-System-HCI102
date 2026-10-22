@@ -65,12 +65,12 @@
                         $selectedRole = old('role', 'student');
                         $chosenRole = old('role', '');
                     @endphp
-                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5" aria-label="Account type" role="group">
+                    <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 xl:grid-cols-5" aria-label="Account type" role="group">
                         @foreach($roles as $value => [$icon, $label, $description])
-                            <button id="role-{{ $value }}" class="role-card relative flex min-h-28 flex-col rounded-md border-2 border-slate-200 bg-white p-3 text-left transition hover:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2" type="button" data-role="{{ $value }}" aria-label="{{ $label }}: {{ $description }}" aria-pressed="{{ $selectedRole === $value ? 'true' : 'false' }}">
+                            <button id="role-{{ $value }}" class="role-card relative flex flex-col rounded-md border-2 sm:min-h-28 border-slate-200 bg-white p-3 text-left transition hover:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2" type="button" data-role="{{ $value }}" aria-label="{{ $label }}: {{ $description }}" aria-pressed="{{ $selectedRole === $value ? 'true' : 'false' }}">
                                 <span class="role-check absolute right-3 top-3 hidden h-5 w-5 items-center justify-center rounded-full bg-emerald-800 text-xs font-bold text-white" aria-hidden="true">&#10003;</span>
                                 <span class="role-icon flex h-9 w-9 items-center justify-center rounded-md bg-emerald-50 text-emerald-800"><span class="material-symbols-outlined text-xl">{{ $icon }}</span></span>
-                                <span class="mt-3 text-sm font-bold">{{ $label }}</span><span class="mt-1 text-xs leading-4 text-slate-600">{{ $description }}</span>
+                                <span class="mt-2 text-sm font-bold sm:mt-3">{{ $label }}</span><span class="mt-1 hidden text-xs leading-4 text-slate-600 sm:block">{{ $description }}</span>
                             </button>
                         @endforeach
                     </div>

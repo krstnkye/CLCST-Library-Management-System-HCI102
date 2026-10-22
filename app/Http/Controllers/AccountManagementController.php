@@ -15,14 +15,23 @@ class AccountManagementController extends Controller
     public function index(Request $request): View
     {
         $roles = $request->user()->manageableRoles();
+        $role = $request->query('role');
+        $status = $request->query('status');
+        $search = trim((string) $request->query('q', ''));
 
         return view('management.accounts', [
+            'pendingCount' => User::whereIn('role', $roles)->where('status', 'pending')->count(),
             'users' => User::query()
-                ->whereIn('role', $roles)
+                ->whereIn('role', in_array($role, $roles, true) ? [$role] : $roles)
+                ->when(in_array($status, ['pending', 'active', 'suspended'], true), fn ($query) => $query->where('status', $status))
+                ->when($search !== '', fn ($query) => $query->where(fn ($where) => $where
+                    ->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('patron_id', 'like', "%{$search}%")))
                 ->orderByRaw("CASE status WHEN 'pending' THEN 0 WHEN 'active' THEN 1 ELSE 2 END")
                 ->orderBy('name')
-                ->limit(200)
-                ->get(),
+                ->paginate(25)
+                ->withQueryString(),
         ]);
     }
 
@@ -67,13 +76,6 @@ class AccountManagementController extends Controller
 
     private function audit(Request $request, string $event, string $description, User $target): void
     {
-        AuditLog::create([
-            'user_id' => $request->user()->id,
-            'event' => $event,
-            'description' => $description,
-            'ip_address' => $request->ip(),
-            'user_agent' => mb_substr((string) $request->userAgent(), 0, 1000),
-            'metadata' => ['target_user_id' => $target->id, 'target_role' => $target->role],
-        ]);
+        AuditLog::record($request->user(), $event, $description, ['target_user_id' => $target->id, 'target_role' => $target->role]);
     }
 }

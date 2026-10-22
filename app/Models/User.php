@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -38,9 +39,65 @@ class User extends Authenticatable
         ];
     }
 
+    public const PATRON_ROLES = ['student', 'faculty'];
+
+    public const STAFF_ROLES = ['librarian', 'admin', 'superadmin'];
+
+    /** Roles that may apply through the public registration form. */
+    public const SELF_REGISTER_ROLES = ['student', 'faculty', 'librarian'];
+
+    public function loans(): HasMany
+    {
+        return $this->hasMany(Loan::class);
+    }
+
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+    public function fines(): HasMany
+    {
+        return $this->hasMany(Fine::class);
+    }
+
+    public function libraryRequests(): HasMany
+    {
+        return $this->hasMany(LibraryRequest::class);
+    }
+
+    public static function isInstitutionalEmail(string $email): bool
+    {
+        return str_ends_with(mb_strtolower(trim($email)), '@'.config('library.allowed_email_domain'));
+    }
+
     public function isActive(): bool
     {
         return $this->status === 'active';
+    }
+
+    public function isPatron(): bool
+    {
+        return in_array($this->role, self::PATRON_ROLES, true);
+    }
+
+    public function isStaff(): bool
+    {
+        return in_array($this->role, self::STAFF_ROLES, true);
+    }
+
+    public function roleLabel(): string
+    {
+        return match ($this->role) {
+            'admin' => 'Administrator',
+            'superadmin' => 'Super Administrator',
+            default => ucfirst($this->role),
+        };
+    }
+
+    public function outstandingFineTotal(): float
+    {
+        return (float) $this->fines()->where('status', 'outstanding')->sum('amount');
     }
 
     public function hasAnyRole(array $roles): bool

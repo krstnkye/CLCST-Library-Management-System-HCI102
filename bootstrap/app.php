@@ -16,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [NormalizeQueryString::class, SecurityHeaders::class]);
+        // Lets a password change sign out the user's other sessions.
+        $middleware->authenticateSessions();
         $middleware->alias([
             'portal' => EnsurePortalAccess::class,
         ]);

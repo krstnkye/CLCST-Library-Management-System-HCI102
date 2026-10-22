@@ -40,13 +40,15 @@ class AccessControlTest extends TestCase
     {
         $user = User::factory()->role('student')->create(['password' => Hash::make('SecurePass2026')]);
 
+        // The picked account type is only a hint: the saved role decides the portal.
         $this->post(route('login.authenticate'), [
             'role' => 'superadmin',
             'identifier' => $user->email,
             'password' => 'SecurePass2026',
-        ])->assertSessionHasErrors('identifier');
+        ])->assertRedirect(route('student.dashboard'));
 
-        $this->assertGuest();
+        $this->assertAuthenticatedAs($user);
+        $this->get(route('superadmin.dashboard'))->assertForbidden();
     }
 
     public function test_pending_accounts_cannot_sign_in(): void
@@ -96,7 +98,7 @@ class AccessControlTest extends TestCase
         $this->get(route('student.dashboard'))->assertRedirect(route('login'));
     }
 
-    public function test_registration_page_exposes_every_role_and_secure_upload_form(): void
+    public function test_registration_page_offers_only_self_service_roles_and_secure_upload_form(): void
     {
         $response = $this->get(route('register'));
 
@@ -105,8 +107,9 @@ class AccessControlTest extends TestCase
             ->assertSee('value="student"', false)
             ->assertSee('value="faculty"', false)
             ->assertSee('value="librarian"', false)
-            ->assertSee('value="admin"', false)
-            ->assertSee('value="superadmin"', false)
+            ->assertDontSee('value="admin"', false)
+            ->assertDontSee('value="superadmin"', false)
+            ->assertSee('@clcst.edu.ph')
             ->assertSee('enctype="multipart/form-data"', false)
             ->assertSee('id="password-match-message"', false)
             ->assertSee('name="privacy_consent"', false);
@@ -268,8 +271,10 @@ class AccessControlTest extends TestCase
             ->assertRedirect(route('management.accounts.index'));
 
         $admin = User::factory()->role('admin')->create();
-        foreach (['users', 'approvals', 'books', 'circulation', 'reports', 'audit-logs', 'announcements', 'profile'] as $section) {
+        foreach (['users', 'approvals', 'books', 'circulation', 'reports', 'audit-logs', 'profile'] as $section) {
             $this->actingAs($admin)->get(route('admin.section', $section))->assertOk();
         }
+        $this->actingAs($admin)->get(route('admin.section', 'announcements'))
+            ->assertRedirect(route('librarian.section', 'announcements'));
     }
 }

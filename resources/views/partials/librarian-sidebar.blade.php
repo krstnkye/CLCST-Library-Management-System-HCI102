@@ -11,7 +11,7 @@
                 <span class="material-symbols-outlined flex h-10 w-10 items-center justify-center rounded-lg bg-[#0F5C2E] text-white">local_library</span>
                 <div>
                     <p class="text-sm font-bold text-[#0F5C2E]">Main Library</p>
-                    <p class="text-xs text-[#617068]">Librarian Workstation 04</p>
+                    <p class="text-xs text-[#617068]">{{ auth()->user()->roleLabel() }} workspace</p>
                 </div>
             </div>
         </div>
@@ -23,8 +23,8 @@
 
             @foreach ([
                 ['label' => 'Books', 'pages' => [['books', 'menu_book', 'Book Catalog'], ['add-book', 'library_add', 'Add New Book'], ['categories', 'category', 'Categories'], ['inventory', 'inventory_2', 'Inventory']]],
-                ['label' => 'Transactions', 'pages' => [['borrow-requests', 'outbox', 'Borrow Requests'], ['returns', 'assignment_return', 'Return Books'], ['overdue', 'schedule', 'Overdue Books']]],
-                ['label' => 'Users', 'pages' => [['users', 'group', 'User Accounts'], ['verification', 'how_to_reg', 'Account Verification'], ['memberships', 'card_membership', 'Memberships']]],
+                ['label' => 'Circulation', 'pages' => [['borrow-requests', 'outbox', 'Check Out Books'], ['returns', 'assignment_return', 'Check In Returns'], ['overdue', 'schedule', 'Overdue Books'], ['reservations', 'bookmark', 'Reservations']]],
+                ['label' => 'Users', 'pages' => [['users', 'how_to_reg', 'Account Review']]],
             ] as $group)
                 <section>
                     <p class="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-[#718078]">{{ $group['label'] }}</p>
@@ -42,8 +42,6 @@
                 <p class="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-[#718078]">Library Services</p>
                 <div class="space-y-1">
                     @foreach ([
-                        ['reservations', 'bookmark', 'Reservations'],
-                        ['digital-resources', 'cloud', 'Digital Resources'],
                         ['fines', 'payments', 'Fines and Payments'],
                         ['reports', 'monitoring', 'Reports'],
                         ['announcements', 'campaign', 'Announcements'],
@@ -60,9 +58,9 @@
                 <p class="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-[#718078]">Administration</p>
                 <div class="space-y-1">
                     @foreach ([
-                        ['staff-management', 'badge', 'Library Staff'],
+                        ['notifications', 'notifications', 'Alerts'],
                         ['activity-logs', 'history', 'Activity Logs'],
-                        ['settings', 'settings', 'Settings'],
+                        ['settings', 'rule', 'Borrowing Policy'],
                         ['profile', 'account_circle', 'My Profile'],
                         ['support', 'help', 'Help and Support'],
                     ] as [$page, $icon, $label])

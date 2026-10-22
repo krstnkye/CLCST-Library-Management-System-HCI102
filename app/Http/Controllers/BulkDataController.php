@@ -123,6 +123,9 @@ class BulkDataController extends Controller
         if (! filter_var($row['email'], FILTER_VALIDATE_EMAIL) || $row['patron_id'] === '' || $row['name'] === '') {
             throw ValidationException::withMessages(['csv_file' => "Missing or invalid user information on line {$line}."]);
         }
+        if (! User::isInstitutionalEmail($row['email'])) {
+            throw ValidationException::withMessages(['csv_file' => "The email on line {$line} is not a school email (@".config('library.allowed_email_domain').').']);
+        }
 
         if (! $actor->canManageRole($row['role'])) {
             throw ValidationException::withMessages(['csv_file' => "You cannot import the account role on line {$line}."]);
@@ -183,13 +186,6 @@ class BulkDataController extends Controller
 
     private function audit(Request $request, string $description, array $metadata): void
     {
-        AuditLog::create([
-            'user_id' => $request->user()->id,
-            'event' => 'bulk-data',
-            'description' => $description,
-            'ip_address' => $request->ip(),
-            'user_agent' => mb_substr((string) $request->userAgent(), 0, 1000),
-            'metadata' => $metadata,
-        ]);
+        AuditLog::record($request->user(), 'bulk-data', $description, $metadata);
     }
 }

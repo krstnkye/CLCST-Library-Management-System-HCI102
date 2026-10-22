@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\AuditLog;
 use App\Models\User;
+use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
@@ -26,8 +28,12 @@ class AuthController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'role' => ['required', 'in:'.implode(',', User::ROLES)],
-            'identifier' => ['required', 'string', 'max:150'],
+            'role' => ['nullable', Rule::in(User::ROLES)],
+            'identifier' => ['required', 'string', 'max:150', function (string $attribute, mixed $value, Closure $fail): void {
+                if (str_contains((string) $value, '@') && ! User::isInstitutionalEmail((string) $value)) {
+                    $fail('Use your school-registered email ending in @'.config('library.allowed_email_domain').', or your school ID.');
+                }
+            }],
             'password' => ['required', 'string', 'max:255'],
             'remember' => ['nullable', 'boolean'],
         ]);
@@ -42,22 +48,21 @@ class AuthController extends Controller
         }
 
         $identifier = mb_strtolower(trim($credentials['identifier']));
+        // The account type picked on the form only changes the on-screen hints; the
+        // database decides which portal a user may open.
         $user = User::query()
-            ->where('role', $credentials['role'])
-            ->where(function ($query) use ($identifier): void {
-                $query->whereRaw('LOWER(email) = ?', [$identifier])
-                    ->orWhereRaw('LOWER(patron_id) = ?', [$identifier]);
-            })
+            ->whereRaw('LOWER(email) = ?', [$identifier])
+            ->orWhereRaw('LOWER(patron_id) = ?', [$identifier])
             ->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             RateLimiter::hit($key, 60);
-            $this->audit($request, null, 'login.failed', 'A sign-in attempt failed.', [
-                'role' => $credentials['role'],
+            AuditLog::record(null, 'login.failed', 'A sign-in attempt failed.', [
+                'role' => $credentials['role'] ?? null,
             ]);
 
             return back()->withErrors([
-                'identifier' => 'The account details are incorrect. Check your account type, ID or email, and password.',
+                'identifier' => 'The school ID or email and password do not match our records.',
             ])->onlyInput('identifier', 'role');
         }
 
@@ -73,16 +78,19 @@ class AuthController extends Controller
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
         $user->forceFill(['last_login_at' => now()])->save();
-        $this->audit($request, $user, 'login.succeeded', 'User signed in successfully.');
+        AuditLog::record($user, 'login.succeeded', 'User signed in successfully.');
 
-        return redirect()->intended(route($user->dashboardRouteName()))
-            ->with('status', 'Welcome back, '.$user->name.'.');
+        $welcome = 'Welcome back, '.$user->name.'.';
+        if (($credentials['role'] ?? $user->role) !== $user->role) {
+            $welcome .= ' Your account is registered as '.$user->roleLabel().', so we opened that portal for you.';
+        }
+
+        return redirect()->intended(route($user->dashboardRouteName()))->with('status', $welcome);
     }
 
     public function destroy(Request $request): RedirectResponse
     {
-        $user = $request->user();
-        $this->audit($request, $user, 'logout', 'User signed out.');
+        AuditLog::record($request->user(), 'logout', 'User signed out.');
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -103,18 +111,26 @@ class AuthController extends Controller
             'patron_id' => strtoupper(trim((string) $request->input('patron_id'))),
         ]);
 
+        $domain = config('library.allowed_email_domain');
         $validated = $request->validate([
-            'patron_role' => ['required', 'in:'.implode(',', User::ROLES)],
-            'last_name' => ['required', 'string', 'max:100'],
-            'first_name' => ['required', 'string', 'max:100'],
-            'middle_initial' => ['nullable', 'string', 'max:5'],
-            'patron_id' => ['required', 'string', 'max:100', 'unique:users,patron_id'],
+            'patron_role' => ['required', Rule::in(User::SELF_REGISTER_ROLES)],
+            'last_name' => ['required', 'string', 'max:100', "regex:/^[\pL\s.'-]+$/u"],
+            'first_name' => ['required', 'string', 'max:100', "regex:/^[\pL\s.'-]+$/u"],
+            'middle_initial' => ['nullable', 'string', 'max:5', "regex:/^[\pL.]+$/u"],
+            'patron_id' => ['required', 'string', 'max:100', 'regex:/^[A-Z0-9-]+$/', 'unique:users,patron_id'],
             'program_or_department' => ['required', 'string', 'max:150'],
-            'email' => ['required', 'email:rfc', 'max:150', 'unique:users,email'],
-            'mobile_number' => ['required', 'string', 'max:30'],
-            'password' => ['required', 'confirmed', Password::min(10)->mixedCase()->letters()->numbers()],
+            'email' => ['required', 'email:rfc', 'max:150', 'ends_with:@'.$domain, 'unique:users,email'],
+            'mobile_number' => ['required', 'string', 'regex:/^(09|\+639)\d{9}$/'],
+            'password' => ['required', 'confirmed', Password::defaults()],
             'credential_file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
             'privacy_consent' => ['accepted'],
+        ], [
+            'email.ends_with' => 'Use your school-registered email address ending in @'.$domain.'.',
+            'patron_role.in' => 'Administrator accounts are created by the system administrator. Choose Student, Faculty, or Librarian.',
+            'patron_id.regex' => 'School IDs may contain only letters, numbers, and dashes.',
+            'mobile_number.regex' => 'Enter a Philippine mobile number such as 09171234567.',
+            'first_name.regex' => 'Names may contain only letters, spaces, periods, apostrophes, and dashes.',
+            'last_name.regex' => 'Names may contain only letters, spaces, periods, apostrophes, and dashes.',
         ]);
 
         $path = $request->file('credential_file')->store('credentials', 'local');
@@ -123,7 +139,7 @@ class AuthController extends Controller
             'name' => trim($validated['first_name'].' '.$validated['last_name']),
             'first_name' => trim($validated['first_name']),
             'last_name' => trim($validated['last_name']),
-            'middle_initial' => $validated['middle_initial'] ?: null,
+            'middle_initial' => isset($validated['middle_initial']) ? strtoupper(trim($validated['middle_initial'])) : null,
             'email' => mb_strtolower(trim($validated['email'])),
             'role' => $validated['patron_role'],
             'status' => 'pending',
@@ -133,7 +149,7 @@ class AuthController extends Controller
             'password' => $validated['password'],
         ]);
 
-        $this->audit($request, $user, 'registration.submitted', 'A new account application was submitted.', [
+        AuditLog::record($user, 'registration.submitted', 'A new account application was submitted.', [
             'role' => $user->role,
         ]);
 
@@ -148,15 +164,4 @@ class AuthController extends Controller
         return 'login:'.mb_strtolower((string) $request->input('identifier')).'|'.$request->ip();
     }
 
-    private function audit(Request $request, ?User $user, string $event, string $description, array $metadata = []): void
-    {
-        AuditLog::create([
-            'user_id' => $user?->id,
-            'event' => $event,
-            'description' => $description,
-            'ip_address' => $request->ip(),
-            'user_agent' => mb_substr((string) $request->userAgent(), 0, 1000),
-            'metadata' => $metadata,
-        ]);
-    }
 }

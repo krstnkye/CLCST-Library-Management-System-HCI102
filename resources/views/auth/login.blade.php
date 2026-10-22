@@ -37,7 +37,7 @@
             <div class="relative mx-auto max-w-7xl px-4 py-7 sm:px-6 sm:py-9 lg:px-8">
                 <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-white/10 px-3 py-1 text-xs font-bold text-emerald-100"><span class="material-symbols-outlined text-sm">vpn_key</span>SECURE LIBRARY ACCESS</div>
                 <h1 class="max-w-3xl text-3xl font-extrabold leading-tight sm:text-4xl">Unified Academic Access Gateway</h1>
-                <p class="mt-2 max-w-3xl text-sm leading-6 text-emerald-100 sm:text-base">Choose your account type, then sign in with your registered school ID or email to access the correct library portal.</p>
+                <p class="mt-2 max-w-3xl text-sm leading-6 text-emerald-100 sm:text-base">Sign in with your school ID or your @clcst.edu.ph email. You will be taken to the portal that matches your account.</p>
             </div>
         </section>
 
@@ -52,8 +52,7 @@
             <div class="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_360px]">
                 <section aria-labelledby="signin-heading">
                     <div class="mb-3 flex flex-wrap items-end justify-between gap-2">
-                        <div><h2 id="signin-heading" class="flex items-center gap-2 text-lg font-bold"><span class="material-symbols-outlined text-emerald-800">switch_account</span>Choose your account type</h2><p class="mt-1 text-sm text-slate-600">Your selection must match the role saved on your account.</p></div>
-                        <span class="text-xs font-semibold text-slate-500">5 access roles</span>
+                        <div><h2 id="signin-heading" class="flex items-center gap-2 text-lg font-bold"><span class="material-symbols-outlined text-emerald-800">switch_account</span>Choose your account type</h2><p class="mt-1 text-sm text-slate-600">Optional. It only changes the hints below; we open the portal saved on your account.</p></div>
                     </div>
                     @php
                         $roles = [
@@ -84,7 +83,7 @@
                             @csrf
                             <input id="role-input" type="hidden" name="role" value="{{ $selectedRole }}">
                             <div>
-                                <label id="identifier-label" for="identifier" class="mb-1.5 block text-sm font-semibold">Student ID or registered email</label>
+                                <label id="identifier-label" for="identifier" class="mb-1.5 block text-sm font-semibold">Student ID or school email</label>
                                 <div class="relative"><span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xl text-slate-500">badge</span><input id="identifier" name="identifier" value="{{ old('identifier') }}" required autocomplete="username" maxlength="150" class="w-full rounded-md border-slate-300 py-3 pl-11 pr-4 text-sm focus:border-emerald-700 focus:ring-emerald-700" placeholder="Example: STU-2026-001"></div>
                             </div>
                             <div>
@@ -106,9 +105,9 @@
                     <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
                         <h2 class="flex items-center gap-2 font-bold text-emerald-950"><span class="material-symbols-outlined text-emerald-800">verified_user</span>Access is based on your role</h2>
                         <div class="mt-4 space-y-4 text-sm">
-                            <div class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-800 text-xs font-bold text-white">1</span><p><strong class="block">Choose your account type</strong><span class="text-slate-600">Select the role approved for your account.</span></p></div>
-                            <div class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-800 text-xs font-bold text-white">2</span><p><strong class="block">Enter your credentials</strong><span class="text-slate-600">Use your registered school ID or email and password.</span></p></div>
-                            <div class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-400 text-xs font-bold">3</span><p><strong class="block">Open your portal</strong><span class="text-slate-600">You will be taken to the dashboard for your role.</span></p></div>
+                            <div class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-800 text-xs font-bold text-white">1</span><p><strong class="block">Use your school account</strong><span class="text-slate-600">Only @clcst.edu.ph emails or school IDs are accepted.</span></p></div>
+                            <div class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-800 text-xs font-bold text-white">2</span><p><strong class="block">Enter your credentials</strong><span class="text-slate-600">Enter your school ID or email and password.</span></p></div>
+                            <div class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-400 text-xs font-bold">3</span><p><strong class="block">Open your portal</strong><span class="text-slate-600">We open the dashboard for the role saved on your account.</span></p></div>
                         </div>
                     </section>
                     <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
@@ -129,11 +128,11 @@
 
 <script>
 const roleDetails={
-student:{tag:'STUDENT PORTAL',icon:'school',description:'Access your loans, reservations, notifications, and library account.',identifier:'Student ID or registered email',placeholder:'Example: STU-2026-001',submit:'Sign In as Student'},
-faculty:{tag:'FACULTY PORTAL',icon:'co_present',description:'Access teaching resources, borrowing services, course reserves, and academic requests.',identifier:'Employee ID or institutional email',placeholder:'Example: FAC-2026-001',submit:'Sign In as Faculty'},
-librarian:{tag:'LIBRARIAN PORTAL',icon:'local_library',description:'Manage books, circulation, reservations, user verification, and library services.',identifier:'Librarian ID or registered email',placeholder:'Example: LIB-2026-001',submit:'Sign In as Librarian'},
-admin:{tag:'ADMINISTRATOR PORTAL',icon:'admin_panel_settings',description:'Manage library records, staff workflows, reports, and approved administrative settings.',identifier:'Administrator ID or registered email',placeholder:'Example: ADM-2026-001',submit:'Sign In as Administrator'},
-superadmin:{tag:'SUPER ADMINISTRATOR PORTAL',icon:'security',description:'Manage roles, permissions, security settings, audits, and system-wide configuration.',identifier:'System administrator ID or registered email',placeholder:'Example: SYS-2026-001',submit:'Sign In as Super Administrator'}};
+student:{tag:'STUDENT PORTAL',icon:'school',description:'Access your loans, reservations, notifications, and library account.',identifier:'Student ID or school email',placeholder:'Example: STU-2026-001',submit:'Sign In as Student'},
+faculty:{tag:'FACULTY PORTAL',icon:'co_present',description:'Access teaching resources, borrowing services, course reserves, and academic requests.',identifier:'Employee ID or school email',placeholder:'Example: FAC-2026-001',submit:'Sign In as Faculty'},
+librarian:{tag:'LIBRARIAN PORTAL',icon:'local_library',description:'Manage books, circulation, reservations, user verification, and library services.',identifier:'Librarian ID or school email',placeholder:'Example: LIB-2026-001',submit:'Sign In as Librarian'},
+admin:{tag:'ADMINISTRATOR PORTAL',icon:'admin_panel_settings',description:'Manage library records, staff workflows, reports, and approved administrative settings.',identifier:'Administrator ID or school email',placeholder:'Example: ADM-2026-001',submit:'Sign In as Administrator'},
+superadmin:{tag:'SUPER ADMINISTRATOR PORTAL',icon:'security',description:'Manage roles, permissions, security settings, audits, and system-wide configuration.',identifier:'System administrator ID or school email',placeholder:'Example: SYS-2026-001',submit:'Sign In as Super Administrator'}};
 const roleInput=document.getElementById('role-input');const roleCards=document.querySelectorAll('[data-role]');
 function selectRole(role){const d=roleDetails[role]||roleDetails.student;roleInput.value=role;roleCards.forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.role===role)));document.getElementById('active-role-tag').textContent=d.tag;document.getElementById('active-role-icon').textContent=d.icon;document.getElementById('active-role-description').textContent=d.description;document.getElementById('identifier-label').textContent=d.identifier;document.getElementById('identifier').placeholder=d.placeholder;document.getElementById('submit-label').textContent=d.submit}
 roleCards.forEach(c=>c.addEventListener('click',()=>selectRole(c.dataset.role)));selectRole(roleInput.value);

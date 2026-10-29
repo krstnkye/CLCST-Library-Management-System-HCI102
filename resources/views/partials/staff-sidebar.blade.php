@@ -29,6 +29,13 @@
 
 <aside id="staff-sidebar" class="clcst-sidebar fixed bottom-0 left-0 top-16 z-30 hidden w-64 flex-shrink-0 flex-col justify-between border-r border-[#CBD5E1] bg-white md:flex" aria-label="Faculty navigation">
     <div class="custom-scrollbar flex flex-1 flex-col gap-4 overflow-y-auto p-4">
+        @php($facultyUser = auth()->user())
+        <a class="flex items-center gap-3 rounded-xl border border-[#CBD5E1] p-3" href="{{ route('staff.section', 'profile') }}" title="Show my e-Pass QR code"
+            data-epass data-epass-name="{{ $facultyUser->name }}" data-epass-id="{{ $facultyUser->patron_id }}" data-epass-program="{{ $facultyUser->program_or_department }}" data-epass-role="Faculty">
+            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#065F2A] text-white"><span class="material-symbols-outlined">badge</span></span>
+            <span class="min-w-0"><span class="block truncate text-xs font-bold">CLCST e-Pass</span><span class="block truncate text-[10px]">ID: {{ $facultyUser->patron_id }}</span></span>
+            <span class="material-symbols-outlined ml-auto text-[20px]" aria-hidden="true">qr_code_2</span>
+        </a>
         @foreach ($groups as $heading => $items)
             <section>
                 <p class="mb-1 px-3 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">{{ $heading }}</p>
@@ -37,12 +44,20 @@
                         @php($isActive = $activePage === $key)
                         <a class="{{ $isActive ? 'bg-[#065F2A] text-white shadow-sm' : 'text-[#334155] hover:bg-[#F1F5F9]' }} flex items-center justify-between rounded-lg px-3 py-2 text-xs font-semibold" href="{{ $href }}" @if ($isActive) aria-current="page" @endif>
                             <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[20px]">{{ $icon }}</span>{{ $label }}</span>
-                            @if ($badge)<span class="rounded-full {{ $isActive ? 'bg-white/20' : 'bg-[#DBEAFE] text-[#1D4ED8]' }} px-2 py-0.5 text-[10px] font-bold">{{ $badge }}</span>@endif
+                            @if ($key === 'notifications')<span class="rounded-full {{ $isActive ? 'bg-white/20' : 'bg-[#DBEAFE] text-[#1D4ED8]' }} px-2 py-0.5 text-[10px] font-bold" data-notification-badge @unless ($badge) hidden @endunless>{{ $badge }}</span>@elseif ($badge)<span class="rounded-full {{ $isActive ? 'bg-white/20' : 'bg-[#DBEAFE] text-[#1D4ED8]' }} px-2 py-0.5 text-[10px] font-bold">{{ $badge }}</span>@endif
                         </a>
                     @endforeach
                 </nav>
             </section>
         @endforeach
+        <form class="space-y-2 rounded-xl border border-[#CBD5E1] p-3" method="GET" action="{{ route('books.catalog') }}">
+            <label class="flex items-center gap-2 text-xs font-bold" for="faculty-sidebar-barcode"><span class="material-symbols-outlined text-base">barcode_scanner</span>Find by barcode or ISBN</label>
+            <input id="faculty-sidebar-barcode" class="w-full rounded-lg border border-[#CBD5E1] px-3 py-2 text-xs" name="q" required placeholder="e.g. 978-0132350884">
+            <div class="flex gap-2">
+                <button class="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold" type="submit"><span class="material-symbols-outlined text-base">search</span>Look up</button>
+                <button class="sidebar-scan flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold" type="button" aria-label="Scan a barcode with the camera" data-scan data-scan-target="#faculty-sidebar-barcode" data-scan-submit><span class="material-symbols-outlined text-base">photo_camera</span>Scan</button>
+            </div>
+        </form>
     </div>
     <div class="border-t border-[#CBD5E1] p-4">
         <form method="POST" action="{{ route('logout') }}">

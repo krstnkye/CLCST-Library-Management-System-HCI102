@@ -12,6 +12,13 @@ Laravel-based HCI102 project for the Central Luzon College of Science and Techno
 | Administrator | Account approvals (including librarians), book records, transaction history, reports, user and book CSV import/export, activity log, plus the librarian workspace |
 | Super administrator | Everything above, plus roles and permissions overview, editable borrowing rules and fine settings, system policies, security monitoring, and system status |
 
+## Scanner, pop-ups and notifications
+
+- **Barcode and QR scanner.** The scan buttons (catalog search, sidebar "Find by barcode or ISBN", librarian desk fields, inventory and book search) open the camera and read ISBN/EAN barcodes, copy barcodes, and QR codes. Without a camera you can scan a photo or type the code. Browsers only allow the camera on `localhost`, `127.0.0.1`, or HTTPS. The scanner library is bundled in `public/js/vendor`, so it works offline.
+- **Library e-Pass.** Students and faculty can open a QR code of their school ID from the sidebar or the dashboard. Librarians scan it in the patron field when checking out a book.
+- **Confirmations and results.** Important actions (reserve, renew, cancel, check in/out, record or waive a fine, approve or suspend an account) ask for confirmation in a pop-up, and every action shows a success or failure pop-up afterwards.
+- **Notifications.** Patrons can open any notification to read it in full, mark it read or unread, and mark everything read or unread at once. Read marks are stored in the `notification_reads` table.
+
 ## Circulation rules
 
 All borrowing rules live in `app/Services/CirculationService.php`, so every screen enforces the same policy:
@@ -42,6 +49,7 @@ The schema is defined in `database/migrations` and works on SQLite (local) and M
 | `announcements` | Notices shown in patron notifications |
 | `library_settings` | Policy values changed by the super administrator |
 | `audit_logs` | Sign-ins, account changes, data imports, and circulation actions |
+| `notification_reads` | Which patron notifications each user has read |
 
 Foreign keys protect history (a user or copy with loans cannot be deleted), unique constraints prevent duplicate ISBNs, barcodes, school IDs, emails, and receipt numbers, and indexes cover the common lookups (status, due date, patron and title).
 

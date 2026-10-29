@@ -5,7 +5,7 @@
         <form class="mt-4 space-y-3" method="POST" action="{{ route('librarian.checkin') }}">
             @csrf
             <label class="block text-sm font-bold" for="return-barcode">Copy barcode or copy code</label>
-            <input id="return-barcode" name="barcode" value="{{ old('barcode') }}" required maxlength="32" autocomplete="off" autofocus class="w-full rounded-lg border-[#CBD6CF] font-mono text-sm focus:border-[#0F5C2E] focus:ring-[#0F5C2E]">
+            <div class="flex gap-2"><input id="return-barcode" name="barcode" value="{{ old('barcode') }}" required maxlength="32" autocomplete="off" autofocus placeholder="1049201 or PY-001" class="w-full rounded-lg border-[#CBD6CF] font-mono text-sm focus:border-[#0F5C2E] focus:ring-[#0F5C2E]"><button class="ui-scan-btn" type="button" aria-label="Scan with the camera" data-scan data-scan-target="#return-barcode" data-scan-title="Scan the returned copy" data-scan-submit><span class="material-symbols-outlined text-lg">barcode_scanner</span>Scan</button></div>
             <button class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#0F5C2E] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#0A4421]" type="submit"><span class="material-symbols-outlined text-lg">assignment_return</span>Check in</button>
         </form>
     </section>

@@ -43,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
                     'overdueLoans' => $user->loans()->overdue()->count(),
                     'openReservations' => $user->reservations()->open()->count(),
                     'outstandingFines' => $user->outstandingFineTotal(),
-                    'notifications' => PatronNotifications::actionableCount($user),
+                    'notifications' => PatronNotifications::unreadCount($user),
                 ]);
             }
             $view->with('patronSummary', $attributes->get('patronSummary'));

@@ -19,7 +19,7 @@
                             </td>
                             <td class="px-5 py-4 text-xs">#{{ $reservation->queuePosition() }} in line</td>
                             <td class="px-5 py-4 text-right">
-                                <form method="POST" action="{{ route('reservations.cancel', $reservation) }}" onsubmit="return confirm('Cancel your reservation for this book?')">
+                                <form method="POST" action="{{ route('reservations.cancel', $reservation) }}" data-confirm="You will lose your place in the waiting list for this title." data-confirm-title="Cancel your reservation?" data-confirm-detail="{{ $reservation->book->title }}" data-confirm-label="Cancel reservation">
                                     @csrf
                                     <button class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-50" type="submit">Cancel</button>
                                 </form>

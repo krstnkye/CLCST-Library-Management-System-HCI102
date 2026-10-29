@@ -29,7 +29,7 @@
     </div>
     <div class="flex shrink-0 flex-row justify-end gap-2 md:flex-col">
         @if ($loan->canRenew())
-            <form method="POST" action="{{ route('loans.renew', $loan) }}">
+            <form method="POST" action="{{ route('loans.renew', $loan) }}" data-confirm="The new due date will be {{ $loan->due_at->copy()->addDays((int) $policy['renewal_days'])->format('l, M d, Y') }}. You have {{ $policy['max_renewals'] - $loan->renewals }} renewal(s) left for this loan." data-confirm-title="Renew this book?" data-confirm-detail="{{ $book->title }}" data-confirm-label="Renew" data-confirm-icon="update">
                 @csrf
                 <button class="flex items-center justify-center gap-1.5 rounded-lg bg-[#EAB308] px-4 py-2 text-[11px] font-bold text-[#0F172A] shadow-sm hover:bg-[#CA8A04]" type="submit">
                     <span class="material-symbols-outlined text-sm">update</span>Renew for {{ $policy['renewal_days'] }} days

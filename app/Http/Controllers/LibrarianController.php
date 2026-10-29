@@ -157,41 +157,53 @@ class LibrarianController extends Controller
             'barcode' => ['required', 'string', 'max:32'],
         ]);
 
-        $patron = $this->findPatron($data['patron']);
+        try {
+            $patron = $this->findPatron($data['patron']);
+        } catch (ValidationException $exception) {
+            return back()->withInput()->withErrors($exception->errors())->with('error_title', 'Book not checked out');
+        }
         $copy = BookCopy::where('barcode', trim($data['barcode']))->orWhere('copy_code', strtoupper(trim($data['barcode'])))->first();
         if (! $copy) {
-            return back()->withInput()->withErrors(['barcode' => 'No copy matches barcode "'.$data['barcode'].'".']);
+            return back()->withInput()->withErrors(['barcode' => 'No copy matches barcode "'.$data['barcode'].'".'])->with('error_title', 'Book not checked out');
         }
 
-        $loan = $this->circulation->checkout($request->user(), $patron, $copy);
+        try {
+            $loan = $this->circulation->checkout($request->user(), $patron, $copy);
+        } catch (ValidationException $exception) {
+            return back()->withInput()->withErrors($exception->errors())->with('error_title', 'Book not checked out');
+        }
 
-        return back()->with('status', 'Lent "'.$copy->book->title.'" to '.$patron->name.'. Due '.$loan->due_at->format('M d, Y').'. Receipt '.$loan->receipt_no.'.');
+        return back()->with('status_title', 'Book checked out')->with('status', 'Lent "'.$copy->book->title.'" to '.$patron->name.'. Due '.$loan->due_at->format('M d, Y').'. Receipt '.$loan->receipt_no.'.');
     }
 
     public function issueReservation(Request $request, Reservation $reservation): RedirectResponse
     {
         $copy = $reservation->book->copies()->where('status', 'available')->first();
         if (! $copy) {
-            return back()->withErrors(['circulation' => 'No copy of "'.$reservation->book->title.'" is on the shelf right now.']);
+            return back()->withErrors(['circulation' => 'No copy of "'.$reservation->book->title.'" is on the shelf right now.'])->with('error_title', 'Book not checked out');
         }
 
-        $loan = $this->circulation->checkout($request->user(), $reservation->user, $copy);
+        try {
+            $loan = $this->circulation->checkout($request->user(), $reservation->user, $copy);
+        } catch (ValidationException $exception) {
+            return back()->withErrors($exception->errors())->with('error_title', 'Book not checked out');
+        }
 
-        return back()->with('status', 'Lent copy '.$copy->copy_code.' of "'.$reservation->book->title.'" to '.$reservation->user->name.'. Due '.$loan->due_at->format('M d, Y').'.');
+        return back()->with('status_title', 'Book checked out')->with('status', 'Lent copy '.$copy->copy_code.' of "'.$reservation->book->title.'" to '.$reservation->user->name.'. Due '.$loan->due_at->format('M d, Y').'.');
     }
 
     public function readyReservation(Request $request, Reservation $reservation): RedirectResponse
     {
         $this->circulation->markReady($request->user(), $reservation);
 
-        return back()->with('status', $reservation->user->name.' was notified that "'.$reservation->book->title.'" is ready for pickup.');
+        return back()->with('status_title', 'Patron notified')->with('status', $reservation->user->name.' was notified that "'.$reservation->book->title.'" is ready for pickup.');
     }
 
     public function cancelReservation(Request $request, Reservation $reservation): RedirectResponse
     {
         $this->circulation->cancelReservation($request->user(), $reservation);
 
-        return back()->with('status', 'Reservation cancelled.');
+        return back()->with('status_title', 'Reservation cancelled')->with('status', 'The reservation was cancelled and the patron will no longer be held a copy.');
     }
 
     public function checkin(Request $request): RedirectResponse
@@ -199,7 +211,7 @@ class LibrarianController extends Controller
         $barcode = trim($request->validate(['barcode' => ['required', 'string', 'max:32']])['barcode']);
         $loan = Loan::active()->whereHas('copy', fn ($copy) => $copy->where('barcode', $barcode)->orWhere('copy_code', strtoupper($barcode)))->first();
         if (! $loan) {
-            return back()->withInput()->withErrors(['barcode' => 'No book on loan matches "'.$barcode.'".']);
+            return back()->withInput()->withErrors(['barcode' => 'No book on loan matches "'.$barcode.'".'])->with('error_title', 'Book not checked in');
         }
 
         return $this->completeCheckin($request, $loan);
@@ -215,7 +227,7 @@ class LibrarianController extends Controller
         $outcome = $request->validate(['outcome' => ['required', Rule::in(['paid', 'waived'])]])['outcome'];
         $fine = $this->circulation->settleFine($request->user(), $fine, $outcome);
 
-        return back()->with('status', ($outcome === 'paid' ? 'Payment recorded' : 'Fine waived').' for '.$fine->user->name.'. Receipt '.$fine->receipt_no.'.');
+        return back()->with('status_title', $outcome === 'paid' ? 'Payment recorded' : 'Fine waived')->with('status', ($outcome === 'paid' ? 'Payment recorded' : 'Fine waived').' for '.$fine->user->name.'. Receipt '.$fine->receipt_no.'.');
     }
 
     public function updateRequest(Request $request, LibraryRequest $libraryRequest): RedirectResponse
@@ -242,7 +254,7 @@ class LibrarianController extends Controller
         $announcement = Announcement::create($data + ['user_id' => $request->user()->id, 'published_at' => now()]);
         AuditLog::record($request->user(), 'announcement.published', 'Published "'.$announcement->title.'".', ['announcement_id' => $announcement->id]);
 
-        return back()->with('status', 'Announcement published.');
+        return back()->with('status_title', 'Announcement published')->with('status', 'Students and faculty can now see it in their notifications.');
     }
 
     public function destroyAnnouncement(Request $request, Announcement $announcement): RedirectResponse
@@ -265,7 +277,7 @@ class LibrarianController extends Controller
             $message .= ' '.$next->user->name.' is next on the waiting list.';
         }
 
-        return back()->with('status', $message);
+        return back()->with('status_title', 'Book checked in')->with('status', $message);
     }
 
     private function sectionData(Request $request, string $section): array
@@ -274,7 +286,15 @@ class LibrarianController extends Controller
 
         return match ($section) {
             'books' => ['books' => LibraryBook::query()
-                ->when($q !== '', fn ($query) => $query->where(fn ($where) => $where->where('title', 'like', "%{$q}%")->orWhere('author', 'like', "%{$q}%")->orWhere('isbn', 'like', "%{$q}%")->orWhere('call_number', 'like', "%{$q}%")))
+                ->when($q !== '', fn ($query) => $query->where(function ($where) use ($q): void {
+                    $where->where('title', 'like', "%{$q}%")->orWhere('author', 'like', "%{$q}%")->orWhere('isbn', 'like', "%{$q}%")->orWhere('call_number', 'like', "%{$q}%")
+                        ->orWhereHas('copies', fn ($copy) => $copy->where('barcode', $q)->orWhere('copy_code', strtoupper($q)));
+                    // Scanned ISBNs have no hyphens.
+                    $digits = preg_replace('/[^0-9Xx]/', '', $q);
+                    if (strlen($digits) >= 4) {
+                        $where->orWhereRaw("REPLACE(isbn, '-', '') like ?", ['%'.$digits.'%']);
+                    }
+                }))
                 ->when($request->query('status') === 'archived', fn ($query) => $query->where('status', 'archived'), fn ($query) => $query->where('status', 'active'))
                 ->orderBy('title')->paginate(15)->withQueryString()],
             'add-book' => ['categories' => LibraryBook::query()->whereNotNull('category')->distinct()->orderBy('category')->pluck('category')],

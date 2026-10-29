@@ -15,6 +15,7 @@ use App\Support\PatronNotifications;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -128,29 +129,57 @@ class PatronController extends Controller
         $category = (string) $request->query('category', 'all');
         $availability = (string) $request->query('availability', 'all');
         $sort = (string) $request->query('sort', 'relevance');
+        // Advanced search fields; each one narrows the results further.
+        $advanced = array_filter([
+            'title' => trim((string) $request->query('title', '')),
+            'author' => trim((string) $request->query('author', '')),
+            'isbn' => trim((string) $request->query('isbn', '')),
+        ], fn ($value) => $value !== '');
+        $yearFrom = filter_var($request->query('year_from'), FILTER_VALIDATE_INT) ?: null;
+        $yearTo = filter_var($request->query('year_to'), FILTER_VALIDATE_INT) ?: null;
+        // Scanners read ISBNs without hyphens, so compare digits only as well.
+        $digits = fn (string $value) => preg_replace('/[^0-9Xx]/', '', $value);
 
         $books = LibraryBook::query()
             ->where('status', 'active')
             ->with('copies.activeLoan')
             ->withCount(['copies as available_count' => fn ($q) => $q->where('status', 'available')])
-            ->when($query !== '', function ($builder) use ($query, $field): void {
+            ->when($query !== '', function ($builder) use ($query, $field, $digits): void {
                 $like = '%'.$query.'%';
-                $builder->where(function ($where) use ($like, $field): void {
+                $isbnLike = strlen($digits($query)) >= 4 ? '%'.$digits($query).'%' : null;
+                $builder->where(function ($where) use ($like, $field, $isbnLike): void {
+                    $matchIsbn = function ($isbn) use ($like, $isbnLike): void {
+                        $isbn->where('isbn', 'like', $like);
+                        if ($isbnLike) {
+                            $isbn->orWhereRaw("REPLACE(isbn, '-', '') like ?", [$isbnLike]);
+                        }
+                    };
                     match ($field) {
                         'title' => $where->where('title', 'like', $like),
                         'author' => $where->where('author', 'like', $like),
-                        'isbn' => $where->where('isbn', 'like', $like),
+                        'isbn' => $where->where($matchIsbn)->orWhereHas('copies', fn ($copy) => $copy->where('barcode', 'like', $like)),
                         'call' => $where->where('call_number', 'like', $like),
                         default => $where->where('title', 'like', $like)
                             ->orWhere('author', 'like', $like)
-                            ->orWhere('isbn', 'like', $like)
+                            ->orWhere($matchIsbn)
                             ->orWhere('call_number', 'like', $like)
                             ->orWhere('subject', 'like', $like)
                             ->orWhere('category', 'like', $like)
-                            ->orWhereHas('copies', fn ($copy) => $copy->where('barcode', 'like', $like)),
+                            ->orWhereHas('copies', fn ($copy) => $copy->where('barcode', 'like', $like)->orWhere('copy_code', 'like', $like)),
                     };
                 });
             })
+            ->when(isset($advanced['title']), fn ($builder) => $builder->where('title', 'like', '%'.$advanced['title'].'%'))
+            ->when(isset($advanced['author']), fn ($builder) => $builder->where('author', 'like', '%'.$advanced['author'].'%'))
+            ->when(isset($advanced['isbn']), fn ($builder) => $builder->where(function ($where) use ($advanced, $digits): void {
+                $where->where('isbn', 'like', '%'.$advanced['isbn'].'%')
+                    ->orWhereHas('copies', fn ($copy) => $copy->where('barcode', $advanced['isbn']));
+                if (strlen($digits($advanced['isbn'])) >= 4) {
+                    $where->orWhereRaw("REPLACE(isbn, '-', '') like ?", ['%'.$digits($advanced['isbn']).'%']);
+                }
+            }))
+            ->when($yearFrom, fn ($builder) => $builder->where('publication_year', '>=', $yearFrom))
+            ->when($yearTo, fn ($builder) => $builder->where('publication_year', '<=', $yearTo))
             ->when($category !== 'all', fn ($builder) => $builder->where('category', $category))
             ->when($availability === 'available', fn ($builder) => $builder->whereHas('copies', fn ($copy) => $copy->where('status', 'available')))
             ->when($availability === 'reference', fn ($builder) => $builder->where('loan_policy', 'reference'));
@@ -179,29 +208,51 @@ class PatronController extends Controller
             'category' => $category,
             'availability' => $availability,
             'sort' => $sort,
+            'advancedFilters' => array_filter($advanced + ['year_from' => $yearFrom, 'year_to' => $yearTo]),
         ]);
     }
 
     public function reserve(Request $request, LibraryBook $book): RedirectResponse
     {
-        $this->circulation->reserve($request->user(), $book);
+        $user = $request->user();
+        try {
+            $reservation = $this->circulation->reserve($user, $book);
+        } catch (ValidationException $exception) {
+            return back()->withErrors($exception->errors())->with('error_title', 'Reservation not placed');
+        }
 
-        return back()->with('status', 'Reservation placed for "'.$book->title.'". We will notify you when it is ready for pickup.');
+        $onShelf = $book->copies()->where('status', 'available')->count();
+
+        return back()->with([
+            'status_title' => 'Reservation successful',
+            'status' => 'You reserved "'.$book->title.'". '.($onShelf > 0
+                ? 'A librarian will set a copy aside and you will be notified when it is ready for pickup.'
+                : 'You are #'.$reservation->queuePosition().' on the waiting list. We will notify you when a copy is set aside for you.'),
+            'status_link' => ['label' => 'View my reservations', 'url' => route($user->role === 'student' ? 'student.section' : 'staff.section', 'reservations')],
+        ]);
     }
 
     public function cancelReservation(Request $request, Reservation $reservation): RedirectResponse
     {
         abort_unless($reservation->user_id === $request->user()->id, 403);
-        $this->circulation->cancelReservation($request->user(), $reservation);
+        try {
+            $this->circulation->cancelReservation($request->user(), $reservation);
+        } catch (ValidationException $exception) {
+            return back()->withErrors($exception->errors())->with('error_title', 'Reservation not cancelled');
+        }
 
-        return back()->with('status', 'Reservation cancelled for "'.$reservation->book->title.'".');
+        return back()->with(['status_title' => 'Reservation cancelled', 'status' => 'Your reservation for "'.$reservation->book->title.'" was cancelled.']);
     }
 
     public function renew(Request $request, Loan $loan): RedirectResponse
     {
-        $loan = $this->circulation->renew($request->user(), $loan);
+        try {
+            $loan = $this->circulation->renew($request->user(), $loan);
+        } catch (ValidationException $exception) {
+            return back()->withErrors($exception->errors())->with('error_title', 'Renewal not possible');
+        }
 
-        return back()->with('status', 'Renewed "'.$loan->copy->book->title.'". New due date: '.$loan->due_at->format('M d, Y').'.');
+        return back()->with(['status_title' => 'Loan renewed', 'status' => 'Renewed "'.$loan->copy->book->title.'". New due date: '.$loan->due_at->format('l, M d, Y').'.']);
     }
 
     public function storeRequest(Request $request): RedirectResponse
@@ -218,7 +269,10 @@ class PatronController extends Controller
         $libraryRequest = $user->libraryRequests()->create($validated + ['status' => 'submitted']);
         AuditLog::record($user, 'request.submitted', 'Submitted a '.strtolower($libraryRequest->typeLabel()).': '.$libraryRequest->subject);
 
-        return back()->with('status', $libraryRequest->typeLabel().' sent to the library. Reference no. REQ-'.str_pad((string) $libraryRequest->id, 5, '0', STR_PAD_LEFT).'.');
+        return back()->with([
+            'status_title' => 'Request sent',
+            'status' => $libraryRequest->typeLabel().' sent to the library. Reference no. REQ-'.str_pad((string) $libraryRequest->id, 5, '0', STR_PAD_LEFT).'. You will see the reply in your notifications.',
+        ]);
     }
 
     /** Numbers and records most patron pages share. */

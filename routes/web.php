@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BulkDataController;
 use App\Http\Controllers\LibrarianController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PatronController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,13 @@ Route::middleware(['auth', 'portal:student,faculty'])->group(function (): void {
     Route::post('/reservations/{reservation}/cancel', [PatronController::class, 'cancelReservation'])->name('reservations.cancel');
     Route::post('/loans/{loan}/renew', [PatronController::class, 'renew'])->name('loans.renew');
     Route::post('/requests', [PatronController::class, 'storeRequest'])->middleware('throttle:10,1')->name('patron.requests.store');
+
+    Route::prefix('notifications')->name('notifications.')->middleware('throttle:60,1')->group(function (): void {
+        Route::post('/read-all', [NotificationController::class, 'readAll'])->name('read-all');
+        Route::post('/unread-all', [NotificationController::class, 'unreadAll'])->name('unread-all');
+        Route::post('/{key}/read', [NotificationController::class, 'read'])->where('key', '[a-z0-9-]+')->name('read');
+        Route::post('/{key}/unread', [NotificationController::class, 'unread'])->where('key', '[a-z0-9-]+')->name('unread');
+    });
 });
 
 Route::middleware(['auth', 'portal:librarian,admin,superadmin'])->prefix('librarian')->name('librarian.')->group(function (): void {

@@ -116,7 +116,12 @@
                     <p class="font-mono text-xs font-bold text-[#FDE047]">{{ $patron->patron_id }}</p>
                     <p class="text-[11px] text-slate-200">{{ $patron->program_or_department }}</p>
                 </div>
-                <p class="text-center text-[11px] text-slate-300">Show this pass and your school ID at the circulation desk.</p>
+                <div class="library-pass-qr" data-qr="{{ $patron->patron_id }}" data-qr-label="QR code for {{ $patron->patron_id }}"></div>
+                <p class="text-center text-[11px] text-slate-300">Show this QR code and your school ID at the circulation desk.</p>
+                <a class="flex items-center justify-center gap-1.5 rounded-lg bg-white/15 px-3 py-2 text-xs font-bold text-white hover:bg-white/25" href="{{ route('student.section', 'account') }}"
+                    data-epass data-epass-name="{{ $patron->name }}" data-epass-id="{{ $patron->patron_id }}" data-epass-program="{{ $patron->program_or_department }}" data-epass-role="Student">
+                    <span class="material-symbols-outlined text-base">open_in_full</span>Show full-screen pass
+                </a>
             </section>
 
             <section class="library-section space-y-3 bg-surface-container-lowest p-5" aria-labelledby="alerts-heading">

@@ -75,7 +75,7 @@
     </div>
 </aside>
 
-<nav class="custom-scrollbar fixed inset-x-0 bottom-0 z-40 flex gap-1 overflow-x-auto border-t border-outline-variant bg-surface-container-lowest px-2 py-1.5 md:hidden" aria-label="Student navigation">
+<nav class="clcst-mobile-nav custom-scrollbar fixed inset-x-0 bottom-0 z-40 flex gap-1 overflow-x-auto border-t border-outline-variant bg-surface-container-lowest px-2 py-1.5 md:hidden" aria-label="Student navigation">
     @foreach ($navItems as $item)
         <a class="{{ $activePage === $item['key'] ? 'bg-primary-container text-on-primary' : 'text-on-surface-variant' }} flex min-w-[4.5rem] flex-col items-center gap-0.5 rounded-lg px-2 py-1 text-[10px] font-semibold" href="{{ $item['href'] }}">
             <span class="material-symbols-outlined text-[20px]">{{ $item['icon'] }}</span>{{ $item['label'] }}

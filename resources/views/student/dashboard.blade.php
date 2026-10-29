@@ -9,7 +9,7 @@
         $usedPercent = $loanLimit > 0 ? min(100, round($activeLoans->count() / $loanLimit * 100)) : 0;
     @endphp
 
-    <section class="rounded-lg border border-[#D5DED8] border-l-4 border-l-primary bg-white p-5 shadow-sm lg:p-6">
+    <section class="library-welcome">
         <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
             <div class="max-w-3xl">
                 <p class="clcst-record-label"><span class="material-symbols-outlined text-base">local_library</span>Student circulation account · {{ now()->format('Y') }}</p>
@@ -29,7 +29,7 @@
         </div>
     </section>
 
-    <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Account summary">
+    <section class="library-metrics grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4" aria-label="Account summary">
         <article class="rounded-xl border border-[#E2E8F0] bg-surface-container-lowest p-5 shadow-sm">
             <div class="flex items-center justify-between"><span class="text-xs font-semibold text-[#64748B]">Borrowed Books</span><span class="material-symbols-outlined rounded-lg bg-[#DCFCE7] p-2 text-[#166534]">menu_book</span></div>
             <p class="mt-4 font-headline text-2xl font-semibold">{{ $activeLoans->count() }} active {{ \Illuminate\Support\Str::plural('loan', $activeLoans->count()) }}</p>
@@ -54,7 +54,7 @@
 
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-12">
         <div class="space-y-6 xl:col-span-8">
-            <section class="space-y-4 rounded-2xl border border-[#E2E8F0] bg-surface-container-lowest p-5 shadow-sm lg:p-6" aria-labelledby="loans-heading">
+            <section class="library-section space-y-4 bg-surface-container-lowest p-5 lg:p-6" aria-labelledby="loans-heading">
                 <div class="flex flex-col justify-between gap-2 border-b border-[#E2E8F0] pb-4 sm:flex-row sm:items-center">
                     <div>
                         <h2 id="loans-heading" class="font-headline text-xl font-bold">My Active Loans</h2>
@@ -71,7 +71,7 @@
                 @endforelse
             </section>
 
-            <section class="space-y-4 rounded-2xl border border-[#E2E8F0] bg-surface-container-lowest p-5 shadow-sm lg:p-6" aria-labelledby="catalog-heading">
+            <section class="library-section space-y-4 bg-surface-container-lowest p-5 lg:p-6" aria-labelledby="catalog-heading">
                 <div class="flex flex-col justify-between gap-2 border-b border-[#E2E8F0] pb-4 sm:flex-row sm:items-center">
                     <div>
                         <h2 id="catalog-heading" class="font-headline text-xl font-bold">Quick Catalog Search</h2>
@@ -86,7 +86,8 @@
                 </form>
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     @foreach ($featuredBooks as $book)
-                        <article class="flex flex-col justify-between rounded-xl border {{ $book->available_count > 0 ? 'border-[#E2E8F0]' : 'border-[#FEE2E2] bg-[#FFF5F5]' }} p-4">
+                        <article class="library-book">
+                            <img src="{{ $book->cover_url }}" alt="" loading="lazy">
                             <div>
                                 <div class="mb-2 flex items-start justify-between gap-2">
                                     <span class="rounded-full px-2 py-0.5 text-[10px] font-bold {{ $book->isReference() ? 'bg-blue-100 text-blue-900' : ($book->available_count > 0 ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#FEE2E2] text-[#991B1B]') }}">
@@ -96,8 +97,8 @@
                                 </div>
                                 <h3 class="font-headline text-base font-bold">{{ $book->title }}</h3>
                                 <p class="mt-0.5 text-xs text-[#64748B]">{{ $book->author }}</p>
+                                <a class="mt-3 inline-flex w-fit items-center gap-1" href="{{ route('books.catalog', ['selected' => $book->id]) }}">View copies <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
                             </div>
-                            <a class="mt-4 inline-flex w-fit rounded-lg bg-primary-container px-3 py-1.5 text-[11px] font-bold text-on-primary hover:bg-[#0e4723]" href="{{ route('books.catalog', ['selected' => $book->id]) }}">View copies</a>
                         </article>
                     @endforeach
                 </div>
@@ -105,7 +106,7 @@
         </div>
 
         <aside class="space-y-6 xl:col-span-4">
-            <section class="space-y-4 rounded-2xl bg-gradient-to-b from-[#135d2e] via-[#0e4723] to-[#092c16] p-5 text-white shadow-md" aria-label="Digital library pass">
+            <section class="library-pass space-y-4 rounded-2xl p-5 text-white shadow-md" aria-label="Digital library pass">
                 <div class="flex items-center justify-between">
                     <h2 class="text-[10px] font-bold uppercase tracking-wide text-[#FDE047]">CLCST Digital Library Pass</h2>
                     <span class="rounded bg-white/20 px-2 py-0.5 text-[10px] font-bold text-[#AAF4B5]">AY {{ now()->month >= 6 ? now()->format('Y').'-'.now()->addYear()->format('Y') : now()->subYear()->format('Y').'-'.now()->format('Y') }}</span>
@@ -118,7 +119,7 @@
                 <p class="text-center text-[11px] text-slate-300">Show this pass and your school ID at the circulation desk.</p>
             </section>
 
-            <section class="space-y-3 rounded-2xl border border-[#E2E8F0] bg-surface-container-lowest p-5 shadow-sm" aria-labelledby="alerts-heading">
+            <section class="library-section space-y-3 bg-surface-container-lowest p-5" aria-labelledby="alerts-heading">
                 <div class="flex items-center justify-between">
                     <h2 id="alerts-heading" class="font-headline text-base font-bold">Alerts</h2>
                     <a class="text-xs font-bold text-primary hover:underline" href="{{ route('student.section', 'notifications') }}">See all</a>
@@ -130,7 +131,7 @@
                 @endforelse
             </section>
 
-            <section class="space-y-2 rounded-2xl border border-[#E2E8F0] bg-surface-container-lowest p-5 shadow-sm">
+            <section class="library-section space-y-2 bg-surface-container-lowest p-5">
                 <h2 class="font-headline text-base font-bold">Quick Actions</h2>
                 @foreach ([
                     ['history', 'Borrowing History', 'Returned books and receipts', route('student.section', 'history')],

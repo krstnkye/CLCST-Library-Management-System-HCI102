@@ -39,13 +39,12 @@
 </header>
 
 <main class="mx-auto w-full max-w-7xl px-4 py-7 sm:px-6 lg:px-8">
-    <section class="relative overflow-hidden rounded-lg border border-clcst-700 bg-clcst-800 px-6 py-7 text-white shadow-sm sm:px-8">
+    <section class="registration-intro">
         <div class="relative z-10 max-w-3xl">
-            <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase text-amber-200"><span class="material-symbols-outlined text-sm">person_add</span>Library Account Registration</div>
+            <div class="registration-label"><span class="material-symbols-outlined mr-1 text-sm">person_add</span>Library Account Registration</div>
             <h1 class="text-2xl font-extrabold sm:text-3xl">Create your CLCST library account</h1>
-            <p class="mt-2 max-w-2xl text-sm leading-6 text-emerald-50">Enter your official school information and upload one supporting document. Authorized library personnel will review your application before access is activated.</p>
+            <p>Enter your official school information and upload one supporting document. Authorized library personnel will review your application before access is activated.</p>
         </div>
-        <div class="pointer-events-none absolute right-8 top-1/2 hidden -translate-y-1/2 text-8xl font-black text-white/5 lg:block">CLCST</div>
     </section>
 
     @if($errors->any())

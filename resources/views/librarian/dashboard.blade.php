@@ -3,7 +3,7 @@
 @section('title', 'Librarian Dashboard')
 
 @section('content')
-    <section class="mb-6 flex flex-col justify-between gap-4 border-b border-[#D6DED8] pb-5 lg:flex-row lg:items-end">
+    <section class="library-welcome mb-6 flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
         <div>
             <div class="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#0F5C2E]">
                 <span class="h-2 w-2 rounded-full bg-emerald-500"></span>{{ now()->format('l, F j, Y') }}
@@ -18,7 +18,7 @@
         </div>
     </section>
 
-    <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
+    <section class="library-metrics grid sm:grid-cols-2 xl:grid-cols-6">
         @foreach ([
             ['Total Book Titles', $stats['titles'], 'menu_book', 'text-[#0F5C2E]', 'bg-emerald-50'],
             ['Available Copies', $stats['availableCopies'], 'inventory_2', 'text-blue-700', 'bg-blue-50'],
@@ -37,7 +37,7 @@
     </section>
 
     <div class="mt-6 grid gap-6 xl:grid-cols-12">
-        <section class="rounded-lg border border-[#D6DED8] bg-white shadow-sm xl:col-span-8">
+        <section class="library-section bg-white xl:col-span-8">
             <div class="flex items-center justify-between border-b border-[#E2E8E4] px-5 py-4">
                 <div><h2 class="font-display text-lg font-bold">Reservation Queue</h2><p class="mt-0.5 text-xs text-[#67766E]">Patrons waiting for a title, oldest first.</p></div>
                 <a class="text-sm font-bold text-[#0F5C2E] hover:underline" href="{{ route('librarian.section', 'borrow-requests') }}">Open desk</a>
@@ -59,7 +59,7 @@
             @endif
         </section>
 
-        <section class="rounded-lg border border-[#D6DED8] bg-white shadow-sm xl:col-span-4">
+        <section class="library-section bg-white xl:col-span-4">
             <div class="border-b border-[#E2E8E4] px-5 py-4"><h2 class="font-display text-lg font-bold">Recent Desk Activity</h2><p class="mt-0.5 text-xs text-[#67766E]">Latest circulation actions from the activity log.</p></div>
             <div class="divide-y divide-[#E2E8E4]">
                 @forelse ($activities as $activity)
@@ -74,7 +74,7 @@
         </section>
     </div>
 
-    <section class="mt-6 rounded-lg border border-[#D6DED8] bg-white p-5 shadow-sm">
+    <section class="library-section mt-6 bg-white p-5">
         <div class="mb-4"><h2 class="font-display text-lg font-bold">Quick Actions</h2><p class="mt-0.5 text-xs text-[#67766E]">Common tasks for the library desk.</p></div>
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             @foreach ([['returns', 'assignment_return', 'Return a Book'], ['users', 'how_to_reg', 'Review Accounts ('.$stats['pendingAccounts'].')'], ['fines', 'payments', 'Record a Payment'], ['reports', 'monitoring', 'View Reports']] as [$page, $icon, $label])

@@ -8,7 +8,7 @@
         $openRequests = $requests->whereIn('status', ['submitted', 'in_review'])->count();
     @endphp
 
-    <section class="rounded-lg border border-[#D5DED8] border-l-4 border-l-[#175A64] bg-white p-5 shadow-sm lg:p-6">
+    <section class="library-welcome">
         <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
             <div class="max-w-3xl">
                 <p class="clcst-record-label"><span class="material-symbols-outlined text-base">co_present</span>Faculty library account · {{ now()->format('Y') }}</p>
@@ -24,7 +24,7 @@
         </div>
     </section>
 
-    <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Summary">
+    <section class="library-metrics grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4" aria-label="Summary">
         @foreach ([
             ['Books on loan', $activeLoans->count().' of '.$loanLimit, 'menu_book', route('staff.section', 'circulation')],
             ['Due within 3 days', $dueSoon->count(), 'schedule', route('staff.section', 'circulation')],
@@ -39,7 +39,7 @@
     </section>
 
     <div class="grid gap-6 xl:grid-cols-12">
-        <section class="space-y-4 rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm xl:col-span-8" aria-labelledby="faculty-loans">
+        <section class="library-section space-y-4 bg-white p-5 xl:col-span-8" aria-labelledby="faculty-loans">
             <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-3"><h2 id="faculty-loans" class="font-headline text-lg font-bold">My borrowed books</h2><a class="text-xs font-bold text-[#065F2A] hover:underline" href="{{ route('books.catalog') }}">Search books</a></div>
             @forelse ($activeLoans as $loan)
                 @include('student.partials.loan-card', ['loan' => $loan])
@@ -49,7 +49,7 @@
         </section>
 
         <aside class="space-y-6 xl:col-span-4">
-            <section class="space-y-3 rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm" aria-labelledby="faculty-alerts">
+            <section class="library-section space-y-3 bg-white p-5" aria-labelledby="faculty-alerts">
                 <div class="flex items-center justify-between"><h2 id="faculty-alerts" class="font-headline text-base font-bold">Notifications</h2><a class="text-xs font-bold text-[#065F2A] hover:underline" href="{{ route('staff.section', 'notifications') }}">See all</a></div>
                 @forelse ($notifications->take(3) as $notification)
                     @include('partials.notification-item', ['notification' => $notification, 'compact' => true])
@@ -57,7 +57,7 @@
                     <p class="text-sm text-[#64748B]">You are all caught up.</p>
                 @endforelse
             </section>
-            <section class="rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm" aria-labelledby="faculty-requests">
+            <section class="library-section bg-white p-5" aria-labelledby="faculty-requests">
                 <h2 id="faculty-requests" class="font-headline text-base font-bold">Recent requests</h2>
                 <ul class="mt-3 divide-y divide-[#E2E8F0] text-sm">
                     @forelse ($requests as $libraryRequest)

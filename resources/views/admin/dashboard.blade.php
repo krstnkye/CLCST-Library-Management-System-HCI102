@@ -1,8 +1,8 @@
 @extends('admin.layout')
 @section('title', 'Admin Dashboard')
 @section('content')
-<header class="border-b border-slate-200 pb-5"><p class="text-sm font-semibold text-emerald-800">Library administration</p><h1 class="mt-1 text-2xl font-bold">Admin Dashboard</h1><p class="mt-1 text-sm text-slate-600">Review accounts, book records, transactions, and data updates.</p></header>
-<section class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+<header class="library-welcome"><p class="clcst-record-label"><span class="material-symbols-outlined text-base">library_books</span>Library administration</p><h1>Admin Dashboard</h1><p class="mt-3 text-sm text-slate-600">Review accounts, book records, transactions, and data updates.</p></header>
+<section class="library-metrics mt-2 grid sm:grid-cols-2 lg:grid-cols-4">
     @foreach([['User accounts',$stats['users'],'group','users'],['Waiting for approval',$stats['pending'],'how_to_reg','approvals'],['Book titles',$stats['books'],'menu_book','books'],['Books on loan',$stats['activeLoans'],'sync_alt','circulation']] as [$label,$value,$icon,$target])
     <a class="rounded-md border border-slate-200 bg-white p-5 shadow-sm hover:border-emerald-500" href="{{ route('admin.section', $target) }}"><div class="flex items-center justify-between"><div><p class="text-sm text-slate-600">{{ $label }}</p><p class="mt-2 text-3xl font-bold">{{ $value }}</p></div><span class="material-symbols-outlined rounded-md bg-emerald-50 p-2 text-emerald-800">{{ $icon }}</span></div></a>
     @endforeach

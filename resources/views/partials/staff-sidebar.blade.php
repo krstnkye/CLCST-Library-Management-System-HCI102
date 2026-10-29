@@ -52,7 +52,7 @@
     </div>
 </aside>
 
-<nav class="custom-scrollbar fixed inset-x-0 bottom-0 z-40 flex gap-1 overflow-x-auto border-t border-[#CBD5E1] bg-white px-2 py-1.5 md:hidden" aria-label="Faculty navigation">
+<nav class="clcst-mobile-nav custom-scrollbar fixed inset-x-0 bottom-0 z-40 flex gap-1 overflow-x-auto border-t border-[#CBD5E1] bg-white px-2 py-1.5 md:hidden" aria-label="Faculty navigation">
     @foreach (array_merge(...array_values($groups)) as [$key, $label, $icon, $href])
         <a class="{{ $activePage === $key ? 'bg-[#065F2A] text-white' : 'text-[#334155]' }} flex min-w-[4.5rem] flex-col items-center gap-0.5 rounded-lg px-2 py-1 text-center text-[10px] font-semibold" href="{{ $href }}"><span class="material-symbols-outlined text-[20px]">{{ $icon }}</span>{{ $label }}</a>
     @endforeach

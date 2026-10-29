@@ -15,8 +15,8 @@
                     primary: '#00441d', 'primary-container': '#135d2e', 'primary-fixed': '#aaf4b5', 'on-primary': '#ffffff',
                     secondary: '#785a00', 'secondary-container': '#fdc425', 'on-secondary-container': '#6d5200', 'secondary-fixed': '#ffdf9a',
                     tertiary: '#002e97', 'tertiary-fixed': '#dce1ff',
-                    background: '#faf8ff', surface: '#faf8ff', 'surface-container-lowest': '#ffffff', 'surface-container-low': '#f2f3ff',
-                    'surface-container': '#eaedff', 'surface-container-high': '#e2e7ff', 'on-surface': '#131b2e', 'on-surface-variant': '#404940',
+                    background: '#f4f6f3', surface: '#f4f6f3', 'surface-container-lowest': '#ffffff', 'surface-container-low': '#f0f4ef',
+                    'surface-container': '#e7eee6', 'surface-container-high': '#dce7db', 'on-surface': '#1c3028', 'on-surface-variant': '#526458',
                     outline: '#707a6f', 'outline-variant': '#c0c9bd', error: '#ba1a1a', 'error-container': '#ffdad6',
                 },
                 fontFamily: {

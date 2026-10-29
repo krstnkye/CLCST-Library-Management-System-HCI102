@@ -7,7 +7,7 @@
         default => ['border-[#E2E8F0]', 'bg-[#DCFCE7] text-[#166534]', $days.' days remaining'],
     };
 @endphp
-<article class="flex flex-col justify-between gap-4 rounded-xl border-2 {{ $border }} p-5 md:flex-row md:items-center">
+<article class="library-loan flex flex-col justify-between gap-4 rounded-xl border-2 {{ $border }} p-5 md:flex-row md:items-center">
     <div class="flex items-start gap-4">
         <img class="h-24 w-16 flex-shrink-0 rounded-lg border border-outline-variant bg-primary-container object-cover" src="{{ $book->cover_url }}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
         <div class="space-y-1">

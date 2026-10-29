@@ -7,7 +7,7 @@
         <form class="ml-auto flex gap-2" method="GET" action="{{ route('librarian.section', 'inventory') }}" role="search">
             @if (request('status'))<input type="hidden" name="status" value="{{ request('status') }}">@endif
             <label class="sr-only" for="inventory-search">Search copies</label>
-            <input id="inventory-search" class="rounded-lg border-[#CBD6CF] py-1.5 text-sm" name="q" value="{{ request('q') }}" placeholder="Barcode, copy code, or title" type="search">
+            <input id="inventory-search" class="rounded-lg border-[#CBD6CF] py-1.5 text-sm" name="q" value="{{ request('q') }}" placeholder="Barcode, copy code, or title" type="search"><button class="ui-scan-btn" type="button" aria-label="Scan a copy barcode" data-scan data-scan-target="#inventory-search" data-scan-submit><span class="material-symbols-outlined text-lg">barcode_scanner</span></button>
             <button class="rounded-lg border border-[#CBD6CF] px-3 text-xs font-bold" type="submit">Search</button>
         </form>
     </div>

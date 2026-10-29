@@ -20,14 +20,12 @@
                 <label class="sr-only" for="header-search">Search the catalog</label>
                 <div class="relative">
                     <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-outline">search</span>
-                    <input id="header-search" class="h-9 w-64 rounded-lg border border-outline-variant bg-surface-container-low pl-9 pr-3 text-sm focus:border-primary focus:ring-primary" name="q" placeholder="Search title, author, ISBN..." type="search">
+                    <input id="header-search" class="h-9 w-64 rounded-lg border border-outline-variant bg-surface-container-low pl-9 pr-10 text-sm focus:border-primary focus:ring-primary" name="q" placeholder="Search title, author, ISBN..." type="search"><button class="absolute right-1.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-[#64748B] hover:bg-white hover:text-primary" type="button" title="Scan a barcode or QR code" aria-label="Scan a barcode or QR code" data-scan data-scan-target="#header-search" data-scan-submit><span class="material-symbols-outlined text-[18px]">barcode_scanner</span></button>
                 </div>
             </form>
             <a aria-label="Notifications ({{ $patronSummary['notifications'] }})" class="relative rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'notifications') }}">
                 <span class="material-symbols-outlined">notifications</span>
-                @if ($patronSummary['notifications'] > 0)
-                    <span class="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-error px-1 text-[10px] font-bold text-white">{{ $patronSummary['notifications'] }}</span>
-                @endif
+                <span class="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-error px-1 text-[10px] font-bold text-white" data-notification-badge @if ($patronSummary['notifications'] === 0) hidden @endif>{{ $patronSummary['notifications'] }}</span>
             </a>
             <a aria-label="Help and Support" class="rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ route('student.section', 'support') }}">
                 <span class="material-symbols-outlined">help</span>

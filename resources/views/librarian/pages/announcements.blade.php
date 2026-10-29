@@ -19,7 +19,7 @@
                         <p class="mt-1 text-sm text-[#44534B]">{{ $announcement->body }}</p>
                         <p class="mt-1 text-xs text-[#718078]">{{ $announcement->published_at->format('M d, Y g:i A') }} by {{ $announcement->author?->name ?? 'Former staff' }}</p>
                     </div>
-                    <form method="POST" action="{{ route('librarian.announcements.destroy', $announcement) }}" onsubmit="return confirm('Remove this announcement?')">@csrf @method('DELETE')<button class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-50" type="submit">Remove</button></form>
+                    <form method="POST" action="{{ route('librarian.announcements.destroy', $announcement) }}" data-confirm="It will disappear from student and faculty notifications." data-confirm-title="Remove this announcement?" data-confirm-detail="{{ $announcement->title }}" data-confirm-label="Remove">@csrf @method('DELETE')<button class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-50" type="submit">Remove</button></form>
                 </li>
             @empty
                 <li class="px-5 py-10 text-center text-sm text-[#67766E]">Nothing published yet.</li>

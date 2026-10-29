@@ -16,7 +16,7 @@
                         <td class="px-5 py-3"><span class="rounded-full px-2.5 py-1 text-xs font-bold {{ $expired ? 'bg-red-100 text-red-800' : match ($reservation->status) { 'ready' => 'bg-emerald-100 text-emerald-800', 'pending' => 'bg-amber-100 text-amber-800', default => 'bg-slate-100 text-slate-700' } }}">{{ $expired ? 'Pickup date passed' : ($reservation->status === 'ready' ? 'Ready until '.$reservation->ready_until?->format('M d') : ucfirst($reservation->status)) }}</span></td>
                         <td class="px-5 py-3 text-right">
                             @if (in_array($reservation->status, \App\Models\Reservation::OPEN_STATUSES, true))
-                                <form method="POST" action="{{ route('librarian.reservations.cancel', $reservation) }}" onsubmit="return confirm('Cancel this reservation?')">@csrf<button class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-50" type="submit">Cancel</button></form>
+                                <form method="POST" action="{{ route('librarian.reservations.cancel', $reservation) }}" data-confirm="{{ $reservation->user->name }} will be taken off the list for this title." data-confirm-title="Cancel this reservation?" data-confirm-detail="{{ $reservation->book->title }}" data-confirm-label="Cancel reservation">@csrf<button class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-50" type="submit">Cancel</button></form>
                             @endif
                         </td>
                     </tr>

@@ -17,11 +17,11 @@
         <div class="flex items-center gap-3">
             <form class="hidden md:block" method="GET" action="{{ route('books.catalog') }}" role="search">
                 <label class="sr-only" for="faculty-search">Search the catalog</label>
-                <div class="relative"><span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-[#64748B]">search</span><input id="faculty-search" class="h-9 w-64 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] pl-9 pr-3 text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" name="q" placeholder="Search title, author, ISBN..." type="search"></div>
+                <div class="relative"><span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-[#64748B]">search</span><input id="faculty-search" class="h-9 w-64 rounded-lg border border-[#CBD5E1] bg-[#F8FAFC] pl-9 pr-10 text-sm focus:border-[#065F2A] focus:ring-[#065F2A]" name="q" placeholder="Search title, author, ISBN..." type="search"><button class="absolute right-1.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-[#64748B] hover:bg-white hover:text-primary" type="button" title="Scan a barcode or QR code" aria-label="Scan a barcode or QR code" data-scan data-scan-target="#faculty-search" data-scan-submit><span class="material-symbols-outlined text-[18px]">barcode_scanner</span></button></div>
             </form>
             <a aria-label="Notifications ({{ $patronSummary['notifications'] }})" class="relative rounded-lg p-2 text-[#475569] hover:bg-[#F1F5F9]" href="{{ route('staff.section', 'notifications') }}">
                 <span class="material-symbols-outlined">notifications</span>
-                @if ($patronSummary['notifications'] > 0)<span class="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white">{{ $patronSummary['notifications'] }}</span>@endif
+                <span class="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white" data-notification-badge @if ($patronSummary['notifications'] === 0) hidden @endif>{{ $patronSummary['notifications'] }}</span>
             </a>
             <a class="flex items-center gap-3" href="{{ route('staff.section', 'profile') }}">
                 <div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#065F2A] text-sm font-bold text-white">{{ $faculty->initials() }}</div>

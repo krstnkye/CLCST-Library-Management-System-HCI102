@@ -44,13 +44,7 @@
             @break
 
         @case('notifications')
-            <section class="space-y-3">
-                @forelse ($notifications as $notification)
-                    @include('partials.notification-item', ['notification' => $notification])
-                @empty
-                    <p class="rounded-xl border border-dashed border-[#CBD5E1] p-8 text-center text-sm text-[#64748B]">You are all caught up.</p>
-                @endforelse
-            </section>
+            @include('partials.notification-center')
             @break
 
         @case('profile')

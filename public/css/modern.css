@@ -44,7 +44,7 @@ body.clcst-portal:not(.library-login) {
 .clcst-topbar input[type=search]:focus { background:#fff !important; box-shadow:0 0 0 4px var(--ui-accent-glow),inset 0 0 0 1px var(--ui-accent) !important; }
 .clcst-topbar a[aria-label],.clcst-topbar button[aria-label] { border-radius:12px; }
 .clcst-topbar a[aria-label]:hover,.clcst-topbar button[aria-label]:hover { background:var(--ui-accent-soft) !important; color:var(--ui-accent) !important; }
-.clcst-topbar .rounded-full[class*=bg-]:not(.absolute) { background:linear-gradient(135deg,var(--ui-accent),var(--ui-accent-2)) !important; color:#fff !important; box-shadow:0 0 0 3px #fff,0 0 0 5px var(--ui-accent-glow) !important; }
+.clcst-topbar .rounded-full[class*=bg-]:not(.absolute):not(.clcst-status-pill) { background:linear-gradient(135deg,var(--ui-accent),var(--ui-accent-2)) !important; color:#fff !important; box-shadow:0 0 0 3px #fff,0 0 0 5px var(--ui-accent-glow) !important; }
 
 /* Navigation rail: deep gradient with a luminous active pill */
 .clcst-portal .clcst-sidebar {

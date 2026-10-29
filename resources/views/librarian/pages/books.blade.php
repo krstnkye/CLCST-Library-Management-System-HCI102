@@ -1,7 +1,8 @@
 <section class="rounded-lg border border-[#D6DED8] bg-white shadow-sm">
     <form class="flex flex-col gap-3 border-b border-[#E2E8E4] p-4 sm:flex-row sm:items-center" method="GET" action="{{ route('librarian.section', 'books') }}" role="search">
-        <label class="relative block max-w-xl flex-1"><span class="sr-only">Search books</span><span class="material-symbols-outlined pointer-events-none absolute left-3 top-2.5 text-xl text-[#718078]">search</span><input class="w-full rounded-lg border-[#CBD6CF] py-2 pl-10 pr-3 text-sm focus:border-[#0F5C2E] focus:ring-[#0F5C2E]" name="q" value="{{ request('q') }}" placeholder="Title, author, ISBN, or call number" type="search"></label>
+        <label class="relative block max-w-xl flex-1"><span class="sr-only">Search books</span><span class="material-symbols-outlined pointer-events-none absolute left-3 top-2.5 text-xl text-[#718078]">search</span><input id="books-search" class="w-full rounded-lg border-[#CBD6CF] py-2 pl-10 pr-3 text-sm focus:border-[#0F5C2E] focus:ring-[#0F5C2E]" name="q" value="{{ request('q') }}" placeholder="Title, author, ISBN, or call number" type="search"></label>
         <select class="rounded-lg border-[#CBD6CF] text-sm" name="status" aria-label="Record status"><option value="active">Active titles</option><option value="archived" @selected(request('status') === 'archived')>Archived titles</option></select>
+        <button class="ui-scan-btn self-stretch" type="button" aria-label="Scan a book barcode" data-scan data-scan-target="#books-search" data-scan-submit><span class="material-symbols-outlined text-lg">barcode_scanner</span>Scan</button>
         <button class="rounded-lg border border-[#CBD6CF] px-4 py-2 text-sm font-bold hover:bg-[#F4F7F5]" type="submit">Search</button>
     </form>
     <div class="overflow-x-auto">

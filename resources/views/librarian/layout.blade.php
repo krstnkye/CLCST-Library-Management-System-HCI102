@@ -42,7 +42,8 @@
         <form class="mx-6 hidden max-w-xl flex-1 lg:block" method="GET" action="{{ route('librarian.section', 'books') }}" role="search">
             <label class="relative block">
                 <span class="material-symbols-outlined pointer-events-none absolute left-3 top-2.5 text-xl text-[#6D7C74]">search</span>
-                <input class="w-full rounded-lg border-[#CBD6CF] bg-[#F7F9F8] py-2 pl-10 pr-3 text-sm focus:border-[#0F5C2E] focus:ring-[#0F5C2E]" name="q" placeholder="Search books by title, author, ISBN, or call number" type="search" aria-label="Search books">
+                <input id="librarian-header-search" class="w-full rounded-lg border-[#CBD6CF] bg-[#F7F9F8] py-2 pl-10 pr-11 text-sm focus:border-[#0F5C2E] focus:ring-[#0F5C2E]" name="q" placeholder="Search books by title, author, ISBN, barcode, or call number" type="search" aria-label="Search books">
+                <button class="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-[#6D7C74] hover:bg-white hover:text-[#0F5C2E]" type="button" title="Scan a barcode" aria-label="Scan a book barcode" data-scan data-scan-target="#librarian-header-search" data-scan-submit><span class="material-symbols-outlined text-xl">barcode_scanner</span></button>
             </label>
         </form>
 

@@ -83,6 +83,49 @@ body { min-width:320px; }
 .library-pass > div:nth-child(2) { background:none; border:0; border-bottom:1px solid #ffffff30; border-radius:0; padding:12px 0 20px; text-align:left; }
 .library-pass > p:last-child { text-align:left; }
 
+/* Shared finishing details preserve the library's paper, ink and gold identity. */
+.clcst-portal:not(.library-login) main { line-height:1.65; }
+.clcst-portal:not(.library-login) main :where(.text-xs) { font-size:13px; line-height:1.6; }
+.clcst-portal:not(.library-login) main :where(.text-sm) { font-size:15px; line-height:1.65; }
+.clcst-sidebar a,.clcst-sidebar button { font-size:13px; }
+.clcst-sidebar nav a { position:relative; transition:background-color 180ms ease,color 180ms ease,box-shadow 180ms ease; }
+.clcst-sidebar nav a:hover { box-shadow:inset 3px 0 #799987; }
+.clcst-mobile-nav a[aria-current=page] { box-shadow:inset 0 -3px var(--clcst-gold); }
+.clcst-portal main :where(h2,h3) { line-height:1.4; }
+.clcst-portal .library-pass :where(h2,h3) { color:inherit; }
+.clcst-portal main table { font-variant-numeric:tabular-nums; }
+.clcst-portal main table th { font-size:12px; color:#526458; }
+.clcst-portal main table td { line-height:1.6; }
+.clcst-portal main table tbody tr { transition:background-color 150ms ease; }
+.clcst-portal main table tbody tr:focus-within { background:#edf4ed; }
+.clcst-portal main table caption { text-align:left; padding:12px 16px; color:var(--clcst-muted); }
+.clcst-portal main :where(input,select,textarea):focus-visible { outline:2px solid var(--clcst-role-accent); outline-offset:2px; box-shadow:0 0 0 5px #1657400c; }
+.clcst-portal :where(input,textarea)[aria-invalid=true] { border-color:#b42318 !important; }
+.clcst-portal main textarea { resize:vertical; min-height:110px; }
+.clcst-portal main :where(button,a)[class*=bg-primary]:hover { box-shadow:0 3px 10px #123c2e1a; }
+.clcst-portal main button:active:not(:disabled) { filter:brightness(.94); }
+.library-section { overflow-wrap:break-word; }
+.library-section > :first-child:is(header) { border-bottom-color:var(--clcst-line); }
+.library-book h3 { font-size:16px; }
+.library-book a { font-size:13px; text-underline-offset:4px; }
+.library-welcome .welcome-meta,.library-welcome .welcome-date { font-size:13px; }
+.library-metrics > a:focus-visible { outline-offset:-4px; }
+.clcst-portal details > summary { border-radius:6px; padding-block:8px; }
+.clcst-portal details[open] > summary { color:var(--clcst-role-accent); }
+.clcst-portal :where(main,.registration-content) { scrollbar-width:thin; scrollbar-color:#afc2b3 transparent; }
+.clcst-portal ::selection { background:#e8d69e; color:#183e2d; }
+.clcst-dismiss { flex:none; margin-left:auto; display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; font-size:23px; line-height:1; border-radius:6px; }
+.clcst-dismiss:hover { background:#16574012; }
+@media (prefers-reduced-motion:no-preference) {
+    .clcst-portal:not(.library-login) main { animation:library-enter 240ms ease-out both; }
+    .library-book img,.library-loan img { transition:transform 220ms ease,box-shadow 220ms ease; }
+    .library-book:hover img,.library-loan:hover img { transform:translateY(-2px) rotate(-1deg); box-shadow:4px 8px 14px #14342525; }
+}
+@media (max-width:767px) {
+    .clcst-portal main :where(button,select) { min-height:44px; }
+    .clcst-mobile-nav a { min-height:44px; display:inline-flex; align-items:center; }
+}
+
 /* Account pages use a book-jacket composition. */
 .library-login { background:#f6f7f3; }
 .login-shell { display:grid; grid-template-columns:minmax(0,1fr) minmax(500px,1fr); min-height:100vh; }

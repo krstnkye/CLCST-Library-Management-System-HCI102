@@ -16,6 +16,7 @@
 <body class="clcst-portal library-login">
 <div class="login-shell">
     <aside class="login-story" aria-label="CLCST School Library">
+        <div class="login-aurora" aria-hidden="true"><span></span><span></span><span></span></div>
         <a class="login-brand" href="{{ route('login') }}">
             @include('partials.celtech-logo', ['class' => 'rounded-full'])
             <div><strong>CLCST School Library</strong><span>Central Luzon College of Science and Technology</span></div>
@@ -24,6 +25,7 @@
             <p class="login-eyebrow">Read. Discover. Belong.</p>
             <h2>Find your<br>next <em>chapter.</em></h2>
             <p>From your first reference to your next big idea. Your campus library is here for every part of the journey.</p>
+            <div class="login-stats"><span><span class="material-symbols-outlined" aria-hidden="true">auto_stories</span>Live catalog</span><span><span class="material-symbols-outlined" aria-hidden="true">event_available</span>Online reservations</span><span><span class="material-symbols-outlined" aria-hidden="true">notifications_active</span>Due-date alerts</span></div>
         </div>
         <div class="library-shelf" aria-hidden="true">
             <span>Literature</span><span>Science &amp; Discovery</span><span>The Arts</span><span>Technology</span><span>History</span><span>Ideas</span>

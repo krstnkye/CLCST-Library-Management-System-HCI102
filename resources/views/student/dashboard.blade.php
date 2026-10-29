@@ -9,17 +9,23 @@
         $usedPercent = $loanLimit > 0 ? min(100, round($activeLoans->count() / $loanLimit * 100)) : 0;
     @endphp
 
-    <section class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary-container via-[#0e4723] to-[#0a351a] p-6 text-on-primary shadow-sm lg:p-8">
-        <div class="absolute bottom-0 right-0 top-0 mr-6 hidden w-80 items-center justify-center text-8xl font-extrabold text-white/10 lg:flex" aria-hidden="true">CLCST</div>
-        <div class="relative z-10 max-w-3xl space-y-3">
-            <h1 class="font-headline text-3xl font-bold text-white md:text-4xl">Welcome back, {{ $patron->first_name ?: $patron->name }}!</h1>
-            <p class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-100">
-                <span><strong>Student ID:</strong> {{ $patron->patron_id }}</span>
-                <span aria-hidden="true">-</span>
-                <span>{{ $patron->program_or_department ?: 'Program not specified' }}</span>
-                <span class="rounded-full bg-[#FDE047] px-2.5 py-0.5 text-[10px] font-bold text-[#0F172A]">Borrowing limit: {{ $activeLoans->count() }} / {{ $loanLimit }} books</span>
-            </p>
-            <p class="text-xs leading-5 text-slate-200">Find a book in the catalog and reserve it online. Pick it up at the circulation desk, where a librarian checks it out to you for {{ $loanDays }} days.</p>
+    <section class="rounded-lg border border-[#D5DED8] border-l-4 border-l-primary bg-white p-5 shadow-sm lg:p-6">
+        <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+            <div class="max-w-3xl">
+                <p class="clcst-record-label"><span class="material-symbols-outlined text-base">local_library</span>Student circulation account · {{ now()->format('Y') }}</p>
+                <h1 class="mt-2 font-headline text-2xl font-bold text-[#17251D] md:text-3xl">Welcome, {{ $patron->first_name ?: $patron->name }}</h1>
+                <p class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#526158]">
+                    <span><strong class="text-[#24352C]">Student ID:</strong> {{ $patron->patron_id }}</span>
+                    <span aria-hidden="true">·</span>
+                    <span>{{ $patron->program_or_department ?: 'Program not specified' }}</span>
+                </p>
+                <p class="mt-2 text-xs leading-5 text-[#647168]">Search the catalog, reserve available books, and monitor each due date from this account.</p>
+            </div>
+            <div class="min-w-48 border-t border-[#D5DED8] pt-3 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-[#647168]">Current borrowing</p>
+                <p class="mt-1 text-xl font-bold text-primary">{{ $activeLoans->count() }} of {{ $loanLimit }} books</p>
+                <p class="mt-1 text-xs text-[#647168]">Standard loan: {{ $loanDays }} days</p>
+            </div>
         </div>
     </section>
 

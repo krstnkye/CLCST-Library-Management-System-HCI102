@@ -7,7 +7,7 @@
     @include('partials.favicon')
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <script>
         tailwind.config = { theme: { extend: {
@@ -24,8 +24,8 @@
     </style>
     @include('partials.ui-motion')
 </head>
-<body class="min-h-full bg-[#f7f9f7] font-sans text-slate-900 antialiased">
-<header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+<body class="clcst-portal clcst-auth min-h-full bg-[#f7f9f7] font-sans text-slate-900 antialiased">
+<header class="clcst-topbar sticky top-0 z-40 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
     <div class="mx-auto flex h-20 max-w-7xl items-center justify-between gap-5 px-4 sm:px-6 lg:px-8">
         <a class="flex min-w-0 items-center gap-3" href="{{ route('login') }}" aria-label="CLCST Library sign in">
             @include('partials.celtech-logo', ['class'=>'h-12 w-12 flex-none rounded-full object-contain'])

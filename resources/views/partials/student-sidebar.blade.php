@@ -15,7 +15,7 @@
     ];
 @endphp
 
-<aside id="student-sidebar" class="fixed bottom-0 left-0 top-16 z-30 hidden w-64 flex-shrink-0 flex-col justify-between border-r border-outline-variant bg-surface-container-lowest md:flex" aria-label="Student navigation">
+<aside id="student-sidebar" class="clcst-sidebar fixed bottom-0 left-0 top-16 z-30 hidden w-64 flex-shrink-0 flex-col justify-between border-r border-outline-variant bg-surface-container-lowest md:flex" aria-label="Student navigation">
     <div class="custom-scrollbar flex flex-1 flex-col gap-1 overflow-y-auto p-4">
         <a class="mb-3 flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-3" href="{{ route('student.section', 'account') }}">
             <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-container font-bold text-white">

@@ -4,9 +4,9 @@
     <title>@yield('title') - CLCST Library Portal</title>
     @include('partials.patron-head')
 </head>
-<body class="min-h-full bg-[#F8FAFC] text-on-surface antialiased">
+<body class="clcst-portal clcst-role-student min-h-full bg-[#F8FAFC] text-on-surface antialiased">
     @php($student = auth()->user())
-    <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-[#E2E8F0] bg-surface-container-lowest px-4 shadow-sm lg:px-6">
+    <header class="clcst-topbar sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-[#E2E8F0] bg-surface-container-lowest px-4 shadow-sm lg:px-6">
         <a class="flex items-center gap-3" href="{{ route('student.dashboard') }}">
             @include('partials.celtech-logo', ['class' => 'h-10 w-10 rounded-full bg-white object-contain p-0.5 shadow-sm'])
             <div>
@@ -46,7 +46,7 @@
     <div class="flex min-h-[calc(100vh-4rem)]">
         @include('partials.student-sidebar')
 
-        <main class="min-w-0 flex-1 space-y-6 p-4 pb-24 sm:p-6 sm:pb-24 md:ml-64 md:pb-8 lg:p-8">
+        <main class="clcst-main min-w-0 flex-1 space-y-6 p-4 pb-24 sm:p-6 sm:pb-24 md:ml-64 md:pb-8 lg:p-8">
             @include('partials.flash')
             @yield('content')
         </main>

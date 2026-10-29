@@ -27,7 +27,7 @@
     ];
 @endphp
 
-<aside id="staff-sidebar" class="fixed bottom-0 left-0 top-16 z-30 hidden w-64 flex-shrink-0 flex-col justify-between border-r border-[#CBD5E1] bg-white md:flex" aria-label="Faculty navigation">
+<aside id="staff-sidebar" class="clcst-sidebar fixed bottom-0 left-0 top-16 z-30 hidden w-64 flex-shrink-0 flex-col justify-between border-r border-[#CBD5E1] bg-white md:flex" aria-label="Faculty navigation">
     <div class="custom-scrollbar flex flex-1 flex-col gap-4 overflow-y-auto p-4">
         @foreach ($groups as $heading => $items)
             <section>

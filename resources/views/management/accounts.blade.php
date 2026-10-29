@@ -8,9 +8,9 @@
     <style>body{font-family:Inter,sans-serif}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 450,'GRAD' 0,'opsz' 24}</style>
     @include('partials.ui-motion')
 </head>
-<body class="min-h-full text-slate-900">
+<body class="clcst-portal clcst-role-{{ auth()->user()->role }} min-h-full text-slate-900">
 <header class="border-b border-slate-200 bg-white"><div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4"><div class="flex items-center gap-3">@include('partials.celtech-logo', ['class' => 'h-10 w-10 rounded-full object-contain'])<div><p class="font-bold text-emerald-900">CLCST Library</p><p class="text-xs text-slate-500">Account review</p></div></div><a class="rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold hover:bg-slate-50" href="{{ route(auth()->user()->dashboardRouteName()) }}">Back to Dashboard</a></div></header>
-<main class="mx-auto max-w-7xl space-y-5 px-4 py-8">
+<main class="clcst-main mx-auto max-w-7xl space-y-5 px-4 py-8">
     <div>
         <h1 class="text-2xl font-bold">Review Library Accounts</h1>
         <p class="mt-2 text-sm text-slate-600">Open the uploaded ID and confirm it matches the school record before approving. You can manage only the account types your role allows.</p>

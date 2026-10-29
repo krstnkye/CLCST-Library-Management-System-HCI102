@@ -11,8 +11,8 @@
     <style>body{font-family:Inter,sans-serif}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 450,'GRAD' 0,'opsz' 24}</style>
     @include('partials.ui-motion')
 </head>
-<body class="min-h-full text-slate-900">
-    <header class="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 md:px-6">
+<body class="clcst-portal clcst-role-admin min-h-full text-slate-900">
+    <header class="clcst-topbar fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 md:px-6">
         <div class="flex items-center gap-3">
             <button id="administrator-menu-button" class="rounded-md p-2 hover:bg-slate-100 md:hidden" aria-label="Open navigation" type="button"><span class="material-symbols-outlined">menu</span></button>
             @include('partials.celtech-logo', ['class' => 'h-10 w-10 rounded-full object-contain'])
@@ -22,7 +22,7 @@
     </header>
     @include('partials.admin-sidebar', ['activePage' => $activePage])
     <div id="administrator-menu-overlay" class="fixed inset-0 z-20 hidden bg-black/30 md:hidden"></div>
-    <main id="administrator-main" class="min-h-screen pt-16 md:ml-64"><div class="mx-auto max-w-7xl p-4 md:p-7">
+    <main id="administrator-main" class="clcst-main min-h-screen pt-16 md:ml-64"><div class="mx-auto max-w-7xl p-4 md:p-7">
         @if (session('status') || $errors->any())<div class="mb-5 space-y-3">@include('partials.flash')</div>@endif
         @yield('content')
     </div></main>

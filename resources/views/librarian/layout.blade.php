@@ -21,11 +21,11 @@
     </style>
     @include('partials.ui-motion')
 </head>
-<body class="min-h-full bg-[#F5F7F6] font-sans text-[#17251D] antialiased">
+<body class="clcst-portal clcst-role-librarian min-h-full bg-[#F5F7F6] font-sans text-[#17251D] antialiased">
     @php
         $librarian = auth()->user();
     @endphp
-    <header class="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#D6DED8] bg-white px-4 shadow-sm md:px-6">
+    <header class="clcst-topbar fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#D6DED8] bg-white px-4 shadow-sm md:px-6">
         <div class="flex min-w-0 items-center gap-3">
             <button aria-label="Open navigation" class="rounded-md p-2 text-[#0F5C2E] hover:bg-[#EEF5F0] md:hidden" id="librarian-menu-button" type="button">
                 <span class="material-symbols-outlined">menu</span>
@@ -61,7 +61,7 @@
     @include('partials.librarian-sidebar', ['activePage' => $activePage])
     <div class="fixed inset-0 z-20 hidden bg-black/30 md:hidden" id="librarian-menu-overlay"></div>
 
-    <main class="min-h-screen pt-16 md:ml-72">
+    <main class="clcst-main min-h-screen pt-16 md:ml-72">
         <div class="mx-auto max-w-[1600px] p-4 md:p-6 lg:p-8">
             @if (session('status') || $errors->any())
                 <div class="mb-5 space-y-3">@include('partials.flash')</div>

@@ -90,7 +90,7 @@
     </style>
     @include('partials.ui-motion')
 </head>
-<body class="flex min-h-screen flex-col bg-[#F8FAFC] font-body-md text-on-surface antialiased">
+<body class="clcst-portal {{ auth()->user()->role === 'student' ? 'clcst-role-student' : 'clcst-role-faculty' }} flex min-h-screen flex-col bg-[#F8FAFC] font-body-md text-on-surface antialiased">
     @php
         $reservationCount = $patronSummary['openReservations'];
         $currentParams = request()->except('page');
@@ -105,7 +105,7 @@
         $copyLocation = fn ($copy) => $copy->status === 'on_loan' && $copy->activeLoan ? 'Due '.$copy->activeLoan->due_at->format('M d, Y') : ($copy->location ?: '-');
     @endphp
 
-    <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-outline-variant bg-surface-container-lowest px-4 shadow-sm md:px-6">
+    <header class="clcst-topbar sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-outline-variant bg-surface-container-lowest px-4 shadow-sm md:px-6">
         <div class="flex min-w-[280px] items-center gap-3">
             @include('partials.celtech-logo', ['class' => 'h-10 w-10 flex-shrink-0 rounded-full border border-secondary-container bg-white object-contain p-0.5 shadow-sm'])
             <div class="flex flex-col">
@@ -164,7 +164,7 @@
             @include('partials.staff-sidebar', ['activePage' => 'search-books', 'portalRole' => 'faculty'])
         @endif
 
-        <main class="custom-scrollbar md:ml-64 flex flex-1 flex-col overflow-y-auto bg-[#F8FAFC]">
+        <main class="clcst-main custom-scrollbar md:ml-64 flex flex-1 flex-col overflow-y-auto bg-[#F8FAFC]">
             <section class="border-b border-outline-variant bg-surface-container-lowest px-4 pb-6 pt-6 shadow-sm lg:px-8">
                 @if (session('status') || $errors->any())
                     <div class="mb-4 space-y-2">@include('partials.flash')</div>

@@ -16,7 +16,7 @@
     </style>
     @include('partials.ui-motion')
 </head>
-<body class="min-h-full text-slate-950">
+<body class="clcst-portal clcst-auth min-h-full text-slate-950">
 <div class="flex min-h-screen flex-col">
     <header class="border-b border-slate-200 bg-white">
         <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
@@ -35,9 +35,9 @@
         <section class="relative overflow-hidden bg-emerald-950 text-white">
             <div class="pointer-events-none absolute right-8 top-1/2 -translate-y-1/2 text-8xl font-extrabold text-white/5 sm:text-9xl">CLCST</div>
             <div class="relative mx-auto max-w-7xl px-4 py-7 sm:px-6 sm:py-9 lg:px-8">
-                <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-white/10 px-3 py-1 text-xs font-bold text-emerald-100"><span class="material-symbols-outlined text-sm">vpn_key</span>SECURE LIBRARY ACCESS</div>
-                <h1 class="max-w-3xl text-3xl font-extrabold leading-tight sm:text-4xl">Unified Academic Access Gateway</h1>
-                <p class="mt-2 max-w-3xl text-sm leading-6 text-emerald-100 sm:text-base">Sign in with your school ID or your @clcst.edu.ph email. You will be taken to the portal that matches your account.</p>
+                <div class="mb-3 inline-flex items-center gap-2 border border-emerald-300/30 bg-white/10 px-3 py-1 text-xs font-bold tracking-wide text-emerald-100"><span class="material-symbols-outlined text-sm">local_library</span>MAIN LIBRARY · ACCOUNT SERVICES</div>
+                <h1 class="max-w-3xl text-3xl font-extrabold leading-tight sm:text-4xl">CLCST Library Account Sign In</h1>
+                <p class="mt-2 max-w-3xl text-sm leading-6 text-emerald-100 sm:text-base">Use your school ID or CLCST email. The system opens the student, faculty, librarian, administrator, or super administrator workspace assigned to your account.</p>
             </div>
         </section>
 

@@ -4,7 +4,7 @@
         : 'text-[#29372F] hover:bg-[#EEF2EF] hover:text-[#0F5C2E]';
 @endphp
 
-<aside id="admin-sidebar" class="fixed bottom-0 left-0 top-16 z-30 hidden w-72 border-r border-[#D6DED8] bg-white md:flex md:flex-col">
+<aside id="admin-sidebar" class="clcst-sidebar fixed bottom-0 left-0 top-16 z-30 hidden w-72 border-r border-[#D6DED8] bg-white md:flex md:flex-col">
     <div id="admin-sidebar-scroll" class="custom-scrollbar flex-1 overflow-y-auto px-4 py-5">
         <div class="mb-5 rounded-lg border border-amber-200 bg-amber-50 p-3">
             <div class="flex items-center gap-3">
@@ -14,7 +14,7 @@
         </div>
 
         <nav aria-label="Super Admin navigation" class="space-y-5">
-            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass('dashboard') }}" href="{{ route('superadmin.dashboard') }}"><span class="material-symbols-outlined text-xl">dashboard</span><span>Dashboard</span></a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass('dashboard') }}" href="{{ route('superadmin.dashboard') }}" @if ($activePage === 'dashboard') aria-current="page" @endif><span class="material-symbols-outlined text-xl">dashboard</span><span>Dashboard</span></a>
 
             @foreach ([
                 ['label' => 'User Management', 'pages' => [['users', 'group', 'All Users'], ['roles', 'admin_panel_settings', 'Roles and Permissions'], ['approvals', 'approval', 'Account Approvals']]],
@@ -25,7 +25,7 @@
                     <p class="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-[#718078]">{{ $group['label'] }}</p>
                     <div class="space-y-1">
                         @foreach ($group['pages'] as [$page, $icon, $label])
-                            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ route('superadmin.section', $page) }}"><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
+                            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ route('superadmin.section', $page) }}" @if ($activePage === $page) aria-current="page" @endif><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
                         @endforeach
                     </div>
                 </section>
@@ -41,7 +41,7 @@
                         ['audit-logs', 'history', 'Audit Logs'],
                         ['maintenance', 'build', 'System Status'],
                     ] as [$page, $icon, $label])
-                        <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ $page === 'data-export' ? route('management.data.index') : route('superadmin.section', $page) }}"><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
+                        <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ $page === 'data-export' ? route('management.data.index') : route('superadmin.section', $page) }}" @if ($activePage === $page) aria-current="page" @endif><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
                     @endforeach
                 </div>
             </section>
@@ -54,7 +54,7 @@
                         ['circulation', 'local_library', 'Library Operations'],
                         ['profile', 'account_circle', 'Profile Settings'],
                     ] as [$page, $icon, $label])
-                        <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ route('superadmin.section', $page) }}"><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
+                        <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ route('superadmin.section', $page) }}" @if ($activePage === $page) aria-current="page" @endif><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
                     @endforeach
                 </div>
             </section>

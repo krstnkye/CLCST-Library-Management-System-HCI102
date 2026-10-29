@@ -143,7 +143,7 @@ class AccessControlTest extends TestCase
         $response = $this->get(route('login'));
 
         $response->assertOk()
-            ->assertSee('Unified Academic Access Gateway')
+            ->assertSee('CLCST Library Account Sign In')
             ->assertSee('data-role="student"', false)
             ->assertSee('data-role="faculty"', false)
             ->assertSee('data-role="librarian"', false)

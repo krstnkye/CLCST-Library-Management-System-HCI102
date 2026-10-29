@@ -14,8 +14,8 @@
     <style>.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 450,'GRAD' 0,'opsz' 24;line-height:1}.custom-scrollbar::-webkit-scrollbar{width:6px;height:6px}.custom-scrollbar::-webkit-scrollbar-thumb{background:#b9c7be;border-radius:999px}</style>
     @include('partials.ui-motion')
 </head>
-<body class="min-h-full bg-[#F4F6F5] font-sans text-[#18251D] antialiased">
-    <header class="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#D5DED8] bg-white px-4 shadow-sm md:px-6">
+<body class="clcst-portal clcst-role-superadmin min-h-full bg-[#F4F6F5] font-sans text-[#18251D] antialiased">
+    <header class="clcst-topbar fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#D5DED8] bg-white px-4 shadow-sm md:px-6">
         <div class="flex min-w-0 items-center gap-3">
             <button aria-label="Open navigation" class="rounded-md p-2 text-[#17251D] hover:bg-[#EEF2EF] md:hidden" id="admin-menu-button" type="button"><span class="material-symbols-outlined">menu</span></button>
             <a class="flex min-w-0 items-center gap-3" href="{{ route('superadmin.dashboard') }}">@include('partials.celtech-logo', ['class' => 'h-10 w-10 shrink-0 rounded-full object-contain'])<div class="min-w-0"><p class="truncate font-display text-sm font-extrabold text-[#0F5C2E] sm:text-base">CLCST Library Management System</p><p class="truncate text-[11px] font-medium text-[#68766E]">Super Admin Control Center</p></div></a>
@@ -26,7 +26,7 @@
 
     @include('partials.superadmin-sidebar', ['activePage' => $activePage])
     <div class="fixed inset-0 z-20 hidden bg-black/30 md:hidden" id="admin-menu-overlay"></div>
-    <main class="min-h-screen pt-16 md:ml-72"><div class="mx-auto max-w-[1600px] p-4 md:p-6 lg:p-8">@if (session('status') || $errors->any())<div class="mb-5 space-y-3">@include('partials.flash')</div>@endif @yield('content')</div></main>
+    <main class="clcst-main min-h-screen pt-16 md:ml-72"><div class="mx-auto max-w-[1600px] p-4 md:p-6 lg:p-8">@if (session('status') || $errors->any())<div class="mb-5 space-y-3">@include('partials.flash')</div>@endif @yield('content')</div></main>
     <script>(()=>{const button=document.getElementById('admin-menu-button');const sidebar=document.getElementById('admin-sidebar');const overlay=document.getElementById('admin-menu-overlay');if(!button||!sidebar||!overlay)return;const toggle=()=>{sidebar.classList.toggle('hidden');sidebar.classList.toggle('flex');overlay.classList.toggle('hidden')};button.addEventListener('click',toggle);overlay.addEventListener('click',toggle)})();</script>
 </body>
 </html>

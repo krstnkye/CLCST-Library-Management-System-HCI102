@@ -8,9 +8,9 @@
     <style>body{font-family:Inter,sans-serif}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 450,'GRAD' 0,'opsz' 24}</style>
     @include('partials.ui-motion')
 </head>
-<body class="min-h-full text-slate-900">
+<body class="clcst-portal clcst-role-{{ auth()->user()->role }} min-h-full text-slate-900">
 <header class="border-b border-slate-200 bg-white"><div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4"><div class="flex items-center gap-3">@include('partials.celtech-logo', ['class'=>'h-10 w-10 rounded-full object-contain'])<div><p class="font-bold text-emerald-900">CLCST Library</p><p class="text-xs text-slate-500">Secure data tools</p></div></div><a class="rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold hover:bg-slate-50" href="{{ route(auth()->user()->dashboardRouteName()) }}">Back to Dashboard</a></div></header>
-<main class="mx-auto max-w-6xl px-4 py-8">
+<main class="clcst-main mx-auto max-w-6xl px-4 py-8">
     <div class="max-w-3xl"><h1 class="text-2xl font-bold">Import and Export Data</h1><p class="mt-2 text-sm leading-6 text-slate-600">Use CSV files to add or update many records at once. Download the template first so headings and values are checked correctly.</p></div>
     @if(session('status'))<div class="mt-5 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-900">{{ session('status') }}</div>@endif
     @if($errors->any())<div class="mt-5 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"><p class="font-semibold">The file was not imported.</p><ul class="mt-1 list-disc pl-5">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif

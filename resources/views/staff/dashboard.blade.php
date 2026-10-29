@@ -8,9 +8,20 @@
         $openRequests = $requests->whereIn('status', ['submitted', 'in_review'])->count();
     @endphp
 
-    <section class="rounded-2xl bg-gradient-to-r from-[#065F2A] to-[#064E3B] p-6 text-white shadow-sm lg:p-8">
-        <h1 class="font-headline text-3xl font-bold">Good {{ now()->hour < 12 ? 'morning' : (now()->hour < 18 ? 'afternoon' : 'evening') }}, {{ $patron->name }}</h1>
-        <p class="mt-2 max-w-3xl text-sm text-emerald-50">{{ $patron->program_or_department }}. Faculty may borrow up to {{ $loanLimit }} books for {{ $loanDays }} days, and can request course reserves, class sessions, and inter-library loans from this portal.</p>
+    <section class="rounded-lg border border-[#D5DED8] border-l-4 border-l-[#175A64] bg-white p-5 shadow-sm lg:p-6">
+        <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+            <div class="max-w-3xl">
+                <p class="clcst-record-label"><span class="material-symbols-outlined text-base">co_present</span>Faculty library account · {{ now()->format('Y') }}</p>
+                <h1 class="mt-2 font-headline text-2xl font-bold text-[#17251D] md:text-3xl">{{ $patron->name }}</h1>
+                <p class="mt-2 text-sm text-[#526158]">{{ $patron->program_or_department ?: 'Department not specified' }}</p>
+                <p class="mt-2 max-w-3xl text-xs leading-5 text-[#647168]">Borrow academic materials and send course reserve, class session, or inter-library loan requests to the library.</p>
+            </div>
+            <div class="min-w-48 border-t border-[#D5DED8] pt-3 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-[#647168]">Faculty loan allowance</p>
+                <p class="mt-1 text-xl font-bold text-[#175A64]">{{ $activeLoans->count() }} of {{ $loanLimit }} books</p>
+                <p class="mt-1 text-xs text-[#647168]">Loan period: {{ $loanDays }} days</p>
+            </div>
+        </div>
     </section>
 
     <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Summary">

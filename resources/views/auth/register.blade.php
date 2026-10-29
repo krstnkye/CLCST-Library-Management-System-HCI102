@@ -24,6 +24,7 @@
 <body class="clcst-portal library-login registration-page font-sans text-slate-900 antialiased">
 <div class="login-shell registration-shell">
     <aside class="login-story registration-story" aria-label="CLCST School Library">
+        <div class="login-aurora" aria-hidden="true"><span></span><span></span><span></span></div>
         <a class="login-brand" href="{{ route('login') }}">
             @include('partials.celtech-logo', ['class'=>'rounded-full'])
             <div><strong>CLCST School Library</strong><span>Central Luzon College of Science and Technology</span></div>
@@ -32,6 +33,7 @@
             <p class="login-eyebrow">Your place in the library</p>
             <h2>Begin your<br>next <em>chapter.</em></h2>
             <p>Create one account for the catalog, borrowing, reservations, and the library services available to your role.</p>
+            <div class="login-stats"><span><span class="material-symbols-outlined" aria-hidden="true">verified_user</span>School email only</span><span><span class="material-symbols-outlined" aria-hidden="true">how_to_reg</span>Staff-verified accounts</span><span><span class="material-symbols-outlined" aria-hidden="true">devices</span>Works on any device</span></div>
         </div>
         <div class="library-shelf" aria-hidden="true">
             <span>Literature</span><span>Science &amp; Discovery</span><span>The Arts</span><span>Technology</span><span>History</span><span>Ideas</span>

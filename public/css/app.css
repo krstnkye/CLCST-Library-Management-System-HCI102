@@ -89,13 +89,13 @@ body { min-width:320px; }
 .login-story { position:relative; display:flex; flex-direction:column; overflow:hidden; padding:42px clamp(32px,5vw,88px) 28px; background:#123e2e; color:#fff; }
 .login-brand { display:flex; align-items:center; gap:13px; position:relative; z-index:1; }
 .login-brand img { width:52px; height:52px; object-fit:contain; }
-.login-brand strong { display:block; font-size:15px; letter-spacing:-.01em; }
-.login-brand span { display:block; font-size:10px; line-height:1.7; letter-spacing:.035em; color:#b8cebf; }
+.login-brand strong { display:block; font-size:17px; letter-spacing:-.01em; }
+.login-brand span { display:block; font-size:11px; line-height:1.7; letter-spacing:.035em; color:#b8cebf; }
 .login-story-copy { position:relative; z-index:1; margin:auto 0; padding:60px 0 38px; }
-.login-eyebrow { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.2em; color:#d8b55f; }
+.login-eyebrow { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.18em; color:#d8b55f; }
 .login-story h2 { font-family:Georgia,'Times New Roman',serif; font-weight:400; font-size:clamp(48px,5.2vw,76px); line-height:1.04; letter-spacing:-.045em; margin-top:22px; }
 .login-story h2 em { color:#e6ce8b; font-weight:400; }
-.login-story-copy > p:last-child { max-width:335px; color:#c5d5ca; font-size:14px; line-height:1.9; margin-top:24px; }
+.login-story-copy > p:last-child { max-width:365px; color:#c5d5ca; font-size:16px; line-height:1.8; margin-top:24px; }
 .login-story::before { content:''; position:absolute; width:520px; height:520px; border:1px solid #ffffff09; border-radius:50%; right:-250px; top:180px; box-shadow:0 0 0 60px #ffffff03,0 0 0 120px #ffffff02; }
 .library-shelf { display:flex; align-items:flex-end; gap:7px; width:100%; height:155px; border-bottom:6px solid #799075; padding:0 16px; position:relative; margin-top:18px; }
 .library-shelf span { display:flex; align-items:center; justify-content:space-between; gap:12px; writing-mode:vertical-rl; transform:rotate(180deg); padding:14px 9px; height:120px; width:42px; color:#173b2b; background:#c7d1ad; font-family:Georgia,serif; font-size:13px; border-radius:2px; border-left:3px solid #ffffff20; box-shadow:-2px 0 3px #00000015; }
@@ -104,80 +104,81 @@ body { min-width:320px; }
 .library-shelf span:nth-child(4) { height:146px; width:50px; background:#e4e6d5; }
 .library-shelf span:nth-child(5) { height:118px; background:#b6c9bf; }
 .library-shelf span:nth-child(6) { height:138px; width:42px; background:#ae825b; color:#fff6e6; transform:rotate(169deg); margin-left:12px; }
-.login-story-footer { display:flex; justify-content:space-between; gap:16px; margin-top:28px; color:#b6cabb; font-size:10px; }
+.login-story-footer { display:flex; justify-content:space-between; gap:16px; margin-top:28px; color:#b6cabb; font-size:11px; }
 .login-content { display:flex; flex-direction:column; padding:32px clamp(28px,4.4vw,76px) 22px; }
-.login-content-top { text-align:right; font-size:12px; color:#67746b; }
+.login-content-top { text-align:right; font-size:14px; color:#67746b; }
 .login-content-top a { display:inline-flex; gap:8px; margin-left:8px; align-items:center; color:#165740; font-weight:700; }
 .login-panel { width:100%; max-width:460px; margin:auto; padding:46px 0 30px; }
 .login-panel .login-eyebrow { color:#65746b; }
 .clcst-portal .login-panel h1 { font-size:40px; margin:12px 0; }
-.login-intro { color:#68756d; font-size:13px; line-height:1.8; }
-.login-role-label { margin:27px 0 10px; font-size:12px; font-weight:600; }
+.login-intro { color:#68756d; font-size:15px; line-height:1.75; }
+.login-role-label { margin:27px 0 10px; font-size:14px; font-weight:600; }
 .login-roles { display:flex; flex-wrap:wrap; gap:7px; }
-.login-roles .role-card { display:flex; align-items:center; gap:6px; padding:9px 12px; background:#fff; border:1px solid #d7e0d8; border-radius:6px; color:#5a6c5f; font-size:11px; font-weight:500; box-shadow:none; }
+.login-roles .role-card { display:flex; align-items:center; gap:7px; padding:10px 13px; background:#fff; border:1px solid #d7e0d8; border-radius:6px; color:#5a6c5f; font-size:13px; font-weight:500; box-shadow:none; }
 .login-roles .role-card .material-symbols-outlined { font-size:17px; }
 .login-roles .role-card[aria-pressed=true] { background:#e5eedf; border-color:#315e3f; color:#174c30; box-shadow:inset 0 -2px #315e3f; }
-.login-role-help { min-height:34px; margin:10px 0 20px; font-size:11px; line-height:1.6; color:#68756d; }
+.login-role-help { min-height:38px; margin:10px 0 20px; font-size:13px; line-height:1.6; color:#68756d; }
 .login-form { display:grid; gap:20px; }
-.login-form label { font-size:12px; font-weight:600; }
+.login-form label { font-size:14px; font-weight:600; }
 .login-field { position:relative; margin-top:8px; }
 .login-field > .material-symbols-outlined { position:absolute; left:14px; top:15px; font-size:19px; color:#7c8a7f; pointer-events:none; }
-.login-form .login-field input { width:100%; height:49px; border:1px solid #cad7cd; border-radius:7px; background:#fff; font-size:13px; padding:12px 44px 12px 43px; }
+.login-form .login-field input { width:100%; height:52px; border:1px solid #cad7cd; border-radius:7px; background:#fff; font-size:15px; padding:12px 44px 12px 43px; }
 .login-password-toggle { position:absolute; right:4px; top:4px; height:41px; width:40px; display:flex; align-items:center; justify-content:center; color:#718274; border-radius:5px; }
 .login-password-toggle:hover { background:#edf2e9; }
-.login-submit { display:flex; align-items:center; justify-content:space-between; background:#165740; color:#fff; padding:14px 18px; border-radius:7px; font-size:13px; font-weight:600; }
+.login-submit { display:flex; align-items:center; justify-content:space-between; background:#165740; color:#fff; padding:15px 18px; border-radius:7px; font-size:15px; font-weight:600; }
 .login-submit:hover { background:#103c2d; }
-.login-assistance { display:flex; align-items:flex-start; gap:11px; border-top:1px solid #dce4d9; padding-top:20px; margin-top:25px; font-size:11px; color:#647168; line-height:1.8; }
+.login-assistance { display:flex; align-items:flex-start; gap:11px; border-top:1px solid #dce4d9; padding-top:20px; margin-top:25px; font-size:13px; color:#647168; line-height:1.75; }
 .login-assistance > .material-symbols-outlined { color:#165740; font-size:21px; }
 .login-assistance a { font-weight:600; color:#165740; text-decoration:underline; text-underline-offset:3px; }
-.login-footer { display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; font-size:10px; color:#778278; padding-top:16px; }
+.login-footer { display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; font-size:11px; color:#778278; padding-top:16px; }
 .registration-shell { grid-template-columns:minmax(360px,.78fr) minmax(650px,1.35fr); }
 .registration-story { position:sticky; top:0; height:100vh; min-height:680px; padding-left:clamp(30px,4vw,68px); padding-right:clamp(30px,4vw,68px); }
 .registration-content { height:100vh; overflow-y:auto; padding:32px clamp(28px,4.4vw,72px) 28px; background:#f6f7f3; }
 .registration-panel { width:100%; max-width:760px; margin:52px auto 0; }
 .registration-heading .login-eyebrow { color:#65746b; }
 .clcst-portal .registration-heading h1 { margin-top:12px; max-width:620px; font-size:clamp(2.15rem,3.5vw,3.15rem); }
-.registration-heading > p:last-child { max-width:610px; margin-top:13px; color:#68756d; font-size:13px; line-height:1.8; }
+.registration-heading > p:last-child { max-width:650px; margin-top:13px; color:#68756d; font-size:15px; line-height:1.75; }
 .registration-form { margin-top:34px; border-bottom:1px solid var(--clcst-line); }
 .registration-form-section { padding:30px 0 34px; border-top:1px solid var(--clcst-line); }
 .registration-step { display:flex; align-items:flex-start; gap:18px; }
-.registration-step > span { flex:none; padding-top:3px; color:#9b7b31; font-family:Georgia,serif; font-size:13px; font-weight:700; }
-.registration-step h2 { color:#20352c; font-size:17px; font-weight:700; }
-.registration-step p { margin-top:4px; color:#718078; font-size:11px; line-height:1.6; }
+.registration-step > span { flex:none; padding-top:3px; color:#9b7b31; font-family:Georgia,serif; font-size:15px; font-weight:700; }
+.registration-step h2 { color:#20352c; font-size:19px; font-weight:700; }
+.registration-step p { margin-top:4px; color:#718078; font-size:13px; line-height:1.6; }
 .registration-role-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
-.registration-role-grid .role-card { display:grid; grid-template-columns:38px minmax(0,1fr) 20px; align-items:center; gap:10px; min-height:68px; padding:10px 11px; border:1px solid #cfdbd1; border-radius:7px; background:#fff; color:#354b3f; }
+.registration-role-grid .role-card { display:grid; grid-template-columns:38px minmax(0,1fr) 20px; align-items:center; gap:10px; min-height:74px; padding:11px 12px; border:1px solid #cfdbd1; border-radius:7px; background:#fff; color:#354b3f; }
 .registration-role-grid .role-card:hover { border-color:#70937a; }
 .registration-role-grid .role-icon { display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:5px; background:#edf2ed; color:#24573d; }
-.registration-role-grid .role-card strong { display:block; font-size:12px; }
-.registration-role-grid .role-card small { display:block; margin-top:2px; color:#77857c; font-size:9px; line-height:1.3; }
+.registration-role-grid .role-card strong { display:block; font-size:14px; }
+.registration-role-grid .role-card small { display:block; margin-top:2px; color:#77857c; font-size:11px; line-height:1.3; }
 .registration-role-grid .role-check { align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:#165740; color:#fff; }
-.registration-note { display:flex; align-items:flex-start; gap:8px; margin-top:12px; padding:10px 12px; border-left:3px solid #d8b55f; background:#f5f1e4; color:#62552f; font-size:10px; line-height:1.55; }
+.registration-note { display:flex; align-items:flex-start; gap:8px; margin-top:12px; padding:11px 13px; border-left:3px solid #d8b55f; background:#f5f1e4; color:#62552f; font-size:12px; line-height:1.55; }
 .registration-note .material-symbols-outlined { margin-top:1px; font-size:15px; }
 .registration-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px 14px; margin-top:22px; }
-.registration-fields label { display:block; margin-bottom:7px; color:#2b3e34; font-size:11px; font-weight:600; }
+.registration-fields label { display:block; margin-bottom:7px; color:#2b3e34; font-size:13px; font-weight:600; }
 .registration-fields label b { color:#b42318; }
-.registration-fields label small { color:#7b877f; font-size:9px; font-weight:400; }
-.registration-fields input:not([type=file]) { width:100%; height:45px; padding:10px 12px; border:1px solid #cbd8cf; border-radius:6px; background:#fff; color:#20352c; font-size:12px; }
+.registration-fields label small { color:#7b877f; font-size:11px; font-weight:400; }
+.registration-fields input:not([type=file]) { width:100%; height:49px; padding:11px 13px; border:1px solid #cbd8cf; border-radius:6px; background:#fff; color:#20352c; font-size:14px; }
 .registration-fields input::placeholder { color:#9aa59e; }
 .registration-fields input:focus { border-color:#165740; box-shadow:0 0 0 3px #16574014; outline:0; }
-.field-help { margin-top:6px; color:#7b877f; font-size:9px; line-height:1.5; }
-.field-error { margin-top:5px; color:#b42318; font-size:10px; font-weight:600; }
+.field-help { margin-top:6px; color:#7b877f; font-size:11px; line-height:1.5; }
+.field-error { margin-top:5px; color:#b42318; font-size:11px; font-weight:600; }
 .registration-password-toggle { position:absolute; top:2px; right:2px; display:flex; align-items:center; justify-content:center; width:41px; height:41px; border-radius:5px; color:#6d7d72; }
 .registration-password-toggle:hover { background:#edf2ed; }
-.registration-upload { display:flex !important; align-items:center; gap:14px; min-height:78px; margin:0 !important; padding:14px 16px; border:1px dashed #9fb2a4; border-radius:7px; background:#f9fbf8; cursor:pointer; }
+.registration-upload { display:flex !important; align-items:center; gap:14px; min-height:84px; margin:0 !important; padding:15px 16px; border:1px dashed #9fb2a4; border-radius:7px; background:#f9fbf8; cursor:pointer; }
 .registration-upload:hover { border-color:#165740; background:#edf3ed; }
 .registration-upload > .material-symbols-outlined { display:flex; align-items:center; justify-content:center; flex:none; width:42px; height:42px; border-radius:50%; background:#e3eee3; color:#165740; }
 .registration-upload strong,.registration-upload small { display:block; }
-.registration-upload strong { color:#2a3d33; font-size:11px; }
-.registration-upload small { margin-top:3px; color:#78857c; font-size:9px; }
+.registration-upload strong { color:#2a3d33; font-size:13px; }
+.registration-upload small { margin-top:3px; color:#78857c; font-size:11px; }
 .registration-upload .selected-file { color:#165740; font-weight:700; }
 .registration-submit { padding:30px 0 34px; border-top:1px solid var(--clcst-line); }
+.registration-submit > label { font-size:13px; line-height:1.7; }
 .registration-actions { display:flex; justify-content:flex-end; align-items:center; gap:10px; margin-top:22px; }
-.registration-actions > a { padding:12px 17px; color:#5d6c63; font-size:12px; font-weight:600; }
+.registration-actions > a { padding:12px 17px; color:#5d6c63; font-size:14px; font-weight:600; }
 .registration-actions > a:hover { color:#165740; text-decoration:underline; }
-.registration-actions > button { display:flex; align-items:center; justify-content:space-between; gap:28px; min-width:230px; padding:13px 16px; border-radius:7px; background:#165740; color:#fff; font-size:12px; font-weight:700; }
+.registration-actions > button { display:flex; align-items:center; justify-content:space-between; gap:28px; min-width:250px; padding:14px 17px; border-radius:7px; background:#165740; color:#fff; font-size:14px; font-weight:700; }
 .registration-actions > button:hover { background:#103c2d; }
-.registration-next { display:flex; align-items:center; justify-content:center; gap:12px; margin-top:28px; color:#748178; font-size:9px; }
+.registration-next { display:flex; align-items:center; justify-content:center; gap:12px; margin-top:28px; color:#748178; font-size:11px; }
 .registration-next span:not(.material-symbols-outlined) { display:flex; align-items:center; gap:5px; }
 .registration-next b { display:flex; align-items:center; justify-content:center; width:17px; height:17px; border-radius:50%; background:#e4ece4; color:#235338; font-size:9px; }
 .registration-next .material-symbols-outlined { color:#a7b1aa; font-size:13px; }

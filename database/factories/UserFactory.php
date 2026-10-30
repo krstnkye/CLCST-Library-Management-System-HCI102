@@ -27,7 +27,7 @@ class UserFactory extends Factory
         return [
             'patron_id' => fake()->unique()->bothify('ID-####-??'),
             'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'email' => fake()->unique()->userName().'@clcst.edu.ph',
             'email_verified_at' => now(),
             'role' => 'student',
             'status' => 'active',

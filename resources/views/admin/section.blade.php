@@ -1,19 +1,43 @@
 @extends('admin.layout')
 @section('title', $page['title'])
 @section('content')
-    <section class="flex flex-col justify-between gap-4 border-b border-[#D5DED8] pb-5 lg:flex-row lg:items-end">
-        <div><a class="mb-3 inline-flex items-center gap-1 text-xs font-bold text-[#0F5C2E] hover:underline" href="{{ route('superadmin.dashboard') }}"><span class="material-symbols-outlined text-base">arrow_back</span>Dashboard</a><div class="flex items-center gap-3"><span class="material-symbols-outlined flex h-11 w-11 items-center justify-center rounded-lg bg-[#E8EEE9] text-[#17251D]">{{ $page['icon'] }}</span><div><h1 class="font-display text-2xl font-extrabold md:text-3xl">{{ $page['title'] }}</h1><p class="mt-1 text-sm text-[#5E6D65]">{{ $page['description'] }}</p></div></div></div>
-        <button class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#17251D] px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-[#0F5C2E]" type="button"><span class="material-symbols-outlined text-lg">add</span>{{ $page['action'] }}</button>
-    </section>
+<header class="border-b border-slate-200 pb-5"><a class="text-sm font-semibold text-emerald-800 hover:underline" href="{{ route('admin.dashboard') }}">Back to dashboard</a><div class="mt-3 flex items-start gap-3"><span class="material-symbols-outlined rounded-md bg-emerald-50 p-2 text-emerald-800">{{ $page['icon'] }}</span><div><h1 class="text-2xl font-bold">{{ $page['title'] }}</h1><p class="mt-1 text-sm text-slate-600">{{ $page['description'] }}</p></div></div></header>
 
-    <section class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        @foreach ([['Total Users', $systemStats['users'], 'group'], ['Staff Accounts', $systemStats['staff'], 'badge'], ['Pending Approvals', $systemStats['pendingApprovals'], 'approval'], ['Transactions', $systemStats['transactions'], 'sync_alt']] as [$label,$value,$icon])
-            <article class="rounded-lg border border-[#D5DED8] bg-white p-4 shadow-sm"><div class="flex items-center justify-between"><div><p class="text-xs font-semibold text-[#68766E]">{{ $label }}</p><p class="mt-2 font-display text-2xl font-extrabold">{{ $value }}</p></div><span class="material-symbols-outlined rounded-lg bg-[#EEF2EF] p-2 text-[#0F5C2E]">{{ $icon }}</span></div></article>
-        @endforeach
+<div class="mt-6">
+@if (in_array($section, ['users', 'approvals'], true))
+    @include('partials.account-table', ['users' => $users, 'searchRoute' => route('admin.section', $section)])
+@elseif ($section === 'books')
+    <section class="overflow-hidden rounded-md border border-slate-200 bg-white">
+        <form class="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between" method="GET" action="{{ route('admin.section', 'books') }}" role="search">
+            <div><h2 class="font-bold">Book records</h2><p class="text-xs text-slate-500">Edit records and copies from the librarian workspace.</p></div>
+            <div class="flex gap-2"><label class="sr-only" for="book-search">Search</label><input id="book-search" class="rounded-md border-slate-300 py-1.5 text-sm" name="q" value="{{ request('q') }}" placeholder="Title or ISBN" type="search"><button class="rounded-md border border-slate-300 px-3 text-xs font-bold" type="submit">Search</button><a class="rounded-md bg-emerald-900 px-3 py-2 text-xs font-bold text-white" href="{{ route('librarian.section', 'add-book') }}">Add book</a></div>
+        </form>
+        <div class="overflow-x-auto"><table class="w-full min-w-[760px] text-left text-sm"><thead class="bg-slate-50 text-xs uppercase text-slate-500"><tr><th class="px-5 py-3">Title</th><th class="px-5 py-3">ISBN</th><th class="px-5 py-3">Category</th><th class="px-5 py-3">Copies</th><th class="px-5 py-3">Status</th><th class="px-5 py-3 text-right">Action</th></tr></thead><tbody class="divide-y divide-slate-100">
+            @forelse ($storedBooks as $book)
+                <tr><td class="px-5 py-4"><p class="font-semibold">{{ $book->title }}</p><p class="text-xs text-slate-500">{{ $book->author }}</p></td><td class="px-5 py-4 font-mono text-xs">{{ $book->isbn }}</td><td class="px-5 py-4">{{ $book->category ?: 'Uncategorized' }}</td><td class="px-5 py-4">{{ $book->available_copies }} of {{ $book->total_copies }} on shelf</td><td class="px-5 py-4">{{ ucfirst($book->status) }}</td><td class="px-5 py-4 text-right"><a class="font-bold text-emerald-800 hover:underline" href="{{ route('librarian.books.edit', $book) }}">Edit</a></td></tr>
+            @empty
+                <tr><td colspan="6" class="px-5 py-10 text-center text-slate-500">No book records match.</td></tr>
+            @endforelse
+        </tbody></table></div>
+        @if ($storedBooks->hasPages())<div class="border-t border-slate-200 p-4">{{ $storedBooks->links() }}</div>@endif
     </section>
-
-    <section class="mt-6 rounded-lg border border-[#D5DED8] bg-white shadow-sm">
-        <div class="flex flex-col gap-3 border-b border-[#E2E8E4] p-4 sm:flex-row sm:items-center sm:justify-between"><label class="relative block max-w-xl flex-1"><span class="material-symbols-outlined pointer-events-none absolute left-3 top-2.5 text-xl text-[#718078]">search</span><input class="w-full rounded-lg border-[#CBD6CF] py-2 pl-10 pr-3 text-sm focus:border-[#0F5C2E] focus:ring-[#0F5C2E]" placeholder="Search records" type="search"></label><button class="inline-flex items-center justify-center gap-2 rounded-lg border border-[#CBD6CF] bg-white px-3.5 py-2 text-sm font-bold text-[#34443B] hover:bg-[#F4F7F5]" type="button"><span class="material-symbols-outlined text-lg">filter_list</span>Filters</button></div>
-        <div class="p-5"><div class="rounded-lg border border-dashed border-[#B7C6BC] bg-[#F8FAF9] px-6 py-12 text-center"><span class="material-symbols-outlined text-4xl text-[#0F5C2E]">{{ $page['icon'] }}</span><h2 class="mt-3 font-display text-lg font-bold">{{ $page['title'] }}</h2><p class="mx-auto mt-2 max-w-lg text-sm leading-6 text-[#5E6D65]">This administration workspace is ready for its approved records, forms, and controls.</p></div></div>
+@elseif ($section === 'circulation')
+    <section class="overflow-hidden rounded-md border border-slate-200 bg-white">
+        <div class="overflow-x-auto"><table class="w-full min-w-[860px] text-left text-sm"><thead class="bg-slate-50 text-xs uppercase text-slate-500"><tr><th class="px-5 py-3">Receipt</th><th class="px-5 py-3">Patron</th><th class="px-5 py-3">Book</th><th class="px-5 py-3">Borrowed</th><th class="px-5 py-3">Due</th><th class="px-5 py-3">Returned</th><th class="px-5 py-3">Issued by</th></tr></thead><tbody class="divide-y divide-slate-100">
+            @forelse ($loans as $loan)
+                <tr class="{{ $loan->isOverdue() ? 'bg-red-50/50' : '' }}"><td class="px-5 py-3 font-mono text-xs">{{ $loan->receipt_no }}</td><td class="px-5 py-3">{{ $loan->user->name }}</td><td class="px-5 py-3">{{ $loan->copy->book->title }}</td><td class="px-5 py-3 text-xs">{{ $loan->borrowed_at->format('M d, Y') }}</td><td class="px-5 py-3 text-xs">{{ $loan->due_at->format('M d, Y') }}</td><td class="px-5 py-3 text-xs">{{ $loan->returned_at?->format('M d, Y') ?? ($loan->isOverdue() ? 'Overdue' : 'On loan') }}</td><td class="px-5 py-3 text-xs">{{ $loan->issuer?->name }}</td></tr>
+            @empty
+                <tr><td colspan="7" class="px-5 py-10 text-center text-slate-500">No transactions yet.</td></tr>
+            @endforelse
+        </tbody></table></div>
+        @if ($loans->hasPages())<div class="border-t border-slate-200 p-4">{{ $loans->links() }}</div>@endif
     </section>
+@elseif ($section === 'reports')
+    @include('partials.reports')
+@elseif ($section === 'audit-logs')
+    @include('partials.audit-log', ['searchRoute' => route('admin.section', 'audit-logs')])
+@elseif ($section === 'profile')
+    @include('partials.profile-forms')
+@endif
+</div>
 @endsection

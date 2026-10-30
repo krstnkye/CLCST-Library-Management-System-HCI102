@@ -21,11 +21,11 @@
     </style>
     @include('partials.ui-motion')
 </head>
-<body class="min-h-full bg-[#F5F7F6] font-sans text-[#17251D] antialiased">
+<body class="clcst-portal clcst-role-librarian min-h-full bg-[#F5F7F6] font-sans text-[#17251D] antialiased">
     @php
         $librarian = auth()->user();
     @endphp
-    <header class="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#D6DED8] bg-white px-4 shadow-sm md:px-6">
+    <header class="clcst-topbar fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#D6DED8] bg-white px-4 shadow-sm md:px-6">
         <div class="flex min-w-0 items-center gap-3">
             <button aria-label="Open navigation" class="rounded-md p-2 text-[#0F5C2E] hover:bg-[#EEF5F0] md:hidden" id="librarian-menu-button" type="button">
                 <span class="material-symbols-outlined">menu</span>
@@ -39,17 +39,16 @@
             </a>
         </div>
 
-        <form class="mx-6 hidden max-w-xl flex-1 lg:block" method="GET" action="{{ route('librarian.section', 'books') }}">
+        <form class="mx-6 hidden max-w-xl flex-1 lg:block" method="GET" action="{{ route('librarian.section', 'books') }}" role="search">
             <label class="relative block">
                 <span class="material-symbols-outlined pointer-events-none absolute left-3 top-2.5 text-xl text-[#6D7C74]">search</span>
-                <input class="w-full rounded-lg border-[#CBD6CF] bg-[#F7F9F8] py-2 pl-10 pr-3 text-sm focus:border-[#0F5C2E] focus:ring-[#0F5C2E]" name="q" placeholder="Search books, users, ISBN, or barcode" type="search">
+                <input class="w-full rounded-lg border-[#CBD6CF] bg-[#F7F9F8] py-2 pl-10 pr-3 text-sm focus:border-[#0F5C2E] focus:ring-[#0F5C2E]" name="q" placeholder="Search books by title, author, ISBN, or call number" type="search" aria-label="Search books">
             </label>
         </form>
 
         <div class="flex items-center gap-2">
             <a aria-label="Notifications" class="relative rounded-lg p-2 text-[#44534B] hover:bg-[#EEF5F0]" href="{{ route('librarian.section', 'notifications') }}">
                 <span class="material-symbols-outlined">notifications</span>
-                <span class="absolute right-1 top-1 h-2 w-2 rounded-full bg-amber-500 ring-2 ring-white"></span>
             </a>
             <div class="hidden text-right sm:block">
                 <p class="text-xs font-bold text-[#17251D]">{{ $librarian->name }}</p>
@@ -62,10 +61,10 @@
     @include('partials.librarian-sidebar', ['activePage' => $activePage])
     <div class="fixed inset-0 z-20 hidden bg-black/30 md:hidden" id="librarian-menu-overlay"></div>
 
-    <main class="min-h-screen pt-16 md:ml-72">
+    <main class="clcst-main min-h-screen pt-16 md:ml-72">
         <div class="mx-auto max-w-[1600px] p-4 md:p-6 lg:p-8">
-            @if (session('status'))
-                <div class="mb-5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-900">{{ session('status') }}</div>
+            @if (session('status') || $errors->any())
+                <div class="mb-5 space-y-3">@include('partials.flash')</div>
             @endif
             @yield('content')
         </div>

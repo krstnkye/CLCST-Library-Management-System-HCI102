@@ -132,6 +132,9 @@ class BulkDataController extends Controller
         if (! filter_var($email, FILTER_VALIDATE_EMAIL) || $patronId === '' || $row['name'] === '' || mb_strlen($email) > 255 || mb_strlen($patronId) > 100 || mb_strlen($row['name']) > 255 || mb_strlen($row['program_or_department']) > 150 || mb_strlen($row['mobile_number']) > 30) {
             throw ValidationException::withMessages(['csv_file' => "Missing or invalid user information on line {$line}."]);
         }
+        if (! User::isInstitutionalEmail($email)) {
+            throw ValidationException::withMessages(['csv_file' => "The email on line {$line} is not a school email (@".config('library.allowed_email_domain').').']);
+        }
 
         if (! $actor->canManageRole($row['role'])) {
             throw ValidationException::withMessages(['csv_file' => "You cannot import the account role on line {$line}."]);
@@ -178,21 +181,28 @@ class BulkDataController extends Controller
             && mb_strlen($row['category']) <= 100
             && mb_strlen($row['shelf_location']) <= 100;
         $validYear = $year === null || ($year !== false && $year >= 1000 && $year <= (int) date('Y') + 1);
-        if ($row['title'] === '' || $row['author'] === '' || $row['isbn'] === '' || ! $validLengths || ! $validYear || $total === false || $available === false || $total < 0 || $available < 0 || $total < $available || $total > 1000000 || ! in_array($row['status'], ['active', 'archived'], true)) {
+        if ($row['title'] === '' || $row['author'] === '' || $row['isbn'] === '' || ! $validLengths || ! $validYear || $total === false || $available === false || $total < 0 || $available < 0 || $total < $available || $total > 500 || ! in_array($row['status'], ['active', 'archived'], true)) {
             throw ValidationException::withMessages(['csv_file' => "Invalid book information on line {$line}."]);
         }
 
-        LibraryBook::updateOrCreate(['isbn' => $row['isbn']], [
+        $book = LibraryBook::updateOrCreate(['isbn' => $row['isbn']], [
             'title' => $row['title'],
             'author' => $row['author'],
             'call_number' => $row['call_number'] ?: null,
             'category' => $row['category'] ?: null,
             'publication_year' => $year,
-            'total_copies' => $total,
-            'available_copies' => $available,
             'shelf_location' => $row['shelf_location'] ?: null,
             'status' => $row['status'],
         ]);
+
+        // Copies are tracked one by one, so create any the file adds. Copies
+        // beyond the available count start as "maintenance" (not yet shelved).
+        $missing = $total - $book->copies()->whereNot('status', 'lost')->count();
+        if ($missing > 0) {
+            $shelved = max(0, min($missing, $available - $book->copies()->where('status', 'available')->count()));
+            $book->addCopies($shelved);
+            $book->addCopies($missing - $shelved, 'maintenance');
+        }
     }
 
     private function safeCsvValue(mixed $value): string
@@ -203,13 +213,6 @@ class BulkDataController extends Controller
 
     private function audit(Request $request, string $description, array $metadata): void
     {
-        AuditLog::create([
-            'user_id' => $request->user()->id,
-            'event' => 'bulk-data',
-            'description' => $description,
-            'ip_address' => $request->ip(),
-            'user_agent' => mb_substr((string) $request->userAgent(), 0, 1000),
-            'metadata' => $metadata,
-        ]);
+        AuditLog::record($request->user(), 'bulk-data', $description, $metadata);
     }
 }

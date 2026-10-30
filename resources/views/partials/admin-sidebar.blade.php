@@ -1,83 +1,28 @@
 @php
-    $itemClass = fn (string $page) => $activePage === $page
-        ? 'bg-[#17251D] text-white shadow-sm'
-        : 'text-[#29372F] hover:bg-[#EEF2EF] hover:text-[#0F5C2E]';
+    $items = [
+        ['dashboard', 'dashboard', 'Dashboard', route('admin.dashboard')],
+        ['users', 'group', 'User Accounts', route('admin.section', 'users')],
+        ['approvals', 'how_to_reg', 'Account Approvals', route('admin.section', 'approvals')],
+        ['books', 'menu_book', 'Book Records', route('admin.section', 'books')],
+        ['circulation', 'sync_alt', 'Library Transactions', route('admin.section', 'circulation')],
+        ['reports', 'bar_chart', 'Reports', route('admin.section', 'reports')],
+        ['bulk-data', 'upload_file', 'Import and Export', route('management.data.index')],
+        ['audit-logs', 'history', 'Activity Log', route('admin.section', 'audit-logs')],
+        ['announcements', 'campaign', 'Announcements', route('admin.section', 'announcements')],
+        ['profile', 'account_circle', 'My Profile', route('admin.section', 'profile')],
+    ];
 @endphp
-
-<aside id="admin-sidebar" class="fixed bottom-0 left-0 top-16 z-30 hidden w-72 border-r border-[#D6DED8] bg-white md:flex md:flex-col">
-    <div id="admin-sidebar-scroll" class="custom-scrollbar flex-1 overflow-y-auto px-4 py-5">
-        <div class="mb-5 rounded-lg border border-amber-200 bg-amber-50 p-3">
-            <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined flex h-10 w-10 items-center justify-center rounded-lg bg-[#17251D] text-white">shield_person</span>
-                <div><p class="text-sm font-bold text-[#17251D]">Super Admin Access</p><p class="text-xs text-[#6B6251]">System control and security</p></div>
-            </div>
-        </div>
-
-        <nav aria-label="Super Admin navigation" class="space-y-5">
-            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass('dashboard') }}" href="{{ route('superadmin.dashboard') }}"><span class="material-symbols-outlined text-xl">dashboard</span><span>Dashboard</span></a>
-
-            @foreach ([
-                ['label' => 'User Management', 'pages' => [['users', 'group', 'All Users'], ['roles', 'admin_panel_settings', 'Roles and Permissions'], ['approvals', 'approval', 'Account Approvals']]],
-                ['label' => 'Staff Management', 'pages' => [['librarians', 'local_library', 'Librarians'], ['library-staff', 'badge', 'Library Staff']]],
-                ['label' => 'Library Management', 'pages' => [['branches', 'account_balance', 'Library Branches']]],
-                ['label' => 'System Configuration', 'pages' => [['borrowing-rules', 'rule', 'Borrowing Rules'], ['fine-settings', 'payments', 'Fine Settings'], ['system-policies', 'policy', 'System Policies']]],
-            ] as $group)
-                <section>
-                    <p class="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-[#718078]">{{ $group['label'] }}</p>
-                    <div class="space-y-1">
-                        @foreach ($group['pages'] as [$page, $icon, $label])
-                            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ route('superadmin.section', $page) }}"><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
-                        @endforeach
-                    </div>
-                </section>
+<aside id="administrator-sidebar" class="clcst-sidebar fixed bottom-0 left-0 top-16 z-30 hidden w-64 flex-col border-r border-slate-200 bg-white md:flex">
+    <div id="administrator-sidebar-scroll" class="flex-1 overflow-y-auto p-4">
+        <div class="mb-4 rounded-md border border-emerald-200 bg-emerald-50 p-3"><p class="text-sm font-bold text-emerald-900">Administrator Access</p><p class="mt-1 text-xs text-emerald-800">Accounts, records, reports, and data tools</p></div>
+        <nav aria-label="Administrator navigation" class="space-y-1">
+            @foreach($items as [$page,$icon,$label,$href])
+                <a href="{{ $href }}" class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium {{ $activePage === $page ? 'bg-emerald-900 text-white' : 'text-slate-700 hover:bg-slate-100' }}" @if ($activePage === $page) aria-current="page" @endif><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
             @endforeach
-
-            <section>
-                <p class="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-[#718078]">Monitoring and Data</p>
-                <div class="space-y-1">
-                    @foreach ([
-                        ['reports', 'monitoring', 'Reports and Analytics'],
-                        ['database-backup', 'backup', 'Database Backup'],
-                        ['database-restore', 'settings_backup_restore', 'Restore Database'],
-                        ['data-export', 'download', 'Data Export'],
-                        ['security', 'security', 'Security Management'],
-                        ['audit-logs', 'history', 'Audit Logs'],
-                    ] as [$page, $icon, $label])
-                        <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ $page === 'data-export' ? route('management.data.index') : route('superadmin.section', $page) }}"><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
-                    @endforeach
-                </div>
-            </section>
-
-            <section>
-                <p class="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-[#718078]">Communication and System</p>
-                <div class="space-y-1">
-                    @foreach ([
-                        ['announcements', 'campaign', 'Announcements'],
-                        ['content', 'article', 'Content Management'],
-                        ['notifications', 'notifications', 'Notifications'],
-                        ['maintenance', 'build', 'System Maintenance'],
-                        ['profile', 'account_circle', 'Profile Settings'],
-                    ] as [$page, $icon, $label])
-                        <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ route('superadmin.section', $page) }}"><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
-                    @endforeach
-                </div>
-            </section>
         </nav>
     </div>
-
-    <div class="border-t border-[#D6DED8] p-4">
-        <form method="POST" action="{{ route('logout') }}">@csrf<button class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-50" type="submit"><span class="material-symbols-outlined text-xl">logout</span><span>Log Out</span></button></form>
-    </div>
+    <div class="border-t border-slate-200 p-4"><form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-red-700 hover:bg-red-50"><span class="material-symbols-outlined text-xl">logout</span>Log Out</button></form></div>
 </aside>
-
-
 <script>
-    (() => {
-        const sidebar = document.getElementById('admin-sidebar-scroll');
-        const storageKey = 'clcst-super-admin-sidebar-scroll';
-        if (!sidebar) return;
-        sidebar.scrollTop = Number(sessionStorage.getItem(storageKey) || 0);
-        sidebar.addEventListener('scroll', () => sessionStorage.setItem(storageKey, String(sidebar.scrollTop)), { passive: true });
-        document.querySelectorAll('#admin-sidebar a[href]').forEach(link => link.addEventListener('click', () => sessionStorage.setItem(storageKey, String(sidebar.scrollTop))));
-    })();
+    (() => { const el=document.getElementById('administrator-sidebar-scroll'), key='clcst.admin.sidebar'; if(!el)return; el.scrollTop=Number(sessionStorage.getItem(key)||0); el.addEventListener('scroll',()=>sessionStorage.setItem(key,String(el.scrollTop)),{passive:true}); document.querySelectorAll('#administrator-sidebar a').forEach(a=>a.addEventListener('click',()=>sessionStorage.setItem(key,String(el.scrollTop)))); })();
 </script>

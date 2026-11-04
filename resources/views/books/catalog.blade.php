@@ -9,7 +9,7 @@
 
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script>
@@ -90,7 +90,7 @@
     </style>
     @include('partials.ui-motion')
 </head>
-<body class="clcst-portal {{ auth()->user()->role === 'student' ? 'clcst-role-student' : 'clcst-role-faculty' }} flex min-h-screen flex-col bg-[#F8FAFC] font-body-md text-on-surface antialiased">
+<body class="clcst-portal {{ auth()->user()->role === 'student' ? 'clcst-role-student' : 'clcst-role-faculty' }} flex min-h-screen flex-col bg-[#F6F3EC] font-body-md text-on-surface antialiased">
     @php
         $currentParams = request()->except('page');
         $catalogUser = auth()->user();
@@ -118,9 +118,8 @@
                 <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-outline">
                     <span class="material-symbols-outlined text-[18px]">search</span>
                 </span>
-                <input id="topbar-catalog-search" class="h-10 w-full rounded-lg border border-outline-variant bg-surface-container-low py-2 pl-10 pr-20 text-sm text-on-surface transition-all focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary" name="q" placeholder="Quick catalog lookup (Title, ISBN, Barcode, Author)..." type="text" value="{{ $query }}">
+                <input id="topbar-catalog-search" class="h-10 w-full rounded-lg border border-outline-variant bg-surface-container-low py-2 pl-10 pr-10 text-sm text-on-surface transition-all focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary" name="q" placeholder="Quick catalog lookup (Title, ISBN, Barcode, Author)..." type="text" value="{{ $query }}">
                 <div class="absolute inset-y-0 right-0 flex items-center gap-1.5 pr-2">
-                    <span class="hidden rounded border border-outline-variant bg-surface-container px-1.5 py-0.5 font-mono text-[11px] font-semibold text-outline sm:inline-flex">Book Catalog</span>
                     <button class="rounded p-1 text-outline transition-colors hover:bg-surface-container hover:text-primary" title="Scan a barcode or QR code" aria-label="Scan a barcode or QR code" type="button" data-scan data-scan-target="#topbar-catalog-search" data-scan-submit>
                         <span class="material-symbols-outlined text-[18px]">barcode_scanner</span>
                     </button>
@@ -161,7 +160,7 @@
             @include('partials.staff-sidebar', ['activePage' => 'search-books', 'portalRole' => 'faculty'])
         @endif
 
-        <main class="clcst-main custom-scrollbar md:ml-64 flex flex-1 flex-col overflow-y-auto bg-[#F8FAFC]">
+        <main class="clcst-main custom-scrollbar md:ml-64 flex flex-1 flex-col overflow-y-auto bg-[#F6F3EC]">
             <section class="border-b border-outline-variant bg-surface-container-lowest px-4 pb-6 pt-6 shadow-sm lg:px-8">
                 @if (session('status') || $errors->any())
                     <div class="mb-4 space-y-2">@include('partials.flash')</div>
@@ -280,7 +279,7 @@
                             @endphp
                             <article class="rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm transition-all hover:border-primary/60 hover:shadow-md">
                                 <div class="flex flex-col gap-5 sm:flex-row">
-                                    <div class="book-cover relative h-40 w-full flex-shrink-0 overflow-hidden rounded-lg bg-gradient-to-br {{ 'from-emerald-700 to-slate-950' }} text-white sm:w-28">
+                                    <div class="book-cover relative h-40 w-full flex-shrink-0 overflow-hidden rounded-lg bg-emerald-900 text-white sm:w-28">
                                         <img alt="{{ $book->title }} cover" class="h-full w-full object-cover" loading="lazy" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" src="{{ $book->cover_url }}">
                                         <div class="hidden h-full w-full flex-col justify-between p-2.5">
                                             <div>

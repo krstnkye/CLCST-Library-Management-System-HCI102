@@ -7,9 +7,9 @@
         ['inventory_2', 'Damaged or lost copies', 'In Book Inventory, set a copy to "For repair" or "Lost". It leaves the shelf count until it is set back to "On shelf".'],
         ['how_to_reg', 'New accounts', 'Account Review lists applications for the roles you are allowed to approve. Open the uploaded ID before approving.'],
     ] as [$icon, $title, $body])
-        <article class="rounded-lg border border-[#D6DED8] bg-white p-5 shadow-sm">
-            <h2 class="flex items-center gap-2 font-display text-base font-bold"><span class="material-symbols-outlined text-[#0F5C2E]">{{ $icon }}</span>{{ $title }}</h2>
-            <p class="mt-2 text-sm leading-6 text-[#44534B]">{{ $body }}</p>
+        <article class="rounded-lg border border-[#E1DCD3] bg-white p-5 shadow-sm">
+            <h2 class="flex items-center gap-2 font-display text-base font-bold"><span class="material-symbols-outlined text-[#284A30]">{{ $icon }}</span>{{ $title }}</h2>
+            <p class="mt-2 text-sm leading-6 text-[#524E45]">{{ $body }}</p>
         </article>
     @endforeach
     <p class="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-950 md:col-span-2">Technical problem? Email <a class="font-bold underline" href="mailto:library@clcst.edu.ph">library@clcst.edu.ph</a> with a screenshot and the time it happened. Every action is recorded in the activity log, which helps us trace the issue.</p>

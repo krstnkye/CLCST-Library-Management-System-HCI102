@@ -13,8 +13,8 @@
 
     @include('partials.patron-reservations')
 
-    <section class="overflow-hidden rounded-2xl border border-[#E2E8F0] bg-surface-container-lowest shadow-sm" aria-labelledby="past-heading">
-        <h2 id="past-heading" class="border-b border-[#E2E8F0] px-5 py-4 font-headline text-lg font-bold">Recent closed reservations</h2>
+    <section class="overflow-hidden rounded-2xl border border-[#EDEAE5] bg-surface-container-lowest shadow-sm" aria-labelledby="past-heading">
+        <h2 id="past-heading" class="border-b border-[#EDEAE5] px-5 py-4 font-headline text-lg font-bold">Recent closed reservations</h2>
         <ul class="divide-y divide-outline-variant/50">
             @forelse ($reservationHistory as $reservation)
                 <li class="flex flex-wrap items-center justify-between gap-2 px-5 py-3 text-sm">

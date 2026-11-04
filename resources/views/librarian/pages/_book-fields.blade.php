@@ -1,6 +1,6 @@
 @php
     $book = $book ?? null;
-    $field = 'w-full rounded-lg border-[#CBD6CF] text-sm focus:border-[#0F5C2E] focus:ring-[#0F5C2E]';
+    $field = 'w-full rounded-lg border-[#D6D2CB] text-sm focus:border-[#284A30] focus:ring-[#284A30]';
 @endphp
 <div class="grid gap-4 md:grid-cols-2">
     <div class="md:col-span-2"><label class="mb-1.5 block text-sm font-bold" for="title">Title <span class="text-red-600">*</span></label><input id="title" name="title" value="{{ old('title', $book?->title) }}" required maxlength="255" class="{{ $field }}"></div>

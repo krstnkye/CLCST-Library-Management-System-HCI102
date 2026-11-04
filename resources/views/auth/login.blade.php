@@ -16,28 +16,31 @@
 <body class="clcst-portal library-login">
 <div class="login-shell">
     <aside class="login-story" aria-label="CLCST School Library">
-        <div class="login-aurora" aria-hidden="true"><span></span><span></span><span></span></div>
         <a class="login-brand" href="{{ route('login') }}">
             @include('partials.celtech-logo', ['class' => 'rounded-full'])
             <div><strong>CLCST School Library</strong><span>Central Luzon College of Science and Technology</span></div>
         </a>
         <div class="login-story-copy">
-            <p class="login-eyebrow">Read. Discover. Belong.</p>
-            <h2>Find your<br>next <em>chapter.</em></h2>
-            <p>From your first reference to your next big idea. Your campus library is here for every part of the journey.</p>
-            <div class="login-stats"><span><span class="material-symbols-outlined" aria-hidden="true">auto_stories</span>Live catalog</span><span><span class="material-symbols-outlined" aria-hidden="true">event_available</span>Online reservations</span><span><span class="material-symbols-outlined" aria-hidden="true">notifications_active</span>Due-date alerts</span></div>
+            <p class="login-eyebrow">CLCST Main Library</p>
+            <h2>The college library,<br><em>at your desk.</em></h2>
+            <p>Search the collection, reserve a title, and keep track of every loan and due date from one account.</p>
+            <dl class="login-facts">
+                <div><dt>Weekdays</dt><dd>8:00 AM &ndash; 8:00 PM</dd></div>
+                <div><dt>Saturday</dt><dd>8:00 AM &ndash; 5:00 PM</dd></div>
+                <div><dt>Enquiries</dt><dd>library@clcst.edu.ph</dd></div>
+            </dl>
         </div>
         <div class="library-shelf" aria-hidden="true">
             <span>Literature</span><span>Science &amp; Discovery</span><span>The Arts</span><span>Technology</span><span>History</span><span>Ideas</span>
         </div>
-        <div class="login-story-footer"><span>A space for curious minds.</span><span>CLCST · Main Library</span></div>
+        <div class="login-story-footer"><span>Central Luzon College of Science and Technology</span><span>Library Services</span></div>
     </aside>
     <main class="login-content">
         <div class="login-content-top">New to the library?<a href="{{ route('register') }}">Create an account <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_outward</span></a></div>
         <section class="login-panel" aria-labelledby="signin-heading">
-            <p class="login-eyebrow">Your campus library, connected</p>
-            <h1 id="signin-heading">Welcome back.</h1>
-            <p class="login-intro">Sign in to find books, manage your loans, and pick up where you left off.</p>
+            <p class="login-eyebrow">Library account</p>
+            <h1 id="signin-heading">Sign in</h1>
+            <p class="login-intro">Use your school ID or email. Choose the account type that matches your library record.</p>
             @if (session('status'))
                 <div class="mt-5 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900" role="status">{{ session('status') }}</div>
             @endif
@@ -85,7 +88,7 @@
                 <label class="flex cursor-pointer items-start gap-2.5 leading-5 text-slate-600"><input class="mt-0.5 rounded border-slate-300 text-emerald-800 focus:ring-emerald-700" type="checkbox" name="remember" value="1" @checked(old('remember'))><span>Keep me signed in on this private device</span></label>
                 <button class="login-submit" type="submit"><span id="submit-label">Sign In as Student</span><span class="material-symbols-outlined text-xl" aria-hidden="true">arrow_forward</span></button>
             </form>
-            <div class="login-assistance"><span class="material-symbols-outlined" aria-hidden="true">support_agent</span><p>Having trouble getting in?<br><a href="mailto:library@clcst.edu.ph">Contact the library</a> for account or approval assistance.</p></div>
+            <div class="login-assistance"><span class="material-symbols-outlined" aria-hidden="true">mail</span><p>Having trouble getting in?<br><a href="mailto:library@clcst.edu.ph">Contact the library</a> for account or approval assistance.</p></div>
         </section>
         <footer class="login-footer"><span>CLCST Library Management System</span><span>HCI102 Project</span></footer>
     </main>

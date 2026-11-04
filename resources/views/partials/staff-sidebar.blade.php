@@ -27,39 +27,39 @@
     ];
 @endphp
 
-<aside id="staff-sidebar" class="clcst-sidebar fixed bottom-0 left-0 top-16 z-30 hidden w-64 flex-shrink-0 flex-col justify-between border-r border-[#CBD5E1] bg-white md:flex" aria-label="Faculty navigation">
+<aside id="staff-sidebar" class="clcst-sidebar fixed bottom-0 left-0 top-16 z-30 hidden w-64 flex-shrink-0 flex-col justify-between border-r border-[#DBD8D1] bg-white md:flex" aria-label="Faculty navigation">
     <div class="custom-scrollbar flex flex-1 flex-col gap-4 overflow-y-auto p-4">
         @php($facultyUser = auth()->user())
-        <a class="flex items-center gap-3 rounded-xl border border-[#CBD5E1] p-3" href="{{ route('staff.section', 'profile') }}" title="Show my e-Pass QR code"
+        <a class="flex items-center gap-3 rounded-xl border border-[#DBD8D1] p-3" href="{{ route('staff.section', 'profile') }}" title="Show my e-Pass QR code"
             data-epass data-epass-name="{{ $facultyUser->name }}" data-epass-id="{{ $facultyUser->patron_id }}" data-epass-program="{{ $facultyUser->program_or_department }}" data-epass-role="Faculty">
-            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#065F2A] text-white"><span class="material-symbols-outlined">badge</span></span>
+            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1F3C27] text-white"><span class="material-symbols-outlined">badge</span></span>
             <span class="min-w-0"><span class="block truncate text-xs font-bold">CLCST e-Pass</span><span class="block truncate text-[10px]">ID: {{ $facultyUser->patron_id }}</span></span>
             <span class="material-symbols-outlined ml-auto text-[20px]" aria-hidden="true">qr_code_2</span>
         </a>
         @foreach ($groups as $heading => $items)
             <section>
-                <p class="mb-1 px-3 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">{{ $heading }}</p>
+                <p class="mb-1 px-3 text-[10px] font-bold uppercase tracking-wider text-[#817B6E]">{{ $heading }}</p>
                 <nav class="space-y-1">
                     @foreach ($items as [$key, $label, $icon, $href, $badge])
                         @php($isActive = $activePage === $key)
-                        <a class="{{ $isActive ? 'bg-[#065F2A] text-white shadow-sm' : 'text-[#334155] hover:bg-[#F1F5F9]' }} flex items-center justify-between rounded-lg px-3 py-2 text-xs font-semibold" href="{{ $href }}" @if ($isActive) aria-current="page" @endif>
+                        <a class="{{ $isActive ? 'bg-[#1F3C27] text-white shadow-sm' : 'text-[#49463F] hover:bg-[#F0ECE4]' }} flex items-center justify-between rounded-lg px-3 py-2 text-xs font-semibold" href="{{ $href }}" @if ($isActive) aria-current="page" @endif>
                             <span class="flex items-center gap-3"><span class="material-symbols-outlined text-[20px]">{{ $icon }}</span>{{ $label }}</span>
-                            @if ($key === 'notifications')<span class="rounded-full {{ $isActive ? 'bg-white/20' : 'bg-[#DBEAFE] text-[#1D4ED8]' }} px-2 py-0.5 text-[10px] font-bold" data-notification-badge @unless ($badge) hidden @endunless>{{ $badge }}</span>@elseif ($badge)<span class="rounded-full {{ $isActive ? 'bg-white/20' : 'bg-[#DBEAFE] text-[#1D4ED8]' }} px-2 py-0.5 text-[10px] font-bold">{{ $badge }}</span>@endif
+                            @if ($key === 'notifications')<span class="rounded-full {{ $isActive ? 'bg-white/20' : 'bg-[#DFE5EE] text-[#3B4E6C]' }} px-2 py-0.5 text-[10px] font-bold" data-notification-badge @unless ($badge) hidden @endunless>{{ $badge }}</span>@elseif ($badge)<span class="rounded-full {{ $isActive ? 'bg-white/20' : 'bg-[#DFE5EE] text-[#3B4E6C]' }} px-2 py-0.5 text-[10px] font-bold">{{ $badge }}</span>@endif
                         </a>
                     @endforeach
                 </nav>
             </section>
         @endforeach
-        <form class="space-y-2 rounded-xl border border-[#CBD5E1] p-3" method="GET" action="{{ route('books.catalog') }}">
+        <form class="space-y-2 rounded-xl border border-[#DBD8D1] p-3" method="GET" action="{{ route('books.catalog') }}">
             <label class="flex items-center gap-2 text-xs font-bold" for="faculty-sidebar-barcode"><span class="material-symbols-outlined text-base">barcode_scanner</span>Find by barcode or ISBN</label>
-            <input id="faculty-sidebar-barcode" class="w-full rounded-lg border border-[#CBD5E1] px-3 py-2 text-xs" name="q" required placeholder="e.g. 978-0132350884">
+            <input id="faculty-sidebar-barcode" class="w-full rounded-lg border border-[#DBD8D1] px-3 py-2 text-xs" name="q" required placeholder="e.g. 978-0132350884">
             <div class="flex gap-2">
                 <button class="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold" type="submit"><span class="material-symbols-outlined text-base">search</span>Look up</button>
                 <button class="sidebar-scan flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold" type="button" aria-label="Scan a barcode with the camera" data-scan data-scan-target="#faculty-sidebar-barcode" data-scan-submit><span class="material-symbols-outlined text-base">photo_camera</span>Scan</button>
             </div>
         </form>
     </div>
-    <div class="border-t border-[#CBD5E1] p-4">
+    <div class="border-t border-[#DBD8D1] p-4">
         <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50" type="submit"><span class="material-symbols-outlined">logout</span>Log Out</button>
@@ -67,8 +67,8 @@
     </div>
 </aside>
 
-<nav class="clcst-mobile-nav custom-scrollbar fixed inset-x-0 bottom-0 z-40 flex gap-1 overflow-x-auto border-t border-[#CBD5E1] bg-white px-2 py-1.5 md:hidden" aria-label="Faculty navigation">
+<nav class="clcst-mobile-nav custom-scrollbar fixed inset-x-0 bottom-0 z-40 flex gap-1 overflow-x-auto border-t border-[#DBD8D1] bg-white px-2 py-1.5 md:hidden" aria-label="Faculty navigation">
     @foreach (array_merge(...array_values($groups)) as [$key, $label, $icon, $href])
-        <a class="{{ $activePage === $key ? 'bg-[#065F2A] text-white' : 'text-[#334155]' }} flex min-w-[4.5rem] flex-col items-center gap-0.5 rounded-lg px-2 py-1 text-center text-[10px] font-semibold" href="{{ $href }}"><span class="material-symbols-outlined text-[20px]">{{ $icon }}</span>{{ $label }}</a>
+        <a class="{{ $activePage === $key ? 'bg-[#1F3C27] text-white' : 'text-[#49463F]' }} flex min-w-[4.5rem] flex-col items-center gap-0.5 rounded-lg px-2 py-1 text-center text-[10px] font-semibold" href="{{ $href }}"><span class="material-symbols-outlined text-[20px]">{{ $icon }}</span>{{ $label }}</a>
     @endforeach
 </nav>

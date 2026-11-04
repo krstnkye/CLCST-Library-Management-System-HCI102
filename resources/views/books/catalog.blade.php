@@ -146,7 +146,7 @@
                     <p class="text-[10px] leading-tight text-outline">{{ $userSubtitle }}</p>
                 </div>
                 <div class="relative">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary font-headline-sm text-xs font-bold text-on-primary shadow-sm ring-2 ring-secondary-container">{{ $catalogUser->initials() }}</div>
+                    <div class="overflow-hidden flex h-9 w-9 items-center justify-center rounded-full bg-primary font-headline-sm text-xs font-bold text-on-primary shadow-sm ring-2 ring-secondary-container">@include('partials.avatar', ['user' => $catalogUser])</div>
                     <span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
                 </div>
             </div>

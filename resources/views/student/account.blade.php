@@ -4,7 +4,7 @@
 
 @section('content')
     <header class="flex flex-col gap-4 rounded-2xl border border-[#EDEAE5] bg-surface-container-lowest p-5 shadow-sm sm:flex-row sm:items-center">
-        <div class="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-xl font-bold text-white">{{ $patron->initials() }}</div>
+        <div class="overflow-hidden flex h-16 w-16 items-center justify-center rounded-full bg-primary text-xl font-bold text-white">@include('partials.avatar', ['user' => $patron])</div>
         <div class="flex-1">
             <h1 class="font-headline text-2xl font-bold">{{ $patron->name }}</h1>
             <p class="text-sm text-on-surface-variant">{{ $patron->patron_id }} - {{ $patron->program_or_department }}</p>

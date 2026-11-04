@@ -21,7 +21,7 @@ class User extends Authenticatable
         'program_or_department', 'mobile_number', 'credential_path', 'password',
     ];
 
-    protected $hidden = ['password', 'remember_token', 'credential_path'];
+    protected $hidden = ['password', 'remember_token', 'credential_path', 'profile_photo_path'];
 
     /**
      * Get the attributes that should be cast.
@@ -126,6 +126,17 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn (string $part) => mb_strtoupper(mb_substr($part, 0, 1)))
             ->implode('') ?: 'U';
+    }
+
+    /** URL of the uploaded profile photo, or null when the user shows initials. */
+    public function profilePhotoUrl(): ?string
+    {
+        if (! $this->profile_photo_path) {
+            return null;
+        }
+
+        // The version query busts the browser cache after a new upload.
+        return route('profile.photo.show', ['user' => $this->id, 'v' => substr(md5($this->profile_photo_path), 0, 8)]);
     }
 
     public function dashboardRouteName(): string

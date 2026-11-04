@@ -24,7 +24,12 @@ Route::post('/logout', [AuthController::class, 'destroy'])->middleware('auth')->
 Route::middleware(['auth', 'portal'])->prefix('profile')->name('profile.')->group(function (): void {
     Route::put('/', [ProfileController::class, 'update'])->name('update');
     Route::put('/password', [ProfileController::class, 'password'])->middleware('throttle:6,1')->name('password');
+    Route::post('/photo', [ProfileController::class, 'storePhoto'])->middleware('throttle:10,1')->name('photo.store');
+    Route::delete('/photo', [ProfileController::class, 'destroyPhoto'])->name('photo.destroy');
 });
+
+// Profile photos are private files, visible only to signed-in users.
+Route::get('/profile/photo/{user}', [ProfileController::class, 'showPhoto'])->middleware('auth')->name('profile.photo.show');
 
 Route::middleware(['auth', 'portal:student'])->group(function (): void {
     Route::get('/student/dashboard', [PatronController::class, 'studentDashboard'])->name('student.dashboard');

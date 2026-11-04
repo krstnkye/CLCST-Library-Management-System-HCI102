@@ -32,7 +32,7 @@
             </a>
             <div class="h-6 w-px bg-[#EDEAE5]"></div>
             <a class="flex items-center gap-3" href="{{ route('student.section', 'account') }}">
-                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-sm font-bold text-on-primary shadow-sm ring-2 ring-[#F1F4F0]">{{ $student->initials() }}</div>
+                <div class="overflow-hidden flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-sm font-bold text-on-primary shadow-sm ring-2 ring-[#F1F4F0]">@include('partials.avatar', ['user' => $student])</div>
                 <div class="hidden text-left lg:block">
                     <p class="text-xs font-semibold leading-tight text-on-surface">{{ $student->name }}</p>
                     <p class="text-xs text-[#817B6E]">{{ $student->patron_id }}</p>

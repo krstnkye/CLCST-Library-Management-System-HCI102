@@ -24,7 +24,7 @@
                 <span class="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white" data-notification-badge @if ($patronSummary['notifications'] === 0) hidden @endif>{{ $patronSummary['notifications'] }}</span>
             </a>
             <a class="flex items-center gap-3" href="{{ route('staff.section', 'profile') }}">
-                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#1F3C27] text-sm font-bold text-white">{{ $faculty->initials() }}</div>
+                <div class="overflow-hidden flex h-9 w-9 items-center justify-center rounded-full bg-[#1F3C27] text-sm font-bold text-white">@include('partials.avatar', ['user' => $faculty])</div>
                 <div class="hidden text-left lg:block"><p class="text-xs font-semibold leading-tight">{{ $faculty->name }}</p><p class="text-xs text-[#817B6E]">{{ $faculty->program_or_department ?: 'Faculty' }}</p></div>
             </a>
         </div>

@@ -18,7 +18,7 @@
             @include('partials.celtech-logo', ['class' => 'h-10 w-10 rounded-full object-contain'])
             <div><p class="font-bold text-emerald-900">CLCST Library</p><p class="text-xs text-slate-500">Administrator workspace</p></div>
         </div>
-        <div class="flex items-center gap-3"><div class="hidden text-right sm:block"><p class="text-sm font-semibold">{{ auth()->user()->name }}</p><p class="text-xs text-slate-500">Administrator</p></div><span class="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-900 text-xs font-bold text-white">{{ auth()->user()->initials() }}</span></div>
+        <div class="flex items-center gap-3"><div class="hidden text-right sm:block"><p class="text-sm font-semibold">{{ auth()->user()->name }}</p><p class="text-xs text-slate-500">Administrator</p></div><span class="overflow-hidden flex h-9 w-9 items-center justify-center rounded-full bg-emerald-900 text-xs font-bold text-white">@include('partials.avatar', ['user' => auth()->user()])</span></div>
     </header>
     @include('partials.admin-sidebar', ['activePage' => $activePage])
     <div id="administrator-menu-overlay" class="fixed inset-0 z-20 hidden bg-black/30 md:hidden"></div>

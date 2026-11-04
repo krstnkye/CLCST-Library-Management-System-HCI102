@@ -55,7 +55,7 @@
                 <p class="text-xs font-bold text-[#201F1C]">{{ $librarian->name }}</p>
                 <p class="text-[11px] text-[#767065]">{{ $librarian->program_or_department ?: 'Library Staff' }}</p>
             </div>
-            <a aria-label="Open profile" class="flex h-9 w-9 items-center justify-center rounded-full bg-[#284A30] text-xs font-bold text-white" href="{{ route('librarian.section', 'profile') }}">{{ $librarian->initials() }}</a>
+            <a aria-label="Open profile" class="overflow-hidden flex h-9 w-9 items-center justify-center rounded-full bg-[#284A30] text-xs font-bold text-white" href="{{ route('librarian.section', 'profile') }}">@include('partials.avatar', ['user' => $librarian])</a>
         </div>
     </header>
 

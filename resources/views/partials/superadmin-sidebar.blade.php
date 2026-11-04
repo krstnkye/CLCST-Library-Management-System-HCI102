@@ -65,15 +65,3 @@
         <form method="POST" action="{{ route('logout') }}">@csrf<button class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-50" type="submit"><span class="material-symbols-outlined text-xl">logout</span><span>Log Out</span></button></form>
     </div>
 </aside>
-
-
-<script>
-    (() => {
-        const sidebar = document.getElementById('admin-sidebar-scroll');
-        const storageKey = 'clcst-super-admin-sidebar-scroll';
-        if (!sidebar) return;
-        sidebar.scrollTop = Number(sessionStorage.getItem(storageKey) || 0);
-        sidebar.addEventListener('scroll', () => sessionStorage.setItem(storageKey, String(sidebar.scrollTop)), { passive: true });
-        document.querySelectorAll('#admin-sidebar a[href]').forEach(link => link.addEventListener('click', () => sessionStorage.setItem(storageKey, String(sidebar.scrollTop))));
-    })();
-</script>

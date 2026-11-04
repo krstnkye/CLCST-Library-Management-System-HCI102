@@ -23,6 +23,3 @@
     </div>
     <div class="border-t border-slate-200 p-4"><form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-red-700 hover:bg-red-50"><span class="material-symbols-outlined text-xl">logout</span>Log Out</button></form></div>
 </aside>
-<script>
-    (() => { const el=document.getElementById('administrator-sidebar-scroll'), key='clcst.admin.sidebar'; if(!el)return; el.scrollTop=Number(sessionStorage.getItem(key)||0); el.addEventListener('scroll',()=>sessionStorage.setItem(key,String(el.scrollTop)),{passive:true}); document.querySelectorAll('#administrator-sidebar a').forEach(a=>a.addEventListener('click',()=>sessionStorage.setItem(key,String(el.scrollTop)))); })();
-</script>

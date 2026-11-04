@@ -72,7 +72,7 @@
             </section>
         </nav>
         <div class="mt-5 border-t border-[#E1DCD3] pt-4">
-            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-[#34312C] hover:bg-[#F3F1ED] hover:text-[#284A30]" href="{{ route('management.data.index') }}"><span class="material-symbols-outlined text-xl">upload_file</span><span>Import and Export</span></a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass('bulk-data') }}" href="{{ route('management.data.index') }}" @if ($activePage === 'bulk-data') aria-current="page" @endif><span class="material-symbols-outlined text-xl">upload_file</span><span>Import and Export</span></a>
         </div>
     </div>
 
@@ -85,17 +85,3 @@
         </form>
     </div>
 </aside>
-
-<script>
-    (() => {
-        const sidebar = document.getElementById('librarian-sidebar-scroll');
-        const storageKey = 'clcst-librarian-sidebar-scroll';
-        if (!sidebar) return;
-        const restore = () => sidebar.scrollTop = Number(sessionStorage.getItem(storageKey) || 0);
-        restore();
-        sidebar.addEventListener('scroll', () => sessionStorage.setItem(storageKey, String(sidebar.scrollTop)), { passive: true });
-        document.querySelectorAll('#librarian-sidebar a[href]').forEach(link => {
-            link.addEventListener('click', () => sessionStorage.setItem(storageKey, String(sidebar.scrollTop)));
-        });
-    })();
-</script>

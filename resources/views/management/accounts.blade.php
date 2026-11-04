@@ -3,7 +3,7 @@
     $role = auth()->user()->role;
     $pendingView = request('status') === 'pending';
     [$portalLayout, $activePage] = match ($role) {
-        'superadmin' => ['superadmin.layout', $pendingView ? 'approvals' : 'users'],
+        'superadmin' => ['superadmin.layout', $pendingView ? 'approvals' : (['librarian' => 'librarians', 'admin' => 'library-staff'][request('role')] ?? 'users')],
         'admin' => ['admin.layout', $pendingView ? 'approvals' : 'users'],
         default => ['librarian.layout', 'users'],
     };

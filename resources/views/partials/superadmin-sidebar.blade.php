@@ -17,15 +17,28 @@
             <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass('dashboard') }}" href="{{ route('superadmin.dashboard') }}" @if ($activePage === 'dashboard') aria-current="page" @endif><span class="material-symbols-outlined text-xl">dashboard</span><span>Dashboard</span></a>
 
             @foreach ([
-                ['label' => 'User Management', 'pages' => [['users', 'group', 'All Users'], ['roles', 'admin_panel_settings', 'Roles and Permissions'], ['approvals', 'approval', 'Account Approvals']]],
-                ['label' => 'Staff Management', 'pages' => [['librarians', 'local_library', 'Librarians'], ['library-staff', 'badge', 'Administrators']]],
-                ['label' => 'System Configuration', 'pages' => [['borrowing-rules', 'rule', 'Borrowing Rules'], ['fine-settings', 'payments', 'Fine Settings'], ['system-policies', 'policy', 'System Policies']]],
+                ['label' => 'User Management', 'pages' => [['users', 'group', 'All Users', route('management.accounts.index')], ['roles', 'admin_panel_settings', 'Roles and Permissions'], ['approvals', 'approval', 'Account Approvals', route('management.accounts.index', ['status' => 'pending'])]]],
+                ['label' => 'Staff Management', 'pages' => [['librarians', 'local_library', 'Librarians', route('management.accounts.index', ['role' => 'librarian'])], ['library-staff', 'badge', 'Administrators', route('management.accounts.index', ['role' => 'admin'])]]],
+                ['label' => 'Library Operations', 'pages' => [
+                    ['books', 'menu_book', 'Book Catalog', route('librarian.section', 'books')],
+                    ['add-book', 'library_add', 'Add New Book', route('librarian.section', 'add-book')],
+                    ['categories', 'category', 'Categories', route('librarian.section', 'categories')],
+                    ['inventory', 'inventory_2', 'Inventory', route('librarian.section', 'inventory')],
+                    ['borrow-requests', 'outbox', 'Check Out Books', route('librarian.section', 'borrow-requests')],
+                    ['returns', 'assignment_return', 'Check In Returns', route('librarian.section', 'returns')],
+                    ['overdue', 'schedule', 'Overdue Books', route('librarian.section', 'overdue')],
+                    ['reservations', 'bookmark', 'Reservations', route('librarian.section', 'reservations')],
+                    ['fines', 'payments', 'Fines and Payments', route('librarian.section', 'fines')],
+                    ['feedback', 'forum', 'Feedback and Requests', route('librarian.section', 'feedback')],
+                ]],
+                ['label' => 'System Configuration', 'pages' => [['borrowing-rules', 'rule', 'Borrowing Rules'], ['fine-settings', 'request_quote', 'Fine Settings'], ['system-policies', 'policy', 'System Policies']]],
             ] as $group)
                 <section>
                     <p class="mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-[#827C6F]">{{ $group['label'] }}</p>
                     <div class="space-y-1">
-                        @foreach ($group['pages'] as [$page, $icon, $label])
-                            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ route('superadmin.section', $page) }}" @if ($activePage === $page) aria-current="page" @endif><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
+                        @foreach ($group['pages'] as $item)
+                            @php([$page, $icon, $label] = $item)
+                            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ $item[3] ?? route('superadmin.section', $page) }}" @if ($activePage === $page) aria-current="page" @endif><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
                         @endforeach
                     </div>
                 </section>
@@ -51,10 +64,9 @@
                 <div class="space-y-1">
                     @foreach ([
                         ['announcements', 'campaign', 'Announcements'],
-                        ['circulation', 'local_library', 'Library Operations'],
                         ['profile', 'account_circle', 'Profile Settings'],
                     ] as [$page, $icon, $label])
-                        <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ route('superadmin.section', $page) }}" @if ($activePage === $page) aria-current="page" @endif><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
+                        <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold {{ $itemClass($page) }}" href="{{ $page === 'announcements' ? route('librarian.section', 'announcements') : route('superadmin.section', $page) }}" @if ($activePage === $page) aria-current="page" @endif><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
                     @endforeach
                 </div>
             </section>

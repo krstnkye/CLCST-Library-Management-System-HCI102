@@ -8,7 +8,7 @@
         ['reports', 'bar_chart', 'Reports', route('admin.section', 'reports')],
         ['bulk-data', 'upload_file', 'Import and Export', route('management.data.index')],
         ['audit-logs', 'history', 'Activity Log', route('admin.section', 'audit-logs')],
-        ['announcements', 'campaign', 'Announcements', route('admin.section', 'announcements')],
+        ['announcements', 'campaign', 'Announcements', route('librarian.section', 'announcements')],
         ['profile', 'account_circle', 'My Profile', route('admin.section', 'profile')],
     ];
 @endphp

@@ -30,11 +30,11 @@
             <button aria-label="Open navigation" class="rounded-md p-2 text-[#284A30] hover:bg-[#F4F2EF] md:hidden" id="librarian-menu-button" type="button">
                 <span class="material-symbols-outlined">menu</span>
             </button>
-            <a class="flex min-w-0 items-center gap-3" href="{{ route('librarian.dashboard') }}">
+            <a class="flex min-w-0 items-center gap-3" href="{{ route($librarian->dashboardRouteName()) }}">
                 @include('partials.celtech-logo', ['class' => 'h-10 w-10 shrink-0 rounded-full object-contain'])
                 <div class="min-w-0">
                     <p class="truncate font-display text-sm font-extrabold text-[#284A30] sm:text-base">CLCST Library Management System</p>
-                    <p class="truncate text-[11px] font-medium text-[#767065]">Librarian Operations Portal</p>
+                    <p class="truncate text-[11px] font-medium text-[#767065]">{{ ['superadmin' => 'Super Admin Control Center', 'admin' => 'Administrator Portal'][$librarian->role] ?? 'Librarian Operations Portal' }}</p>
                 </div>
             </a>
         </div>
@@ -55,11 +55,12 @@
                 <p class="text-xs font-bold text-[#201F1C]">{{ $librarian->name }}</p>
                 <p class="text-[11px] text-[#767065]">{{ $librarian->program_or_department ?: 'Library Staff' }}</p>
             </div>
-            <a aria-label="Open profile" class="overflow-hidden flex h-9 w-9 items-center justify-center rounded-full bg-[#284A30] text-xs font-bold text-white" href="{{ route('librarian.section', 'profile') }}">@include('partials.avatar', ['user' => $librarian])</a>
+            <a aria-label="Open profile" class="overflow-hidden flex h-9 w-9 items-center justify-center rounded-full bg-[#284A30] text-xs font-bold text-white" href="{{ ['superadmin' => route('superadmin.section', 'profile'), 'admin' => route('admin.section', 'profile')][$librarian->role] ?? route('librarian.section', 'profile') }}">@include('partials.avatar', ['user' => $librarian])</a>
         </div>
     </header>
 
-    @include('partials.librarian-sidebar', ['activePage' => $activePage])
+    {{-- Admins and the super admin keep their own sidebar on shared library pages. --}}
+    @include(['superadmin' => 'partials.superadmin-sidebar', 'admin' => 'partials.admin-sidebar'][$librarian->role] ?? 'partials.librarian-sidebar', ['activePage' => $activePage])
     <div class="fixed inset-0 z-20 hidden bg-black/30 md:hidden" id="librarian-menu-overlay"></div>
 
     <main class="clcst-main min-h-screen pt-16 md:ml-72">

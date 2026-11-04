@@ -19,6 +19,12 @@ Laravel-based HCI102 project for the Central Luzon College of Science and Techno
 - **Confirmations and results.** Important actions (reserve, renew, cancel, check in/out, record or waive a fine, approve or suspend an account) ask for confirmation in a pop-up, and every action shows a success or failure pop-up afterwards.
 - **Notifications.** Patrons can open any notification to read it in full, mark it read or unread, and mark everything read or unread at once. Read marks are stored in the `notification_reads` table.
 
+## Sidebar and profile photos
+
+- Every portal keeps one sidebar on all of its pages, including shared library pages opened by an administrator or the super administrator.
+- On desktop, the menu button beside the logo collapses the sidebar to icons (remembered per browser). On phones the sidebar is hidden and the same button opens it as a slide-in menu. The sidebar keeps its scroll position between pages.
+- Every user can upload a profile photo (JPG, PNG or WebP, up to 2 MB) from their profile page. It replaces their initials in the top bar. Photos are stored outside the public folder and only shown to signed-in users.
+
 ## Circulation rules
 
 All borrowing rules live in `app/Services/CirculationService.php`, so every screen enforces the same policy:
@@ -50,6 +56,8 @@ The schema is defined in `database/migrations` and works on SQLite (local) and M
 | `library_settings` | Policy values changed by the super administrator |
 | `audit_logs` | Sign-ins, account changes, data imports, and circulation actions |
 | `notification_reads` | Which patron notifications each user has read |
+
+The full HCI 102 write-up, with screenshots of every portal, is in `documentation/CLCST-Library-Management-System-HCI-102-Documentation.docx`.
 
 Foreign keys protect history (a user or copy with loans cannot be deleted), unique constraints prevent duplicate ISBNs, barcodes, school IDs, emails, and receipt numbers, and indexes cover the common lookups (status, due date, patron and title).
 

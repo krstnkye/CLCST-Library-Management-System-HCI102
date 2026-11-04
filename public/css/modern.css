@@ -15,11 +15,11 @@
     --ui-serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
     --ui-sans:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;
 }
-/* Each portal keeps its own ink; brass is shared. */
-.clcst-role-faculty { --ui-accent:#1d4650; --ui-accent-ink:#122e35; --ui-accent-soft:#e6eeee; --ui-accent-glow:rgba(29,70,80,.14); --ui-side-1:#13252a; --ui-side-2:#13252a; }
+/* Every portal uses a shade of the school green; brass is shared. */
+.clcst-role-faculty { --ui-accent:#1e4a3c; --ui-accent-ink:#12302a; --ui-accent-soft:#e5eee9; --ui-accent-glow:rgba(30,74,60,.14); --ui-side-1:#122a22; --ui-side-2:#122a22; }
 .clcst-role-librarian { --ui-accent:#2c4632; --ui-accent-ink:#1a2c1f; --ui-accent-soft:#e8ede5; --ui-accent-glow:rgba(44,70,50,.14); --ui-side-1:#18241b; --ui-side-2:#18241b; }
-.clcst-role-admin { --ui-accent:#26334d; --ui-accent-ink:#161f31; --ui-accent-soft:#e7eaf0; --ui-accent-glow:rgba(38,51,77,.14); --ui-side-1:#161c2a; --ui-side-2:#161c2a; }
-.clcst-role-superadmin { --ui-accent:#45304a; --ui-accent-ink:#2b1d2f; --ui-accent-soft:#eee8ec; --ui-accent-glow:rgba(69,48,74,.14); --ui-side-1:#211823; --ui-side-2:#211823; }
+.clcst-role-admin { --ui-accent:#1d4d35; --ui-accent-ink:#123221; --ui-accent-soft:#e4eee7; --ui-accent-glow:rgba(29,77,53,.14); --ui-side-1:#10291c; --ui-side-2:#10291c; }
+.clcst-role-superadmin { --ui-accent:#173d2a; --ui-accent-ink:#0e2619; --ui-accent-soft:#e3ece6; --ui-accent-glow:rgba(23,61,42,.14); --ui-side-1:#0d2016; --ui-side-2:#0d2016; }
 .clcst-portal { --clcst-role-accent:var(--ui-accent); --clcst-role-dark:var(--ui-accent-ink); --clcst-role-soft:var(--ui-accent-soft); --clcst-line:var(--ui-line); --clcst-ink:var(--ui-ink); --clcst-muted:var(--ui-muted); --clcst-paper:var(--ui-bg); }
 
 /* ---------- Canvas and type ---------- */

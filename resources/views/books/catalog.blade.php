@@ -206,7 +206,7 @@
                             <button class="absolute inset-y-0 right-2 my-auto flex h-9 w-9 items-center justify-center rounded-lg text-outline transition-colors hover:bg-surface-container hover:text-primary" type="button" title="Scan a barcode or QR code" aria-label="Scan a barcode or QR code" data-scan data-scan-target="#catalog-search" data-scan-submit><span class="material-symbols-outlined">barcode_scanner</span></button>
                             <input id="catalog-search" class="h-12 w-full rounded-xl border border-outline-variant bg-surface-container-lowest pl-12 pr-12 text-sm text-on-surface placeholder:text-outline focus:border-primary focus:ring-primary" name="q" placeholder="Search by title, author, subject, call number, ISBN, barcode..." type="text" value="{{ $query }}">
                         </div>
-                        <button class="flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-on-primary shadow-sm transition-colors hover:bg-primary-container" type="submit">
+                        <button class="flex h-12 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-primary px-5 text-sm font-bold text-on-primary shadow-sm transition-colors hover:bg-primary-container" type="submit">
                             <span class="material-symbols-outlined text-[18px]">manage_search</span>
                             Search Books
                         </button>

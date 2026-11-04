@@ -160,7 +160,7 @@
     /* ---------- Result pop-up after an action (reserve, renew, check in...) ---------- */
     const flashResult = () => {
         const flash = document.querySelector('[data-flash="error"]') || document.querySelector('[data-flash="success"]');
-        if (!flash || performance.getEntriesByType?.('navigation')[0]?.type === 'back_forward') return;
+        if (!flash || flash.hasAttribute('data-flash-quiet') || performance.getEntriesByType?.('navigation')[0]?.type === 'back_forward') return;
         const success = flash.dataset.flash === 'success';
         const message = flash.querySelector('[data-flash-message]');
         const lines = message.querySelectorAll('p').length ? [...message.querySelectorAll('p')].map((p) => p.textContent.trim()) : [message.textContent.trim()];

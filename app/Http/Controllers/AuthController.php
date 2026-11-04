@@ -89,7 +89,7 @@ class AuthController extends Controller
             $welcome .= ' Your account is registered as '.$user->roleLabel().', so we opened that portal for you.';
         }
 
-        return redirect()->route($user->dashboardRouteName())->with('status', $welcome);
+        return redirect()->route($user->dashboardRouteName())->with('status', $welcome)->with('status_quiet', true);
     }
 
     public function destroy(Request $request): RedirectResponse

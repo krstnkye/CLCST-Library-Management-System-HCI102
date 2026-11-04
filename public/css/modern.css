@@ -61,6 +61,14 @@ body.clcst-portal:not(.library-login) { background:var(--ui-bg) !important; colo
 }
 .clcst-topbar img.rounded-full { box-shadow:0 0 0 1px var(--ui-line); }
 
+/* Brand and account names stay on one line at tablet widths */
+.clcst-portal .clcst-topbar > :first-child { min-width:0; }
+.clcst-portal .clcst-topbar > :first-child :where(p,span),.clcst-portal .clcst-topbar > :last-child :where(p) { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+@media (max-width:1100px) {
+    .clcst-portal .clcst-topbar > :first-child :where(p,span):first-child { font-size:14px !important; letter-spacing:.03em !important; }
+    .clcst-portal .clcst-topbar > :first-child :where(p,span) + :where(p,span) { display:none; }
+}
+
 /* ---------- Navigation rail: solid ink, brass marker on the current page ---------- */
 .clcst-portal .clcst-sidebar { background:var(--ui-side-1) !important; border-right:1px solid rgba(0,0,0,.2) !important; box-shadow:none; }
 .clcst-portal .clcst-sidebar a,.clcst-portal .clcst-sidebar button { border-radius:6px; color:rgba(246,243,236,.72) !important; }

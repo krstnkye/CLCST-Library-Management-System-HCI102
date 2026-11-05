@@ -10,10 +10,13 @@ use App\Http\Controllers\PatronController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+// The sign-in page stays open while signed in, so someone on a shared computer can switch accounts.
+// Signing in always ends the previous account's session first.
+Route::get('/', [AuthController::class, 'create'])->name('login');
+Route::get('/login', [AuthController::class, 'create']);
+Route::post('/login', [AuthController::class, 'store'])->middleware('throttle:10,1')->name('login.authenticate');
+
 Route::middleware('guest')->group(function (): void {
-    Route::get('/', [AuthController::class, 'create'])->name('login');
-    Route::get('/login', [AuthController::class, 'create']);
-    Route::post('/login', [AuthController::class, 'store'])->middleware('throttle:10,1')->name('login.authenticate');
     Route::get('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/register', [AuthController::class, 'storeRegistration'])->middleware('throttle:5,10')->name('register.store');
 });

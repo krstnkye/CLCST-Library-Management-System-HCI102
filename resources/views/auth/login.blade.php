@@ -41,6 +41,15 @@
             <p class="login-eyebrow">Library account</p>
             <h1 id="signin-heading">Sign in</h1>
             <p class="login-intro">Use your school ID or email. Choose the account type that matches your library record.</p>
+            @if ($signedInAs ?? null)
+                <div class="mt-5 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900" role="status" data-signed-in-notice>
+                    <p>This browser is signed in as <strong>{{ $signedInAs->name }}</strong> ({{ $signedInAs->roleLabel() }}). Signing in below switches to the new account and signs this one out.</p>
+                    <div class="mt-2 flex flex-wrap gap-3">
+                        <a class="font-semibold underline" href="{{ route($signedInAs->dashboardRouteName()) }}">Continue as {{ $signedInAs->name }}</a>
+                        <form method="POST" action="{{ route('logout') }}">@csrf<button class="font-semibold underline" type="submit">Sign out</button></form>
+                    </div>
+                </div>
+            @endif
             @if (session('status'))
                 <div class="mt-5 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900" role="status">{{ session('status') }}</div>
             @endif

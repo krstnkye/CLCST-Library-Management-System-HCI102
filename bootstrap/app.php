@@ -21,6 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [NormalizeQueryString::class, SecurityHeaders::class]);
         // Lets a password change sign out the user's other sessions.
         $middleware->authenticateSessions();
+        // Signed-in users who open a guest-only page (such as registration) go to their own dashboard.
+        $middleware->redirectUsersTo(fn (Request $request) => route($request->user()->dashboardRouteName()));
         $middleware->alias([
             'portal' => EnsurePortalAccess::class,
         ]);

@@ -374,4 +374,31 @@ class AccessControlTest extends TestCase
         $this->actingAs($admin)->get(route('admin.section', 'announcements'))
             ->assertRedirect(route('librarian.section', 'announcements'));
     }
+
+    public function test_no_other_role_can_open_any_super_admin_page(): void
+    {
+        $pages = array_merge(['users', 'approvals', 'librarians', 'library-staff', 'data-export', 'announcements', 'circulation'], array_keys(\App\Http\Controllers\AdminController::SUPER_PAGES));
+
+        foreach (['student', 'faculty', 'librarian', 'admin'] as $role) {
+            $user = User::factory()->role($role)->create();
+            $this->actingAs($user)->get(route('superadmin.dashboard'))->assertForbidden();
+            foreach ($pages as $page) {
+                $this->actingAs($user)->get(route('superadmin.section', $page))->assertForbidden();
+            }
+            $this->actingAs($user)->put(route('superadmin.settings.update'), ['loan_days_student' => 99])->assertForbidden();
+        }
+    }
+
+    public function test_signing_in_as_a_student_ends_an_open_super_admin_session(): void
+    {
+        $admin = User::factory()->role('superadmin')->create();
+        $student = User::factory()->create(['password' => 'StudentPass2026']);
+
+        $this->actingAs($admin)->get(route('login'))->assertOk()->assertSee('This browser is signed in as')->assertSee($admin->name);
+
+        $this->post(route('login.authenticate'), ['role' => 'student', 'identifier' => $student->email, 'password' => 'StudentPass2026'])
+            ->assertRedirect(route('student.dashboard'));
+        $this->assertAuthenticatedAs($student);
+        $this->get(route('superadmin.dashboard'))->assertForbidden();
+    }
 }

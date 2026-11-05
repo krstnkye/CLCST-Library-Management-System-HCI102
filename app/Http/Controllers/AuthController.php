@@ -22,11 +22,9 @@ class AuthController extends Controller
 {
     public function create(): View|RedirectResponse
     {
-        if (Auth::check()) {
-            return redirect()->route(Auth::user()->dashboardRouteName());
-        }
-
-        return view('auth.login');
+        // Show who is already signed in instead of silently opening their portal,
+        // so nobody mistakes the previous account for the one they meant to use.
+        return view('auth.login', ['signedInAs' => Auth::user()]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -79,6 +77,14 @@ class AuthController extends Controller
         }
 
         RateLimiter::clear($key);
+
+        // End any account already signed in on this browser before starting the new one.
+        if (Auth::check()) {
+            AuditLog::record($request->user(), 'logout', 'Signed out to switch accounts.');
+            Auth::logout();
+            $request->session()->invalidate();
+        }
+
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
         $user->forceFill(['last_login_at' => now()])->save();

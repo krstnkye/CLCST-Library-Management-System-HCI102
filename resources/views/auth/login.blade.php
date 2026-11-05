@@ -100,12 +100,17 @@
     </main>
 </div>
 <script>
-@if ($signedInAs ?? null)
-// Pressing Back from a portal should not look like a sign-out: return to the portal.
-if (performance.getEntriesByType('navigation')[0]?.type === 'back_forward') location.replace(@json(route($signedInAs->dashboardRouteName())));
-@endif
-// If the browser restored this page from its back/forward cache, ask the server again.
-window.addEventListener('pageshow', (event) => { if (event.persisted) location.reload(); });
+// Pressing Back from a portal must not look like a sign-out. Whenever this page is reached through
+// browser history (fresh load or restored from the back/forward cache), ask the server whether the
+// user is still signed in, and if so go straight back to their portal.
+window.addEventListener('pageshow', (event) => {
+    const viaHistory = event.persisted || performance.getEntriesByType('navigation')[0]?.type === 'back_forward';
+    if (!viaHistory) return;
+    fetch(@json(route('session.status')), { credentials: 'same-origin', cache: 'no-store', headers: { Accept: 'application/json' } })
+        .then((response) => response.ok ? response.json() : null)
+        .then((status) => { if (status?.signed_in && status.dashboard) location.replace(status.dashboard); })
+        .catch(() => {});
+});
 const roleDetails={
 student:{tag:'STUDENT PORTAL',icon:'school',description:'Access your loans, reservations, notifications, and library account.',identifier:'Student ID or school email',placeholder:'Example: STU-2026-001',submit:'Sign In as Student'},
 faculty:{tag:'FACULTY PORTAL',icon:'co_present',description:'Access teaching resources, borrowing services, course reserves, and academic requests.',identifier:'Employee ID or school email',placeholder:'Example: FAC-2026-001',submit:'Sign In as Faculty'},

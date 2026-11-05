@@ -21,6 +21,9 @@ Route::middleware('guest')->group(function (): void {
     Route::post('/register', [AuthController::class, 'storeRegistration'])->middleware('throttle:5,10')->name('register.store');
 });
 
+// Lets the sign-in page, when reached with the browser Back button, check whether the user is still signed in.
+Route::get('/session-status', [AuthController::class, 'status'])->name('session.status');
+
 Route::post('/logout', [AuthController::class, 'destroy'])->middleware('auth')->name('logout');
 
 // Every signed-in, active user can update their own contact details and password.

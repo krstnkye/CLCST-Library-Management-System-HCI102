@@ -114,6 +114,16 @@ class AuthController extends Controller
         return redirect()->route($user->dashboardRouteName())->with('status', $welcome)->with('status_quiet', true);
     }
 
+    public function status(): \Illuminate\Http\JsonResponse
+    {
+        $user = Auth::user();
+
+        return response()->json([
+            'signed_in' => (bool) $user,
+            'dashboard' => $user ? route($user->dashboardRouteName()) : null,
+        ])->header('Cache-Control', 'no-store, private');
+    }
+
     public function destroy(Request $request): RedirectResponse
     {
         AuditLog::record($request->user(), 'logout', 'User signed out.');

@@ -407,4 +407,12 @@ class AccessControlTest extends TestCase
         $this->assertAuthenticatedAs($student);
         $this->get(route('superadmin.dashboard'))->assertForbidden();
     }
+
+    public function test_session_status_reports_whether_the_browser_is_signed_in(): void
+    {
+        $this->getJson(route('session.status'))->assertOk()->assertJson(['signed_in' => false, 'dashboard' => null]);
+        $student = User::factory()->create();
+        $this->actingAs($student)->getJson(route('session.status'))->assertOk()
+            ->assertJson(['signed_in' => true, 'dashboard' => route('student.dashboard')]);
+    }
 }

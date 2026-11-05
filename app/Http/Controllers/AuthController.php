@@ -7,6 +7,7 @@ use App\Models\User;
 use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -20,12 +21,16 @@ use Throwable;
 
 class AuthController extends Controller
 {
-    public function create(Request $request): View|RedirectResponse
+    public function create(Request $request): Response
     {
         // Opening the sign-in page always asks for a password, even if this browser still has a
         // session, so nobody can walk into a portal someone else left open. The page sends the
         // browser Back button (right after signing in) straight back to the portal instead.
-        return view('auth.login', ['signedInAs' => Auth::user()]);
+        // Never let the browser keep a copy of this page: pressing Back must ask the server,
+        // which knows whether the user is still signed in.
+        return response()->view('auth.login', ['signedInAs' => Auth::user()])
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private')
+            ->header('Pragma', 'no-cache');
     }
 
     public function store(Request $request): RedirectResponse

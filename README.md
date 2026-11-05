@@ -67,6 +67,7 @@ Foreign keys protect history (a user or copy with loans cannot be deleted), uniq
 - Passwords are hashed with bcrypt, must be at least 10 characters with mixed case and a number, and are never exported.
 - New accounts stay pending until someone allowed to manage that role reviews the uploaded ID. Administrator roles cannot be requested through public registration.
 - Permissions come from the role saved in the database, checked on every request by the `portal` middleware and again in controllers. Suspended accounts are signed out on their next request.
+- Sessions end after 15 minutes without activity or when the browser closes (`SESSION_LIFETIME`, `SESSION_EXPIRE_ON_CLOSE`), unless the user ticks "Keep me signed in" on a private device.
 - Sign-in attempts are rate limited, sessions are encrypted and regenerated at sign-in, and changing a password signs out other devices.
 - All forms use CSRF tokens, Blade escapes output, queries use parameter binding, CSV exports neutralize spreadsheet formulas, and responses send security headers. Protected pages are not cached by the browser after logout.
 - Uploaded ID documents are stored outside the public folder and can only be opened by authorized reviewers.

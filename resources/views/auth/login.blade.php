@@ -101,9 +101,11 @@
 </div>
 <script>
 @if ($signedInAs ?? null)
-// Pressing Back right after signing in should not look like a sign-out: return to the portal.
+// Pressing Back from a portal should not look like a sign-out: return to the portal.
 if (performance.getEntriesByType('navigation')[0]?.type === 'back_forward') location.replace(@json(route($signedInAs->dashboardRouteName())));
 @endif
+// If the browser restored this page from its back/forward cache, ask the server again.
+window.addEventListener('pageshow', (event) => { if (event.persisted) location.reload(); });
 const roleDetails={
 student:{tag:'STUDENT PORTAL',icon:'school',description:'Access your loans, reservations, notifications, and library account.',identifier:'Student ID or school email',placeholder:'Example: STU-2026-001',submit:'Sign In as Student'},
 faculty:{tag:'FACULTY PORTAL',icon:'co_present',description:'Access teaching resources, borrowing services, course reserves, and academic requests.',identifier:'Employee ID or school email',placeholder:'Example: FAC-2026-001',submit:'Sign In as Faculty'},

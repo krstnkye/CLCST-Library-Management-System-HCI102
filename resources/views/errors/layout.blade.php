@@ -11,7 +11,7 @@
     <meta name="robots" content="noindex">
     <title>@yield('code') · @yield('title') | CLCST Library</title>
     <link rel="icon" href="{{ asset('favicon.png') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}?v={{ filemtime(public_path('css/fonts.css')) }}">
     <style>
         :root { --ink:#1f1d1a; --muted:#6b665c; --paper:#f6f3ec; --card:#fffdf9; --line:#e3ddd1; --green:#1f3c27; --green-2:#15231a; --gold:#a8843f; }
         * { box-sizing:border-box; }

@@ -6,10 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>CLCST Library Account Sign In</title>
     @include('partials.favicon')
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}?v={{ filemtime(public_path('css/fonts.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}?v={{ filemtime(public_path('css/tailwind.css')) }}">
     <style>body { font-family: Inter, sans-serif; } .material-symbols-outlined { line-height: 1; vertical-align: middle; }</style>
     @include('partials.ui-motion')
 </head>

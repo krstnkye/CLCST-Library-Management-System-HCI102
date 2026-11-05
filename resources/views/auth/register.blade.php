@@ -5,13 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Create your CLCST library account</title>
     @include('partials.favicon')
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <script>
-        tailwind.config={theme:{extend:{colors:{clcst:{50:'#eef8f1',100:'#d9efe0',600:'#146b37',700:'#0d572c',800:'#084522',900:'#043719'}},fontFamily:{sans:['Inter','sans-serif']}}}};
-    </script>
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}?v={{ filemtime(public_path('css/fonts.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}?v={{ filemtime(public_path('css/tailwind.css')) }}">
     <style>
         .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 450,'GRAD' 0,'opsz' 24}
         input[type=radio]:focus-visible+.role-card{outline:3px solid rgba(20,107,55,.25);outline-offset:2px}

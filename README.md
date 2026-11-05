@@ -93,7 +93,23 @@ Send the token as `Authorization: Bearer <access_token>`. Tokens expire after 60
 - Composer
 - Git
 
-No Node.js build step is required. The UI uses Tailwind CSS from a CDN and Laravel Blade views.
+No Node.js build step is required to run the system. The pages use Laravel Blade views with a ready-built Tailwind stylesheet (`public/css/tailwind.css`) and fonts stored in `public/fonts`, so the system works with no internet connection.
+
+### Working offline
+
+Everything the pages need is inside the project: the styling, the fonts and icons, and the barcode scanner. On the computer running the system, and on any phone or laptop connected to the same Wi-Fi or router (through the computer's local address, for example `http://192.168.1.10:8021`), the system works without internet. Two things still need internet:
+
+- The public Dev Tunnel link for people on other networks.
+- Book cover pictures, which come from Open Library. Without internet the cover space shows the plain book card instead.
+
+### Changing the styling
+
+If you add new Tailwind classes to a view or script, rebuild the stylesheet once (needs Node.js and internet the first time):
+
+```bash
+npm install --no-save tailwindcss@3.4.17 @tailwindcss/forms@0.5 @tailwindcss/container-queries@0.1
+npx tailwindcss -c tailwind.config.js -i resources/css/tailwind.css -o public/css/tailwind.css --minify
+```
 
 ## Setup
 

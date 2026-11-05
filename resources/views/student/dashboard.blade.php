@@ -87,7 +87,7 @@
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     @foreach ($featuredBooks as $book)
                         <article class="library-book">
-                            <img src="{{ $book->cover_url }}" alt="" loading="lazy">
+                            <img src="{{ $book->cover_url }}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
                             <div>
                                 <div class="mb-2 flex items-start justify-between gap-2">
                                     <span class="rounded-full px-2 py-0.5 text-[10px] font-bold {{ $book->isReference() ? 'bg-blue-100 text-blue-900' : ($book->available_count > 0 ? 'bg-[#F1F4F0] text-[#284A30]' : 'bg-[#FAF1EF] text-[#85362A]') }}">

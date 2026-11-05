@@ -7,56 +7,8 @@
     <title>CLCST Library - Search Books & Book Catalog Discovery</title>
     @include('partials.favicon')
 
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        'surface-container-lowest': '#ffffff',
-                        'surface-container-low': '#f2f3ff',
-                        'surface-container': '#eaedff',
-                        'surface-container-high': '#e2e7ff',
-                        background: '#faf8ff',
-                        surface: '#faf8ff',
-                        primary: '#00441d',
-                        'primary-container': '#135d2e',
-                        'on-primary': '#ffffff',
-                        'on-surface': '#131b2e',
-                        'on-surface-variant': '#404940',
-                        outline: '#707a6f',
-                        'outline-variant': '#c0c9bd',
-                        secondary: '#785a00',
-                        'secondary-container': '#fdc425',
-                        'on-secondary-container': '#6d5200',
-                        error: '#ba1a1a',
-                        'error-container': '#ffdad6',
-                        tertiary: '#002e97',
-                        'tertiary-fixed': '#dce1ff'
-                    },
-                    borderRadius: {
-                        DEFAULT: '0.25rem',
-                        lg: '0.5rem',
-                        xl: '0.75rem',
-                        full: '9999px'
-                    },
-                    fontFamily: {
-                        'body-md': ['Inter', 'sans-serif'],
-                        'headline-sm': ['Plus Jakarta Sans', 'sans-serif'],
-                        'headline-md': ['Plus Jakarta Sans', 'sans-serif'],
-                        'headline-lg': ['Plus Jakarta Sans', 'sans-serif'],
-                        'label-sm': ['Inter', 'sans-serif'],
-                        'label-md': ['Inter', 'sans-serif']
-                    }
-                }
-            }
-        };
-    </script>
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}?v={{ filemtime(public_path('css/fonts.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}?v={{ filemtime(public_path('css/tailwind.css')) }}">
     <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;

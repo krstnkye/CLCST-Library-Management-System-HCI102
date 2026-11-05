@@ -2,6 +2,17 @@
 // Desktop: a menu button in the top bar collapses the sidebar to an icon rail (remembered per browser).
 // Phone: the sidebar is hidden; the same button slides it in as a drawer over the page.
 (() => {
+    // Right after signing in, the browser Back button keeps the user on their dashboard.
+    try {
+        if (sessionStorage.getItem('clcst-just-signed-in') === '1') {
+            sessionStorage.removeItem('clcst-just-signed-in');
+            history.pushState({ clcstStay: true }, '', location.href);
+            window.addEventListener('popstate', (event) => {
+                if (!event.state || !event.state.clcstStay) history.pushState({ clcstStay: true }, '', location.href);
+            });
+        }
+    } catch (_) { /* storage is optional */ }
+
     const STORAGE_KEY = 'clcst-sidebar';
     const root = document.documentElement;
     const desktop = window.matchMedia('(min-width: 768px)');

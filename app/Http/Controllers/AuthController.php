@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AuditLog;
 use App\Models\User;
 use Closure;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -33,7 +34,7 @@ class AuthController extends Controller
             ->header('Pragma', 'no-cache');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         // Any use of the sign-in form ends the account already signed in on this browser, whether or
         // not the new attempt succeeds, so an earlier session can never stay open behind it.
@@ -59,9 +60,7 @@ class AuthController extends Controller
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
 
-            return back()->withErrors([
-                'identifier' => "Too many sign-in attempts. Try again in {$seconds} seconds.",
-            ])->onlyInput('identifier', 'role');
+            return $this->failedSignIn($request, "Too many sign-in attempts. Try again in {$seconds} seconds.");
         }
 
         $identifier = mb_strtolower(trim($credentials['identifier']));
@@ -79,17 +78,13 @@ class AuthController extends Controller
                 'role' => $credentials['role'] ?? null,
             ]);
 
-            return back()->withErrors([
-                'identifier' => 'The school ID or email and password do not match our records.',
-            ])->onlyInput('identifier', 'role');
+            return $this->failedSignIn($request, 'The school ID or email and password do not match our records.');
         }
 
         if (! $user->isActive()) {
             RateLimiter::hit($key, 60);
 
-            return back()->withErrors([
-                'identifier' => 'This account is awaiting approval or has been disabled. Contact the library office.',
-            ])->onlyInput('identifier', 'role');
+            return $this->failedSignIn($request, 'This account is awaiting approval or has been disabled. Contact the library office.');
         }
 
         if ($credentials['role'] !== $user->role) {
@@ -99,9 +94,7 @@ class AuthController extends Controller
             ]);
             $chosen = ['admin' => 'Administrator', 'superadmin' => 'Super Administrator'][$credentials['role']] ?? ucfirst($credentials['role']);
 
-            return back()->withErrors([
-                'identifier' => "This account cannot sign in as {$chosen}. Choose the account type that matches your library record.",
-            ])->onlyInput('identifier', 'role');
+            return $this->failedSignIn($request, "This account cannot sign in as {$chosen}. Choose the account type that matches your library record.");
         }
 
         RateLimiter::clear($key);
@@ -112,16 +105,35 @@ class AuthController extends Controller
 
         $welcome = 'Welcome back, '.$user->name.'.';
 
-        return redirect()->route($user->dashboardRouteName())->with('status', $welcome)->with('status_quiet', true);
+        $request->session()->flash('status', $welcome);
+        $request->session()->flash('status_quiet', true);
+
+        // The sign-in page submits in the background and then replaces itself with the portal,
+        // so the browser Back button never returns to the sign-in form.
+        if ($request->expectsJson()) {
+            return response()->json(['redirect' => route($user->dashboardRouteName())]);
+        }
+
+        return redirect()->route($user->dashboardRouteName());
     }
 
-    public function status(): \Illuminate\Http\JsonResponse
+    private function failedSignIn(Request $request, string $message): RedirectResponse|JsonResponse
+    {
+        if ($request->expectsJson()) {
+            return response()->json(['message' => $message, 'errors' => ['identifier' => [$message]], 'token' => csrf_token()], 422);
+        }
+
+        return back()->withErrors(['identifier' => $message])->onlyInput('identifier', 'role');
+    }
+
+    public function status(): JsonResponse
     {
         $user = Auth::user();
 
         return response()->json([
             'signed_in' => (bool) $user,
             'dashboard' => $user ? route($user->dashboardRouteName()) : null,
+            'token' => csrf_token(),
         ])->header('Cache-Control', 'no-store, private');
     }
 

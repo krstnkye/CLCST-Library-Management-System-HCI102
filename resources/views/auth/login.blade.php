@@ -50,6 +50,7 @@
             @if (session('status'))
                 <div class="mt-5 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900" role="status">{{ session('status') }}</div>
             @endif
+            <div class="mt-5 hidden rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800" role="alert" data-login-error><p class="font-semibold">We couldn't sign you in.</p><p data-login-error-text></p></div>
             @if ($errors->any())
                 <div class="mt-5 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800" role="alert">
                     <p class="font-semibold">We couldn't sign you in.</p>
@@ -111,6 +112,44 @@ window.addEventListener('pageshow', (event) => {
         .then((status) => { if (status?.signed_in && status.dashboard) location.replace(status.dashboard); })
         .catch(() => {});
 });
+// Sign in without leaving this page in the browser history: on success the page replaces itself
+// with the portal, so Back from the dashboard cannot land on the sign-in form.
+(() => {
+    const form = document.querySelector('.login-form');
+    const box = document.querySelector('[data-login-error]');
+    if (!form || !window.fetch) return;
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (form.dataset.sending === '1') return;
+        form.dataset.sending = '1';
+        const button = form.querySelector('.login-submit');
+        button.disabled = true;
+        const showError = (message) => {
+            document.querySelectorAll('[role=alert]:not([data-login-error])').forEach((el) => el.remove());
+            box.querySelector('[data-login-error-text]').textContent = message;
+            box.classList.remove('hidden');
+        };
+        try {
+            const response = await fetch(form.action, { method: 'POST', body: new FormData(form), credentials: 'same-origin', headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' } });
+            const data = await response.json().catch(() => ({}));
+            if (response.ok && data.redirect) {
+                try { sessionStorage.setItem('clcst-just-signed-in', '1'); } catch (_) { /* optional */ }
+                location.replace(data.redirect);
+                return;
+            }
+            const message = data.errors ? Object.values(data.errors).flat()[0] : (data.message || 'Something went wrong. Please try again.');
+            showError(message);
+            let token = data.token;
+            if (!token) { const status = await fetch(@json(route('session.status')), { credentials: 'same-origin', cache: 'no-store', headers: { Accept: 'application/json' } }).then((r) => r.json()).catch(() => ({})); token = status.token; }
+            if (token) form.querySelector('input[name=_token]').value = token;
+        } catch (_) {
+            showError('The library server could not be reached. Check your connection and try again.');
+        }
+        form.dataset.sending = '0';
+        button.disabled = false;
+        form.querySelector('#password').value = '';
+    });
+})();
 const roleDetails={
 student:{tag:'STUDENT PORTAL',icon:'school',description:'Access your loans, reservations, notifications, and library account.',identifier:'Student ID or school email',placeholder:'Example: STU-2026-001',submit:'Sign In as Student'},
 faculty:{tag:'FACULTY PORTAL',icon:'co_present',description:'Access teaching resources, borrowing services, course reserves, and academic requests.',identifier:'Employee ID or school email',placeholder:'Example: FAC-2026-001',submit:'Sign In as Faculty'},

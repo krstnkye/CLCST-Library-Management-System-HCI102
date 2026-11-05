@@ -36,7 +36,7 @@ class AuthController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'role' => ['nullable', Rule::in(User::ROLES)],
+            'role' => ['required', Rule::in(User::ROLES)],
             'identifier' => ['required', 'string', 'max:150', function (string $attribute, mixed $value, Closure $fail): void {
                 if (str_contains((string) $value, '@') && ! User::isInstitutionalEmail((string) $value)) {
                     $fail('Use your school-registered email ending in @'.config('library.allowed_email_domain').', or your school ID.');
@@ -83,7 +83,7 @@ class AuthController extends Controller
             ])->onlyInput('identifier', 'role');
         }
 
-        if (isset($credentials['role']) && $credentials['role'] !== $user->role) {
+        if ($credentials['role'] !== $user->role) {
             RateLimiter::hit($key, 60);
             AuditLog::record($user, 'login.wrong_role', 'Tried to sign in through the '.$credentials['role'].' option.', [
                 'role' => $credentials['role'],

@@ -52,6 +52,11 @@ class AccessControlTest extends TestCase
         }
         $this->get(route('superadmin.dashboard'))->assertRedirect(route('login'));
 
+        // Leaving the account type out is refused too.
+        $this->post(route('login.authenticate'), ['identifier' => $user->email, 'password' => 'SecurePass2026'])
+            ->assertSessionHasErrors('role');
+        $this->assertGuest();
+
         // Under the matching type the same credentials work, and still only reach the student portal.
         $this->post(route('login.authenticate'), ['role' => 'student', 'identifier' => $user->email, 'password' => 'SecurePass2026'])
             ->assertRedirect(route('student.dashboard'));

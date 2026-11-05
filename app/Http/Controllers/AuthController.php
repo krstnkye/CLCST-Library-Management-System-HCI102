@@ -20,10 +20,15 @@ use Throwable;
 
 class AuthController extends Controller
 {
-    public function create(): View|RedirectResponse
+    public function create(Request $request): View|RedirectResponse
     {
-        // Show who is already signed in instead of silently opening their portal,
-        // so nobody mistakes the previous account for the one they meant to use.
+        // A signed-in user who lands here (for example with the browser Back button right after
+        // signing in) stays signed in and returns to their portal. "?switch=1" shows the form
+        // with a notice instead, for changing accounts on a shared computer.
+        if (Auth::check() && ! $request->boolean('switch')) {
+            return redirect()->route(Auth::user()->dashboardRouteName());
+        }
+
         return view('auth.login', ['signedInAs' => Auth::user()]);
     }
 

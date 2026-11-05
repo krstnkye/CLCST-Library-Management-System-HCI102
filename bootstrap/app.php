@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // A tunnel or reverse proxy on this machine (for example cloudflared) forwards https requests;
+        // trusting only local proxies lets links and assets keep the https address.
+        $middleware->trustProxies(at: ['127.0.0.1', '::1']);
         $middleware->web(append: [NormalizeQueryString::class, SecurityHeaders::class]);
         // Lets a password change sign out the user's other sessions.
         $middleware->authenticateSessions();

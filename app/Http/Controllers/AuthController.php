@@ -56,8 +56,9 @@ class AuthController extends Controller
         }
 
         $identifier = mb_strtolower(trim($credentials['identifier']));
-        // The account type picked on the form only changes the on-screen hints; the
-        // database decides which portal a user may open.
+        // The database decides which portal a user may open. The account type picked on the
+        // form must also match that saved role, so a student cannot sign in through the
+        // Super Administrator (or any other) option.
         $user = User::query()
             ->whereRaw('LOWER(email) = ?', [$identifier])
             ->orWhereRaw('LOWER(patron_id) = ?', [$identifier])
@@ -82,6 +83,18 @@ class AuthController extends Controller
             ])->onlyInput('identifier', 'role');
         }
 
+        if (isset($credentials['role']) && $credentials['role'] !== $user->role) {
+            RateLimiter::hit($key, 60);
+            AuditLog::record($user, 'login.wrong_role', 'Tried to sign in through the '.$credentials['role'].' option.', [
+                'role' => $credentials['role'],
+            ]);
+            $chosen = ['admin' => 'Administrator', 'superadmin' => 'Super Administrator'][$credentials['role']] ?? ucfirst($credentials['role']);
+
+            return back()->withErrors([
+                'identifier' => "This account cannot sign in as {$chosen}. Choose the account type that matches your library record.",
+            ])->onlyInput('identifier', 'role');
+        }
+
         RateLimiter::clear($key);
 
         // End any account already signed in on this browser before starting the new one.
@@ -97,9 +110,6 @@ class AuthController extends Controller
         AuditLog::record($user, 'login.succeeded', 'User signed in successfully.');
 
         $welcome = 'Welcome back, '.$user->name.'.';
-        if (($credentials['role'] ?? $user->role) !== $user->role) {
-            $welcome .= ' Your account is registered as '.$user->roleLabel().', so we opened that portal for you.';
-        }
 
         return redirect()->route($user->dashboardRouteName())->with('status', $welcome)->with('status_quiet', true);
     }

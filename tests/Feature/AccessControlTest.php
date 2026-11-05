@@ -41,14 +41,20 @@ class AccessControlTest extends TestCase
     {
         $user = User::factory()->role('student')->create(['password' => Hash::make('SecurePass2026')]);
 
-        // The picked account type is only a hint: the saved role decides the portal.
-        $this->post(route('login.authenticate'), [
-            'role' => 'superadmin',
-            'identifier' => $user->email,
-            'password' => 'SecurePass2026',
-        ])->assertRedirect(route('student.dashboard'));
+        // Student credentials entered under any other account type are refused outright.
+        foreach (['superadmin', 'admin', 'librarian', 'faculty'] as $role) {
+            $this->post(route('login.authenticate'), [
+                'role' => $role,
+                'identifier' => $user->email,
+                'password' => 'SecurePass2026',
+            ])->assertSessionHasErrors('identifier');
+            $this->assertGuest();
+        }
+        $this->get(route('superadmin.dashboard'))->assertRedirect(route('login'));
 
-        $this->assertAuthenticatedAs($user);
+        // Under the matching type the same credentials work, and still only reach the student portal.
+        $this->post(route('login.authenticate'), ['role' => 'student', 'identifier' => $user->email, 'password' => 'SecurePass2026'])
+            ->assertRedirect(route('student.dashboard'));
         $this->get(route('superadmin.dashboard'))->assertForbidden();
     }
 

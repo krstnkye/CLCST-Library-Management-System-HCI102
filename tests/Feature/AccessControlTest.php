@@ -394,8 +394,7 @@ class AccessControlTest extends TestCase
         $admin = User::factory()->role('superadmin')->create();
         $student = User::factory()->create(['password' => 'StudentPass2026']);
 
-        $this->actingAs($admin)->get(route('login'))->assertRedirect(route('superadmin.dashboard'));
-        $this->get(route('login', ['switch' => 1]))->assertOk()->assertSee('This browser is signed in as')->assertSee($admin->name);
+        $this->actingAs($admin)->get(route('login'))->assertOk()->assertSee('is still signed in on this browser')->assertDontSee('Continue as')->assertSee($admin->name);
 
         $this->post(route('login.authenticate'), ['role' => 'student', 'identifier' => $student->email, 'password' => 'StudentPass2026'])
             ->assertRedirect(route('student.dashboard'));

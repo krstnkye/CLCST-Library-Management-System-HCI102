@@ -22,13 +22,9 @@ class AuthController extends Controller
 {
     public function create(Request $request): View|RedirectResponse
     {
-        // A signed-in user who lands here (for example with the browser Back button right after
-        // signing in) stays signed in and returns to their portal. "?switch=1" shows the form
-        // with a notice instead, for changing accounts on a shared computer.
-        if (Auth::check() && ! $request->boolean('switch')) {
-            return redirect()->route(Auth::user()->dashboardRouteName());
-        }
-
+        // Opening the sign-in page always asks for a password, even if this browser still has a
+        // session, so nobody can walk into a portal someone else left open. The page sends the
+        // browser Back button (right after signing in) straight back to the portal instead.
         return view('auth.login', ['signedInAs' => Auth::user()]);
     }
 

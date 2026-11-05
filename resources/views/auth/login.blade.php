@@ -43,11 +43,8 @@
             <p class="login-intro">Use your school ID or email. Choose the account type that matches your library record.</p>
             @if ($signedInAs ?? null)
                 <div class="mt-5 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900" role="status" data-signed-in-notice>
-                    <p>This browser is signed in as <strong>{{ $signedInAs->name }}</strong> ({{ $signedInAs->roleLabel() }}). Signing in below switches to the new account and signs this one out.</p>
-                    <div class="mt-2 flex flex-wrap gap-3">
-                        <a class="font-semibold underline" href="{{ route($signedInAs->dashboardRouteName()) }}">Continue as {{ $signedInAs->name }}</a>
-                        <form method="POST" action="{{ route('logout') }}">@csrf<button class="font-semibold underline" type="submit">Sign out</button></form>
-                    </div>
+                    <p><strong>{{ $signedInAs->name }}</strong> ({{ $signedInAs->roleLabel() }}) is still signed in on this browser. Enter the password to continue, or sign in with another account to switch.</p>
+                    <form class="mt-2" method="POST" action="{{ route('logout') }}">@csrf<button class="font-semibold underline" type="submit">Sign out {{ $signedInAs->name }}</button></form>
                 </div>
             @endif
             @if (session('status'))
@@ -67,7 +64,7 @@
                     'admin' => ['admin_panel_settings', 'Administrator'],
                     'superadmin' => ['security', 'Super Administrator'],
                 ];
-                $selectedRole = old('role', 'student');
+                $selectedRole = old('role', ($signedInAs ?? null)?->role ?? 'student');
             @endphp
             <p class="login-role-label" id="role-choice-label">Choose your account type</p>
             <div class="login-roles" role="group" aria-labelledby="role-choice-label">
@@ -81,10 +78,10 @@
             </div>
             <form method="POST" action="{{ route('login.authenticate') }}" class="login-form">
                 @csrf
-                <input type="hidden" id="role-input" name="role" value="{{ old('role', 'student') }}">
+                <input type="hidden" id="role-input" name="role" value="{{ $selectedRole }}">
                 <div>
                     <label id="identifier-label" for="identifier">Student ID or school email</label>
-                    <div class="login-field"><span class="material-symbols-outlined" aria-hidden="true">badge</span><input id="identifier" name="identifier" value="{{ old('identifier') }}" required autocomplete="username" maxlength="150" placeholder="Example: STU-2026-001"></div>
+                    <div class="login-field"><span class="material-symbols-outlined" aria-hidden="true">badge</span><input id="identifier" name="identifier" value="{{ old('identifier', ($signedInAs ?? null)?->email) }}" required autocomplete="username" maxlength="150" placeholder="Example: STU-2026-001"></div>
                 </div>
                 <div>
                     <div class="flex items-center justify-between gap-3"><label for="password">Password</label><a class="text-[11px] font-semibold text-emerald-800 hover:underline" href="mailto:library@clcst.edu.ph?subject=Library%20password%20assistance">Forgot password?</a></div>
@@ -103,6 +100,10 @@
     </main>
 </div>
 <script>
+@if ($signedInAs ?? null)
+// Pressing Back right after signing in should not look like a sign-out: return to the portal.
+if (performance.getEntriesByType('navigation')[0]?.type === 'back_forward') location.replace(@json(route($signedInAs->dashboardRouteName())));
+@endif
 const roleDetails={
 student:{tag:'STUDENT PORTAL',icon:'school',description:'Access your loans, reservations, notifications, and library account.',identifier:'Student ID or school email',placeholder:'Example: STU-2026-001',submit:'Sign In as Student'},
 faculty:{tag:'FACULTY PORTAL',icon:'co_present',description:'Access teaching resources, borrowing services, course reserves, and academic requests.',identifier:'Employee ID or school email',placeholder:'Example: FAC-2026-001',submit:'Sign In as Faculty'},

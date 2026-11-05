@@ -22,13 +22,16 @@ use Throwable;
 
 class AuthController extends Controller
 {
-    public function create(Request $request): Response
+    public function create(Request $request): Response|RedirectResponse
     {
-        // Opening the sign-in page always asks for a password, even if this browser still has a
-        // session, so nobody can walk into a portal someone else left open. The page sends the
-        // browser Back button (right after signing in) straight back to the portal instead.
-        // Never let the browser keep a copy of this page: pressing Back must ask the server,
-        // which knows whether the user is still signed in.
+        // A signed-in user never sees the sign-in form: the browser Back button (or reopening the
+        // link) keeps them in their own portal until they press Log Out. The session still ends
+        // after the idle limit or when the browser is closed.
+        if (Auth::check()) {
+            return redirect()->route(Auth::user()->dashboardRouteName());
+        }
+
+        // Never let the browser keep a copy of this page, so Back always asks the server.
         return response()->view('auth.login', ['signedInAs' => Auth::user()])
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private')
             ->header('Pragma', 'no-cache');

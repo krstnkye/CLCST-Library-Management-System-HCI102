@@ -35,6 +35,15 @@ class AuthController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        // Any use of the sign-in form ends the account already signed in on this browser, whether or
+        // not the new attempt succeeds, so an earlier session can never stay open behind it.
+        if (Auth::check()) {
+            AuditLog::record($request->user(), 'logout', 'Signed out by a new sign-in attempt.');
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+
         $credentials = $request->validate([
             'role' => ['required', Rule::in(User::ROLES)],
             'identifier' => ['required', 'string', 'max:150', function (string $attribute, mixed $value, Closure $fail): void {
@@ -96,14 +105,6 @@ class AuthController extends Controller
         }
 
         RateLimiter::clear($key);
-
-        // End any account already signed in on this browser before starting the new one.
-        if (Auth::check()) {
-            AuditLog::record($request->user(), 'logout', 'Signed out to switch accounts.');
-            Auth::logout();
-            $request->session()->invalidate();
-        }
-
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
         $user->forceFill(['last_login_at' => now()])->save();

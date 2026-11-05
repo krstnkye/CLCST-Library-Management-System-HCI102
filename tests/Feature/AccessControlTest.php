@@ -420,4 +420,15 @@ class AccessControlTest extends TestCase
         $this->actingAs($student)->getJson(route('session.status'))->assertOk()
             ->assertJson(['signed_in' => true, 'dashboard' => route('student.dashboard')]);
     }
+
+    public function test_a_refused_sign_in_also_ends_the_open_session(): void
+    {
+        $admin = User::factory()->role('superadmin')->create();
+        $student = User::factory()->create(['password' => 'StudentPass2026']);
+
+        $this->actingAs($admin)->post(route('login.authenticate'), ['role' => 'superadmin', 'identifier' => $student->email, 'password' => 'StudentPass2026'])
+            ->assertSessionHasErrors('identifier');
+        $this->assertGuest();
+        $this->get(route('superadmin.dashboard'))->assertRedirect(route('login'));
+    }
 }

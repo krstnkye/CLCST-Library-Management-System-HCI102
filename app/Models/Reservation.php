@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\AuditLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -43,5 +44,20 @@ class Reservation extends Model
             ->open()
             ->where('id', '<=', $this->id)
             ->count();
+    }
+
+    /** Close pickup holds whose pickup period has passed. Returns how many were closed. */
+    public static function expireUncollectedHolds(): int
+    {
+        $expired = static::query()
+            ->where('status', 'ready')
+            ->where('ready_until', '<', now())
+            ->update(['status' => 'expired', 'closed_at' => now()]);
+
+        if ($expired > 0) {
+            AuditLog::record(null, 'reservation.expired', "Closed {$expired} pickup hold(s) that were not collected in time.");
+        }
+
+        return $expired;
     }
 }

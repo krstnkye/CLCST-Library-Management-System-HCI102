@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Reservation;
 use Closure;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -30,6 +32,12 @@ class EnsurePortalAccess
 
         if ($allowedRoles !== [] && ! $user->hasAnyRole($allowedRoles)) {
             abort(403, 'Your account does not have permission to open this page.');
+        }
+
+        // Most installs (a laptop, shared hosting) have no task scheduler running, so uncollected
+        // pickup holds are also closed here, at most once every 10 minutes.
+        if (Cache::add('library:holds-expiry-check', true, now()->addMinutes(10))) {
+            Reservation::expireUncollectedHolds();
         }
 
         $response = $next($request);

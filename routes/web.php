@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountManagementController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuditLogExportController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BulkDataController;
 use App\Http\Controllers\LibrarianController;
@@ -104,6 +105,10 @@ Route::middleware(['auth', 'portal:superadmin'])->group(function (): void {
         ->name('superadmin.section');
     Route::put('/super-admin/settings', [AdminController::class, 'updateSettings'])->name('superadmin.settings.update');
 });
+
+// Staff who can read the audit log can also download it as CSV.
+Route::get('/management/audit-logs/export', AuditLogExportController::class)
+    ->middleware(['auth', 'portal:librarian,admin,superadmin', 'throttle:20,1'])->name('management.audit.export');
 
 Route::middleware(['auth', 'portal:librarian,admin,superadmin'])->prefix('management/data')->name('management.data.')->group(function (): void {
     Route::get('/', [BulkDataController::class, 'index'])->name('index');

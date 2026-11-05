@@ -431,4 +431,19 @@ class AccessControlTest extends TestCase
         $this->assertGuest();
         $this->get(route('superadmin.dashboard'))->assertRedirect(route('login'));
     }
+
+    public function test_staff_can_export_the_audit_log_and_patrons_cannot(): void
+    {
+        \App\Models\AuditLog::record(null, 'login.failed', '=HYPERLINK("http://evil")');
+
+        foreach (['librarian', 'admin', 'superadmin'] as $role) {
+            $response = $this->actingAs(User::factory()->role($role)->create())->get(route('management.audit.export'));
+            $response->assertOk()->assertHeader('content-type', 'text/csv; charset=UTF-8');
+            $csv = $response->streamedContent();
+            $this->assertStringContainsString('"Date and time",User,Role', $csv);
+            $this->assertStringContainsString("'=HYPERLINK", $csv);
+        }
+        $this->actingAs(User::factory()->role('student')->create())->get(route('management.audit.export'))->assertForbidden();
+        $this->actingAs(User::factory()->role('superadmin')->create())->get(route('superadmin.section', 'audit-logs'))->assertSee('Export CSV');
+    }
 }

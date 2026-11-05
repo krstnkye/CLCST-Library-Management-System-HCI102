@@ -72,6 +72,21 @@ Foreign keys protect history (a user or copy with loans cannot be deleted), uniq
 - All forms use CSRF tokens, Blade escapes output, queries use parameter binding, CSV exports neutralize spreadsheet formulas, and responses send security headers. Protected pages are not cached by the browser after logout.
 - Uploaded ID documents are stored outside the public folder and can only be opened by authorized reviewers.
 
+## JSON API with JWT
+
+The website signs in with encrypted session cookies. For other clients (a mobile app, Postman, another system) there is a small JSON API under `/api/v1` that uses JSON Web Tokens (HS256, signed with a key derived from `APP_KEY`).
+
+| Method | Endpoint | Who |
+| --- | --- | --- |
+| POST | `/api/v1/auth/login` with `role`, `identifier`, `password` | Anyone (same strict role check as the website) |
+| GET | `/api/v1/auth/me` | Any signed-in role |
+| POST | `/api/v1/auth/logout` | Any signed-in role (revokes the token) |
+| GET | `/api/v1/books?q=` | Any signed-in role |
+| GET | `/api/v1/my/loans` | Students and faculty |
+| GET | `/api/v1/audit-logs` | Administrators and the super administrator |
+
+Send the token as `Authorization: Bearer <access_token>`. Tokens expire after 60 minutes (`JWT_TTL_MINUTES`), are rejected if tampered with or signed with another algorithm, and stop working at once if the account is suspended or the token is revoked.
+
 ## Requirements
 
 - PHP 8.3 or newer with the `pdo_sqlite` (or `pdo_mysql`) extension

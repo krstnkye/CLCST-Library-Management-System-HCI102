@@ -38,8 +38,8 @@
         </section>
     @endif
 
-    <section class="space-y-4 rounded-2xl border border-[#E2E8F0] bg-surface-container-lowest p-5 shadow-sm lg:p-6" aria-labelledby="active-heading">
-        <h2 id="active-heading" class="border-b border-[#E2E8F0] pb-3 font-headline text-lg font-bold">Books on loan ({{ $activeLoans->count() }})</h2>
+    <section class="space-y-4 rounded-2xl border border-[#EDEAE5] bg-surface-container-lowest p-5 shadow-sm lg:p-6" aria-labelledby="active-heading">
+        <h2 id="active-heading" class="border-b border-[#EDEAE5] pb-3 font-headline text-lg font-bold">Books on loan ({{ $activeLoans->count() }})</h2>
         @forelse ($activeLoans as $loan)
             @include('student.partials.loan-card', ['loan' => $loan])
         @empty
@@ -47,7 +47,7 @@
         @endforelse
     </section>
 
-    <section class="rounded-2xl border border-[#E2E8F0] bg-surface-container-lowest p-5 shadow-sm lg:p-6" aria-labelledby="how-heading">
+    <section class="rounded-2xl border border-[#EDEAE5] bg-surface-container-lowest p-5 shadow-sm lg:p-6" aria-labelledby="how-heading">
         <h2 id="how-heading" class="font-headline text-lg font-bold">How borrowing and returning works</h2>
         <ol class="mt-4 grid gap-4 md:grid-cols-4">
             @foreach ([

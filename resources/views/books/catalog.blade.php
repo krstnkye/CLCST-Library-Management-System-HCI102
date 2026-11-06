@@ -7,56 +7,8 @@
     <title>CLCST Library - Search Books & Book Catalog Discovery</title>
     @include('partials.favicon')
 
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        'surface-container-lowest': '#ffffff',
-                        'surface-container-low': '#f2f3ff',
-                        'surface-container': '#eaedff',
-                        'surface-container-high': '#e2e7ff',
-                        background: '#faf8ff',
-                        surface: '#faf8ff',
-                        primary: '#00441d',
-                        'primary-container': '#135d2e',
-                        'on-primary': '#ffffff',
-                        'on-surface': '#131b2e',
-                        'on-surface-variant': '#404940',
-                        outline: '#707a6f',
-                        'outline-variant': '#c0c9bd',
-                        secondary: '#785a00',
-                        'secondary-container': '#fdc425',
-                        'on-secondary-container': '#6d5200',
-                        error: '#ba1a1a',
-                        'error-container': '#ffdad6',
-                        tertiary: '#002e97',
-                        'tertiary-fixed': '#dce1ff'
-                    },
-                    borderRadius: {
-                        DEFAULT: '0.25rem',
-                        lg: '0.5rem',
-                        xl: '0.75rem',
-                        full: '9999px'
-                    },
-                    fontFamily: {
-                        'body-md': ['Inter', 'sans-serif'],
-                        'headline-sm': ['Plus Jakarta Sans', 'sans-serif'],
-                        'headline-md': ['Plus Jakarta Sans', 'sans-serif'],
-                        'headline-lg': ['Plus Jakarta Sans', 'sans-serif'],
-                        'label-sm': ['Inter', 'sans-serif'],
-                        'label-md': ['Inter', 'sans-serif']
-                    }
-                }
-            }
-        };
-    </script>
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}?v={{ filemtime(public_path('css/fonts.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}?v={{ filemtime(public_path('css/tailwind.css')) }}">
     <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -90,9 +42,8 @@
     </style>
     @include('partials.ui-motion')
 </head>
-<body class="clcst-portal {{ auth()->user()->role === 'student' ? 'clcst-role-student' : 'clcst-role-faculty' }} flex min-h-screen flex-col bg-[#F8FAFC] font-body-md text-on-surface antialiased">
+<body class="clcst-portal {{ auth()->user()->role === 'student' ? 'clcst-role-student' : 'clcst-role-faculty' }} flex min-h-screen flex-col bg-[#F6F3EC] font-body-md text-on-surface antialiased">
     @php
-        $reservationCount = $patronSummary['openReservations'];
         $currentParams = request()->except('page');
         $catalogUser = auth()->user();
         $isStudentPortal = $catalogUser->role === 'student';
@@ -119,10 +70,9 @@
                 <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-outline">
                     <span class="material-symbols-outlined text-[18px]">search</span>
                 </span>
-                <input class="h-10 w-full rounded-lg border border-outline-variant bg-surface-container-low py-2 pl-10 pr-20 text-sm text-on-surface transition-all focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary" name="q" placeholder="Quick catalog lookup (Title, ISBN, Barcode, Author)..." type="text" value="{{ $query }}">
+                <input id="topbar-catalog-search" class="h-10 w-full rounded-lg border border-outline-variant bg-surface-container-low py-2 pl-10 pr-10 text-sm text-on-surface transition-all focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary" name="q" placeholder="Quick catalog lookup (Title, ISBN, Barcode, Author)..." type="text" value="{{ $query }}">
                 <div class="absolute inset-y-0 right-0 flex items-center gap-1.5 pr-2">
-                    <span class="hidden rounded border border-outline-variant bg-surface-container px-1.5 py-0.5 font-mono text-[11px] font-semibold text-outline sm:inline-flex">Book Catalog</span>
-                    <button class="rounded p-1 text-outline transition-colors hover:bg-surface-container hover:text-primary" title="Scan Barcode" type="submit">
+                    <button class="rounded p-1 text-outline transition-colors hover:bg-surface-container hover:text-primary" title="Scan a barcode or QR code" aria-label="Scan a barcode or QR code" type="button" data-scan data-scan-target="#topbar-catalog-search" data-scan-submit>
                         <span class="material-symbols-outlined text-[18px]">barcode_scanner</span>
                     </button>
                 </div>
@@ -130,15 +80,13 @@
         </form>
 
         <div class="flex items-center gap-3">
-            <div class="hidden items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 xl:flex">
+            <div class="clcst-status-pill hidden items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 xl:flex">
                 <span class="h-2 w-2 animate-pulse rounded-full bg-emerald-600"></span>
                 <span class="text-[10px] font-semibold text-emerald-800">Book Catalog Online</span>
             </div>
-            <a class="relative rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ $notificationRoute }}" title="Notifications">
+            <a aria-label="Notifications ({{ $patronSummary['notifications'] }})" class="relative rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ $notificationRoute }}" title="Notifications">
                 <span class="material-symbols-outlined text-[22px]">notifications</span>
-                @if ($reservationCount > 0)
-                    <span class="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[10px] font-bold text-white">{{ $reservationCount }}</span>
-                @endif
+                <span class="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-error px-1 text-[10px] font-bold text-white" data-notification-badge @if ($patronSummary['notifications'] === 0) hidden @endif>{{ $patronSummary['notifications'] }}</span>
             </a>
             <a class="rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface" href="{{ $supportRoute }}" title="Help and support">
                 <span class="material-symbols-outlined text-[22px]">help</span>
@@ -150,7 +98,7 @@
                     <p class="text-[10px] leading-tight text-outline">{{ $userSubtitle }}</p>
                 </div>
                 <div class="relative">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary font-headline-sm text-xs font-bold text-on-primary shadow-sm ring-2 ring-secondary-container">{{ $catalogUser->initials() }}</div>
+                    <div class="overflow-hidden flex h-9 w-9 items-center justify-center rounded-full bg-primary font-headline-sm text-xs font-bold text-on-primary shadow-sm ring-2 ring-secondary-container">@include('partials.avatar', ['user' => $catalogUser])</div>
                     <span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
                 </div>
             </div>
@@ -164,7 +112,7 @@
             @include('partials.staff-sidebar', ['activePage' => 'search-books', 'portalRole' => 'faculty'])
         @endif
 
-        <main class="clcst-main custom-scrollbar md:ml-64 flex flex-1 flex-col overflow-y-auto bg-[#F8FAFC]">
+        <main class="clcst-main custom-scrollbar md:ml-64 flex flex-1 flex-col overflow-y-auto bg-[#F6F3EC]">
             <section class="border-b border-outline-variant bg-surface-container-lowest px-4 pb-6 pt-6 shadow-sm lg:px-8">
                 @if (session('status') || $errors->any())
                     <div class="mb-4 space-y-2">@include('partials.flash')</div>
@@ -187,14 +135,14 @@
                         <p class="mt-1 max-w-3xl text-sm text-outline">Search {{ number_format($totalTitles) }} catalog titles and see which copies are on the shelf right now.</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-3">
-                        <a class="flex h-9 items-center gap-2 rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 text-sm font-semibold text-on-surface shadow-sm transition-colors hover:bg-surface-container" href="{{ route('books.catalog', array_merge($currentParams, ['field' => 'all'])) }}">
+                        <button class="flex h-9 items-center gap-2 rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 text-sm font-semibold text-on-surface shadow-sm transition-colors hover:bg-surface-container" type="button" data-modal-open="advanced-search">
                             <span class="material-symbols-outlined text-[18px]">tune</span>
                             <span>Advanced Search</span>
-                        </a>
-                        <a class="flex h-9 items-center gap-2 rounded-lg border border-secondary-container bg-amber-50 px-3.5 text-sm font-semibold text-amber-950 transition-colors hover:bg-amber-100" href="{{ route('books.catalog', ['field' => 'isbn']) }}">
-                            <span class="material-symbols-outlined text-[18px] text-secondary">barcode</span>
-                            <span>Barcode / ISBN Lookup</span>
-                        </a>
+                        </button>
+                        <button class="flex h-9 items-center gap-2 rounded-lg border border-secondary-container bg-amber-50 px-3.5 text-sm font-semibold text-amber-950 transition-colors hover:bg-amber-100" type="button" data-scan data-scan-target="#catalog-search" data-scan-field="all" data-scan-submit>
+                            <span class="material-symbols-outlined text-[18px] text-secondary">barcode_scanner</span>
+                            <span>Scan Barcode / ISBN</span>
+                        </button>
                     </div>
                 </div>
 
@@ -207,9 +155,10 @@
                         </select>
                         <div class="relative">
                             <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-outline"><span class="material-symbols-outlined">search</span></span>
-                            <input class="h-12 w-full rounded-xl border border-outline-variant bg-surface-container-lowest pl-12 pr-4 text-sm text-on-surface placeholder:text-outline focus:border-primary focus:ring-primary" name="q" placeholder="Search by title, author, subject, call number, ISBN, barcode..." type="text" value="{{ $query }}">
+                            <button class="absolute inset-y-0 right-2 my-auto flex h-9 w-9 items-center justify-center rounded-lg text-outline transition-colors hover:bg-surface-container hover:text-primary" type="button" title="Scan a barcode or QR code" aria-label="Scan a barcode or QR code" data-scan data-scan-target="#catalog-search" data-scan-submit><span class="material-symbols-outlined">barcode_scanner</span></button>
+                            <input id="catalog-search" class="h-12 w-full rounded-xl border border-outline-variant bg-surface-container-lowest pl-12 pr-12 text-sm text-on-surface placeholder:text-outline focus:border-primary focus:ring-primary" name="q" placeholder="Search by title, author, subject, call number, ISBN, barcode..." type="text" value="{{ $query }}">
                         </div>
-                        <button class="flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-on-primary shadow-sm transition-colors hover:bg-primary-container" type="submit">
+                        <button class="flex h-12 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-primary px-5 text-sm font-bold text-on-primary shadow-sm transition-colors hover:bg-primary-container" type="submit">
                             <span class="material-symbols-outlined text-[18px]">manage_search</span>
                             Search Books
                         </button>
@@ -252,6 +201,16 @@
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-wider text-secondary">Book Search Results</p>
                                 <h2 class="font-headline-sm text-lg font-bold text-on-surface">{{ $books->total() }} {{ \Illuminate\Support\Str::plural('title', $books->total()) }} matched your search</h2>
+                                @if ($advancedFilters)
+                                    <div class="mt-2 flex flex-wrap items-center gap-1.5">
+                                        @foreach ($advancedFilters as $filterKey => $filterValue)
+                                            <a class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary hover:bg-primary/20" href="{{ route('books.catalog', \Illuminate\Support\Arr::except(request()->query(), [$filterKey, 'page'])) }}" title="Remove this filter">
+                                                {{ ['title' => 'Title', 'author' => 'Author', 'isbn' => 'ISBN', 'year_from' => 'From', 'year_to' => 'Until'][$filterKey] }}: {{ $filterValue }}<span class="material-symbols-outlined text-[14px]" aria-hidden="true">close</span>
+                                            </a>
+                                        @endforeach
+                                        <button class="text-[11px] font-bold text-primary hover:underline" type="button" data-modal-open="advanced-search">Edit</button>
+                                    </div>
+                                @endif
                             </div>
                             <span class="inline-flex items-center gap-1 rounded-lg bg-surface-container px-3 py-1.5 text-xs font-bold text-primary">
                                 <span class="material-symbols-outlined text-[16px]">sensors</span>
@@ -272,7 +231,7 @@
                             @endphp
                             <article class="rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm transition-all hover:border-primary/60 hover:shadow-md">
                                 <div class="flex flex-col gap-5 sm:flex-row">
-                                    <div class="book-cover relative h-40 w-full flex-shrink-0 overflow-hidden rounded-lg bg-gradient-to-br {{ 'from-emerald-700 to-slate-950' }} text-white sm:w-28">
+                                    <div class="book-cover relative h-40 w-full flex-shrink-0 overflow-hidden rounded-lg bg-emerald-900 text-white sm:w-28">
                                         <img alt="{{ $book->title }} cover" class="h-full w-full object-cover" loading="lazy" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" src="{{ $book->cover_url }}">
                                         <div class="hidden h-full w-full flex-col justify-between p-2.5">
                                             <div>
@@ -317,7 +276,11 @@
                                         <div class="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-outline-variant/60 pt-3">
                                             <div class="flex flex-wrap items-center gap-2">
                                                 @if (! $book->isReference())
-                                                    <form method="POST" action="{{ route('books.hold', $book->id) }}">
+                                                    <form method="POST" action="{{ route('books.hold', $book->id) }}"
+                                                        data-confirm="{{ $available > 0 ? 'A copy will be set aside for you at the circulation desk. You will get a notification when it is ready for pickup.' : 'All copies are on loan right now. You will join the waiting list and get a notification when a copy is set aside for you.' }}"
+                                                        data-confirm-title="{{ $available > 0 ? 'Reserve this book?' : 'Join the waiting list?' }}"
+                                                        data-confirm-detail="{{ $book->title }} · {{ $book->author }} · {{ $book->shelf_location }}"
+                                                        data-confirm-label="{{ $available > 0 ? 'Yes, reserve it' : 'Yes, join the list' }}" data-confirm-icon="bookmark_add">
                                                         @csrf
                                                         <button class="flex h-9 items-center gap-1.5 rounded-lg px-4 text-xs font-bold shadow-sm transition-all {{ $isReserved || $isBorrowed ? 'bg-emerald-100 text-emerald-800' : ($available > 0 ? 'bg-primary text-on-primary hover:bg-primary-container' : 'bg-secondary-container text-on-secondary-container hover:bg-amber-400') }}" type="submit" @disabled($isReserved || $isBorrowed)>
                                                             <span class="material-symbols-outlined text-[16px]">{{ $isReserved ? 'bookmark_added' : ($available > 0 ? 'book_online' : 'notification_add') }}</span>
@@ -325,15 +288,16 @@
                                                         </button>
                                                     </form>
                                                 @else
-                                                    <a class="flex h-9 items-center gap-1.5 rounded-lg bg-tertiary px-4 text-xs font-bold text-white" href="{{ route('books.catalog', array_merge($currentParams, ['selected' => $book->id])) }}"><span class="material-symbols-outlined text-[16px]">desk</span>Request at Counter</a>
+                                                    <button class="flex h-9 items-center gap-1.5 rounded-lg bg-tertiary px-4 text-xs font-bold text-white" type="button" data-modal-open="counter-{{ $book->id }}"><span class="material-symbols-outlined text-[16px]">desk</span>Request at Counter</button>
                                                 @endif
                                                 <a class="flex h-9 items-center gap-1.5 rounded-lg border border-outline-variant px-3.5 text-xs font-semibold text-on-surface transition-colors hover:bg-surface-container" href="{{ route('books.catalog', array_merge($currentParams, ['selected' => $book->id])) }}"><span class="material-symbols-outlined text-[16px] text-primary">inventory_2</span>View Copies</a>
-                                                <a class="flex h-9 items-center gap-1 rounded-lg border border-outline-variant px-3 text-xs font-medium text-outline transition-colors hover:bg-surface-container hover:text-on-surface" href="https://www.google.com/search?q={{ urlencode($book->title.' citation') }}" target="_blank" rel="noopener"><span class="material-symbols-outlined text-[16px]">format_quote</span>Cite</a>
+                                                <button class="flex h-9 items-center gap-1 rounded-lg border border-outline-variant px-3 text-xs font-medium text-outline transition-colors hover:bg-surface-container hover:text-on-surface" type="button" data-modal-open="cite-{{ $book->id }}"><span class="material-symbols-outlined text-[16px]">format_quote</span>Cite</button>
                                             </div>
                                             <span class="text-[10px] font-semibold text-outline">{{ $book->subject }} - {{ $book->isReference() ? 'In-library use only' : 'Standard loan' }}</span>
                                         </div>
                                     </div>
                                 </div>
+                                @include('books.partials.book-modals', ['book' => $book])
                             </article>
                         @empty
                             <div class="rounded-2xl border border-outline-variant bg-surface-container-lowest p-8 text-center">
@@ -418,7 +382,10 @@
                                 $selectedReserved = in_array($selectedBook->id, $reservedBookIds, true);
                                 $selectedBorrowed = in_array($selectedBook->id, $borrowedBookIds, true);
                             @endphp
-                            <form class="mt-4" method="POST" action="{{ route('books.hold', $selectedBook->id) }}">
+                            <form class="mt-4" method="POST" action="{{ route('books.hold', $selectedBook->id) }}"
+                                data-confirm="{{ $selectedBook->copies->where('status', 'available')->count() > 0 ? 'A copy will be set aside for you at the circulation desk. You will get a notification when it is ready for pickup.' : 'All copies are on loan right now. You will join the waiting list and get a notification when a copy is set aside for you.' }}"
+                                data-confirm-title="Reserve this book?" data-confirm-detail="{{ $selectedBook->title }} · {{ $selectedBook->author }} · {{ $selectedBook->shelf_location }}"
+                                data-confirm-label="Yes, reserve it" data-confirm-icon="bookmark_add">
                                 @csrf
                                 <button class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary-container px-4 py-2.5 text-xs font-bold text-on-primary shadow-sm hover:bg-primary disabled:cursor-not-allowed disabled:bg-emerald-100 disabled:text-emerald-800" type="submit" @disabled($selectedReserved || $selectedBorrowed || $selectedBook->isReference())>
                                     <span class="material-symbols-outlined text-base">bookmark_added</span>
@@ -431,6 +398,8 @@
                     </aside>
                 </div>
             </section>
+
+            @include('books.partials.advanced-search')
 
             <footer class="mt-auto border-t border-outline-variant bg-surface-container-lowest px-4 py-6 text-sm text-outline lg:px-8">
                 <div class="flex flex-col items-center justify-between gap-4 md:flex-row">

@@ -17,7 +17,8 @@
 
 <aside id="student-sidebar" class="clcst-sidebar fixed bottom-0 left-0 top-16 z-30 hidden w-64 flex-shrink-0 flex-col justify-between border-r border-outline-variant bg-surface-container-lowest md:flex" aria-label="Student navigation">
     <div class="custom-scrollbar flex flex-1 flex-col gap-1 overflow-y-auto p-4">
-        <a class="mb-3 flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-3" href="{{ route('student.section', 'account') }}">
+        <a class="mb-3 flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-3" href="{{ route('student.section', 'account') }}" title="Show my e-Pass QR code"
+            data-epass data-epass-name="{{ $student->name }}" data-epass-id="{{ $student->patron_id }}" data-epass-program="{{ $student->program_or_department }}" data-epass-role="Student">
             <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-container font-bold text-white">
                 <span class="material-symbols-outlined">badge</span>
             </div>
@@ -25,6 +26,7 @@
                 <p class="truncate text-xs font-bold text-primary">CLCST e-Pass</p>
                 <p class="truncate text-[10px] text-on-surface-variant">ID: {{ $student->patron_id }}</p>
             </div>
+            <span class="material-symbols-outlined ml-auto text-[20px]" aria-hidden="true">qr_code_2</span>
         </a>
 
         <span class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-outline">Library Navigation</span>
@@ -43,7 +45,9 @@
                         <span class="material-symbols-outlined {{ $isActive ? '' : 'text-outline' }}" @if ($isActive) style="font-variation-settings: 'FILL' 1;" @endif>{{ $item['icon'] }}</span>
                         <span class="text-xs font-semibold">{{ $item['label'] }}</span>
                     </span>
-                    @if (! empty($item['badge']))
+                    @if ($item['key'] === 'notifications')
+                        <span class="{{ $badgeClass }} rounded-full px-2 py-0.5 text-[10px] font-bold" data-notification-badge @if (empty($item['badge'])) hidden @endif>{{ $item['badge'] }}</span>
+                    @elseif (! empty($item['badge']))
                         <span class="{{ $badgeClass }} rounded-full px-2 py-0.5 text-[10px] font-bold">{{ $item['badge'] }}</span>
                     @endif
                 </a>
@@ -54,10 +58,15 @@
             <label class="flex items-center gap-2 text-xs font-bold text-primary" for="sidebar-barcode">
                 <span class="material-symbols-outlined text-base">barcode_scanner</span>Find by barcode or ISBN
             </label>
-            <input id="sidebar-barcode" class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 text-xs focus:border-primary focus:ring-1 focus:ring-primary" name="q" placeholder="e.g. 978-0132350884">
-            <button class="flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-xs font-bold text-on-primary hover:bg-primary-container" type="submit">
-                <span class="material-symbols-outlined text-base">search</span>Look up
-            </button>
+            <input id="sidebar-barcode" class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 text-xs focus:border-primary focus:ring-1 focus:ring-primary" name="q" required placeholder="e.g. 978-0132350884">
+            <div class="flex gap-2">
+                <button class="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-xs font-bold text-on-primary hover:bg-primary-container" type="submit">
+                    <span class="material-symbols-outlined text-base">search</span>Look up
+                </button>
+                <button class="sidebar-scan flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold" type="button" title="Scan with the camera" aria-label="Scan a barcode with the camera" data-scan data-scan-target="#sidebar-barcode" data-scan-submit>
+                    <span class="material-symbols-outlined text-base">photo_camera</span>Scan
+                </button>
+            </div>
         </form>
     </div>
 

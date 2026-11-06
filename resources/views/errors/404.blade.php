@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('code', '404')
+@section('eyebrow', 'Page not found')
+@section('title', 'We couldn’t find that page')
+@section('message', 'The link may be mistyped, or the page may have moved. Use the button below to return to your portal.')

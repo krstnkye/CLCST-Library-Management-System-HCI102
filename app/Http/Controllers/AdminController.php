@@ -89,7 +89,7 @@ class AdminController extends Controller
             'library-staff' => route('management.accounts.index', ['role' => 'admin']),
             'data-export' => route('management.data.index'),
             'announcements' => route('librarian.section', 'announcements'),
-            'circulation' => route('librarian.dashboard'),
+            'circulation' => route('librarian.section', 'borrow-requests'),
         ];
         if (isset($redirects[$section])) {
             return redirect($redirects[$section]);

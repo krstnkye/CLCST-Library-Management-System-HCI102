@@ -2,7 +2,7 @@
 <section class="rounded-lg border border-slate-200 bg-white shadow-sm">
     <form class="flex flex-col gap-3 border-b border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between" method="GET" action="{{ $searchRoute }}" role="search">
         <p class="text-sm text-slate-600">{{ number_format($logs->total()) }} recorded actions. Entries cannot be edited or deleted from the application.</p>
-        <div class="flex gap-2"><label class="sr-only" for="log-search">Search the log</label><input id="log-search" class="rounded-lg border-slate-300 py-1.5 text-sm" name="q" value="{{ request('q') }}" placeholder="Search events" type="search"><button class="rounded-lg border border-slate-300 px-3 text-xs font-bold" type="submit">Search</button></div>
+        <div class="flex gap-2"><label class="sr-only" for="log-search">Search the log</label><input id="log-search" class="rounded-lg border-slate-300 py-1.5 text-sm" name="q" value="{{ request('q') }}" placeholder="Search events" type="search"><button class="rounded-lg border border-slate-300 px-3 text-xs font-bold" type="submit">Search</button><a class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-emerald-900 px-3 text-xs font-bold text-white hover:bg-emerald-800" href="{{ route('management.audit.export', array_filter(['q' => request('q')])) }}" title="Download the log as a CSV file for Excel or Google Sheets"><span class="material-symbols-outlined text-base" aria-hidden="true">download</span>Export CSV</a></div>
     </form>
     <div class="overflow-x-auto">
         <table class="w-full min-w-[820px] text-left text-sm">

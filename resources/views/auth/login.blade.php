@@ -6,41 +6,49 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>CLCST Library Account Sign In</title>
     @include('partials.favicon')
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}?v={{ filemtime(public_path('css/fonts.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}?v={{ filemtime(public_path('css/tailwind.css')) }}">
     <style>body { font-family: Inter, sans-serif; } .material-symbols-outlined { line-height: 1; vertical-align: middle; }</style>
     @include('partials.ui-motion')
 </head>
 <body class="clcst-portal library-login">
 <div class="login-shell">
     <aside class="login-story" aria-label="CLCST School Library">
-        <div class="login-aurora" aria-hidden="true"><span></span><span></span><span></span></div>
         <a class="login-brand" href="{{ route('login') }}">
             @include('partials.celtech-logo', ['class' => 'rounded-full'])
             <div><strong>CLCST School Library</strong><span>Central Luzon College of Science and Technology</span></div>
         </a>
         <div class="login-story-copy">
-            <p class="login-eyebrow">Read. Discover. Belong.</p>
-            <h2>Find your<br>next <em>chapter.</em></h2>
-            <p>From your first reference to your next big idea. Your campus library is here for every part of the journey.</p>
-            <div class="login-stats"><span><span class="material-symbols-outlined" aria-hidden="true">auto_stories</span>Live catalog</span><span><span class="material-symbols-outlined" aria-hidden="true">event_available</span>Online reservations</span><span><span class="material-symbols-outlined" aria-hidden="true">notifications_active</span>Due-date alerts</span></div>
+            <p class="login-eyebrow">CLCST Main Library</p>
+            <h2>The college library,<br><em>at your desk.</em></h2>
+            <p>Search the collection, reserve a title, and keep track of every loan and due date from one account.</p>
+            <dl class="login-facts">
+                <div><dt>Weekdays</dt><dd>8:00 AM &ndash; 8:00 PM</dd></div>
+                <div><dt>Saturday</dt><dd>8:00 AM &ndash; 5:00 PM</dd></div>
+                <div><dt>Enquiries</dt><dd>library@clcst.edu.ph</dd></div>
+            </dl>
         </div>
         <div class="library-shelf" aria-hidden="true">
             <span>Literature</span><span>Science &amp; Discovery</span><span>The Arts</span><span>Technology</span><span>History</span><span>Ideas</span>
         </div>
-        <div class="login-story-footer"><span>A space for curious minds.</span><span>CLCST · Main Library</span></div>
+        <div class="login-story-footer"><span>Central Luzon College of Science and Technology</span><span>Library Services</span></div>
     </aside>
     <main class="login-content">
         <div class="login-content-top">New to the library?<a href="{{ route('register') }}">Create an account <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_outward</span></a></div>
         <section class="login-panel" aria-labelledby="signin-heading">
-            <p class="login-eyebrow">Your campus library, connected</p>
-            <h1 id="signin-heading">Welcome back.</h1>
-            <p class="login-intro">Sign in to find books, manage your loans, and pick up where you left off.</p>
+            <p class="login-eyebrow">Library account</p>
+            <h1 id="signin-heading">Sign in</h1>
+            <p class="login-intro">Use your school ID or email. Choose the account type that matches your library record.</p>
+            @if ($signedInAs ?? null)
+                <div class="mt-5 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900" role="status" data-signed-in-notice>
+                    <p><strong>{{ $signedInAs->name }}</strong> ({{ $signedInAs->roleLabel() }}) is still signed in on this browser. Enter the password to continue, or sign in with another account to switch.</p>
+                    <form class="mt-2" method="POST" action="{{ route('logout') }}">@csrf<button class="font-semibold underline" type="submit">Sign out {{ $signedInAs->name }}</button></form>
+                </div>
+            @endif
             @if (session('status'))
                 <div class="mt-5 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900" role="status">{{ session('status') }}</div>
             @endif
+            <div class="mt-5 hidden rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800" role="alert" data-login-error><p class="font-semibold">We couldn't sign you in.</p><p data-login-error-text></p></div>
             @if ($errors->any())
                 <div class="mt-5 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800" role="alert">
                     <p class="font-semibold">We couldn't sign you in.</p>
@@ -55,7 +63,7 @@
                     'admin' => ['admin_panel_settings', 'Administrator'],
                     'superadmin' => ['security', 'Super Administrator'],
                 ];
-                $selectedRole = old('role', 'student');
+                $selectedRole = old('role', ($signedInAs ?? null)?->role ?? 'student');
             @endphp
             <p class="login-role-label" id="role-choice-label">Choose your account type</p>
             <div class="login-roles" role="group" aria-labelledby="role-choice-label">
@@ -69,10 +77,10 @@
             </div>
             <form method="POST" action="{{ route('login.authenticate') }}" class="login-form">
                 @csrf
-                <input type="hidden" id="role-input" name="role" value="{{ old('role', 'student') }}">
+                <input type="hidden" id="role-input" name="role" value="{{ $selectedRole }}">
                 <div>
                     <label id="identifier-label" for="identifier">Student ID or school email</label>
-                    <div class="login-field"><span class="material-symbols-outlined" aria-hidden="true">badge</span><input id="identifier" name="identifier" value="{{ old('identifier') }}" required autocomplete="username" maxlength="150" placeholder="Example: STU-2026-001"></div>
+                    <div class="login-field"><span class="material-symbols-outlined" aria-hidden="true">badge</span><input id="identifier" name="identifier" value="{{ old('identifier', ($signedInAs ?? null)?->email) }}" required autocomplete="username" maxlength="150" placeholder="Example: STU-2026-001"></div>
                 </div>
                 <div>
                     <div class="flex items-center justify-between gap-3"><label for="password">Password</label><a class="text-[11px] font-semibold text-emerald-800 hover:underline" href="mailto:library@clcst.edu.ph?subject=Library%20password%20assistance">Forgot password?</a></div>
@@ -85,12 +93,61 @@
                 <label class="flex cursor-pointer items-start gap-2.5 leading-5 text-slate-600"><input class="mt-0.5 rounded border-slate-300 text-emerald-800 focus:ring-emerald-700" type="checkbox" name="remember" value="1" @checked(old('remember'))><span>Keep me signed in on this private device</span></label>
                 <button class="login-submit" type="submit"><span id="submit-label">Sign In as Student</span><span class="material-symbols-outlined text-xl" aria-hidden="true">arrow_forward</span></button>
             </form>
-            <div class="login-assistance"><span class="material-symbols-outlined" aria-hidden="true">support_agent</span><p>Having trouble getting in?<br><a href="mailto:library@clcst.edu.ph">Contact the library</a> for account or approval assistance.</p></div>
+            <div class="login-assistance"><span class="material-symbols-outlined" aria-hidden="true">mail</span><p>Having trouble getting in?<br><a href="mailto:library@clcst.edu.ph">Contact the library</a> for account or approval assistance.</p></div>
         </section>
         <footer class="login-footer"><span>CLCST Library Management System</span><span>HCI102 Project</span></footer>
     </main>
 </div>
 <script>
+// Pressing Back from a portal must not look like a sign-out. Whenever this page is reached through
+// browser history (fresh load or restored from the back/forward cache), ask the server whether the
+// user is still signed in, and if so go straight back to their portal.
+window.addEventListener('pageshow', (event) => {
+    const viaHistory = event.persisted || performance.getEntriesByType('navigation')[0]?.type === 'back_forward';
+    if (!viaHistory) return;
+    fetch(@json(route('session.status')), { credentials: 'same-origin', cache: 'no-store', headers: { Accept: 'application/json' } })
+        .then((response) => response.ok ? response.json() : null)
+        .then((status) => { if (status?.signed_in && status.dashboard) location.replace(status.dashboard); })
+        .catch(() => {});
+});
+// Sign in without leaving this page in the browser history: on success the page replaces itself
+// with the portal, so Back from the dashboard cannot land on the sign-in form.
+(() => {
+    const form = document.querySelector('.login-form');
+    const box = document.querySelector('[data-login-error]');
+    if (!form || !window.fetch) return;
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (form.dataset.sending === '1') return;
+        form.dataset.sending = '1';
+        const button = form.querySelector('.login-submit');
+        button.disabled = true;
+        const showError = (message) => {
+            document.querySelectorAll('[role=alert]:not([data-login-error])').forEach((el) => el.remove());
+            box.querySelector('[data-login-error-text]').textContent = message;
+            box.classList.remove('hidden');
+        };
+        try {
+            const response = await fetch(form.action, { method: 'POST', body: new FormData(form), credentials: 'same-origin', headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' } });
+            const data = await response.json().catch(() => ({}));
+            if (response.ok && data.redirect) {
+                try { sessionStorage.setItem('clcst-just-signed-in', '1'); } catch (_) { /* optional */ }
+                location.replace(data.redirect);
+                return;
+            }
+            const message = data.errors ? Object.values(data.errors).flat()[0] : (data.message || 'Something went wrong. Please try again.');
+            showError(message);
+            let token = data.token;
+            if (!token) { const status = await fetch(@json(route('session.status')), { credentials: 'same-origin', cache: 'no-store', headers: { Accept: 'application/json' } }).then((r) => r.json()).catch(() => ({})); token = status.token; }
+            if (token) form.querySelector('input[name=_token]').value = token;
+        } catch (_) {
+            showError('The library server could not be reached. Check your connection and try again.');
+        }
+        form.dataset.sending = '0';
+        button.disabled = false;
+        form.querySelector('#password').value = '';
+    });
+})();
 const roleDetails={
 student:{tag:'STUDENT PORTAL',icon:'school',description:'Access your loans, reservations, notifications, and library account.',identifier:'Student ID or school email',placeholder:'Example: STU-2026-001',submit:'Sign In as Student'},
 faculty:{tag:'FACULTY PORTAL',icon:'co_present',description:'Access teaching resources, borrowing services, course reserves, and academic requests.',identifier:'Employee ID or school email',placeholder:'Example: FAC-2026-001',submit:'Sign In as Faculty'},

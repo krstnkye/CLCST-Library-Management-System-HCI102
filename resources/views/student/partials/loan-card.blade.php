@@ -3,8 +3,8 @@
     $days = $loan->daysRemaining();
     [$border, $pill, $pillText] = match (true) {
         $days < 0 => ['border-red-300 bg-red-50/50', 'bg-red-100 text-red-800', 'Overdue by '.abs($days).' '.\Illuminate\Support\Str::plural('day', abs($days))],
-        $days <= 3 => ['border-[#FEF08A] bg-[#FEFCE8]/50', 'bg-[#FEF3C7] text-[#92400E]', $days === 0 ? 'Due today' : 'Due in '.$days.' '.\Illuminate\Support\Str::plural('day', $days)],
-        default => ['border-[#E2E8F0]', 'bg-[#DCFCE7] text-[#166534]', $days.' days remaining'],
+        $days <= 3 => ['border-[#E8D5A8] bg-[#FAF5EA]/50', 'bg-[#F3E8CF] text-[#574222]', $days === 0 ? 'Due today' : 'Due in '.$days.' '.\Illuminate\Support\Str::plural('day', $days)],
+        default => ['border-[#EDEAE5]', 'bg-[#F1F4F0] text-[#284A30]', $days.' days remaining'],
     };
 @endphp
 <article class="library-loan flex flex-col justify-between gap-4 rounded-xl border-2 {{ $border }} p-5 md:flex-row md:items-center">
@@ -15,9 +15,9 @@
                 <h3 class="font-headline text-base font-bold">{{ $book->title }}</h3>
                 <span class="rounded-full px-2 py-0.5 text-[10px] font-bold {{ $pill }}">{{ $pillText }}</span>
             </div>
-            <p class="text-xs text-[#475569]">{{ $book->author }}</p>
-            <p class="flex flex-wrap gap-x-4 text-xs text-[#64748B]"><span><strong>Call No:</strong> {{ $book->call_number }}</span><span><strong>Copy:</strong> {{ $loan->copy->copy_code }} ({{ $loan->copy->barcode }})</span></p>
-            <p class="flex flex-wrap gap-x-4 pt-1 text-[11px] font-bold text-[#64748B]">
+            <p class="text-xs text-[#5F5A51]">{{ $book->author }}</p>
+            <p class="flex flex-wrap gap-x-4 text-xs text-[#817B6E]"><span><strong>Call No:</strong> {{ $book->call_number }}</span><span><strong>Copy:</strong> {{ $loan->copy->copy_code }} ({{ $loan->copy->barcode }})</span></p>
+            <p class="flex flex-wrap gap-x-4 pt-1 text-[11px] font-bold text-[#817B6E]">
                 <span>Borrowed: <span class="text-on-surface">{{ $loan->borrowed_at->format('M d, Y') }}</span></span>
                 <span class="{{ $days < 0 ? 'text-red-700' : 'text-on-surface' }}">Due: {{ $loan->due_at->format('M d, Y') }}</span>
                 @if ($loan->renewals > 0)<span>Renewed {{ $loan->renewals }}x</span>@endif
@@ -29,9 +29,9 @@
     </div>
     <div class="flex shrink-0 flex-row justify-end gap-2 md:flex-col">
         @if ($loan->canRenew())
-            <form method="POST" action="{{ route('loans.renew', $loan) }}">
+            <form method="POST" action="{{ route('loans.renew', $loan) }}" data-confirm="The new due date will be {{ $loan->due_at->copy()->addDays((int) $policy['renewal_days'])->format('l, M d, Y') }}. You have {{ $policy['max_renewals'] - $loan->renewals }} renewal(s) left for this loan." data-confirm-title="Renew this book?" data-confirm-detail="{{ $book->title }}" data-confirm-label="Renew" data-confirm-icon="update">
                 @csrf
-                <button class="flex items-center justify-center gap-1.5 rounded-lg bg-[#EAB308] px-4 py-2 text-[11px] font-bold text-[#0F172A] shadow-sm hover:bg-[#CA8A04]" type="submit">
+                <button class="flex items-center justify-center gap-1.5 rounded-lg bg-[#A8843F] px-4 py-2 text-[11px] font-bold text-[#1F1D1A] shadow-sm hover:bg-[#8B6B31]" type="submit">
                     <span class="material-symbols-outlined text-sm">update</span>Renew for {{ $policy['renewal_days'] }} days
                 </button>
             </form>

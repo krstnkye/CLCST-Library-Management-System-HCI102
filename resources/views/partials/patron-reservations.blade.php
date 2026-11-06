@@ -1,5 +1,5 @@
-<section class="overflow-hidden rounded-2xl border border-[#E2E8F0] bg-surface-container-lowest shadow-sm" aria-labelledby="open-heading">
-        <h2 id="open-heading" class="border-b border-[#E2E8F0] px-5 py-4 font-headline text-lg font-bold">Open reservations ({{ $openReservations->count() }})</h2>
+<section class="overflow-hidden rounded-2xl border border-[#EDEAE5] bg-surface-container-lowest shadow-sm" aria-labelledby="open-heading">
+        <h2 id="open-heading" class="border-b border-[#EDEAE5] px-5 py-4 font-headline text-lg font-bold">Open reservations ({{ $openReservations->count() }})</h2>
         <div class="overflow-x-auto">
             <table class="w-full min-w-[720px] text-left text-sm">
                 <thead class="bg-surface-container-low text-[10px] uppercase text-outline">
@@ -19,7 +19,7 @@
                             </td>
                             <td class="px-5 py-4 text-xs">#{{ $reservation->queuePosition() }} in line</td>
                             <td class="px-5 py-4 text-right">
-                                <form method="POST" action="{{ route('reservations.cancel', $reservation) }}" onsubmit="return confirm('Cancel your reservation for this book?')">
+                                <form method="POST" action="{{ route('reservations.cancel', $reservation) }}" data-confirm="You will lose your place in the waiting list for this title." data-confirm-title="Cancel your reservation?" data-confirm-detail="{{ $reservation->book->title }}" data-confirm-label="Cancel reservation">
                                     @csrf
                                     <button class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-50" type="submit">Cancel</button>
                                 </form>

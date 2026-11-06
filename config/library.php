@@ -18,4 +18,6 @@ return [
     'fine_per_day' => 5,
     'max_fine_per_item' => 200,
     'allowed_email_domain' => 'clcst.edu.ph',
+    // Minutes an API access token (JWT) stays valid.
+    'jwt_ttl_minutes' => (int) env('JWT_TTL_MINUTES', 60),
 ];

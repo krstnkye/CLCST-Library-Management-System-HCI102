@@ -22,13 +22,13 @@
                         <td class="px-5 py-4">
                             <div class="flex justify-end gap-2">
                                 @if ($user->credential_path)
-                                    <a class="rounded-md border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50" href="{{ route('management.accounts.credential', $user) }}" target="_blank" rel="noopener">View ID</a>
+                                    <a class="rounded-md border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50" href="{{ route('management.accounts.credential', $user) }}" target="_blank" rel="noopener" data-preview data-preview-title="Uploaded ID: {{ $user->name }}">View ID</a>
                                 @endif
                                 @if ($user->status === 'pending')
-                                    <form method="POST" action="{{ route('management.accounts.approve', $user) }}">@csrf<button class="rounded-md bg-emerald-900 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-800" type="submit">Approve</button></form>
+                                    <form method="POST" action="{{ route('management.accounts.approve', $user) }}" data-confirm="Make sure the uploaded ID matches the school record. The person will be able to sign in right away." data-confirm-title="Approve this account?" data-confirm-detail="{{ $user->name }} · {{ $user->roleLabel() }} · {{ $user->patron_id }}" data-confirm-label="Approve" data-confirm-icon="how_to_reg">@csrf<button class="rounded-md bg-emerald-900 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-800" type="submit">Approve</button></form>
                                 @endif
                                 @if ($user->status !== 'suspended' && ! auth()->user()->is($user))
-                                    <form method="POST" action="{{ route('management.accounts.suspend', $user) }}" onsubmit="return confirm('{{ $user->status === 'pending' ? 'Reject this application?' : 'Suspend this account? The user will be signed out.' }}')">@csrf<button class="rounded-md border border-red-200 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-50" type="submit">{{ $user->status === 'pending' ? 'Reject' : 'Suspend' }}</button></form>
+                                    <form method="POST" action="{{ route('management.accounts.suspend', $user) }}" data-confirm="{{ $user->status === 'pending' ? 'The application will be rejected and the person cannot sign in.' : 'The user will be signed out and cannot sign in until the account is approved again.' }}" data-confirm-title="{{ $user->status === 'pending' ? 'Reject this application?' : 'Suspend this account?' }}" data-confirm-detail="{{ $user->name }} · {{ $user->email }}" data-confirm-label="{{ $user->status === 'pending' ? 'Reject' : 'Suspend' }}">@csrf<button class="rounded-md border border-red-200 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-50" type="submit">{{ $user->status === 'pending' ? 'Reject' : 'Suspend' }}</button></form>
                                 @endif
                             </div>
                         </td>

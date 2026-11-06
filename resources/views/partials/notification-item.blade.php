@@ -1,23 +1,38 @@
 @php
-    $tone = match ($notification['tone']) {
-        'error' => 'border-red-200 bg-red-50 text-red-900',
-        'warning' => 'border-amber-200 bg-amber-50 text-amber-900',
-        'success' => 'border-emerald-200 bg-emerald-50 text-emerald-900',
-        default => 'border-slate-200 bg-slate-50 text-slate-800',
-    };
+    $compact = $compact ?? false;
+    $read = $notification['read'] ?? false;
 @endphp
-<article class="rounded-xl border {{ $tone }} {{ ($compact ?? false) ? 'p-3' : 'p-4' }}">
-    <div class="flex items-start gap-3">
-        <span class="material-symbols-outlined mt-0.5 text-lg">{{ $notification['icon'] }}</span>
-        <div class="min-w-0 flex-1">
-            <div class="flex flex-wrap items-baseline justify-between gap-2">
-                <h3 class="text-sm font-bold">{{ $notification['title'] }}</h3>
-                <time class="text-[10px] font-semibold opacity-75" datetime="{{ $notification['at']->toIso8601String() }}">{{ $notification['at']->diffForHumans() }}</time>
-            </div>
-            <p class="mt-1 text-xs leading-5 {{ ($compact ?? false) ? 'line-clamp-2' : '' }}">{{ $notification['body'] }}</p>
-            @if ($notification['href'] && ! ($compact ?? false))
-                <a class="mt-2 inline-flex rounded-lg bg-white/70 px-3 py-1.5 text-xs font-bold hover:bg-white" href="{{ $notification['href'] }}">{{ $notification['action'] }}</a>
+<article class="nc-item nc-tone-{{ $notification['tone'] }} {{ $compact ? 'nc-compact' : '' }} {{ $read ? 'is-read' : 'is-unread' }}"
+    data-notification data-key="{{ $notification['key'] }}" data-group="{{ $notification['group'] }}"
+    data-read-url="{{ route('notifications.read', $notification['key']) }}" data-unread-url="{{ route('notifications.unread', $notification['key']) }}">
+    <button class="nc-open" type="button" data-notification-open aria-haspopup="dialog" aria-label="Open notification: {{ $notification['title'] }}">
+        <span class="nc-icon material-symbols-outlined" aria-hidden="true">{{ $notification['icon'] }}</span>
+        <span class="nc-content">
+            <span class="nc-meta">
+                <span class="nc-chip">{{ $notification['label'] }}</span>
+                <time datetime="{{ $notification['at']->toIso8601String() }}" title="{{ $notification['at']->format('M d, Y g:i A') }}">{{ $notification['at']->diffForHumans() }}</time>
+                <span class="nc-state" data-notification-state>{{ $read ? 'Read' : 'New' }}</span>
+            </span>
+            <span class="nc-title">{{ $notification['title'] }}</span>
+            <span class="nc-preview">{{ $notification['body'] }}</span>
+        </span>
+        <span class="nc-expand material-symbols-outlined" aria-hidden="true">open_in_full</span>
+    </button>
+    @unless ($compact)
+        <form class="nc-toggle" method="POST" action="{{ $read ? route('notifications.unread', $notification['key']) : route('notifications.read', $notification['key']) }}" data-notification-toggle>
+            @csrf
+            <button type="submit" title="{{ $read ? 'Mark as unread' : 'Mark as read' }}" aria-label="{{ $read ? 'Mark as unread' : 'Mark as read' }}">
+                <span class="material-symbols-outlined" aria-hidden="true">{{ $read ? 'mark_email_unread' : 'mark_email_read' }}</span>
+            </button>
+        </form>
+    @endunless
+    <template data-notification-detail>
+        <div class="nc-detail">
+            <p class="nc-detail-when"><span class="material-symbols-outlined" aria-hidden="true">schedule</span>{{ $notification['at']->format('l, F j, Y \a\t g:i A') }} <span>({{ $notification['at']->diffForHumans() }})</span></p>
+            <p class="nc-detail-body">{{ $notification['body'] }}</p>
+            @if ($notification['href'])
+                <a class="nc-detail-link" href="{{ $notification['href'] }}">{{ $notification['action'] }}<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
             @endif
         </div>
-    </div>
+    </template>
 </article>

@@ -5,13 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Create your CLCST library account</title>
     @include('partials.favicon')
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <script>
-        tailwind.config={theme:{extend:{colors:{clcst:{50:'#eef8f1',100:'#d9efe0',600:'#146b37',700:'#0d572c',800:'#084522',900:'#043719'}},fontFamily:{sans:['Inter','sans-serif']}}}};
-    </script>
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}?v={{ filemtime(public_path('css/fonts.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}?v={{ filemtime(public_path('css/tailwind.css')) }}">
     <style>
         .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 450,'GRAD' 0,'opsz' 24}
         input[type=radio]:focus-visible+.role-card{outline:3px solid rgba(20,107,55,.25);outline-offset:2px}
@@ -24,21 +19,24 @@
 <body class="clcst-portal library-login registration-page font-sans text-slate-900 antialiased">
 <div class="login-shell registration-shell">
     <aside class="login-story registration-story" aria-label="CLCST School Library">
-        <div class="login-aurora" aria-hidden="true"><span></span><span></span><span></span></div>
         <a class="login-brand" href="{{ route('login') }}">
             @include('partials.celtech-logo', ['class'=>'rounded-full'])
             <div><strong>CLCST School Library</strong><span>Central Luzon College of Science and Technology</span></div>
         </a>
         <div class="login-story-copy">
-            <p class="login-eyebrow">Your place in the library</p>
-            <h2>Begin your<br>next <em>chapter.</em></h2>
-            <p>Create one account for the catalog, borrowing, reservations, and the library services available to your role.</p>
-            <div class="login-stats"><span><span class="material-symbols-outlined" aria-hidden="true">verified_user</span>School email only</span><span><span class="material-symbols-outlined" aria-hidden="true">how_to_reg</span>Staff-verified accounts</span><span><span class="material-symbols-outlined" aria-hidden="true">devices</span>Works on any device</span></div>
+            <p class="login-eyebrow">New library account</p>
+            <h2>One account,<br><em>every service.</em></h2>
+            <p>Apply with the details on your school or employee record. Library staff confirm them before your first sign-in.</p>
+            <dl class="login-facts">
+                <div><dt>Step 1</dt><dd>Apply here</dd></div>
+                <div><dt>Step 2</dt><dd>Staff review</dd></div>
+                <div><dt>Step 3</dt><dd>Sign in</dd></div>
+            </dl>
         </div>
         <div class="library-shelf" aria-hidden="true">
             <span>Literature</span><span>Science &amp; Discovery</span><span>The Arts</span><span>Technology</span><span>History</span><span>Ideas</span>
         </div>
-        <div class="login-story-footer"><span>A space for curious minds.</span><span>CLCST · Main Library</span></div>
+        <div class="login-story-footer"><span>CLCST Main Library</span><span>Library Services</span></div>
     </aside>
 
     <main class="registration-content">

@@ -2,20 +2,28 @@
 
 use App\Http\Controllers\AccountManagementController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuditLogExportController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BulkDataController;
 use App\Http\Controllers\LibrarianController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PatronController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+// The sign-in page stays open while signed in, so someone on a shared computer can switch accounts.
+// Signing in always ends the previous account's session first.
+Route::get('/', [AuthController::class, 'create'])->name('login');
+Route::get('/login', [AuthController::class, 'create']);
+Route::post('/login', [AuthController::class, 'store'])->middleware('throttle:10,1')->name('login.authenticate');
+
 Route::middleware('guest')->group(function (): void {
-    Route::get('/', [AuthController::class, 'create'])->name('login');
-    Route::get('/login', [AuthController::class, 'create']);
-    Route::post('/login', [AuthController::class, 'store'])->middleware('throttle:10,1')->name('login.authenticate');
     Route::get('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/register', [AuthController::class, 'storeRegistration'])->middleware('throttle:5,10')->name('register.store');
 });
+
+// Lets the sign-in page, when reached with the browser Back button, check whether the user is still signed in.
+Route::get('/session-status', [AuthController::class, 'status'])->name('session.status');
 
 Route::post('/logout', [AuthController::class, 'destroy'])->middleware('auth')->name('logout');
 
@@ -23,7 +31,12 @@ Route::post('/logout', [AuthController::class, 'destroy'])->middleware('auth')->
 Route::middleware(['auth', 'portal'])->prefix('profile')->name('profile.')->group(function (): void {
     Route::put('/', [ProfileController::class, 'update'])->name('update');
     Route::put('/password', [ProfileController::class, 'password'])->middleware('throttle:6,1')->name('password');
+    Route::post('/photo', [ProfileController::class, 'storePhoto'])->middleware('throttle:10,1')->name('photo.store');
+    Route::delete('/photo', [ProfileController::class, 'destroyPhoto'])->name('photo.destroy');
 });
+
+// Profile photos are private files, visible only to signed-in users.
+Route::get('/profile/photo/{user}', [ProfileController::class, 'showPhoto'])->middleware('auth')->name('profile.photo.show');
 
 Route::middleware(['auth', 'portal:student'])->group(function (): void {
     Route::get('/student/dashboard', [PatronController::class, 'studentDashboard'])->name('student.dashboard');
@@ -45,6 +58,13 @@ Route::middleware(['auth', 'portal:student,faculty'])->group(function (): void {
     Route::post('/reservations/{reservation}/cancel', [PatronController::class, 'cancelReservation'])->name('reservations.cancel');
     Route::post('/loans/{loan}/renew', [PatronController::class, 'renew'])->name('loans.renew');
     Route::post('/requests', [PatronController::class, 'storeRequest'])->middleware('throttle:10,1')->name('patron.requests.store');
+
+    Route::prefix('notifications')->name('notifications.')->middleware('throttle:60,1')->group(function (): void {
+        Route::post('/read-all', [NotificationController::class, 'readAll'])->name('read-all');
+        Route::post('/unread-all', [NotificationController::class, 'unreadAll'])->name('unread-all');
+        Route::post('/{key}/read', [NotificationController::class, 'read'])->where('key', '[a-z0-9-]+')->name('read');
+        Route::post('/{key}/unread', [NotificationController::class, 'unread'])->where('key', '[a-z0-9-]+')->name('unread');
+    });
 });
 
 Route::middleware(['auth', 'portal:librarian,admin,superadmin'])->prefix('librarian')->name('librarian.')->group(function (): void {
@@ -85,6 +105,10 @@ Route::middleware(['auth', 'portal:superadmin'])->group(function (): void {
         ->name('superadmin.section');
     Route::put('/super-admin/settings', [AdminController::class, 'updateSettings'])->name('superadmin.settings.update');
 });
+
+// Staff who can read the audit log can also download it as CSV.
+Route::get('/management/audit-logs/export', AuditLogExportController::class)
+    ->middleware(['auth', 'portal:librarian,admin,superadmin', 'throttle:20,1'])->name('management.audit.export');
 
 Route::middleware(['auth', 'portal:librarian,admin,superadmin'])->prefix('management/data')->name('management.data.')->group(function (): void {
     Route::get('/', [BulkDataController::class, 'index'])->name('index');

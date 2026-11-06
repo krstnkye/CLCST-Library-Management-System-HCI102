@@ -22,48 +22,6 @@
         window.addEventListener('pageshow', () => bar.classList.remove('is-running'));
     };
 
-    // Ripple feedback on solid buttons.
-    const ripple = () => {
-        document.addEventListener('pointerdown', (event) => {
-            const host = event.target.closest('.clcst-portal main button, .clcst-portal main a[class*="bg-"], .login-submit, .registration-actions > button');
-            if (!host || host.disabled || reduceMotion) return;
-            const rect = host.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const dot = document.createElement('span');
-            dot.className = 'ui-ripple';
-            dot.style.cssText = `width:${size}px;height:${size}px;left:${event.clientX - rect.left - size / 2}px;top:${event.clientY - rect.top - size / 2}px`;
-            host.classList.add('ui-ripple-host');
-            host.append(dot);
-            dot.addEventListener('animationend', () => dot.remove(), { once: true });
-        });
-    };
-
-    // Summary numbers count up from zero when the page opens.
-    const countUp = () => {
-        if (reduceMotion) return;
-        document.querySelectorAll('main .library-metrics :is(.text-2xl,.text-3xl), main [data-count-up]').forEach((el) => {
-            const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-            let node;
-            while ((node = walker.nextNode()) && !/\d/.test(node.nodeValue)) { /* find the first number */ }
-            if (!node) return;
-            const match = node.nodeValue.match(/(\d[\d,]*)(\.\d+)?/);
-            if (!match) return;
-            const target = parseFloat(match[0].replace(/,/g, ''));
-            if (!target || target > 100000) return;
-            const decimals = match[2] ? match[2].length - 1 : 0;
-            const [before, after] = [node.nodeValue.slice(0, match.index), node.nodeValue.slice(match.index + match[0].length)];
-            const format = (value) => value.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-            const started = performance.now();
-            const tick = (now) => {
-                const t = Math.min(1, (now - started) / 900);
-                node.nodeValue = before + format(target * (1 - Math.pow(1 - t, 3))) + after;
-                if (t < 1) requestAnimationFrame(tick);
-                else node.nodeValue = before + match[0] + after;
-            };
-            requestAnimationFrame(tick);
-        });
-    };
-
     // Cards below the fold fade in as they scroll into view.
     const reveal = () => {
         if (reduceMotion || !('IntersectionObserver' in window)) return;
@@ -81,19 +39,6 @@
             el.style.setProperty('--ui-delay', `${Math.min(siblings, 4) * 70}ms`);
             el.classList.add('ui-reveal');
             observer.observe(el);
-        });
-    };
-
-    // A soft light follows the pointer across summary cards.
-    const glow = () => {
-        if (reduceMotion || !window.matchMedia('(hover: hover)').matches) return;
-        document.querySelectorAll('main .library-metrics > *, main article').forEach((card) => {
-            card.classList.add('ui-glow');
-            card.addEventListener('pointermove', (event) => {
-                const rect = card.getBoundingClientRect();
-                card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
-                card.style.setProperty('--my', `${event.clientY - rect.top}px`);
-            });
         });
     };
 
@@ -157,7 +102,7 @@
         trigger.className = 'ui-cmdk-trigger';
         trigger.setAttribute('aria-label', 'Quick jump to a page');
         trigger.setAttribute('aria-haspopup', 'dialog');
-        trigger.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">bolt</span><span>Quick jump</span><kbd>Ctrl K</kbd>';
+        trigger.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">search</span><span>Jump to</span><kbd>Ctrl K</kbd>';
         const right = topbar.lastElementChild;
         right.prepend(trigger);
 
@@ -258,11 +203,8 @@
 
     const initialize = () => {
         progress();
-        ripple();
         tableFilters();
-        countUp();
         reveal();
-        glow();
         commandPalette();
         backToTop();
     };

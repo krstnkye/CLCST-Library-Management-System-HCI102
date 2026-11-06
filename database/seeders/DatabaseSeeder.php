@@ -4,7 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,10 +25,13 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($accounts as [$patronId, $name, $email, $role, $department]) {
+            [$first, $last] = explode(' ', $name, 2);
             $user = User::firstOrNew(['email' => $email]);
             $user->forceFill([
                 'patron_id' => $patronId,
                 'name' => $name,
+                'first_name' => $first,
+                'last_name' => $last,
                 'role' => $role,
                 'status' => 'active',
                 'program_or_department' => $department,
@@ -35,5 +40,20 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('LibraryDemo2026!'),
             ])->save();
         }
+
+        // One application waiting in Account Review.
+        User::firstOrNew(['email' => 'applicant@clcst.edu.ph'])->forceFill([
+            'patron_id' => 'STU-2026-014',
+            'name' => 'Ana Reyes',
+            'first_name' => 'Ana',
+            'last_name' => 'Reyes',
+            'role' => 'student',
+            'status' => 'pending',
+            'program_or_department' => 'BS Information Technology',
+            'mobile_number' => '09181234567',
+            'password' => Hash::make(Str::password(20)),
+        ])->save();
+
+        DB::transaction(fn () => $this->call(LibraryDemoSeeder::class));
     }
 }

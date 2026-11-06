@@ -41,13 +41,26 @@ class AccessControlTest extends TestCase
     {
         $user = User::factory()->role('student')->create(['password' => Hash::make('SecurePass2026')]);
 
-        $this->post(route('login.authenticate'), [
-            'role' => 'superadmin',
-            'identifier' => $user->email,
-            'password' => 'SecurePass2026',
-        ])->assertSessionHasErrors('identifier');
+        // Student credentials entered under any other account type are refused outright.
+        foreach (['superadmin', 'admin', 'librarian', 'faculty'] as $role) {
+            $this->post(route('login.authenticate'), [
+                'role' => $role,
+                'identifier' => $user->email,
+                'password' => 'SecurePass2026',
+            ])->assertSessionHasErrors('identifier');
+            $this->assertGuest();
+        }
+        $this->get(route('superadmin.dashboard'))->assertRedirect(route('login'));
 
+        // Leaving the account type out is refused too.
+        $this->post(route('login.authenticate'), ['identifier' => $user->email, 'password' => 'SecurePass2026'])
+            ->assertSessionHasErrors('role');
         $this->assertGuest();
+
+        // Under the matching type the same credentials work, and still only reach the student portal.
+        $this->post(route('login.authenticate'), ['role' => 'student', 'identifier' => $user->email, 'password' => 'SecurePass2026'])
+            ->assertRedirect(route('student.dashboard'));
+        $this->get(route('superadmin.dashboard'))->assertForbidden();
     }
 
     public function test_privileged_account_fields_are_not_mass_assignable(): void
@@ -119,7 +132,7 @@ class AccessControlTest extends TestCase
         $this->get(route('student.dashboard'))->assertRedirect(route('login'));
     }
 
-    public function test_registration_page_exposes_every_role_and_secure_upload_form(): void
+    public function test_registration_page_offers_only_self_service_roles_and_secure_upload_form(): void
     {
         $response = $this->get(route('register'));
 
@@ -128,8 +141,9 @@ class AccessControlTest extends TestCase
             ->assertSee('value="student"', false)
             ->assertSee('value="faculty"', false)
             ->assertSee('value="librarian"', false)
-            ->assertSee('value="admin"', false)
-            ->assertSee('value="superadmin"', false)
+            ->assertDontSee('value="admin"', false)
+            ->assertDontSee('value="superadmin"', false)
+            ->assertSee('@clcst.edu.ph')
             ->assertSee('enctype="multipart/form-data"', false)
             ->assertSee('id="password-match-message"', false)
             ->assertSee('name="privacy_consent"', false);
@@ -140,7 +154,7 @@ class AccessControlTest extends TestCase
         $response = $this->get(route('login'));
 
         $response->assertOk()
-            ->assertSee('Unified Academic Access Gateway')
+            ->assertSee('CLCST Library Account Sign In')
             ->assertSee('data-role="student"', false)
             ->assertSee('data-role="faculty"', false)
             ->assertSee('data-role="librarian"', false)
@@ -365,8 +379,72 @@ class AccessControlTest extends TestCase
             ->assertRedirect(route('management.accounts.index'));
 
         $admin = User::factory()->role('admin')->create();
-        foreach (['users', 'approvals', 'books', 'circulation', 'reports', 'audit-logs', 'announcements', 'profile'] as $section) {
+        foreach (['users', 'approvals', 'books', 'circulation', 'reports', 'audit-logs', 'profile'] as $section) {
             $this->actingAs($admin)->get(route('admin.section', $section))->assertOk();
         }
+        $this->actingAs($admin)->get(route('admin.section', 'announcements'))
+            ->assertRedirect(route('librarian.section', 'announcements'));
+    }
+
+    public function test_no_other_role_can_open_any_super_admin_page(): void
+    {
+        $pages = array_merge(['users', 'approvals', 'librarians', 'library-staff', 'data-export', 'announcements', 'circulation'], array_keys(\App\Http\Controllers\AdminController::SUPER_PAGES));
+
+        foreach (['student', 'faculty', 'librarian', 'admin'] as $role) {
+            $user = User::factory()->role($role)->create();
+            $this->actingAs($user)->get(route('superadmin.dashboard'))->assertForbidden();
+            foreach ($pages as $page) {
+                $this->actingAs($user)->get(route('superadmin.section', $page))->assertForbidden();
+            }
+            $this->actingAs($user)->put(route('superadmin.settings.update'), ['loan_days_student' => 99])->assertForbidden();
+        }
+    }
+
+    public function test_signing_in_as_a_student_ends_an_open_super_admin_session(): void
+    {
+        $admin = User::factory()->role('superadmin')->create();
+        $student = User::factory()->create(['password' => 'StudentPass2026']);
+
+        $this->actingAs($admin)->get(route('login'))->assertRedirect(route('superadmin.dashboard'));
+        $this->get('/')->assertRedirect(route('superadmin.dashboard'));
+
+        $this->post(route('login.authenticate'), ['role' => 'student', 'identifier' => $student->email, 'password' => 'StudentPass2026'])
+            ->assertRedirect(route('student.dashboard'));
+        $this->assertAuthenticatedAs($student);
+        $this->get(route('superadmin.dashboard'))->assertForbidden();
+    }
+
+    public function test_session_status_reports_whether_the_browser_is_signed_in(): void
+    {
+        $this->getJson(route('session.status'))->assertOk()->assertJson(['signed_in' => false, 'dashboard' => null]);
+        $student = User::factory()->create();
+        $this->actingAs($student)->getJson(route('session.status'))->assertOk()
+            ->assertJson(['signed_in' => true, 'dashboard' => route('student.dashboard')]);
+    }
+
+    public function test_a_refused_sign_in_also_ends_the_open_session(): void
+    {
+        $admin = User::factory()->role('superadmin')->create();
+        $student = User::factory()->create(['password' => 'StudentPass2026']);
+
+        $this->actingAs($admin)->post(route('login.authenticate'), ['role' => 'superadmin', 'identifier' => $student->email, 'password' => 'StudentPass2026'])
+            ->assertSessionHasErrors('identifier');
+        $this->assertGuest();
+        $this->get(route('superadmin.dashboard'))->assertRedirect(route('login'));
+    }
+
+    public function test_staff_can_export_the_audit_log_and_patrons_cannot(): void
+    {
+        \App\Models\AuditLog::record(null, 'login.failed', '=HYPERLINK("http://evil")');
+
+        foreach (['librarian', 'admin', 'superadmin'] as $role) {
+            $response = $this->actingAs(User::factory()->role($role)->create())->get(route('management.audit.export'));
+            $response->assertOk()->assertHeader('content-type', 'text/csv; charset=UTF-8');
+            $csv = $response->streamedContent();
+            $this->assertStringContainsString('"Date and time",User,Role', $csv);
+            $this->assertStringContainsString("'=HYPERLINK", $csv);
+        }
+        $this->actingAs(User::factory()->role('student')->create())->get(route('management.audit.export'))->assertForbidden();
+        $this->actingAs(User::factory()->role('superadmin')->create())->get(route('superadmin.section', 'audit-logs'))->assertSee('Export CSV');
     }
 }

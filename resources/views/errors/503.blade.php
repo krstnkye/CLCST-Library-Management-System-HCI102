@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('code', '503')
+@section('eyebrow', 'Maintenance')
+@section('title', 'The library system is being updated')
+@section('message', 'Please check back in a few minutes.')

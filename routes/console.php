@@ -1,8 +1,13 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
+use App\Models\Reservation;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+Artisan::command('library:expire-holds', function () {
+    $expired = Reservation::expireUncollectedHolds();
+
+    $this->info("Expired {$expired} uncollected hold(s).");
+})->purpose('Close reservations whose pickup period has passed');
+
+Schedule::command('library:expire-holds')->dailyAt('00:05');

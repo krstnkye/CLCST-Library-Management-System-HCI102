@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('code', '500')
+@section('eyebrow', 'Something went wrong')
+@section('title', 'The library system hit a problem')
+@section('message', 'This was not caused by anything you did. Please try again in a moment, and tell the library office if it keeps happening.')

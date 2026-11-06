@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -20,7 +21,7 @@ class User extends Authenticatable
         'program_or_department', 'mobile_number', 'credential_path', 'password',
     ];
 
-    protected $hidden = ['password', 'remember_token', 'credential_path'];
+    protected $hidden = ['password', 'remember_token', 'credential_path', 'profile_photo_path'];
 
     /**
      * Get the attributes that should be cast.
@@ -37,9 +38,65 @@ class User extends Authenticatable
         ];
     }
 
+    public const PATRON_ROLES = ['student', 'faculty'];
+
+    public const STAFF_ROLES = ['librarian', 'admin', 'superadmin'];
+
+    /** Roles that may apply through the public registration form. */
+    public const SELF_REGISTER_ROLES = ['student', 'faculty', 'librarian'];
+
+    public function loans(): HasMany
+    {
+        return $this->hasMany(Loan::class);
+    }
+
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+    public function fines(): HasMany
+    {
+        return $this->hasMany(Fine::class);
+    }
+
+    public function libraryRequests(): HasMany
+    {
+        return $this->hasMany(LibraryRequest::class);
+    }
+
+    public static function isInstitutionalEmail(string $email): bool
+    {
+        return str_ends_with(mb_strtolower(trim($email)), '@'.config('library.allowed_email_domain'));
+    }
+
     public function isActive(): bool
     {
         return $this->status === 'active';
+    }
+
+    public function isPatron(): bool
+    {
+        return in_array($this->role, self::PATRON_ROLES, true);
+    }
+
+    public function isStaff(): bool
+    {
+        return in_array($this->role, self::STAFF_ROLES, true);
+    }
+
+    public function roleLabel(): string
+    {
+        return match ($this->role) {
+            'admin' => 'Administrator',
+            'superadmin' => 'Super Administrator',
+            default => ucfirst($this->role),
+        };
+    }
+
+    public function outstandingFineTotal(): float
+    {
+        return (float) $this->fines()->where('status', 'outstanding')->sum('amount');
     }
 
     public function hasAnyRole(array $roles): bool
@@ -69,6 +126,17 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn (string $part) => mb_strtoupper(mb_substr($part, 0, 1)))
             ->implode('') ?: 'U';
+    }
+
+    /** URL of the uploaded profile photo, or null when the user shows initials. */
+    public function profilePhotoUrl(): ?string
+    {
+        if (! $this->profile_photo_path) {
+            return null;
+        }
+
+        // The version query busts the browser cache after a new upload.
+        return route('profile.photo.show', ['user' => $this->id, 'v' => substr(md5($this->profile_photo_path), 0, 8)]);
     }
 
     public function dashboardRouteName(): string

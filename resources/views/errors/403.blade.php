@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('code', '403')
+@section('eyebrow', 'Access restricted')
+@section('title', 'You don’t have permission to open this page')
+@section('message', 'Each library account can only open the pages for its own role. If you need access, ask the library office or your system administrator.')

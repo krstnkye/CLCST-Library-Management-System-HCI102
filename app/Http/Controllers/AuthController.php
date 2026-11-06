@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\AuditLog;
 use App\Models\User;
 use Closure;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -20,19 +22,34 @@ use Throwable;
 
 class AuthController extends Controller
 {
-    public function create(): View|RedirectResponse
+    public function create(Request $request): Response|RedirectResponse
     {
+        // A signed-in user never sees the sign-in form: the browser Back button (or reopening the
+        // link) keeps them in their own portal until they press Log Out. The session still ends
+        // after the idle limit or when the browser is closed.
         if (Auth::check()) {
             return redirect()->route(Auth::user()->dashboardRouteName());
         }
 
-        return view('auth.login');
+        // Never let the browser keep a copy of this page, so Back always asks the server.
+        return response()->view('auth.login', ['signedInAs' => Auth::user()])
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private')
+            ->header('Pragma', 'no-cache');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
+        // Any use of the sign-in form ends the account already signed in on this browser, whether or
+        // not the new attempt succeeds, so an earlier session can never stay open behind it.
+        if (Auth::check()) {
+            AuditLog::record($request->user(), 'logout', 'Signed out by a new sign-in attempt.');
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+
         $credentials = $request->validate([
-            'role' => ['nullable', Rule::in(User::ROLES)],
+            'role' => ['required', Rule::in(User::ROLES)],
             'identifier' => ['required', 'string', 'max:150', function (string $attribute, mixed $value, Closure $fail): void {
                 if (str_contains((string) $value, '@') && ! User::isInstitutionalEmail((string) $value)) {
                     $fail('Use your school-registered email ending in @'.config('library.allowed_email_domain').', or your school ID.');
@@ -46,14 +63,13 @@ class AuthController extends Controller
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
 
-            return back()->withErrors([
-                'identifier' => "Too many sign-in attempts. Try again in {$seconds} seconds.",
-            ])->onlyInput('identifier', 'role');
+            return $this->failedSignIn($request, "Too many sign-in attempts. Try again in {$seconds} seconds.");
         }
 
         $identifier = mb_strtolower(trim($credentials['identifier']));
-        // The account type picked on the form only changes the on-screen hints; the
-        // database decides which portal a user may open.
+        // The database decides which portal a user may open. The account type picked on the
+        // form must also match that saved role, so a student cannot sign in through the
+        // Super Administrator (or any other) option.
         $user = User::query()
             ->whereRaw('LOWER(email) = ?', [$identifier])
             ->orWhereRaw('LOWER(patron_id) = ?', [$identifier])
@@ -65,17 +81,23 @@ class AuthController extends Controller
                 'role' => $credentials['role'] ?? null,
             ]);
 
-            return back()->withErrors([
-                'identifier' => 'The school ID or email and password do not match our records.',
-            ])->onlyInput('identifier', 'role');
+            return $this->failedSignIn($request, 'The school ID or email and password do not match our records.');
         }
 
         if (! $user->isActive()) {
             RateLimiter::hit($key, 60);
 
-            return back()->withErrors([
-                'identifier' => 'This account is awaiting approval or has been disabled. Contact the library office.',
-            ])->onlyInput('identifier', 'role');
+            return $this->failedSignIn($request, 'This account is awaiting approval or has been disabled. Contact the library office.');
+        }
+
+        if ($credentials['role'] !== $user->role) {
+            RateLimiter::hit($key, 60);
+            AuditLog::record($user, 'login.wrong_role', 'Tried to sign in through the '.$credentials['role'].' option.', [
+                'role' => $credentials['role'],
+            ]);
+            $chosen = ['admin' => 'Administrator', 'superadmin' => 'Super Administrator'][$credentials['role']] ?? ucfirst($credentials['role']);
+
+            return $this->failedSignIn($request, "This account cannot sign in as {$chosen}. Choose the account type that matches your library record.");
         }
 
         RateLimiter::clear($key);
@@ -85,11 +107,37 @@ class AuthController extends Controller
         AuditLog::record($user, 'login.succeeded', 'User signed in successfully.');
 
         $welcome = 'Welcome back, '.$user->name.'.';
-        if (($credentials['role'] ?? $user->role) !== $user->role) {
-            $welcome .= ' Your account is registered as '.$user->roleLabel().', so we opened that portal for you.';
+
+        $request->session()->flash('status', $welcome);
+        $request->session()->flash('status_quiet', true);
+
+        // The sign-in page submits in the background and then replaces itself with the portal,
+        // so the browser Back button never returns to the sign-in form.
+        if ($request->expectsJson()) {
+            return response()->json(['redirect' => route($user->dashboardRouteName())]);
         }
 
-        return redirect()->route($user->dashboardRouteName())->with('status', $welcome);
+        return redirect()->route($user->dashboardRouteName());
+    }
+
+    private function failedSignIn(Request $request, string $message): RedirectResponse|JsonResponse
+    {
+        if ($request->expectsJson()) {
+            return response()->json(['message' => $message, 'errors' => ['identifier' => [$message]], 'token' => csrf_token()], 422);
+        }
+
+        return back()->withErrors(['identifier' => $message])->onlyInput('identifier', 'role');
+    }
+
+    public function status(): JsonResponse
+    {
+        $user = Auth::user();
+
+        return response()->json([
+            'signed_in' => (bool) $user,
+            'dashboard' => $user ? route($user->dashboardRouteName()) : null,
+            'token' => csrf_token(),
+        ])->header('Cache-Control', 'no-store, private');
     }
 
     public function destroy(Request $request): RedirectResponse

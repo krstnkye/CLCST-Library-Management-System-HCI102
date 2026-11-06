@@ -19,6 +19,12 @@ Laravel-based HCI102 project for the Central Luzon College of Science and Techno
 - **Confirmations and results.** Important actions (reserve, renew, cancel, check in/out, record or waive a fine, approve or suspend an account) ask for confirmation in a pop-up, and every action shows a success or failure pop-up afterwards.
 - **Notifications.** Patrons can open any notification to read it in full, mark it read or unread, and mark everything read or unread at once. Read marks are stored in the `notification_reads` table.
 
+## Sidebar and profile photos
+
+- Every portal keeps one sidebar on all of its pages, including shared library pages opened by an administrator or the super administrator.
+- On desktop, the menu button beside the logo collapses the sidebar to icons (remembered per browser). On phones the sidebar is hidden and the same button opens it as a slide-in menu. The sidebar keeps its scroll position between pages.
+- Every user can upload a profile photo (JPG, PNG or WebP, up to 2 MB) from their profile page. It replaces their initials in the top bar. Photos are stored outside the public folder and only shown to signed-in users.
+
 ## Circulation rules
 
 All borrowing rules live in `app/Services/CirculationService.php`, so every screen enforces the same policy:
@@ -51,6 +57,8 @@ The schema is defined in `database/migrations` and works on SQLite (local) and M
 | `audit_logs` | Sign-ins, account changes, data imports, and circulation actions |
 | `notification_reads` | Which patron notifications each user has read |
 
+The full HCI 102 write-up, with screenshots of every portal, is in `documentation/CLCST-Library-Management-System-HCI-102-Documentation.docx`.
+
 Foreign keys protect history (a user or copy with loans cannot be deleted), unique constraints prevent duplicate ISBNs, barcodes, school IDs, emails, and receipt numbers, and indexes cover the common lookups (status, due date, patron and title).
 
 ## Security
@@ -59,9 +67,25 @@ Foreign keys protect history (a user or copy with loans cannot be deleted), uniq
 - Passwords are hashed with bcrypt, must be at least 10 characters with mixed case and a number, and are never exported.
 - New accounts stay pending until someone allowed to manage that role reviews the uploaded ID. Administrator roles cannot be requested through public registration.
 - Permissions come from the role saved in the database, checked on every request by the `portal` middleware and again in controllers. Suspended accounts are signed out on their next request.
+- Sessions end after 15 minutes without activity or when the browser closes (`SESSION_LIFETIME`, `SESSION_EXPIRE_ON_CLOSE`), unless the user ticks "Keep me signed in" on a private device.
 - Sign-in attempts are rate limited, sessions are encrypted and regenerated at sign-in, and changing a password signs out other devices.
 - All forms use CSRF tokens, Blade escapes output, queries use parameter binding, CSV exports neutralize spreadsheet formulas, and responses send security headers. Protected pages are not cached by the browser after logout.
 - Uploaded ID documents are stored outside the public folder and can only be opened by authorized reviewers.
+
+## JSON API with JWT
+
+The website signs in with encrypted session cookies. For other clients (a mobile app, Postman, another system) there is a small JSON API under `/api/v1` that uses JSON Web Tokens (HS256, signed with a key derived from `APP_KEY`).
+
+| Method | Endpoint | Who |
+| --- | --- | --- |
+| POST | `/api/v1/auth/login` with `role`, `identifier`, `password` | Anyone (same strict role check as the website) |
+| GET | `/api/v1/auth/me` | Any signed-in role |
+| POST | `/api/v1/auth/logout` | Any signed-in role (revokes the token) |
+| GET | `/api/v1/books?q=` | Any signed-in role |
+| GET | `/api/v1/my/loans` | Students and faculty |
+| GET | `/api/v1/audit-logs` | Administrators and the super administrator |
+
+Send the token as `Authorization: Bearer <access_token>`. Tokens expire after 60 minutes (`JWT_TTL_MINUTES`), are rejected if tampered with or signed with another algorithm, and stop working at once if the account is suspended or the token is revoked.
 
 ## Requirements
 
@@ -69,7 +93,23 @@ Foreign keys protect history (a user or copy with loans cannot be deleted), uniq
 - Composer
 - Git
 
-No Node.js build step is required. The UI uses Tailwind CSS from a CDN and Laravel Blade views.
+No Node.js build step is required to run the system. The pages use Laravel Blade views with a ready-built Tailwind stylesheet (`public/css/tailwind.css`) and fonts stored in `public/fonts`, so the system works with no internet connection.
+
+### Working offline
+
+Everything the pages need is inside the project: the styling, the fonts and icons, and the barcode scanner. On the computer running the system, and on any phone or laptop connected to the same Wi-Fi or router (through the computer's local address, for example `http://192.168.1.10:8021`), the system works without internet. Two things still need internet:
+
+- The public Dev Tunnel link for people on other networks.
+- Book cover pictures, which come from Open Library. Without internet the cover space shows the plain book card instead.
+
+### Changing the styling
+
+If you add new Tailwind classes to a view or script, rebuild the stylesheet once (needs Node.js and internet the first time):
+
+```bash
+npm install --no-save tailwindcss@3.4.17 @tailwindcss/forms@0.5 @tailwindcss/container-queries@0.1
+npx tailwindcss -c tailwind.config.js -i resources/css/tailwind.css -o public/css/tailwind.css --minify
+```
 
 ## Setup
 

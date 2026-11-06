@@ -1,5 +1,5 @@
-<section class="overflow-hidden rounded-2xl border border-[#E2E8F0] bg-surface-container-lowest shadow-sm" aria-labelledby="open-heading">
-        <h2 id="open-heading" class="border-b border-[#E2E8F0] px-5 py-4 font-headline text-lg font-bold">Open reservations ({{ $openReservations->count() }})</h2>
+<section class="overflow-hidden rounded-2xl border border-[#EDEAE5] bg-surface-container-lowest shadow-sm" aria-labelledby="open-heading">
+        <h2 id="open-heading" class="border-b border-[#EDEAE5] px-5 py-4 font-headline text-lg font-bold">Open reservations ({{ $openReservations->count() }})</h2>
         <div class="overflow-x-auto">
             <table class="w-full min-w-[720px] text-left text-sm">
                 <thead class="bg-surface-container-low text-[10px] uppercase text-outline">

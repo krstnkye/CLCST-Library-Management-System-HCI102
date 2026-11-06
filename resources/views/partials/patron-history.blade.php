@@ -1,4 +1,4 @@
-<section class="overflow-hidden rounded-2xl border border-[#E2E8F0] bg-surface-container-lowest shadow-sm">
+<section class="overflow-hidden rounded-2xl border border-[#EDEAE5] bg-surface-container-lowest shadow-sm">
         <div class="overflow-x-auto">
             <table class="w-full min-w-[860px] text-left text-sm">
                 <thead class="bg-surface-container-low text-[10px] uppercase text-outline">

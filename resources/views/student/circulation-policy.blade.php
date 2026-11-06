@@ -8,7 +8,7 @@
         <p class="mt-1 text-sm text-on-surface-variant">These rules come straight from the library's current settings, so they are always up to date.</p>
     </header>
 
-    <section class="overflow-hidden rounded-2xl border border-[#E2E8F0] bg-surface-container-lowest shadow-sm">
+    <section class="overflow-hidden rounded-2xl border border-[#EDEAE5] bg-surface-container-lowest shadow-sm">
         <table class="w-full text-left text-sm">
             <thead class="bg-surface-container-low text-[10px] uppercase text-outline"><tr><th class="px-5 py-3">Rule</th><th class="px-5 py-3">Students</th><th class="px-5 py-3">Faculty</th></tr></thead>
             <tbody class="divide-y divide-outline-variant/50">
@@ -21,7 +21,7 @@
         </table>
     </section>
 
-    <section class="rounded-2xl border border-[#E2E8F0] bg-surface-container-lowest p-5 text-sm leading-6 text-on-surface-variant shadow-sm">
+    <section class="rounded-2xl border border-[#EDEAE5] bg-surface-container-lowest p-5 text-sm leading-6 text-on-surface-variant shadow-sm">
         <h2 class="font-headline text-lg font-bold text-on-surface">Good to know</h2>
         <ul class="mt-2 list-disc space-y-1 pl-5">
             <li>You cannot borrow new books while one of your books is overdue.</li>

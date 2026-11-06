@@ -7,56 +7,8 @@
     <title>CLCST Library - Search Books & Book Catalog Discovery</title>
     @include('partials.favicon')
 
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        'surface-container-lowest': '#ffffff',
-                        'surface-container-low': '#f2f3ff',
-                        'surface-container': '#eaedff',
-                        'surface-container-high': '#e2e7ff',
-                        background: '#faf8ff',
-                        surface: '#faf8ff',
-                        primary: '#00441d',
-                        'primary-container': '#135d2e',
-                        'on-primary': '#ffffff',
-                        'on-surface': '#131b2e',
-                        'on-surface-variant': '#404940',
-                        outline: '#707a6f',
-                        'outline-variant': '#c0c9bd',
-                        secondary: '#785a00',
-                        'secondary-container': '#fdc425',
-                        'on-secondary-container': '#6d5200',
-                        error: '#ba1a1a',
-                        'error-container': '#ffdad6',
-                        tertiary: '#002e97',
-                        'tertiary-fixed': '#dce1ff'
-                    },
-                    borderRadius: {
-                        DEFAULT: '0.25rem',
-                        lg: '0.5rem',
-                        xl: '0.75rem',
-                        full: '9999px'
-                    },
-                    fontFamily: {
-                        'body-md': ['Inter', 'sans-serif'],
-                        'headline-sm': ['Plus Jakarta Sans', 'sans-serif'],
-                        'headline-md': ['Plus Jakarta Sans', 'sans-serif'],
-                        'headline-lg': ['Plus Jakarta Sans', 'sans-serif'],
-                        'label-sm': ['Inter', 'sans-serif'],
-                        'label-md': ['Inter', 'sans-serif']
-                    }
-                }
-            }
-        };
-    </script>
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}?v={{ filemtime(public_path('css/fonts.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}?v={{ filemtime(public_path('css/tailwind.css')) }}">
     <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -90,7 +42,7 @@
     </style>
     @include('partials.ui-motion')
 </head>
-<body class="clcst-portal {{ auth()->user()->role === 'student' ? 'clcst-role-student' : 'clcst-role-faculty' }} flex min-h-screen flex-col bg-[#F8FAFC] font-body-md text-on-surface antialiased">
+<body class="clcst-portal {{ auth()->user()->role === 'student' ? 'clcst-role-student' : 'clcst-role-faculty' }} flex min-h-screen flex-col bg-[#F6F3EC] font-body-md text-on-surface antialiased">
     @php
         $currentParams = request()->except('page');
         $catalogUser = auth()->user();
@@ -118,9 +70,8 @@
                 <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-outline">
                     <span class="material-symbols-outlined text-[18px]">search</span>
                 </span>
-                <input id="topbar-catalog-search" class="h-10 w-full rounded-lg border border-outline-variant bg-surface-container-low py-2 pl-10 pr-20 text-sm text-on-surface transition-all focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary" name="q" placeholder="Quick catalog lookup (Title, ISBN, Barcode, Author)..." type="text" value="{{ $query }}">
+                <input id="topbar-catalog-search" class="h-10 w-full rounded-lg border border-outline-variant bg-surface-container-low py-2 pl-10 pr-10 text-sm text-on-surface transition-all focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary" name="q" placeholder="Quick catalog lookup (Title, ISBN, Barcode, Author)..." type="text" value="{{ $query }}">
                 <div class="absolute inset-y-0 right-0 flex items-center gap-1.5 pr-2">
-                    <span class="hidden rounded border border-outline-variant bg-surface-container px-1.5 py-0.5 font-mono text-[11px] font-semibold text-outline sm:inline-flex">Book Catalog</span>
                     <button class="rounded p-1 text-outline transition-colors hover:bg-surface-container hover:text-primary" title="Scan a barcode or QR code" aria-label="Scan a barcode or QR code" type="button" data-scan data-scan-target="#topbar-catalog-search" data-scan-submit>
                         <span class="material-symbols-outlined text-[18px]">barcode_scanner</span>
                     </button>
@@ -147,7 +98,7 @@
                     <p class="text-[10px] leading-tight text-outline">{{ $userSubtitle }}</p>
                 </div>
                 <div class="relative">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary font-headline-sm text-xs font-bold text-on-primary shadow-sm ring-2 ring-secondary-container">{{ $catalogUser->initials() }}</div>
+                    <div class="overflow-hidden flex h-9 w-9 items-center justify-center rounded-full bg-primary font-headline-sm text-xs font-bold text-on-primary shadow-sm ring-2 ring-secondary-container">@include('partials.avatar', ['user' => $catalogUser])</div>
                     <span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
                 </div>
             </div>
@@ -161,7 +112,7 @@
             @include('partials.staff-sidebar', ['activePage' => 'search-books', 'portalRole' => 'faculty'])
         @endif
 
-        <main class="clcst-main custom-scrollbar md:ml-64 flex flex-1 flex-col overflow-y-auto bg-[#F8FAFC]">
+        <main class="clcst-main custom-scrollbar md:ml-64 flex flex-1 flex-col overflow-y-auto bg-[#F6F3EC]">
             <section class="border-b border-outline-variant bg-surface-container-lowest px-4 pb-6 pt-6 shadow-sm lg:px-8">
                 @if (session('status') || $errors->any())
                     <div class="mb-4 space-y-2">@include('partials.flash')</div>
@@ -207,7 +158,7 @@
                             <button class="absolute inset-y-0 right-2 my-auto flex h-9 w-9 items-center justify-center rounded-lg text-outline transition-colors hover:bg-surface-container hover:text-primary" type="button" title="Scan a barcode or QR code" aria-label="Scan a barcode or QR code" data-scan data-scan-target="#catalog-search" data-scan-submit><span class="material-symbols-outlined">barcode_scanner</span></button>
                             <input id="catalog-search" class="h-12 w-full rounded-xl border border-outline-variant bg-surface-container-lowest pl-12 pr-12 text-sm text-on-surface placeholder:text-outline focus:border-primary focus:ring-primary" name="q" placeholder="Search by title, author, subject, call number, ISBN, barcode..." type="text" value="{{ $query }}">
                         </div>
-                        <button class="flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-on-primary shadow-sm transition-colors hover:bg-primary-container" type="submit">
+                        <button class="flex h-12 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-primary px-5 text-sm font-bold text-on-primary shadow-sm transition-colors hover:bg-primary-container" type="submit">
                             <span class="material-symbols-outlined text-[18px]">manage_search</span>
                             Search Books
                         </button>
@@ -280,7 +231,7 @@
                             @endphp
                             <article class="rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm transition-all hover:border-primary/60 hover:shadow-md">
                                 <div class="flex flex-col gap-5 sm:flex-row">
-                                    <div class="book-cover relative h-40 w-full flex-shrink-0 overflow-hidden rounded-lg bg-gradient-to-br {{ 'from-emerald-700 to-slate-950' }} text-white sm:w-28">
+                                    <div class="book-cover relative h-40 w-full flex-shrink-0 overflow-hidden rounded-lg bg-emerald-900 text-white sm:w-28">
                                         <img alt="{{ $book->title }} cover" class="h-full w-full object-cover" loading="lazy" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" src="{{ $book->cover_url }}">
                                         <div class="hidden h-full w-full flex-col justify-between p-2.5">
                                             <div>

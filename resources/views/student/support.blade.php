@@ -27,7 +27,7 @@
         </section>
 
         <div class="space-y-6 xl:col-span-5">
-            <section class="rounded-2xl border border-[#E2E8F0] bg-surface-container-lowest p-5 shadow-sm" aria-labelledby="ticket-heading">
+            <section class="rounded-2xl border border-[#EDEAE5] bg-surface-container-lowest p-5 shadow-sm" aria-labelledby="ticket-heading">
                 <h2 id="ticket-heading" class="font-headline text-lg font-bold">Send a concern to the library</h2>
                 <form class="mt-4 space-y-3" method="POST" action="{{ route('patron.requests.store') }}">
                     @csrf
@@ -45,7 +45,7 @@
                 </form>
             </section>
 
-            <section class="rounded-2xl border border-[#E2E8F0] bg-surface-container-lowest p-5 shadow-sm" aria-labelledby="my-requests-heading">
+            <section class="rounded-2xl border border-[#EDEAE5] bg-surface-container-lowest p-5 shadow-sm" aria-labelledby="my-requests-heading">
                 <h2 id="my-requests-heading" class="font-headline text-lg font-bold">My recent concerns</h2>
                 <ul class="mt-3 divide-y divide-outline-variant/50 text-sm">
                     @forelse ($requests as $libraryRequest)

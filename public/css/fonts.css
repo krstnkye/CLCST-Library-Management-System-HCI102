@@ -70,3 +70,6 @@
   font-display: swap;
   src: url(../fonts/material-symbols-outlined-normal-100-700.woff2) format('woff2');
 }
+
+/* Google's icon stylesheet set this size; :where() keeps it weaker than size classes such as text-xl. */
+:where(.material-symbols-outlined) { font-size: 24px; line-height: 1; display: inline-block; -webkit-font-smoothing: antialiased; }

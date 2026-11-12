@@ -16,11 +16,11 @@ class LibraryReports
 {
     public static function build(): array
     {
-        $since = now()->subMonths(5)->startOfMonth();
+        $since = now()->startOfMonth()->subMonthsNoOverflow(5);
         $loansByMonth = Loan::query()->where('borrowed_at', '>=', $since)->get(['borrowed_at'])
             ->groupBy(fn (Loan $loan) => $loan->borrowed_at->format('Y-m'));
         $months = collect(range(5, 0))->map(function (int $ago) use ($loansByMonth): array {
-            $month = now()->subMonths($ago);
+            $month = now()->startOfMonth()->subMonthsNoOverflow($ago);
 
             return ['label' => $month->format('M Y'), 'count' => $loansByMonth->get($month->format('Y-m'))?->count() ?? 0];
         });

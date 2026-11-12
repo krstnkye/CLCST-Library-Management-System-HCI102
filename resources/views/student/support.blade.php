@@ -17,7 +17,7 @@
                 ['How much is the overdue fine?', 'PHP '.number_format($policy['fine_per_day'], 2).' per day for each late book, capped at PHP '.number_format($policy['max_fine_per_item'], 2).' per book. Fines are paid at the library cashier, who issues an official receipt.'],
                 ['How do reservations work?', 'Reserve a title from the catalog. When a copy is set aside for you, it appears under Notifications and is held for '.$policy['pickup_days'].' days.'],
                 ['Can I borrow reference books?', 'Reference books are for in-library use only. Ask at the reference desk to use them inside the library.'],
-                ['I forgot my password.', 'Visit the library office with your school ID, or email library@clcst.edu.ph from your school email, and a librarian will reset it.'],
+                ['I forgot my password.', 'Visit the library office with your school ID, or email library@clcst.edu.ph from your school email. A librarian will reset it and give you a temporary password, which you should change from My Account right after signing in.'],
             ] as [$question, $answer])
                 <details class="group rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm">
                     <summary class="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-bold">{{ $question }}<span class="material-symbols-outlined transition group-open:rotate-180">expand_more</span></summary>

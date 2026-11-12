@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AuditLog;
 use App\Models\LibraryBook;
 use App\Models\User;
+use App\Support\Csv;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -63,7 +64,8 @@ class BulkDataController extends Controller
                 fclose($handle);
                 throw ValidationException::withMessages(['csv_file' => 'One or more rows have the wrong number of columns.']);
             }
-            $rows[] = array_combine($headers, array_map(fn ($value) => trim((string) $value), $values));
+            // Undo the apostrophe our own exports add in front of values such as "+639...".
+            $rows[] = array_combine($headers, array_map(fn ($value) => preg_replace("/^'(?=[=+\-@])/", '', trim((string) $value)), $values));
             if (count($rows) > 2000) {
                 fclose($handle);
                 throw ValidationException::withMessages(['csv_file' => 'A single import is limited to 2,000 records.']);
@@ -100,9 +102,10 @@ class BulkDataController extends Controller
 
         return response()->streamDownload(function () use ($headers, $records): void {
             $output = fopen('php://output', 'wb');
+            fwrite($output, Csv::BOM);
             fputcsv($output, $headers);
             foreach ($records as $record) {
-                fputcsv($output, collect($headers)->map(fn ($header) => $this->safeCsvValue($record->{$header}))->all());
+                Csv::row($output, collect($headers)->map(fn ($header) => $record->{$header})->all());
             }
             fclose($output);
         }, $type.'-'.now()->format('Y-m-d-His').'.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
@@ -153,9 +156,12 @@ class BulkDataController extends Controller
             throw ValidationException::withMessages(['csv_file' => "The patron ID on line {$line} is already assigned to another account."]);
         }
 
+        $nameParts = preg_split('/\s+/', trim($row['name']), 2);
         $user->forceFill([
             'patron_id' => $patronId,
             'name' => $row['name'],
+            'first_name' => isset($nameParts[0]) ? mb_substr($nameParts[0], 0, 100) : null,
+            'last_name' => isset($nameParts[1]) ? mb_substr($nameParts[1], 0, 100) : null,
             'role' => $row['role'],
             'status' => $row['status'],
             'program_or_department' => $row['program_or_department'] ?: null,
@@ -203,12 +209,6 @@ class BulkDataController extends Controller
             $book->addCopies($shelved);
             $book->addCopies($missing - $shelved, 'maintenance');
         }
-    }
-
-    private function safeCsvValue(mixed $value): string
-    {
-        $value = (string) $value;
-        return preg_match('/^[=+\-@]/', $value) ? "'{$value}" : $value;
     }
 
     private function audit(Request $request, string $description, array $metadata): void

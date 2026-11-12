@@ -11,6 +11,7 @@ use App\Models\Reservation;
 use App\Models\User;
 use App\Services\CirculationService;
 use App\Services\LibrarySettings;
+use App\Support\Csv;
 use App\Support\PatronNotifications;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -39,7 +40,9 @@ class PatronController extends Controller
         'circulation' => 'My Borrowed Books',
         'reservations' => 'My Reservations',
         'history' => 'Borrowing History',
+        'fines' => 'Fines & Penalties',
         'notifications' => 'Notifications',
+        'circulation-policy' => 'Borrowing Policy',
         'catalog' => 'Recommend a Book',
         'course-reserves' => 'Course Reserves',
         'reading-lists' => 'Reading Lists',
@@ -109,6 +112,15 @@ class PatronController extends Controller
 
         if ($section === 'history' && $request->query('export') === 'csv') {
             return $this->exportHistory($user);
+        }
+
+        // Fines and the borrowing policy use the same pages as the student portal.
+        if (in_array($section, ['fines', 'circulation-policy'], true)) {
+            return view('student.'.$section, array_merge($this->patronData($user), [
+                'title' => self::FACULTY_SECTIONS[$section],
+                'section' => $section,
+                'activePage' => $section,
+            ], $this->sectionData($user, $section)));
         }
 
         $requestType = self::FACULTY_REQUEST_PAGES[$section] ?? null;
@@ -321,9 +333,10 @@ class PatronController extends Controller
 
         return response()->streamDownload(function () use ($loans): void {
             $out = fopen('php://output', 'wb');
+            fwrite($out, Csv::BOM);
             fputcsv($out, ['Receipt', 'Title', 'Barcode', 'Borrowed', 'Due', 'Returned', 'Fine (PHP)', 'Fine status']);
             foreach ($loans as $loan) {
-                fputcsv($out, [
+                Csv::row($out, [
                     $loan->receipt_no,
                     $loan->copy->book->title,
                     $loan->copy->barcode,

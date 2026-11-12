@@ -12,6 +12,7 @@
         ['key' => 'history', 'label' => 'Borrowing History', 'icon' => 'history', 'href' => route('student.section', 'history')],
         ['key' => 'fines', 'label' => 'Fines & Penalties', 'icon' => 'payments', 'href' => route('student.section', 'fines'), 'badge' => $summary['outstandingFines'] > 0 ? 'PHP '.number_format($summary['outstandingFines'], 0) : null, 'badgeTone' => 'warning'],
         ['key' => 'account', 'label' => 'My Account', 'icon' => 'manage_accounts', 'href' => route('student.section', 'account')],
+        ['key' => 'circulation-policy', 'label' => 'Borrowing Policy', 'icon' => 'policy', 'href' => route('student.section', 'circulation-policy')],
     ];
 @endphp
 

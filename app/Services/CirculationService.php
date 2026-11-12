@@ -73,8 +73,14 @@ class CirculationService
             if ($reservation->status !== 'pending') {
                 $this->fail('Only pending reservations can be marked ready for pickup.');
             }
-            if ($reservation->book->copies()->where('status', 'available')->doesntExist()) {
+            // Each pickup hold needs its own shelf copy, so a copy is never promised to two patrons.
+            $onShelf = $reservation->book->copies()->where('status', 'available')->count();
+            $alreadyHeld = Reservation::query()->where('library_book_id', $reservation->library_book_id)->where('status', 'ready')->count();
+            if ($onShelf === 0) {
                 $this->fail('No copy of this title is on the shelf yet.');
+            }
+            if ($alreadyHeld >= $onShelf) {
+                $this->fail('Every shelf copy of this title is already held for other patrons.');
             }
 
             $reservation->update([
@@ -94,6 +100,9 @@ class CirculationService
 
             if (! $patron->isActive()) {
                 $this->fail($patron->name.'\'s account is not active.');
+            }
+            if ($copy->book->status !== 'active') {
+                $this->fail('"'.$copy->book->title.'" is archived and can no longer be lent.');
             }
             if ($copy->book->isReference() || $copy->status === 'reference') {
                 $this->fail('Reference copies cannot leave the library.');

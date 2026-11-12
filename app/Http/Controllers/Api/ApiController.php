@@ -70,13 +70,24 @@ class ApiController extends Controller
     public function books(Request $request): JsonResponse
     {
         $q = trim((string) $request->query('q', ''));
+        $digits = preg_replace('/[^0-9Xx]/', '', $q);
         $books = LibraryBook::query()
-            ->when($q !== '', fn ($query) => $query->where(fn ($w) => $w->where('title', 'like', "%{$q}%")
-                ->orWhere('author', 'like', "%{$q}%")->orWhere('isbn', 'like', '%'.str_replace('-', '', $q).'%')->orWhere('call_number', 'like', "%{$q}%")))
+            // Patrons see the same titles as the website catalog; staff also see archived records.
+            ->when(! $request->user()->isStaff(), fn ($query) => $query->where('status', 'active'))
+            ->when($q !== '', fn ($query) => $query->where(function ($w) use ($q, $digits): void {
+                $w->where('title', 'like', "%{$q}%")
+                    ->orWhere('author', 'like', "%{$q}%")
+                    ->orWhere('isbn', 'like', "%{$q}%")
+                    ->orWhere('call_number', 'like', "%{$q}%");
+                // ISBNs are stored with hyphens, scanners read them without.
+                if (strlen($digits) >= 4) {
+                    $w->orWhereRaw("REPLACE(isbn, '-', '') like ?", ['%'.$digits.'%']);
+                }
+            }))
             ->orderBy('title')->paginate(20)->withQueryString();
 
         return response()->json($books->through(fn (LibraryBook $book) => $book->only([
-            'id', 'title', 'author', 'isbn', 'call_number', 'category', 'shelf_location', 'total_copies', 'available_copies', 'loan_policy',
+            'id', 'title', 'author', 'isbn', 'call_number', 'category', 'shelf_location', 'total_copies', 'available_copies', 'loan_policy', 'status',
         ])));
     }
 

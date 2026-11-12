@@ -118,7 +118,16 @@ class LibrarianController extends Controller
             return back()->withErrors(['status' => 'This title still has copies on loan. Check them in before archiving it.']);
         }
 
-        $book->update($data);
+        DB::transaction(function () use ($book, $data): void {
+            $book->update($data);
+            // Changing the loan policy moves the shelf copies with it, so a title that becomes
+            // circulating can be lent again and a reference title stays in the library.
+            if ($book->wasChanged('loan_policy')) {
+                [$from, $to] = $book->isReference() ? ['available', 'reference'] : ['reference', 'available'];
+                $book->copies()->where('status', $from)->update(['status' => $to]);
+                $book->syncCopyCounts();
+            }
+        });
         AuditLog::record($request->user(), 'book.updated', 'Updated the catalog record for "'.$book->title.'".', ['book_id' => $book->id]);
 
         return back()->with('status', 'Catalog record saved.');
@@ -178,6 +187,9 @@ class LibrarianController extends Controller
 
     public function issueReservation(Request $request, Reservation $reservation): RedirectResponse
     {
+        if (! in_array($reservation->status, Reservation::OPEN_STATUSES, true)) {
+            return back()->withErrors(['circulation' => 'This reservation is already closed.'])->with('error_title', 'Book not checked out');
+        }
         $copy = $reservation->book->copies()->where('status', 'available')->first();
         if (! $copy) {
             return back()->withErrors(['circulation' => 'No copy of "'.$reservation->book->title.'" is on the shelf right now.'])->with('error_title', 'Book not checked out');
@@ -194,14 +206,22 @@ class LibrarianController extends Controller
 
     public function readyReservation(Request $request, Reservation $reservation): RedirectResponse
     {
-        $this->circulation->markReady($request->user(), $reservation);
+        try {
+            $this->circulation->markReady($request->user(), $reservation);
+        } catch (ValidationException $exception) {
+            return back()->withErrors($exception->errors())->with('error_title', 'Hold not placed');
+        }
 
         return back()->with('status_title', 'Patron notified')->with('status', $reservation->user->name.' was notified that "'.$reservation->book->title.'" is ready for pickup.');
     }
 
     public function cancelReservation(Request $request, Reservation $reservation): RedirectResponse
     {
-        $this->circulation->cancelReservation($request->user(), $reservation);
+        try {
+            $this->circulation->cancelReservation($request->user(), $reservation);
+        } catch (ValidationException $exception) {
+            return back()->withErrors($exception->errors())->with('error_title', 'Reservation not cancelled');
+        }
 
         return back()->with('status_title', 'Reservation cancelled')->with('status', 'The reservation was cancelled and the patron will no longer be held a copy.');
     }
@@ -225,7 +245,11 @@ class LibrarianController extends Controller
     public function settleFine(Request $request, Fine $fine): RedirectResponse
     {
         $outcome = $request->validate(['outcome' => ['required', Rule::in(['paid', 'waived'])]])['outcome'];
-        $fine = $this->circulation->settleFine($request->user(), $fine, $outcome);
+        try {
+            $fine = $this->circulation->settleFine($request->user(), $fine, $outcome);
+        } catch (ValidationException $exception) {
+            return back()->withErrors($exception->errors())->with('error_title', 'Fine not updated');
+        }
 
         return back()->with('status_title', $outcome === 'paid' ? 'Payment recorded' : 'Fine waived')->with('status', ($outcome === 'paid' ? 'Payment recorded' : 'Fine waived').' for '.$fine->user->name.'. Receipt '.$fine->receipt_no.'.');
     }
@@ -267,7 +291,11 @@ class LibrarianController extends Controller
 
     private function completeCheckin(Request $request, Loan $loan): RedirectResponse
     {
-        $fine = $this->circulation->checkin($request->user(), $loan);
+        try {
+            $fine = $this->circulation->checkin($request->user(), $loan);
+        } catch (ValidationException $exception) {
+            return back()->withErrors($exception->errors())->with('error_title', 'Book not checked in');
+        }
         $message = 'Checked in "'.$loan->copy->book->title.'" from '.$loan->user->name.'.';
         if ($fine) {
             $message .= ' Returned '.$fine->days_late.' day(s) late: a fine of PHP '.number_format((float) $fine->amount, 2).' was added to the account.';

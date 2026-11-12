@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuditLog;
+use App\Support\Csv;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -29,11 +30,11 @@ class AuditLogExportController extends Controller
 
         return response()->streamDownload(function () use ($query): void {
             $out = fopen('php://output', 'w');
-            fwrite($out, "\xEF\xBB\xBF"); // lets Excel read the file as UTF-8
+            fwrite($out, Csv::BOM);
             fputcsv($out, ['Date and time', 'User', 'Role', 'School ID', 'Event', 'Details', 'IP address']);
             $query->chunk(500, function ($logs) use ($out): void {
                 foreach ($logs as $log) {
-                    fputcsv($out, array_map([$this, 'safe'], [
+                    Csv::row($out, [
                         $log->created_at->format('Y-m-d H:i:s'),
                         $log->user?->name ?? 'Guest / system',
                         $log->user?->roleLabel() ?? '',
@@ -41,18 +42,10 @@ class AuditLogExportController extends Controller
                         $log->event,
                         $log->description,
                         $log->ip_address,
-                    ]));
+                    ]);
                 }
             });
             fclose($out);
         }, $filename, ['Content-Type' => 'text/csv; charset=UTF-8', 'Cache-Control' => 'no-store, private']);
-    }
-
-    /** Stops spreadsheet apps from running a value as a formula. */
-    private function safe(mixed $value): string
-    {
-        $value = (string) $value;
-
-        return preg_match('/^[=+\-@\t\r]/', $value) ? "'{$value}" : $value;
     }
 }

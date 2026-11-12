@@ -6,8 +6,8 @@ Laravel-based HCI102 project for the Central Luzon College of Science and Techno
 
 | Portal | Main tasks |
 | --- | --- |
-| Student | Search the catalog, reserve books, renew loans online, see due dates, fines, borrowing history (CSV download), notifications, and send concerns to the library |
-| Faculty | Everything a student can do with faculty loan limits, plus course reserves, reading lists, library class sessions, inter-library loans, academic requests, and book recommendations |
+| Student | Search the catalog, reserve books, renew loans online, see due dates, fines, borrowing history (CSV download), the borrowing policy, notifications, and send concerns to the library |
+| Faculty | Everything a student can do (including Fines & Penalties and the Borrowing Policy) with faculty loan limits, plus course reserves, reading lists, library class sessions, inter-library loans, academic requests, and book recommendations |
 | Librarian | Check books out and in at the desk, serve reservations, track overdue loans, record fine payments or waivers, add and edit books and copies, manage inventory, answer requests, publish announcements, review accounts, view reports and the activity log |
 | Administrator | Account approvals (including librarians), book records, transaction history, reports, user and book CSV import/export, activity log, plus the librarian workspace |
 | Super administrator | Everything above, plus roles and permissions overview, editable borrowing rules and fine settings, system policies, security monitoring, and system status |
@@ -16,7 +16,7 @@ Laravel-based HCI102 project for the Central Luzon College of Science and Techno
 
 - **Barcode and QR scanner.** The scan buttons (catalog search, sidebar "Find by barcode or ISBN", librarian desk fields, inventory and book search) open the camera and read ISBN/EAN barcodes, copy barcodes, and QR codes. Without a camera you can scan a photo or type the code. Browsers only allow the camera on `localhost`, `127.0.0.1`, or HTTPS. The scanner library is bundled in `public/js/vendor`, so it works offline.
 - **Library e-Pass.** Students and faculty can open a QR code of their school ID from the sidebar or the dashboard. Librarians scan it in the patron field when checking out a book.
-- **Confirmations and results.** Important actions (reserve, renew, cancel, check in/out, record or waive a fine, approve or suspend an account) ask for confirmation in a pop-up, and every action shows a success or failure pop-up afterwards.
+- **Confirmations and results.** Important actions (reserve, renew, cancel, check in/out, record or waive a fine, approve, suspend or reactivate an account, reset a password) ask for confirmation in a pop-up, and every action shows a success or failure pop-up afterwards.
 - **Notifications.** Patrons can open any notification to read it in full, mark it read or unread, and mark everything read or unread at once. Read marks are stored in the `notification_reads` table.
 
 ## Sidebar and profile photos
@@ -66,6 +66,8 @@ Foreign keys protect history (a user or copy with loans cannot be deleted), uniq
 - Only school-registered emails ending in `@clcst.edu.ph` can register, sign in, or be imported.
 - Passwords are hashed with bcrypt, must be at least 10 characters with mixed case and a number, and are never exported.
 - New accounts stay pending until someone allowed to manage that role reviews the uploaded ID. Administrator roles cannot be requested through public registration.
+- Forgotten passwords: there is no email reset. A librarian (students and faculty), administrator (also librarians) or super administrator (everyone) presses **Reset password** in Account Review. A temporary password is shown once, the old password stops working, and the account is signed out everywhere. The owner changes it from their profile after signing in.
+- Suspended accounts (and rejected applications) can be turned back on with **Reactivate** by anyone allowed to manage that role.
 - Permissions come from the role saved in the database, checked on every request by the `portal` middleware and again in controllers. Suspended accounts are signed out on their next request.
 - Sessions end after 15 minutes without activity or when the browser closes (`SESSION_LIFETIME`, `SESSION_EXPIRE_ON_CLOSE`), unless the user ticks "Keep me signed in" on a private device.
 - Sign-in attempts are rate limited, sessions are encrypted and regenerated at sign-in, and changing a password signs out other devices.
@@ -81,7 +83,7 @@ The website signs in with encrypted session cookies. For other clients (a mobile
 | POST | `/api/v1/auth/login` with `role`, `identifier`, `password` | Anyone (same strict role check as the website) |
 | GET | `/api/v1/auth/me` | Any signed-in role |
 | POST | `/api/v1/auth/logout` | Any signed-in role (revokes the token) |
-| GET | `/api/v1/books?q=` | Any signed-in role |
+| GET | `/api/v1/books?q=` | Any signed-in role (students and faculty see active titles only) |
 | GET | `/api/v1/my/loans` | Students and faculty |
 | GET | `/api/v1/audit-logs` | Administrators and the super administrator |
 

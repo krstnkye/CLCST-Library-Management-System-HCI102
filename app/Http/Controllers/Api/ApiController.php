@@ -43,7 +43,7 @@ class ApiController extends Controller
         }
 
         RateLimiter::clear($key);
-        $token = Jwt::issue(['sub' => $user->id, 'role' => $user->role]);
+        $token = Jwt::issueFor($user);
         AuditLog::record($user, 'api.login', 'Signed in to the API and received a token.');
 
         return response()->json([

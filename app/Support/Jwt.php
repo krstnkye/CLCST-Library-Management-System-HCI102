@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
@@ -32,6 +33,12 @@ class Jwt
         $segments[] = self::base64UrlEncode(self::sign(implode('.', $segments)));
 
         return implode('.', $segments);
+    }
+
+    /** Issue an access token for an account, tied to its current role and password. */
+    public static function issueFor(User $user, ?int $ttlMinutes = null): string
+    {
+        return self::issue(['sub' => $user->id, 'role' => $user->role, 'pwd' => self::passwordStamp($user->password)], $ttlMinutes);
     }
 
     /** Verify the signature, algorithm, time claims and revocation; return the payload or null. */
@@ -73,6 +80,15 @@ class Jwt
         }
     }
 
+    /**
+     * A short fingerprint of the account's current password hash. Tokens carry it, so a password
+     * change or a staff password reset ends API access the same way it ends website sessions.
+     */
+    public static function passwordStamp(?string $passwordHash): string
+    {
+        return substr(hash_hmac('sha256', (string) $passwordHash, self::key()), 0, 16);
+    }
+
     public static function ttl(): int
     {
         return (int) config('library.jwt_ttl_minutes', 60);
@@ -80,13 +96,18 @@ class Jwt
 
     private static function sign(string $data): string
     {
+        return hash_hmac('sha256', $data, self::key(), true);
+    }
+
+    /** Derive a separate key so the JWT secret is not the raw encryption key. */
+    private static function key(): string
+    {
         $key = (string) config('app.key');
         if (str_starts_with($key, 'base64:')) {
             $key = base64_decode(substr($key, 7));
         }
 
-        // Derive a separate key so the JWT secret is not the raw encryption key.
-        return hash_hmac('sha256', $data, hash_hmac('sha256', 'clcst-jwt-v1', $key, true), true);
+        return hash_hmac('sha256', 'clcst-jwt-v1', $key, true);
     }
 
     private static function base64UrlEncode(string $data): string

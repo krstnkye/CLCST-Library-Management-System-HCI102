@@ -36,6 +36,8 @@ All borrowing rules live in `app/Services/CirculationService.php`, so every scre
 - Reference books cannot leave the library.
 - Late returns create a fine automatically (per-day rate with a per-book cap). Only staff can record payments or waivers, and each one gets a receipt number.
 - Uncollected pickup holds expire through the scheduled `library:expire-holds` command.
+- A copy held for a patron whose pickup is ready cannot be lent to someone else further down the waiting list.
+- Archiving a title (on the Edit Book page or through a book CSV import) cancels its open reservations, and is refused while copies are still on loan.
 
 Default values are in `config/library.php`. Super administrators can change them from **Borrowing Rules** and **Fine Settings**; changes are stored in the `library_settings` table and logged.
 
@@ -87,7 +89,7 @@ The website signs in with encrypted session cookies. For other clients (a mobile
 | GET | `/api/v1/my/loans` | Students and faculty |
 | GET | `/api/v1/audit-logs` | Administrators and the super administrator |
 
-Send the token as `Authorization: Bearer <access_token>`. Tokens expire after 60 minutes (`JWT_TTL_MINUTES`), are rejected if tampered with or signed with another algorithm, and stop working at once if the account is suspended or the token is revoked.
+Send the token as `Authorization: Bearer <access_token>`. Tokens expire after 60 minutes (`JWT_TTL_MINUTES`), are rejected if tampered with or signed with another algorithm, and stop working at once if the account is suspended, its password is changed or reset, or the token is revoked.
 
 ## Requirements
 

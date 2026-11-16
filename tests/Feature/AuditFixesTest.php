@@ -184,7 +184,7 @@ class AuditFixesTest extends TestCase
         $student = User::factory()->role('student')->create();
         $this->book(1, 'circulating', '978-0-13-235088-4');
         $this->book(1, 'circulating', '978-1-23-456789-0')->update(['status' => 'archived']);
-        $token = Jwt::issue(['sub' => $student->id, 'role' => 'student']);
+        $token = Jwt::issueFor($student);
 
         $this->withToken($token)->getJson('/api/v1/books?q=9780132350884')->assertOk()->assertJsonCount(1, 'data');
         $this->withToken($token)->getJson('/api/v1/books?q=978-0-13')->assertOk()->assertJsonCount(1, 'data');

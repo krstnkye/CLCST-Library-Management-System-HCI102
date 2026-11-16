@@ -14,6 +14,11 @@ class AuditLogExportController extends Controller
 {
     public function __invoke(Request $request): StreamedResponse
     {
+        // A mistyped date in the link gives a clear message instead of a server error.
+        $request->validate([
+            'from' => ['nullable', 'date'],
+            'to' => ['nullable', 'date'],
+        ]);
         $q = trim((string) $request->query('q', ''));
         $from = $request->date('from');
         $to = $request->date('to');

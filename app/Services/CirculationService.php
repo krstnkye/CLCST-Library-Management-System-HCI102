@@ -10,6 +10,7 @@ use App\Models\Loan;
 use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -126,6 +127,17 @@ class CirculationService
             if (! $ownReservation && $waitingAhead >= $onShelf) {
                 $this->fail('Every shelf copy of this title is set aside for patrons on the waiting list.');
             }
+            // A patron still waiting in line cannot take a copy already held for someone else's pickup.
+            if ($ownReservation && $ownReservation->status !== 'ready') {
+                $heldForOthers = Reservation::query()
+                    ->where('library_book_id', $copy->library_book_id)
+                    ->where('status', 'ready')
+                    ->where('user_id', '!=', $patron->id)
+                    ->count();
+                if ($heldForOthers >= $onShelf) {
+                    $this->fail('Every shelf copy of this title is held for patrons whose pickup is ready. Mark this reservation ready when another copy is returned.');
+                }
+            }
 
             $now = now();
             $loan = Loan::create([
@@ -195,7 +207,8 @@ class CirculationService
                 $fine = Fine::create([
                     'user_id' => $loan->user_id,
                     'loan_id' => $loan->id,
-                    'reason' => 'Overdue return: '.$loan->copy->book->title,
+                    // The reason column holds 150 characters; long titles are shortened, not rejected.
+                    'reason' => Str::limit('Overdue return: '.$loan->copy->book->title, 147),
                     'days_late' => $loan->daysLate(),
                     'amount' => $loan->accruedFine(),
                     'status' => 'outstanding',

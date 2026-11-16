@@ -118,7 +118,7 @@ class LibrarianController extends Controller
             return back()->withErrors(['status' => 'This title still has copies on loan. Check them in before archiving it.']);
         }
 
-        DB::transaction(function () use ($book, $data): void {
+        $closed = DB::transaction(function () use ($book, $data, $request): int {
             $book->update($data);
             // Changing the loan policy moves the shelf copies with it, so a title that becomes
             // circulating can be lent again and a reference title stays in the library.
@@ -127,10 +127,14 @@ class LibrarianController extends Controller
                 $book->copies()->where('status', $from)->update(['status' => $to]);
                 $book->syncCopyCounts();
             }
-        });
-        AuditLog::record($request->user(), 'book.updated', 'Updated the catalog record for "'.$book->title.'".', ['book_id' => $book->id]);
 
-        return back()->with('status', 'Catalog record saved.');
+            return $book->wasChanged('status') && $book->status === 'archived'
+                ? $book->closeOpenReservations($request->user()->id)
+                : 0;
+        });
+        AuditLog::record($request->user(), 'book.updated', 'Updated the catalog record for "'.$book->title.'".', ['book_id' => $book->id, 'reservations_closed' => $closed]);
+
+        return back()->with('status', 'Catalog record saved.'.($closed > 0 ? ' '.$closed.' open '.Str::plural('reservation', $closed).' for this title were cancelled because it is archived.' : ''));
     }
 
     public function storeCopies(Request $request, LibraryBook $book): RedirectResponse

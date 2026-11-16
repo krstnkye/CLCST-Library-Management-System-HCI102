@@ -191,6 +191,12 @@ class BulkDataController extends Controller
             throw ValidationException::withMessages(['csv_file' => "Invalid book information on line {$line}."]);
         }
 
+        // Archiving through a file follows the same rules as the Edit Book page.
+        $existing = LibraryBook::where('isbn', $row['isbn'])->first();
+        if ($row['status'] === 'archived' && $existing && $existing->copies()->where('status', 'on_loan')->exists()) {
+            throw ValidationException::withMessages(['csv_file' => "The book on line {$line} still has copies on loan, so it cannot be archived yet."]);
+        }
+
         $book = LibraryBook::updateOrCreate(['isbn' => $row['isbn']], [
             'title' => $row['title'],
             'author' => $row['author'],
@@ -200,6 +206,10 @@ class BulkDataController extends Controller
             'shelf_location' => $row['shelf_location'] ?: null,
             'status' => $row['status'],
         ]);
+
+        if ($book->status === 'archived') {
+            $book->closeOpenReservations();
+        }
 
         // Copies are tracked one by one, so create any the file adds. Copies
         // beyond the available count start as "maintenance" (not yet shelved).

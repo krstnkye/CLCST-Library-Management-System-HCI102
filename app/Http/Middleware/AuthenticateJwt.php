@@ -20,7 +20,10 @@ class AuthenticateJwt
         $payload = ($token = $request->bearerToken()) ? Jwt::verify($token) : null;
         $user = $payload ? User::find($payload['sub'] ?? null) : null;
 
-        if (! $user || ! $user->isActive()) {
+        // A token issued before the latest password change or reset no longer works.
+        $passwordChanged = $user && ! hash_equals(Jwt::passwordStamp($user->password), (string) ($payload['pwd'] ?? ''));
+
+        if (! $user || ! $user->isActive() || $passwordChanged) {
             return response()->json(['message' => 'Missing, invalid or expired token.'], 401, ['WWW-Authenticate' => 'Bearer']);
         }
         if ($roles !== [] && ! $user->hasAnyRole($roles)) {

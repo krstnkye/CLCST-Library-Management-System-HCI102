@@ -44,10 +44,10 @@ class PatronNotifications
         }
 
         $outstanding = $user->outstandingFineTotal();
-        if ($outstanding > 0 && $user->role === 'student') {
+        if ($outstanding > 0) {
             $items->push(self::item('fine', 'warning', 'payments', 'Unpaid fine: PHP '.number_format($outstanding, 2),
                 'Settle your balance at the library cashier to keep borrowing privileges.',
-                $user->fines()->where('status', 'outstanding')->max('created_at'), route('student.section', 'fines'), 'View fines',
+                $user->fines()->where('status', 'outstanding')->max('created_at'), route($prefix, 'fines'), 'View fines',
                 'fine-'.$user->fines()->where('status', 'outstanding')->max('id')));
         }
 

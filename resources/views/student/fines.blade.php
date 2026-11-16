@@ -1,4 +1,5 @@
-@extends('layouts.student')
+{{-- Shared by the student and faculty portals. --}}
+@extends(auth()->user()->role === 'faculty' ? 'layouts.faculty' : 'layouts.student')
 
 @section('title', $title)
 

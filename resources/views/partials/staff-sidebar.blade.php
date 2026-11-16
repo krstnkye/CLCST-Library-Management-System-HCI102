@@ -9,6 +9,7 @@
             ['circulation', 'My Borrowed Books', 'swap_horiz', route('staff.section', 'circulation'), $summary['activeLoans'] ?: null],
             ['reservations', 'My Reservations', 'book_online', route('staff.section', 'reservations'), $summary['openReservations'] ?: null],
             ['history', 'Borrowing History', 'history', route('staff.section', 'history'), null],
+            ['fines', 'Fines & Penalties', 'payments', route('staff.section', 'fines'), $summary['outstandingFines'] > 0 ? 'PHP '.number_format($summary['outstandingFines'], 0) : null],
             ['notifications', 'Notifications', 'notifications', route('staff.section', 'notifications'), $summary['notifications'] ?: null],
         ],
         'Teaching Support' => [
@@ -22,6 +23,7 @@
         'Account' => [
             ['profile', 'My Profile', 'manage_accounts', route('staff.section', 'profile'), null],
             ['feedback', 'Library Feedback', 'rate_review', route('staff.section', 'feedback'), null],
+            ['circulation-policy', 'Borrowing Policy', 'policy', route('staff.section', 'circulation-policy'), null],
             ['support', 'Help & Support', 'help_outline', route('staff.section', 'support'), null],
         ],
     ];

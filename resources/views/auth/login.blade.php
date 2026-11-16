@@ -83,7 +83,7 @@
                     <div class="login-field"><span class="material-symbols-outlined" aria-hidden="true">badge</span><input id="identifier" name="identifier" value="{{ old('identifier', ($signedInAs ?? null)?->email) }}" required autocomplete="username" maxlength="150" placeholder="Example: STU-2026-001"></div>
                 </div>
                 <div>
-                    <div class="flex items-center justify-between gap-3"><label for="password">Password</label><a class="text-[11px] font-semibold text-emerald-800 hover:underline" href="mailto:library@clcst.edu.ph?subject=Library%20password%20assistance">Forgot password?</a></div>
+                    <div class="flex items-center justify-between gap-3"><label for="password">Password</label><a class="text-[11px] font-semibold text-emerald-800 hover:underline" href="mailto:library@clcst.edu.ph?subject=Library%20password%20assistance" title="A librarian resets it at the library office and gives you a temporary password">Forgot password?</a></div>
                     <div class="login-field">
                         <span class="material-symbols-outlined" aria-hidden="true">lock</span>
                         <input id="password" name="password" required type="password" autocomplete="current-password" placeholder="Enter your password">

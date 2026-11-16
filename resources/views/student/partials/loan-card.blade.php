@@ -9,7 +9,7 @@
 @endphp
 <article class="library-loan flex flex-col justify-between gap-4 rounded-xl border-2 {{ $border }} p-5 md:flex-row md:items-center">
     <div class="flex items-start gap-4">
-        <img class="h-24 w-16 flex-shrink-0 rounded-lg border border-outline-variant bg-primary-container object-cover" src="{{ $book->cover_url }}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+        <img class="h-24 w-16 flex-shrink-0 rounded-lg border border-outline-variant bg-primary-container object-cover" src="{{ $book->cover_url }}" alt="" loading="lazy" onerror="this.onerror=null; this.src='{{ asset('images/book-cover.svg') }}'">
         <div class="space-y-1">
             <div class="flex flex-wrap items-center gap-2">
                 <h3 class="font-headline text-base font-bold">{{ $book->title }}</h3>

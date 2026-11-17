@@ -199,7 +199,8 @@ class CirculationService
             }
 
             $loan->update(['returned_at' => now(), 'received_by' => $staff->id]);
-            $loan->copy->update(['status' => 'available']);
+            // A title switched to reference while this copy was out stays in the library once returned.
+            $loan->copy->update(['status' => $loan->copy->book->isReference() ? 'reference' : 'available']);
             $loan->copy->book->syncCopyCounts();
 
             $fine = null;

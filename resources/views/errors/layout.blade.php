@@ -1,6 +1,7 @@
-{{-- Shared page for HTTP errors (403, 404, 419, 429, 500, 503) in the library's house style. --}}
+{{-- Shared page for HTTP errors (403, 404, 405, 419, 429, 500, 503, and any other 4xx/5xx) in the library's house style. --}}
 @php
-    $user = auth()->user();
+    // The page must still render if the error happened before the session or database was ready.
+    try { $user = auth()->user(); } catch (\Throwable) { $user = null; }
     $home = $user ? route($user->dashboardRouteName()) : route('login');
 @endphp
 <!DOCTYPE html>
@@ -49,7 +50,7 @@
             <h1>@yield('title')</h1>
             <p>@yield('message')</p>
             @if ($user)
-                <div class="who">You are signed in as <strong>{{ $user->name }}</strong> ({{ $user->roleLabel() }}). This page is outside what your account can open.</div>
+                <div class="who">You are signed in as <strong>{{ $user->name }}</strong> ({{ $user->roleLabel() }}).@if (trim($__env->yieldContent('code')) === '403') This page is outside what your account can open.@endif</div>
             @endif
             <div class="actions">
                 <a class="btn btn-primary" href="{{ $home }}">{{ $user ? 'Go to my dashboard' : 'Go to sign in' }}</a>

@@ -14,12 +14,12 @@
         <ul class="divide-y divide-[#EAE7E0]">
             @forelse ($announcements as $announcement)
                 <li class="flex items-start justify-between gap-4 px-5 py-4">
-                    <div>
+                    <div class="min-w-0 break-words">
                         <p class="font-bold">{{ $announcement->title }} <span class="ml-1 rounded bg-[#F4F2EF] px-1.5 py-0.5 text-[10px] font-bold text-[#284A30]">{{ \App\Models\Announcement::AUDIENCES[$announcement->audience] ?? $announcement->audience }}</span></p>
                         <p class="mt-1 text-sm text-[#524E45]">{{ $announcement->body }}</p>
                         <p class="mt-1 text-xs text-[#827C6F]">{{ $announcement->published_at->format('M d, Y g:i A') }} by {{ $announcement->author?->name ?? 'Former staff' }}</p>
                     </div>
-                    <form method="POST" action="{{ route('librarian.announcements.destroy', $announcement) }}" data-confirm="It will disappear from student and faculty notifications." data-confirm-title="Remove this announcement?" data-confirm-detail="{{ $announcement->title }}" data-confirm-label="Remove">@csrf @method('DELETE')<button class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-50" type="submit">Remove</button></form>
+                    <form method="POST" action="{{ route('librarian.announcements.destroy', $announcement) }}" data-confirm="It will disappear from student and faculty notifications." data-confirm-title="Remove this announcement?" data-confirm-detail="{{ $announcement->title }}" data-confirm-label="Remove" class="shrink-0">@csrf @method('DELETE')<button class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-50" type="submit">Remove</button></form>
                 </li>
             @empty
                 <li class="px-5 py-10 text-center text-sm text-[#777166]">Nothing published yet.</li>

@@ -1,0 +1,98 @@
+CLCST LIBRARY MANAGEMENT SYSTEM - HOW TO RUN IT ON YOUR OWN COMPUTER
+===================================================================
+
+This folder already contains everything the system needs (including the
+"vendor" folder), so you do NOT need Composer, Node.js, MySQL or internet.
+You only need PHP.
+
+
+STEP 1. INSTALL PHP 8.3 OR NEWER (one time only)
+------------------------------------------------
+Check first: open Command Prompt (Windows) or Terminal (Mac) and type
+
+    php -v
+
+If it shows "PHP 8.3" or higher, skip to Step 2.
+
+Windows, pick ONE:
+  a) Laravel Herd (easiest): download from https://herd.laravel.com,
+     install it, then open a NEW Command Prompt and run  php -v  again.
+  b) XAMPP with PHP 8.3 or newer: https://www.apachefriends.org
+     Then add C:\xampp\php to your Windows PATH so "php" works in
+     Command Prompt.
+
+Mac:
+  Install Laravel Herd (https://herd.laravel.com), or with Homebrew:
+      brew install php
+
+The PHP extensions pdo_sqlite, fileinfo, mbstring and openssl must be on.
+They are on by default in Herd. In XAMPP, open C:\xampp\php\php.ini and
+make sure these lines do NOT start with a semicolon (;):
+      extension=fileinfo
+      extension=pdo_sqlite
+      extension=mbstring
+      extension=openssl
+
+
+STEP 2. UNZIP THE PROJECT
+-------------------------
+Extract the zip to a normal folder, for example  C:\CLCST-Library
+Tip: avoid running it from inside a OneDrive or Google Drive folder, because
+syncing can lock files while the system is running.
+
+
+STEP 3. START THE SYSTEM
+------------------------
+Windows: double-click  START-WINDOWS.bat
+Mac / Linux: open Terminal in this folder and run  ./start-mac-linux.sh
+
+The first start prepares the project and loads demo data (a few seconds).
+Your browser then opens  http://127.0.0.1:8001
+Keep the black window open while you use the system. Close it to stop.
+
+
+STEP 4. SIGN IN
+---------------
+On the sign-in page, FIRST click the account type (Student, Faculty,
+Librarian, Administrator or Super Administrator), THEN type the email.
+
+All demo accounts use the password:   LibraryDemo2026!
+
+  Account type          Email                      School ID
+  Student               student@clcst.edu.ph       STU-2026-001
+  Faculty               faculty@clcst.edu.ph       FAC-2026-001
+  Librarian             librarian@clcst.edu.ph     LIB-2026-001
+  Administrator         admin@clcst.edu.ph         ADM-2026-001
+  Super administrator   superadmin@clcst.edu.ph    SYS-2026-001
+
+You can sign in with either the email or the school ID.
+There is also a pending application (Ana Reyes) waiting in Account Review.
+
+
+STARTING OVER WITH FRESH DEMO DATA
+----------------------------------
+Windows: double-click  RESET-DEMO-DATA-WINDOWS.bat
+Mac / Linux:  php artisan migrate:fresh --seed --force
+
+
+COMMON PROBLEMS
+---------------
+"php is not recognized"      PHP is not installed or not in PATH (Step 1).
+"could not find driver"      Turn on extension=pdo_sqlite (Step 1). START-WINDOWS.bat
+                              now checks this and lists any extension that is off.
+"running from inside the zip" Extract the zip first (Step 2), then run the .bat
+                              from the extracted folder.
+Port 8001 already in use      START-WINDOWS.bat switches to port 8002 by itself
+                              and opens http://127.0.0.1:8002 instead.
+"Page expired" (419)          The page sat open too long. Refresh and retry.
+Sessions end after 15 minutes of no activity, which is on purpose.
+Book cover pictures need internet. Without it, a plain book card shows.
+
+
+FOR DEVELOPERS (optional)
+-------------------------
+The full source, history and automated tests are on GitHub:
+  https://github.com/krstnkye/CLCST-Library-Management-System-HCI102
+To run the tests you also need Composer:  composer install  then  php artisan test
+README.md explains the features, database, security and the JSON API.
+The project documentation is in the "documentation" folder.

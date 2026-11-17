@@ -51,8 +51,12 @@ class AccountManagementController extends Controller
     public function approve(Request $request, User $user): RedirectResponse
     {
         $this->authorizeChange($request->user(), $user);
-        abort_if($request->user()->is($user), 422, 'You cannot approve your own account.');
-        abort_unless($user->status === 'pending', 422, 'Only pending accounts can be approved.');
+        if ($request->user()->is($user)) {
+            return $this->refuse('You cannot approve your own account.');
+        }
+        if ($user->status !== 'pending') {
+            return $this->refuse('Only pending accounts can be approved.');
+        }
 
         DB::transaction(function () use ($request, $user): void {
             $user->forceFill([
@@ -69,8 +73,12 @@ class AccountManagementController extends Controller
     public function suspend(Request $request, User $user): RedirectResponse
     {
         $this->authorizeChange($request->user(), $user);
-        abort_if($request->user()->is($user), 422, 'You cannot suspend your own account.');
-        abort_if($user->status === 'suspended', 422, 'This account is already suspended.');
+        if ($request->user()->is($user)) {
+            return $this->refuse('You cannot suspend your own account.');
+        }
+        if ($user->status === 'suspended') {
+            return $this->refuse('This account is already suspended.');
+        }
 
         DB::transaction(function () use ($request, $user): void {
             $user->forceFill([
@@ -88,8 +96,12 @@ class AccountManagementController extends Controller
     public function reactivate(Request $request, User $user): RedirectResponse
     {
         $this->authorizeChange($request->user(), $user);
-        abort_if($request->user()->is($user), 422, 'You cannot reactivate your own account.');
-        abort_unless($user->status === 'suspended', 422, 'Only suspended accounts can be reactivated.');
+        if ($request->user()->is($user)) {
+            return $this->refuse('You cannot reactivate your own account.');
+        }
+        if ($user->status !== 'suspended') {
+            return $this->refuse('Only suspended accounts can be reactivated.');
+        }
 
         DB::transaction(function () use ($request, $user): void {
             $user->forceFill([
@@ -110,7 +122,9 @@ class AccountManagementController extends Controller
     public function resetPassword(Request $request, User $user): RedirectResponse
     {
         $this->authorizeChange($request->user(), $user);
-        abort_if($request->user()->is($user), 422, 'Change your own password from your profile page.');
+        if ($request->user()->is($user)) {
+            return $this->refuse('Change your own password from your profile page.');
+        }
 
         $temporary = self::temporaryPassword();
         DB::transaction(function () use ($request, $user, $temporary): void {
@@ -137,6 +151,12 @@ class AccountManagementController extends Controller
         ));
 
         return $pick('ABCDEFGHJKLMNPQRSTUVWXYZ', 4).'-'.$pick('abcdefghijkmnpqrstuvwxyz', 4).'-'.$pick('23456789', 4);
+    }
+
+    /** A refused account action returns to the list with a message instead of an error page. */
+    private function refuse(string $message): RedirectResponse
+    {
+        return back()->withErrors(['account' => $message])->with('error_title', 'Action not completed');
     }
 
     private function authorizeChange(User $actor, User $target): void

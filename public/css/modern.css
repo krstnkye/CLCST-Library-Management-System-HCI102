@@ -415,3 +415,7 @@ body.clcst-portal:not(.library-login) { background:var(--ui-bg) !important; colo
     html.sidebar-open { overflow:hidden; }
     .clcst-portal .clcst-main { padding-bottom:2rem !important; }
 }
+
+/* Screen-reader-only labels inside a scrolling table are positioned against the table wrapper,
+   so they cannot stretch the page sideways on phones. */
+.overflow-x-auto { position: relative; }

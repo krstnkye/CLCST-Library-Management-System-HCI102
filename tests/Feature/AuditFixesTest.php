@@ -45,7 +45,7 @@ class AuditFixesTest extends TestCase
         $this->assertDatabaseHas('audit_logs', ['event' => 'account.reactivated']);
 
         // Only suspended accounts, and only roles the reviewer manages.
-        $this->actingAs($admin)->post(route('management.accounts.reactivate', $student))->assertStatus(422);
+        $this->actingAs($admin)->post(route('management.accounts.reactivate', $student))->assertRedirect()->assertSessionHasErrors('account');
         $librarian = User::factory()->role('librarian')->create();
         $otherAdmin = User::factory()->role('admin')->create(['status' => 'suspended']);
         $this->actingAs($librarian)->post(route('management.accounts.reactivate', $otherAdmin))->assertForbidden();
@@ -79,7 +79,7 @@ class AuditFixesTest extends TestCase
         $admin = User::factory()->role('admin')->create();
         $this->actingAs($librarian)->post(route('management.accounts.reset-password', $admin))->assertForbidden();
         $superadmin = User::factory()->role('superadmin')->create();
-        $this->actingAs($superadmin)->post(route('management.accounts.reset-password', $superadmin))->assertStatus(422);
+        $this->actingAs($superadmin)->post(route('management.accounts.reset-password', $superadmin))->assertRedirect()->assertSessionHasErrors('account');
     }
 
     public function test_temporary_passwords_meet_the_password_policy(): void

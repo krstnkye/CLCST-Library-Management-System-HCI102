@@ -107,7 +107,9 @@ class AdminController extends Controller
     public function updateSettings(Request $request): RedirectResponse
     {
         $rules = array_intersect_key(LibrarySettings::EDITABLE, $request->only(array_keys(LibrarySettings::EDITABLE)));
-        abort_if($rules === [], 422, 'No settings were submitted.');
+        if ($rules === []) {
+            return back()->withErrors(['settings' => 'No settings were submitted.'])->with('error_title', 'Settings not saved');
+        }
 
         $values = $request->validate($rules);
         $before = $this->settings->all();

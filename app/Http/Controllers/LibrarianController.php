@@ -120,21 +120,25 @@ class LibrarianController extends Controller
 
         $closed = DB::transaction(function () use ($book, $data, $request): int {
             $book->update($data);
+            // Read what changed now: syncCopyCounts() saves the book again and resets wasChanged().
+            $policyChanged = $book->wasChanged('loan_policy');
+            // Archived and reference titles cannot be borrowed, so their waiting lists close.
+            $archived = $book->wasChanged('status') && $book->status === 'archived';
+            $nowReference = $policyChanged && $book->isReference();
+
             // Changing the loan policy moves the shelf copies with it, so a title that becomes
             // circulating can be lent again and a reference title stays in the library.
-            if ($book->wasChanged('loan_policy')) {
+            if ($policyChanged) {
                 [$from, $to] = $book->isReference() ? ['available', 'reference'] : ['reference', 'available'];
                 $book->copies()->where('status', $from)->update(['status' => $to]);
                 $book->syncCopyCounts();
             }
 
-            return $book->wasChanged('status') && $book->status === 'archived'
-                ? $book->closeOpenReservations($request->user()->id)
-                : 0;
+            return $archived || $nowReference ? $book->closeOpenReservations($request->user()->id) : 0;
         });
         AuditLog::record($request->user(), 'book.updated', 'Updated the catalog record for "'.$book->title.'".', ['book_id' => $book->id, 'reservations_closed' => $closed]);
 
-        return back()->with('status', 'Catalog record saved.'.($closed > 0 ? ' '.$closed.' open '.Str::plural('reservation', $closed).' for this title were cancelled because it is archived.' : ''));
+        return back()->with('status', 'Catalog record saved.'.($closed > 0 ? ' '.$closed.' open '.Str::plural('reservation', $closed).' for this title were cancelled because it can no longer be borrowed ('.($book->status === 'archived' ? 'archived' : 'reference only').').' : ''));
     }
 
     public function storeCopies(Request $request, LibraryBook $book): RedirectResponse

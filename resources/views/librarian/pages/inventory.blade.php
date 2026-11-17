@@ -4,10 +4,10 @@
         @foreach (['available' => 'On shelf', 'on_loan' => 'On loan', 'reference' => 'Reference', 'maintenance' => 'For repair', 'lost' => 'Lost'] as $value => $label)
             <a class="rounded-full px-3 py-1.5 text-xs font-bold {{ request('status') === $value ? 'bg-[#284A30] text-white' : 'border border-[#D6D2CB]' }}" href="{{ route('librarian.section', ['inventory', 'status' => $value]) }}">{{ $label }} ({{ $statusCounts[$value] ?? 0 }})</a>
         @endforeach
-        <form class="ml-auto flex gap-2" method="GET" action="{{ route('librarian.section', 'inventory') }}" role="search">
+        <form class="flex w-full min-w-0 gap-2 sm:ml-auto sm:w-auto" method="GET" action="{{ route('librarian.section', 'inventory') }}" role="search">
             @if (request('status'))<input type="hidden" name="status" value="{{ request('status') }}">@endif
             <label class="sr-only" for="inventory-search">Search copies</label>
-            <input id="inventory-search" class="rounded-lg border-[#D6D2CB] py-1.5 text-sm" name="q" value="{{ request('q') }}" placeholder="Barcode, copy code, or title" type="search"><button class="ui-scan-btn" type="button" aria-label="Scan a copy barcode" data-scan data-scan-target="#inventory-search" data-scan-submit><span class="material-symbols-outlined text-lg">barcode_scanner</span></button>
+            <input id="inventory-search" class="min-w-0 flex-1 rounded-lg border-[#D6D2CB] py-1.5 text-sm" name="q" value="{{ request('q') }}" placeholder="Barcode, copy code, or title" type="search"><button class="ui-scan-btn" type="button" aria-label="Scan a copy barcode" data-scan data-scan-target="#inventory-search" data-scan-submit><span class="material-symbols-outlined text-lg">barcode_scanner</span></button>
             <button class="rounded-lg border border-[#D6D2CB] px-3 text-xs font-bold" type="submit">Search</button>
         </form>
     </div>

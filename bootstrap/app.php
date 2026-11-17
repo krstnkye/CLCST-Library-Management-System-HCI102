@@ -8,6 +8,7 @@ use App\Http\Middleware\AuthenticateJwt;
 use App\Http\Middleware\EnsurePortalAccess;
 use App\Http\Middleware\NormalizeQueryString;
 use App\Http\Middleware\SecurityHeaders;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -34,4 +35,17 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+        // Opening, refreshing or bookmarking an address that only a button can use (for example
+        // /logout or a "Reserve" action) returns the user to their portal instead of an error page.
+        $exceptions->render(function (MethodNotAllowedHttpException $exception, Request $request) {
+            if (! $request->isMethod('GET') && ! $request->isMethod('HEAD')) {
+                return null;
+            }
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return null;
+            }
+            $user = $request->user();
+
+            return redirect()->route($user ? $user->dashboardRouteName() : 'login');
+        });
     })->create();

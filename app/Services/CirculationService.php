@@ -10,6 +10,7 @@ use App\Models\Loan;
 use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -73,8 +74,14 @@ class CirculationService
             if ($reservation->status !== 'pending') {
                 $this->fail('Only pending reservations can be marked ready for pickup.');
             }
-            if ($reservation->book->copies()->where('status', 'available')->doesntExist()) {
+            // Each pickup hold needs its own shelf copy, so a copy is never promised to two patrons.
+            $onShelf = $reservation->book->copies()->where('status', 'available')->count();
+            $alreadyHeld = Reservation::query()->where('library_book_id', $reservation->library_book_id)->where('status', 'ready')->count();
+            if ($onShelf === 0) {
                 $this->fail('No copy of this title is on the shelf yet.');
+            }
+            if ($alreadyHeld >= $onShelf) {
+                $this->fail('Every shelf copy of this title is already held for other patrons.');
             }
 
             $reservation->update([
@@ -94,6 +101,9 @@ class CirculationService
 
             if (! $patron->isActive()) {
                 $this->fail($patron->name.'\'s account is not active.');
+            }
+            if ($copy->book->status !== 'active') {
+                $this->fail('"'.$copy->book->title.'" is archived and can no longer be lent.');
             }
             if ($copy->book->isReference() || $copy->status === 'reference') {
                 $this->fail('Reference copies cannot leave the library.');
@@ -116,6 +126,17 @@ class CirculationService
             $ownReservation = $patron->reservations()->open()->where('library_book_id', $copy->library_book_id)->first();
             if (! $ownReservation && $waitingAhead >= $onShelf) {
                 $this->fail('Every shelf copy of this title is set aside for patrons on the waiting list.');
+            }
+            // A patron still waiting in line cannot take a copy already held for someone else's pickup.
+            if ($ownReservation && $ownReservation->status !== 'ready') {
+                $heldForOthers = Reservation::query()
+                    ->where('library_book_id', $copy->library_book_id)
+                    ->where('status', 'ready')
+                    ->where('user_id', '!=', $patron->id)
+                    ->count();
+                if ($heldForOthers >= $onShelf) {
+                    $this->fail('Every shelf copy of this title is held for patrons whose pickup is ready. Mark this reservation ready when another copy is returned.');
+                }
             }
 
             $now = now();
@@ -178,7 +199,8 @@ class CirculationService
             }
 
             $loan->update(['returned_at' => now(), 'received_by' => $staff->id]);
-            $loan->copy->update(['status' => 'available']);
+            // A title switched to reference while this copy was out stays in the library once returned.
+            $loan->copy->update(['status' => $loan->copy->book->isReference() ? 'reference' : 'available']);
             $loan->copy->book->syncCopyCounts();
 
             $fine = null;
@@ -186,7 +208,8 @@ class CirculationService
                 $fine = Fine::create([
                     'user_id' => $loan->user_id,
                     'loan_id' => $loan->id,
-                    'reason' => 'Overdue return: '.$loan->copy->book->title,
+                    // The reason column holds 150 characters; long titles are shortened, not rejected.
+                    'reason' => Str::limit('Overdue return: '.$loan->copy->book->title, 147),
                     'days_late' => $loan->daysLate(),
                     'amount' => $loan->accruedFine(),
                     'status' => 'outstanding',

@@ -342,7 +342,7 @@
 
                             <div class="mt-4 flex items-center gap-3">
                                 <div class="book-cover relative h-24 w-16 flex-shrink-0 overflow-hidden rounded bg-primary-container text-white">
-                                    <img alt="{{ $selectedBook->title }} cover" class="h-full w-full object-cover" loading="lazy" onerror="this.style.visibility='hidden'" src="{{ $selectedBook->cover_url }}">
+                                    <img alt="{{ $selectedBook->title }} cover" class="h-full w-full object-cover" loading="lazy" onerror="this.onerror=null; this.src='{{ asset('images/book-cover.svg') }}'" src="{{ $selectedBook->cover_url }}">
                                 </div>
                                 <div>
                                     <h4 class="line-clamp-2 text-sm font-bold text-on-surface">{{ $selectedBook->title }}</h4>

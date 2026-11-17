@@ -51,8 +51,12 @@ class AccountManagementController extends Controller
     public function approve(Request $request, User $user): RedirectResponse
     {
         $this->authorizeChange($request->user(), $user);
-        abort_if($request->user()->is($user), 422, 'You cannot approve your own account.');
-        abort_unless($user->status === 'pending', 422, 'Only pending accounts can be approved.');
+        if ($request->user()->is($user)) {
+            return $this->refuse('You cannot approve your own account.');
+        }
+        if ($user->status !== 'pending') {
+            return $this->refuse('Only pending accounts can be approved.');
+        }
 
         DB::transaction(function () use ($request, $user): void {
             $user->forceFill([
@@ -69,8 +73,12 @@ class AccountManagementController extends Controller
     public function suspend(Request $request, User $user): RedirectResponse
     {
         $this->authorizeChange($request->user(), $user);
-        abort_if($request->user()->is($user), 422, 'You cannot suspend your own account.');
-        abort_if($user->status === 'suspended', 422, 'This account is already suspended.');
+        if ($request->user()->is($user)) {
+            return $this->refuse('You cannot suspend your own account.');
+        }
+        if ($user->status === 'suspended') {
+            return $this->refuse('This account is already suspended.');
+        }
 
         DB::transaction(function () use ($request, $user): void {
             $user->forceFill([
@@ -82,6 +90,73 @@ class AccountManagementController extends Controller
         });
 
         return back()->with('status', $user->name.' has been suspended.');
+    }
+
+    /** Lets a suspended account (or a rejected application) sign in again. */
+    public function reactivate(Request $request, User $user): RedirectResponse
+    {
+        $this->authorizeChange($request->user(), $user);
+        if ($request->user()->is($user)) {
+            return $this->refuse('You cannot reactivate your own account.');
+        }
+        if ($user->status !== 'suspended') {
+            return $this->refuse('Only suspended accounts can be reactivated.');
+        }
+
+        DB::transaction(function () use ($request, $user): void {
+            $user->forceFill([
+                'status' => 'active',
+                'approved_at' => $user->approved_at ?? now(),
+                'approved_by' => $user->approved_by ?? $request->user()->id,
+            ])->save();
+            $this->audit($request, 'account.reactivated', 'Reactivated '.$user->name.' ('.$user->role.').', $user);
+        });
+
+        return back()->with(['status_title' => 'Account reactivated', 'status' => $user->name.' can sign in again.']);
+    }
+
+    /**
+     * Staff reset a forgotten password for an account they manage. The temporary password is
+     * shown once to the staff member, and every session of that account is signed out.
+     */
+    public function resetPassword(Request $request, User $user): RedirectResponse
+    {
+        $this->authorizeChange($request->user(), $user);
+        if ($request->user()->is($user)) {
+            return $this->refuse('Change your own password from your profile page.');
+        }
+
+        $temporary = self::temporaryPassword();
+        DB::transaction(function () use ($request, $user, $temporary): void {
+            $user->forceFill([
+                'password' => $temporary,
+                'remember_token' => Str::random(60),
+            ])->save();
+            DB::table('sessions')->where('user_id', $user->id)->delete();
+            $this->audit($request, 'account.password_reset', 'Reset the password of '.$user->name.' ('.$user->role.').', $user);
+        });
+
+        return back()->with([
+            'status_title' => 'Password reset',
+            'status' => 'Temporary password for '.$user->name.': '.$temporary.' Give it to the account owner in person. They should change it from their profile right after signing in. This password will not be shown again.',
+        ]);
+    }
+
+    /** A readable temporary password that meets the password policy (mixed case and a number). */
+    public static function temporaryPassword(): string
+    {
+        $pick = fn (string $alphabet, int $length): string => implode('', array_map(
+            fn () => $alphabet[random_int(0, strlen($alphabet) - 1)],
+            range(1, $length),
+        ));
+
+        return $pick('ABCDEFGHJKLMNPQRSTUVWXYZ', 4).'-'.$pick('abcdefghijkmnpqrstuvwxyz', 4).'-'.$pick('23456789', 4);
+    }
+
+    /** A refused account action returns to the list with a message instead of an error page. */
+    private function refuse(string $message): RedirectResponse
+    {
+        return back()->withErrors(['account' => $message])->with('error_title', 'Action not completed');
     }
 
     private function authorizeChange(User $actor, User $target): void

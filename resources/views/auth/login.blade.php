@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>CLCST Library Account Sign In</title>
+    <title>Sign In - CLCST Library Management System</title>
     @include('partials.favicon')
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}?v={{ filemtime(public_path('css/fonts.css')) }}">
     <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}?v={{ filemtime(public_path('css/tailwind.css')) }}">
@@ -20,7 +20,7 @@
         </a>
         <div class="login-story-copy">
             <p class="login-eyebrow">CLCST Main Library</p>
-            <h2>The college library,<br><em>at your desk.</em></h2>
+            <h2>The college library, <br><em>at your desk.</em></h2>
             <p>Search the collection, reserve a title, and keep track of every loan and due date from one account.</p>
             <dl class="login-facts">
                 <div><dt>Weekdays</dt><dd>8:00 AM &ndash; 8:00 PM</dd></div>

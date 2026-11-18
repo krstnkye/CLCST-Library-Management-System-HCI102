@@ -8,7 +8,7 @@
             <h1 class="font-headline text-2xl font-bold">My Reservations</h1>
             <p class="mt-1 text-sm text-on-surface-variant">You can hold up to {{ $policy['max_reservations'] }} titles at once. Ready books are kept for {{ $policy['pickup_days'] }} days.</p>
         </div>
-        <a class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-on-primary hover:bg-primary-container" href="{{ route('books.catalog') }}"><span class="material-symbols-outlined text-base">add</span>Reserve a book</a>
+        <a class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-on-primary hover:bg-primary-container" href="{{ route('books.catalog') }}"><span aria-hidden="true" class="material-symbols-outlined text-base">add</span>Reserve a book</a>
     </header>
 
     @include('partials.patron-reservations')

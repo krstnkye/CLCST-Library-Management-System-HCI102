@@ -25,8 +25,8 @@
         <ul class="divide-y divide-[#EAE7E0]">
             @foreach ($book->copies as $copy)
                 <li class="flex flex-wrap items-center justify-between gap-2 px-5 py-3 text-sm">
-                    <div><p class="font-mono font-bold">{{ $copy->copy_code }} <span class="font-normal text-[#827C6F]">#{{ $copy->barcode }}</span></p>
-                        <p class="text-xs text-[#777166]">{{ $copy->status === 'on_loan' ? 'On loan to '.$copy->activeLoan?->user->name.', due '.$copy->activeLoan?->due_at->format('M d') : ucfirst(str_replace('_', ' ', $copy->status)) }}</p></div>
+                    <div><p class="font-mono font-bold">{{ $copy->copy_code }} <span class="font-normal text-muted">#{{ $copy->barcode }}</span></p>
+                        <p class="text-xs text-muted">{{ $copy->status === 'on_loan' ? 'On loan to '.$copy->activeLoan?->user->name.', due '.$copy->activeLoan?->due_at->format('M d') : ucfirst(str_replace('_', ' ', $copy->status)) }}</p></div>
                     @unless ($copy->status === 'on_loan')
                         @include('librarian.pages._copy-status', ['copy' => $copy])
                     @endunless

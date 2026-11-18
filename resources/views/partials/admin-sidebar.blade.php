@@ -12,14 +12,14 @@
         ['profile', 'account_circle', 'My Profile', route('admin.section', 'profile')],
     ];
 @endphp
-<aside id="administrator-sidebar" class="clcst-sidebar fixed bottom-0 left-0 top-16 z-30 hidden w-64 flex-col border-r border-slate-200 bg-white md:flex">
+<aside id="administrator-sidebar" aria-label="Main menu" class="clcst-sidebar fixed bottom-0 left-0 top-16 z-30 hidden w-64 flex-col border-r border-slate-200 bg-white md:flex">
     <div id="administrator-sidebar-scroll" class="flex-1 overflow-y-auto p-4">
         <div class="mb-4 rounded-md border border-emerald-200 bg-emerald-50 p-3"><p class="text-sm font-bold text-emerald-900">Administrator Access</p><p class="mt-1 text-xs text-emerald-800">Accounts, records, reports, and data tools</p></div>
         <nav aria-label="Administrator navigation" class="space-y-1">
             @foreach($items as [$page,$icon,$label,$href])
-                <a href="{{ $href }}" class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium {{ $activePage === $page ? 'bg-emerald-900 text-white' : 'text-slate-700 hover:bg-slate-100' }}" @if ($activePage === $page) aria-current="page" @endif><span class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
+                <a href="{{ $href }}" class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium {{ $activePage === $page ? 'bg-emerald-900 text-white' : 'text-slate-700 hover:bg-slate-100' }}" @if ($activePage === $page) aria-current="page" @endif><span aria-hidden="true" class="material-symbols-outlined text-xl">{{ $icon }}</span><span>{{ $label }}</span></a>
             @endforeach
         </nav>
     </div>
-    <div class="border-t border-slate-200 p-4"><form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-red-700 hover:bg-red-50"><span class="material-symbols-outlined text-xl">logout</span>Log Out</button></form></div>
+    <div class="border-t border-slate-200 p-4"><form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-red-700 hover:bg-red-50"><span aria-hidden="true" class="material-symbols-outlined text-xl">logout</span>Log Out</button></form></div>
 </aside>

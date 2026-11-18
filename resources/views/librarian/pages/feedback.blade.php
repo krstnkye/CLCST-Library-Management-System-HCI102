@@ -12,7 +12,7 @@
                     <p class="text-xs font-bold uppercase text-[#284A30]">{{ $libraryRequest->typeLabel() }} - REQ-{{ str_pad((string) $libraryRequest->id, 5, '0', STR_PAD_LEFT) }}</p>
                     <p class="mt-1 font-bold">{{ $libraryRequest->subject }}</p>
                     @if ($libraryRequest->details)<p class="mt-1 whitespace-pre-line text-sm text-[#524E45]">{{ $libraryRequest->details }}</p>@endif
-                    <p class="mt-2 text-xs text-[#827C6F]">From {{ $libraryRequest->user->name }} ({{ $libraryRequest->user->roleLabel() }}) - {{ $libraryRequest->created_at->format('M d, Y g:i A') }}@if ($libraryRequest->handler) - last handled by {{ $libraryRequest->handler->name }}@endif</p>
+                    <p class="mt-2 text-xs text-muted">From {{ $libraryRequest->user->name }} ({{ $libraryRequest->user->roleLabel() }}) - {{ $libraryRequest->created_at->format('M d, Y g:i A') }}@if ($libraryRequest->handler) - last handled by {{ $libraryRequest->handler->name }}@endif</p>
                 </div>
                 <form class="space-y-2 lg:col-span-5" method="POST" action="{{ route('librarian.requests.update', $libraryRequest) }}">
                     @csrf
@@ -29,7 +29,7 @@
                 </form>
             </li>
         @empty
-            <li class="px-5 py-10 text-center text-sm text-[#777166]">No requests yet.</li>
+            <li class="px-5 py-10 text-center text-sm text-muted">No requests yet.</li>
         @endforelse
     </ul>
     @if ($requests->hasPages())<div class="border-t border-[#EAE7E0] p-4">{{ $requests->links() }}</div>@endif

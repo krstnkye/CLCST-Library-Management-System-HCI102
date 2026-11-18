@@ -137,7 +137,7 @@ class AccessControlTest extends TestCase
         $response = $this->get(route('register'));
 
         $response->assertOk()
-            ->assertSee('Create your CLCST library account')
+            ->assertSee('Create an Account - CLCST Library Management System')
             ->assertSee('value="student"', false)
             ->assertSee('value="faculty"', false)
             ->assertSee('value="librarian"', false)
@@ -154,7 +154,7 @@ class AccessControlTest extends TestCase
         $response = $this->get(route('login'));
 
         $response->assertOk()
-            ->assertSee('CLCST Library Account Sign In')
+            ->assertSee('Sign In - CLCST Library Management System')
             ->assertSee('data-role="student"', false)
             ->assertSee('data-role="faculty"', false)
             ->assertSee('data-role="librarian"', false)

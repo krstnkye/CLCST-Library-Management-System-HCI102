@@ -306,7 +306,7 @@ class LibrarianController extends Controller
         }
         $message = 'Checked in "'.$loan->copy->book->title.'" from '.$loan->user->name.'.';
         if ($fine) {
-            $message .= ' Returned '.$fine->days_late.' day(s) late: a fine of PHP '.number_format((float) $fine->amount, 2).' was added to the account.';
+            $message .= ' Returned '.$fine->days_late.' '.\Illuminate\Support\Str::plural('day', (int) $fine->days_late).' late: a fine of PHP '.number_format((float) $fine->amount, 2).' was added to the account.';
         }
         $next = Reservation::open()->where('library_book_id', $loan->copy->library_book_id)->where('status', 'pending')->oldest()->first();
         if ($next) {
@@ -384,21 +384,21 @@ class LibrarianController extends Controller
         $stats = $this->stats();
         $alerts = [];
         if ($stats['pendingAccounts'] > 0) {
-            $alerts[] = ['how_to_reg', 'amber', $stats['pendingAccounts'].' account application(s) waiting for review.', route('management.accounts.index'), 'Review accounts'];
+            $alerts[] = ['how_to_reg', 'amber', $stats['pendingAccounts'].' account '.\Illuminate\Support\Str::plural('application', $stats['pendingAccounts']).' waiting for review.', route('management.accounts.index'), 'Review accounts'];
         }
         if ($stats['overdueBooks'] > 0) {
-            $alerts[] = ['schedule', 'red', $stats['overdueBooks'].' book(s) are overdue.', route('librarian.section', 'overdue'), 'View overdue'];
+            $alerts[] = ['schedule', 'red', $stats['overdueBooks'].' '.\Illuminate\Support\Str::plural('book', $stats['overdueBooks']).' '.($stats['overdueBooks'] === 1 ? 'is' : 'are').' overdue.', route('librarian.section', 'overdue'), 'View overdue'];
         }
         $waiting = Reservation::where('status', 'pending')->whereHas('book.copies', fn ($copy) => $copy->where('status', 'available'))->count();
         if ($waiting > 0) {
-            $alerts[] = ['bookmark', 'blue', $waiting.' reservation(s) can be filled from shelf copies.', route('librarian.section', 'borrow-requests'), 'Serve reservations'];
+            $alerts[] = ['bookmark', 'blue', $waiting.' '.\Illuminate\Support\Str::plural('reservation', $waiting).' can be filled from shelf copies.', route('librarian.section', 'borrow-requests'), 'Serve reservations'];
         }
         $expired = Reservation::where('status', 'ready')->where('ready_until', '<', now())->count();
         if ($expired > 0) {
-            $alerts[] = ['event_busy', 'amber', $expired.' pickup hold(s) have passed their pickup date.', route('librarian.section', 'reservations'), 'Review holds'];
+            $alerts[] = ['event_busy', 'amber', $expired.' pickup '.\Illuminate\Support\Str::plural('hold', $expired).' '.($expired === 1 ? 'has' : 'have').' passed '.($expired === 1 ? 'its' : 'their').' pickup date.', route('librarian.section', 'reservations'), 'Review holds'];
         }
         if ($stats['openRequests'] > 0) {
-            $alerts[] = ['forum', 'blue', $stats['openRequests'].' patron request(s) need a response.', route('librarian.section', 'feedback'), 'Open requests'];
+            $alerts[] = ['forum', 'blue', $stats['openRequests'].' patron '.\Illuminate\Support\Str::plural('request', $stats['openRequests']).' '.($stats['openRequests'] === 1 ? 'needs' : 'need').' a response.', route('librarian.section', 'feedback'), 'Open requests'];
         }
         $repair = BookCopy::where('status', 'maintenance')->count();
         if ($repair > 0) {

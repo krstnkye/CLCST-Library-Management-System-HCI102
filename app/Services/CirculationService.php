@@ -172,7 +172,8 @@ class CirculationService
                 $this->fail('Overdue books cannot be renewed online. Please return it to the library desk.');
             }
             if ($loan->renewals >= $this->settings->get('max_renewals')) {
-                $this->fail('This loan has already used its '.$this->settings->get('max_renewals').' allowed renewal(s).');
+                $max = (int) $this->settings->get('max_renewals');
+                $this->fail('This loan has already used its '.$max.' allowed '.\Illuminate\Support\Str::plural('renewal', $max).'.');
             }
             $waiting = Reservation::query()->open()->where('library_book_id', $loan->copy->library_book_id)->count();
             if ($waiting > 0 && $loan->copy->book->copies()->where('status', 'available')->count() < $waiting) {

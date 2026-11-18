@@ -55,6 +55,8 @@
             const id = `ui-table-filter-${index}`;
             tools.innerHTML = `<label class="ui-table-filter" for="${id}"><span class="material-symbols-outlined" aria-hidden="true">filter_list</span><span class="sr-only">Filter rows in this table</span><input id="${id}" type="search" placeholder="Filter these ${rows.length} rows..." autocomplete="off"></label><span class="ui-table-count" aria-live="polite">${rows.length} shown</span>`;
             anchor.before(tools);
+            // Cards that put the table edge to edge have no padding, so give the filter its own.
+            if (parseFloat(getComputedStyle(tools.parentElement).paddingLeft) < 8) tools.classList.add('is-flush');
             const input = tools.querySelector('input');
             const count = tools.querySelector('.ui-table-count');
             const empty = document.createElement('tr');
@@ -74,6 +76,20 @@
                 empty.hidden = shown > 0;
                 count.textContent = `${shown} shown`;
             });
+        });
+    };
+
+    // Wide tables scroll sideways on small screens. Keyboard users can only scroll a region that can
+    // take focus, so every scrolling table wrapper becomes a labelled, focusable region (WCAG 2.1.1).
+    const scrollRegions = () => {
+        document.querySelectorAll('main :is(.overflow-x-auto, .overflow-auto)').forEach((region) => {
+            if (region.hasAttribute('tabindex') || region.querySelector('a, button, input, select, textarea, [tabindex]')) return;
+            const table = region.querySelector('table');
+            if (!table) return;
+            const heading = region.closest('section, article, .library-section')?.querySelector('h2, h3');
+            region.tabIndex = 0;
+            region.setAttribute('role', 'region');
+            region.setAttribute('aria-label', heading ? `${heading.textContent.trim()} table` : 'Table');
         });
     };
 
@@ -204,6 +220,7 @@
     const initialize = () => {
         progress();
         tableFilters();
+        scrollRegions();
         reveal();
         commandPalette();
         backToTop();

@@ -8,7 +8,7 @@
         ['how_to_reg', 'New accounts', 'Account Review lists applications for the roles you are allowed to approve. Open the uploaded ID before approving.'],
     ] as [$icon, $title, $body])
         <article class="rounded-lg border border-[#E1DCD3] bg-white p-5 shadow-sm">
-            <h2 class="flex items-center gap-2 font-display text-base font-bold"><span class="material-symbols-outlined text-[#284A30]">{{ $icon }}</span>{{ $title }}</h2>
+            <h2 class="flex items-center gap-2 font-display text-base font-bold"><span aria-hidden="true" class="material-symbols-outlined text-[#284A30]">{{ $icon }}</span>{{ $title }}</h2>
             <p class="mt-2 text-sm leading-6 text-[#524E45]">{{ $body }}</p>
         </article>
     @endforeach

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Announcement;
+use App\Models\AuditLog;
 use App\Models\BookCopy;
 use App\Models\Fine;
 use App\Models\LibraryBook;
@@ -121,6 +122,12 @@ class LibraryDemoSeeder extends Seeder
             $book->syncCopyCounts();
         }
 
+        // Record the desk actions too, so the dashboards and activity logs show the demo history.
+        $this->logged($staff, 'loan.issued', 'Lent "'.$book->title.'" ('.$copy->barcode.') to '.$patron->name.'.', ['loan_id' => $loan->id], $loan->borrowed_at);
+        if ($returned !== null) {
+            $this->logged($staff, 'loan.returned', 'Checked in "'.$book->title.'" ('.$copy->barcode.') from '.$patron->name.'.', ['loan_id' => $loan->id], $loan->returned_at);
+        }
+
         return $loan;
     }
 
@@ -139,6 +146,21 @@ class LibraryDemoSeeder extends Seeder
 
         if ($prefix) {
             $fine->update(['receipt_no' => $prefix.'-'.$loan->returned_at->format('Ymd').'-'.str_pad((string) $fine->id, 5, '0', STR_PAD_LEFT)]);
+            $this->logged($staff, $status === 'paid' ? 'fine.paid' : 'fine.waived', ($status === 'paid' ? 'Recorded payment of PHP ' : 'Waived PHP ').number_format((float) $fine->amount, 2).' for '.$loan->user->name.'.', ['fine_id' => $fine->id], $loan->returned_at->copy()->addMinutes(5));
         }
+    }
+
+    private function logged(User $actor, string $event, string $description, array $metadata, $at): void
+    {
+        AuditLog::query()->forceCreate([
+            'user_id' => $actor->id,
+            'event' => $event,
+            'description' => $description,
+            'ip_address' => '127.0.0.1',
+            'user_agent' => 'Demo data',
+            'metadata' => $metadata,
+            'created_at' => $at,
+            'updated_at' => $at,
+        ]);
     }
 }

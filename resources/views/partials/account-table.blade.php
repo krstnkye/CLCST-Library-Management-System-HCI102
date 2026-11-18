@@ -1,7 +1,7 @@
 {{-- Account list with search, ID document viewer, and approve, suspend, reactivate and password reset actions limited to the viewer's role. --}}
 <section class="overflow-hidden rounded-md border border-slate-200 bg-white">
     <form class="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between" method="GET" action="{{ $searchRoute }}" role="search">
-        <p class="text-xs text-slate-500">{{ $users->total() }} account(s). You can manage: {{ collect(auth()->user()->manageableRoles())->map(fn ($role) => ucfirst($role))->join(', ') }}.</p>
+        <p class="text-xs text-slate-500">{{ $users->total() }} {{ \Illuminate\Support\Str::plural('account', $users->total()) }}. You can manage: {{ collect(auth()->user()->manageableRoles())->map(fn ($role) => ['admin' => 'administrators', 'superadmin' => 'super administrators'][$role] ?? $role.'s')->join(', ') }}.</p>
         <div class="flex flex-wrap gap-2">
             @foreach (request()->only(['role', 'status']) as $key => $value)<input type="hidden" name="{{ $key }}" value="{{ $value }}">@endforeach
             <label class="sr-only" for="account-search">Search accounts</label>
@@ -15,7 +15,7 @@
             <tbody class="divide-y divide-slate-100">
                 @forelse ($users as $user)
                     <tr>
-                        <td class="px-5 py-4"><p class="font-semibold">{{ $user->name }}</p><p class="text-xs text-slate-500">{{ $user->patron_id }} · {{ $user->email }}</p><p class="text-xs text-slate-400">Registered {{ $user->created_at?->format('M d, Y') }}</p></td>
+                        <td class="px-5 py-4"><p class="font-semibold">{{ $user->name }}</p><p class="text-xs text-slate-500">{{ $user->patron_id }} · {{ $user->email }}</p><p class="text-xs text-slate-600">Registered {{ $user->created_at?->format('M d, Y') }}</p></td>
                         <td class="px-5 py-4">{{ $user->roleLabel() }}</td>
                         <td class="px-5 py-4 text-slate-600">{{ $user->program_or_department ?: 'Not provided' }}</td>
                         <td class="px-5 py-4"><span class="rounded-full px-2 py-1 text-xs font-semibold {{ $user->status === 'active' ? 'bg-emerald-100 text-emerald-800' : ($user->status === 'pending' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800') }}">{{ ucfirst($user->status) }}</span></td>

@@ -6,7 +6,7 @@
         <div><label class="mb-1.5 block text-sm font-bold" for="announcement-body">Message</label><textarea id="announcement-body" name="body" rows="5" required maxlength="2000" class="w-full rounded-lg border-[#D6D2CB] text-sm">{{ old('body') }}</textarea></div>
         <div><label class="mb-1.5 block text-sm font-bold" for="announcement-audience">Show to</label><select id="announcement-audience" name="audience" class="w-full rounded-lg border-[#D6D2CB] text-sm">@foreach (\App\Models\Announcement::AUDIENCES as $value => $label)<option value="{{ $value }}" @selected(old('audience') === $value)>{{ $label }}</option>@endforeach</select></div>
         <button class="rounded-lg bg-[#284A30] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#183020]" type="submit">Publish</button>
-        <p class="text-xs text-[#777166]">Announcements appear immediately in student and faculty notifications.</p>
+        <p class="text-xs text-muted">Announcements appear immediately in student and faculty notifications.</p>
     </form>
 
     <section class="rounded-lg border border-[#E1DCD3] bg-white shadow-sm xl:col-span-7">
@@ -17,12 +17,12 @@
                     <div class="min-w-0 break-words">
                         <p class="font-bold">{{ $announcement->title }} <span class="ml-1 rounded bg-[#F4F2EF] px-1.5 py-0.5 text-[10px] font-bold text-[#284A30]">{{ \App\Models\Announcement::AUDIENCES[$announcement->audience] ?? $announcement->audience }}</span></p>
                         <p class="mt-1 text-sm text-[#524E45]">{{ $announcement->body }}</p>
-                        <p class="mt-1 text-xs text-[#827C6F]">{{ $announcement->published_at->format('M d, Y g:i A') }} by {{ $announcement->author?->name ?? 'Former staff' }}</p>
+                        <p class="mt-1 text-xs text-muted">{{ $announcement->published_at->format('M d, Y g:i A') }} by {{ $announcement->author?->name ?? 'Former staff' }}</p>
                     </div>
                     <form method="POST" action="{{ route('librarian.announcements.destroy', $announcement) }}" data-confirm="It will disappear from student and faculty notifications." data-confirm-title="Remove this announcement?" data-confirm-detail="{{ $announcement->title }}" data-confirm-label="Remove" class="shrink-0">@csrf @method('DELETE')<button class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-50" type="submit">Remove</button></form>
                 </li>
             @empty
-                <li class="px-5 py-10 text-center text-sm text-[#777166]">Nothing published yet.</li>
+                <li class="px-5 py-10 text-center text-sm text-muted">Nothing published yet.</li>
             @endforelse
         </ul>
     </section>

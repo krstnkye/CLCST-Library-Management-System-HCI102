@@ -2,13 +2,13 @@
         <h2 id="open-heading" class="border-b border-[#EDEAE5] px-5 py-4 font-headline text-lg font-bold">Open reservations ({{ $openReservations->count() }})</h2>
         <div class="overflow-x-auto">
             <table class="w-full min-w-[720px] text-left text-sm">
-                <thead class="bg-surface-container-low text-[10px] uppercase text-outline">
+                <thead class="bg-surface-container-low text-[10px] uppercase text-muted">
                     <tr><th class="px-5 py-3">Book</th><th class="px-5 py-3">Requested</th><th class="px-5 py-3">Status</th><th class="px-5 py-3">Queue</th><th class="px-5 py-3 text-right">Action</th></tr>
                 </thead>
                 <tbody class="divide-y divide-outline-variant/50">
                     @forelse ($openReservations as $reservation)
                         <tr>
-                            <td class="px-5 py-4"><p class="font-semibold">{{ $reservation->book->title }}</p><p class="text-xs text-outline">{{ $reservation->book->author }} - {{ $reservation->book->call_number }}</p></td>
+                            <td class="px-5 py-4"><p class="font-semibold">{{ $reservation->book->title }}</p><p class="text-xs text-muted">{{ $reservation->book->author }} - {{ $reservation->book->call_number }}</p></td>
                             <td class="px-5 py-4 text-xs">{{ $reservation->created_at->format('M d, Y g:i A') }}</td>
                             <td class="px-5 py-4">
                                 @if ($reservation->status === 'ready')

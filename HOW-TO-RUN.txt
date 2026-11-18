@@ -47,6 +47,8 @@ Windows: double-click  START-WINDOWS.bat
 Mac / Linux: open Terminal in this folder and run  ./start-mac-linux.sh
 
 The first start prepares the project and loads demo data (a few seconds).
+Every start also applies any pending database updates, so pulling new code does
+not leave the local database behind the application.
 Your browser then opens  http://127.0.0.1:8001
 Keep the black window open while you use the system. Close it to stop.
 

@@ -128,4 +128,13 @@ class SystemAuditTest extends TestCase
     {
         $this->assertMatchesRegularExpression('/^APP_DEBUG=false$/m', file_get_contents(base_path('.env.example')));
     }
+
+    public function test_launchers_apply_pending_migrations_on_every_start(): void
+    {
+        $windows = file_get_contents(base_path('START-WINDOWS.bat'));
+        $unix = file_get_contents(base_path('start-mac-linux.sh'));
+
+        $this->assertSame(1, substr_count($windows, 'php artisan migrate --force'));
+        $this->assertSame(1, substr_count($unix, 'php artisan migrate --force'));
+    }
 }

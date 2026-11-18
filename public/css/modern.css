@@ -202,9 +202,9 @@ body.clcst-portal:not(.library-login) { background:var(--ui-bg) !important; colo
 .clcst-portal main span.rounded-full[class*=bg-]:not(.material-symbols-outlined):not([class*=h-]):not([class*=w-]) {
     border-radius:4px !important; font-weight:600 !important; letter-spacing:.03em; box-shadow:inset 0 0 0 1px rgba(31,29,26,.07);
 }
-.clcst-portal main [role=status],.clcst-portal main [role=alert] { border-radius:var(--ui-radius-sm) !important; box-shadow:none; border-left-width:3px !important; }
-.clcst-portal main [role=status]:not([aria-live]) { background:var(--ui-surface) !important; border-color:var(--ui-line) !important; border-left-color:var(--ui-accent) !important; color:var(--ui-ink) !important; }
-.clcst-portal main [role=alert] { background:#faf1ef !important; border-color:#e6bfb7 !important; border-left-color:#85362a !important; }
+.clcst-portal main [role=status],.clcst-portal main [role=alert] { border:1px solid var(--ui-line) !important; border-radius:var(--ui-radius-sm) !important; box-shadow:none; }
+.clcst-portal main [role=status]:not([aria-live]) { background:var(--ui-surface) !important; color:var(--ui-ink) !important; }
+.clcst-portal main [role=alert] { background:#faf1ef !important; border-color:#e6bfb7 !important; }
 
 /* ---------- Patron e-pass: a dark card with a brass frame ---------- */
 .clcst-portal .library-pass {
@@ -315,8 +315,8 @@ body.clcst-portal:not(.library-login) { background:var(--ui-bg) !important; colo
 .login-roles .role-card + .role-card { box-shadow:inset 1px 0 0 var(--ui-line) !important; }
 .login-roles .role-card .material-symbols-outlined { font-size:21px !important; font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; }
 .login-roles .role-card:hover { background:var(--ui-bg) !important; color:var(--ui-ink) !important; }
-.login-roles .role-card[aria-pressed=true] { background:var(--ui-accent) !important; color:#f6f3ec !important; transform:none; }
-.login-roles .role-card[aria-pressed=true] .material-symbols-outlined { color:#d8bc7c; }
+.login-roles .role-card[aria-checked=true] { background:var(--ui-accent) !important; color:#f6f3ec !important; transform:none; }
+.login-roles .role-card[aria-checked=true] .material-symbols-outlined { color:#d8bc7c; }
 .login-role-help { color:var(--ui-muted) !important; }
 .login-role-help p { animation:ui-fade 220ms ease both; }
 .login-form label { color:var(--ui-ink); font-weight:500 !important; }
@@ -357,7 +357,7 @@ body.clcst-portal:not(.library-login) { background:var(--ui-bg) !important; colo
 .registration-upload:hover { border-color:var(--ui-accent) !important; }
 .registration-upload > .material-symbols-outlined { background:transparent !important; border:1px solid var(--ui-line-strong); color:var(--ui-accent) !important; font-variation-settings:'FILL' 0,'wght' 300; }
 .registration-upload strong { color:var(--ui-ink) !important; }
-.registration-note { border-radius:0 6px 6px 0; border-left:2px solid var(--ui-gold) !important; background:var(--ui-gold-soft) !important; color:#574222 !important; }
+.registration-note { border:1px solid color-mix(in srgb,var(--ui-gold) 45%,#fff) !important; border-radius:6px; background:var(--ui-gold-soft) !important; color:#574222 !important; }
 .registration-actions > a { color:var(--ui-muted) !important; }
 .registration-next { color:var(--ui-muted) !important; }
 .registration-next b { background:transparent !important; border:1px solid var(--ui-line-strong); color:var(--ui-ink) !important; }
@@ -414,6 +414,13 @@ body.clcst-portal:not(.library-login) { background:var(--ui-bg) !important; colo
     html.sidebar-open .clcst-portal .clcst-sidebar { transform:none; visibility:visible; box-shadow:0 30px 60px -20px rgba(0,0,0,.5); }
     html.sidebar-open { overflow:hidden; }
     .clcst-portal .clcst-main { padding-bottom:2rem !important; }
+}
+
+@media (max-width:480px) {
+    .clcst-portal:not(.library-login) .clcst-topbar { padding-left:12px !important; padding-right:12px !important; }
+    .clcst-portal:not(.library-login) .clcst-topbar .clcst-brand-wrap > a > div { display:none !important; }
+    .clcst-portal:not(.library-login) .clcst-topbar > div:last-child { gap:6px !important; }
+    .clcst-portal:not(.library-login) .clcst-topbar > div:last-child > .h-6.w-px { display:none !important; }
 }
 
 /* Screen-reader-only labels inside a scrolling table are positioned against the table wrapper,

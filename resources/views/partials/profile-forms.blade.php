@@ -31,7 +31,7 @@
         </div>
     </div>
 </section>
-<script>
+<script nonce="{{ $cspNonce }}">
     (() => {
         const input = document.querySelector('[data-photo-input]');
         if (!input) return;

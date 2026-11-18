@@ -26,7 +26,7 @@
         @if (session('status') || $errors->any())<div class="mb-5 space-y-3">@include('partials.flash')</div>@endif
         @yield('content')
     </div></main>
-    <script>
+    <script nonce="{{ $cspNonce }}">
         (() => { const button=document.getElementById('administrator-menu-button'), sidebar=document.getElementById('administrator-sidebar'), overlay=document.getElementById('administrator-menu-overlay'); if(!button||!sidebar||!overlay)return; const toggle=()=>{sidebar.classList.toggle('hidden');sidebar.classList.toggle('flex');overlay.classList.toggle('hidden')}; button.addEventListener('click',toggle);overlay.addEventListener('click',toggle); })();
     </script>
 </body>

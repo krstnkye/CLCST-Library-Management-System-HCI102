@@ -66,7 +66,7 @@
         </div>
     </main>
 
-    <script>
+    <script nonce="{{ $cspNonce }}">
         (() => {
             const button = document.getElementById('librarian-menu-button');
             const sidebar = document.getElementById('librarian-sidebar');

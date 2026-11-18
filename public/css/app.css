@@ -159,7 +159,7 @@ body { min-width:320px; }
 .login-roles { display:flex; flex-wrap:wrap; gap:7px; }
 .login-roles .role-card { display:flex; align-items:center; gap:7px; padding:10px 13px; background:#fff; border:1px solid #d7e0d8; border-radius:6px; color:#5a6c5f; font-size:13px; font-weight:500; box-shadow:none; }
 .login-roles .role-card .material-symbols-outlined { font-size:17px; }
-.login-roles .role-card[aria-pressed=true] { background:#e5eedf; border-color:#315e3f; color:#174c30; box-shadow:inset 0 -2px #315e3f; }
+.login-roles .role-card[aria-checked=true] { background:#e5eedf; border-color:#315e3f; color:#174c30; box-shadow:inset 0 -2px #315e3f; }
 .login-role-help { min-height:38px; margin:10px 0 20px; font-size:13px; line-height:1.6; color:#68756d; }
 .login-form { display:grid; gap:20px; }
 .login-form label { font-size:14px; font-weight:600; }
@@ -194,7 +194,7 @@ body { min-width:320px; }
 .registration-role-grid .role-card strong { display:block; font-size:14px; }
 .registration-role-grid .role-card small { display:block; margin-top:2px; color:#77857c; font-size:11px; line-height:1.3; }
 .registration-role-grid .role-check { align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:#165740; color:#fff; }
-.registration-note { display:flex; align-items:flex-start; gap:8px; margin-top:12px; padding:11px 13px; border-left:3px solid #d8b55f; background:#f5f1e4; color:#62552f; font-size:12px; line-height:1.55; }
+.registration-note { display:flex; align-items:flex-start; gap:8px; margin-top:12px; padding:11px 13px; border:1px solid #e6d9ad; border-radius:6px; background:#f5f1e4; color:#62552f; font-size:12px; line-height:1.55; }
 .registration-note .material-symbols-outlined { margin-top:1px; font-size:15px; }
 .registration-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px 14px; margin-top:22px; }
 .registration-fields label { display:block; margin-bottom:7px; color:#2b3e34; font-size:13px; font-weight:600; }

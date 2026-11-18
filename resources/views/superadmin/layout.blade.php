@@ -24,6 +24,6 @@
     @include('partials.superadmin-sidebar', ['activePage' => $activePage])
     <div class="fixed inset-0 z-20 hidden bg-black/30 md:hidden" id="admin-menu-overlay"></div>
     <main class="clcst-main min-h-screen pt-16 md:ml-72"><div class="mx-auto max-w-[1600px] p-4 md:p-6 lg:p-8">@if (session('status') || $errors->any())<div class="mb-5 space-y-3">@include('partials.flash')</div>@endif @yield('content')</div></main>
-    <script>(()=>{const button=document.getElementById('admin-menu-button');const sidebar=document.getElementById('admin-sidebar');const overlay=document.getElementById('admin-menu-overlay');if(!button||!sidebar||!overlay)return;const toggle=()=>{sidebar.classList.toggle('hidden');sidebar.classList.toggle('flex');overlay.classList.toggle('hidden')};button.addEventListener('click',toggle);overlay.addEventListener('click',toggle)})();</script>
+    <script nonce="{{ $cspNonce }}">(()=>{const button=document.getElementById('admin-menu-button');const sidebar=document.getElementById('admin-sidebar');const overlay=document.getElementById('admin-menu-overlay');if(!button||!sidebar||!overlay)return;const toggle=()=>{sidebar.classList.toggle('hidden');sidebar.classList.toggle('flex');overlay.classList.toggle('hidden')};button.addEventListener('click',toggle);overlay.addEventListener('click',toggle)})();</script>
 </body>
 </html>

@@ -72,6 +72,19 @@ class JwtApiTest extends TestCase
         $this->getJson('/api/v1/auth/me', ['Authorization' => "Bearer {$token}"])->assertUnauthorized();
     }
 
+    public function test_token_from_a_different_issuer_is_rejected(): void
+    {
+        $student = User::factory()->create(['password' => 'ApiPass2026']);
+        $token = Jwt::issue([
+            'sub' => $student->id,
+            'role' => $student->role,
+            'pwd' => Jwt::passwordStamp($student->password),
+            'iss' => 'https://not-the-library.example',
+        ]);
+
+        $this->getJson('/api/v1/auth/me', ['Authorization' => "Bearer {$token}"])->assertUnauthorized();
+    }
+
     public function test_suspended_accounts_lose_api_access_immediately(): void
     {
         $student = User::factory()->create(['password' => 'ApiPass2026']);

@@ -125,6 +125,21 @@ class SecurityTest extends TestCase
             ->assertHeader('X-Frame-Options', 'SAMEORIGIN')
             ->assertHeader('X-Content-Type-Options', 'nosniff')
             ->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+
+        $policy = (string) $response->headers->get('Content-Security-Policy');
+        $this->assertStringContainsString("script-src 'self' 'nonce-", $policy);
+        $this->assertStringNotContainsString("script-src 'self' 'unsafe-inline'", $policy);
+        $this->assertMatchesRegularExpression('/<script nonce="[A-Za-z0-9+\/=]+">/', $response->getContent());
+    }
+
+    public function test_sign_in_role_picker_has_single_choice_semantics(): void
+    {
+        $this->get(route('login'))
+            ->assertOk()
+            ->assertSee('role="radiogroup"', false)
+            ->assertSee('role="radio"', false)
+            ->assertSee('aria-checked="true"', false)
+            ->assertDontSee('aria-pressed=', false);
     }
 
     public function test_csv_exports_neutralize_spreadsheet_formulas(): void

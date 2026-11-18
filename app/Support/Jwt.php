@@ -62,7 +62,16 @@ class Jwt
 
         $payload = json_decode(self::base64UrlDecode($payload64), true);
         $now = time();
-        if (! is_array($payload) || ($payload['exp'] ?? 0) < $now || ($payload['nbf'] ?? 0) > $now + 30) {
+        $issuer = rtrim((string) config('app.url'), '/');
+        if (! is_array($payload)
+            || ! isset($payload['sub'], $payload['iss'], $payload['iat'], $payload['nbf'], $payload['exp'], $payload['jti'])
+            || filter_var($payload['sub'], FILTER_VALIDATE_INT) === false
+            || ! is_numeric($payload['iat']) || ! is_numeric($payload['nbf']) || ! is_numeric($payload['exp'])
+            || ! is_string($payload['jti']) || $payload['jti'] === ''
+            || ! hash_equals($issuer, rtrim((string) $payload['iss'], '/'))
+            || (int) $payload['iat'] > $now + 30
+            || (int) $payload['exp'] < $now
+            || (int) $payload['nbf'] > $now + 30) {
             return null;
         }
         if (isset($payload['jti']) && Cache::has('jwt-revoked:'.$payload['jti'])) {

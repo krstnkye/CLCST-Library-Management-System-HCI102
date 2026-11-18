@@ -18,6 +18,9 @@ if [ ! -f database/database.sqlite ]; then
   php artisan migrate --seed --force
 fi
 
+# Existing copies may have new tables after an update; apply them before serving.
+php artisan migrate --force || exit 1
+
 echo
 echo "The library system is starting."
 echo "Open http://127.0.0.1:8001 in your browser."

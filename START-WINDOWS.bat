@@ -76,6 +76,14 @@ if defined NEEDS_DB (
   )
 )
 
+rem ---- Existing copies may have new tables after an update; apply them before serving ----
+php artisan migrate --force
+if errorlevel 1 (
+  echo The database update could not be applied. Review the message above and try again.
+  pause
+  exit /b 1
+)
+
 rem ---- Use port 8001, or 8002 if something else is already using 8001 ----
 set "PORT=8001"
 netstat -ano | findstr /r /c:":8001 .*LISTENING" >nul

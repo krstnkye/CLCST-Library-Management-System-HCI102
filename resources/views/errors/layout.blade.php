@@ -28,7 +28,7 @@
         .eyebrow::before { content:''; width:28px; height:1px; background:var(--gold); }
         h1 { font-family:'Cormorant Garamond', Georgia, serif; font-weight:600; font-size:clamp(34px, 4vw, 48px); line-height:1.1; margin:14px 0 12px; }
         p { color:var(--muted); margin:0 0 10px; }
-        .who { margin-top:18px; padding:12px 14px; border:1px solid var(--line); border-left:3px solid var(--gold); background:var(--card); border-radius:6px; font-size:14px; color:var(--ink); }
+        .who { margin-top:18px; padding:12px 14px; border:1px solid var(--line); background:var(--card); border-radius:6px; box-shadow:inset 0 2px 0 var(--gold); font-size:14px; color:var(--ink); }
         .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:26px; }
         .btn { display:inline-flex; align-items:center; gap:8px; padding:11px 18px; border-radius:6px; font-weight:600; font-size:14px; text-decoration:none; border:1px solid var(--green); cursor:pointer; font-family:inherit; }
         .btn-primary { background:var(--green); color:#fff; }

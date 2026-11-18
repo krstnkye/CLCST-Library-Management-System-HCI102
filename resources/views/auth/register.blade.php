@@ -142,7 +142,7 @@
         </div>
     </main>
 </div>
-<script>
+<script nonce="{{ $cspNonce }}">
     document.querySelectorAll('[data-password-toggle]').forEach((button)=>{
         button.addEventListener('click',()=>{
             const input=document.getElementById(button.dataset.passwordToggle);

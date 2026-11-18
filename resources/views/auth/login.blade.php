@@ -66,9 +66,9 @@
                 $selectedRole = old('role', ($signedInAs ?? null)?->role ?? 'student');
             @endphp
             <p class="login-role-label" id="role-choice-label">Choose your account type</p>
-            <div class="login-roles" role="group" aria-labelledby="role-choice-label">
+            <div class="login-roles" role="radiogroup" aria-labelledby="role-choice-label">
                 @foreach ($roles as $value => [$icon, $label])
-                    <button type="button" id="role-{{ $value }}" data-role="{{ $value }}" class="role-card" aria-pressed="{{ $selectedRole === $value ? 'true' : 'false' }}"><span class="material-symbols-outlined" aria-hidden="true">{{ $icon }}</span>{{ $label }}</button>
+                    <button type="button" role="radio" id="role-{{ $value }}" data-role="{{ $value }}" class="role-card" aria-checked="{{ $selectedRole === $value ? 'true' : 'false' }}" tabindex="{{ $selectedRole === $value ? '0' : '-1' }}"><span class="material-symbols-outlined" aria-hidden="true">{{ $icon }}</span>{{ $label }}</button>
                 @endforeach
             </div>
             <div class="login-role-help" aria-live="polite">
@@ -98,7 +98,7 @@
         <footer class="login-footer"><span>CLCST Library Management System</span><span>HCI102 Project</span></footer>
     </main>
 </div>
-<script>
+<script nonce="{{ $cspNonce }}">
 // Pressing Back from a portal must not look like a sign-out. Whenever this page is reached through
 // browser history (fresh load or restored from the back/forward cache), ask the server whether the
 // user is still signed in, and if so go straight back to their portal.
@@ -155,8 +155,8 @@ librarian:{tag:'LIBRARIAN PORTAL',icon:'local_library',description:'Manage books
 admin:{tag:'ADMINISTRATOR PORTAL',icon:'admin_panel_settings',description:'Manage library records, staff workflows, reports, and approved administrative settings.',identifier:'Administrator ID or school email',placeholder:'Example: ADM-2026-001',submit:'Sign In as Administrator'},
 superadmin:{tag:'SUPER ADMINISTRATOR PORTAL',icon:'security',description:'Manage roles, permissions, security settings, audits, and system-wide configuration.',identifier:'System administrator ID or school email',placeholder:'Example: SYS-2026-001',submit:'Sign In as Super Administrator'}};
 const roleInput=document.getElementById('role-input');const roleCards=document.querySelectorAll('[data-role]');
-function selectRole(role,picked){const d=roleDetails[role]||roleDetails.student;if(picked){roleInput.value=role}roleCards.forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.role===role)));document.getElementById('active-role-tag').textContent=d.tag;document.getElementById('active-role-icon').textContent=d.icon;document.getElementById('active-role-description').textContent=d.description;document.getElementById('identifier-label').textContent=d.identifier;document.getElementById('identifier').placeholder=d.placeholder;document.getElementById('submit-label').textContent=d.submit}
-roleCards.forEach(c=>c.addEventListener('click',()=>selectRole(c.dataset.role,true)));selectRole(roleInput.value||'student',false);
+function selectRole(role,picked){const d=roleDetails[role]||roleDetails.student;if(picked){roleInput.value=role}roleCards.forEach(c=>{const active=c.dataset.role===role;c.setAttribute('aria-checked',String(active));c.tabIndex=active?0:-1});document.getElementById('active-role-tag').textContent=d.tag;document.getElementById('active-role-icon').textContent=d.icon;document.getElementById('active-role-description').textContent=d.description;document.getElementById('identifier-label').textContent=d.identifier;document.getElementById('identifier').placeholder=d.placeholder;document.getElementById('submit-label').textContent=d.submit}
+roleCards.forEach((card,index)=>{card.addEventListener('click',()=>selectRole(card.dataset.role,true));card.addEventListener('keydown',(event)=>{let next=null;if(event.key==='ArrowRight'||event.key==='ArrowDown')next=(index+1)%roleCards.length;if(event.key==='ArrowLeft'||event.key==='ArrowUp')next=(index-1+roleCards.length)%roleCards.length;if(event.key==='Home')next=0;if(event.key==='End')next=roleCards.length-1;if(next===null)return;event.preventDefault();roleCards[next].focus();selectRole(roleCards[next].dataset.role,true)})});selectRole(roleInput.value||'student',false);
 document.getElementById('password-toggle').addEventListener('click',function(){const p=document.getElementById('password');const show=p.type==='password';p.type=show?'text':'password';document.getElementById('password-toggle-icon').textContent=show?'visibility_off':'visibility';this.setAttribute('aria-label',show?'Hide password':'Show password');this.setAttribute('title',show?'Hide password':'Show password')});
 </script>
 </body>

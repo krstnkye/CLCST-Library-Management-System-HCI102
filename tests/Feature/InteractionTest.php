@@ -76,6 +76,40 @@ class InteractionTest extends TestCase
             ->assertSessionHas('error_title', 'Reservation not placed');
     }
 
+    public function test_routine_action_status_renders_an_accessible_toast_payload(): void
+    {
+        $student = $this->student();
+
+        $this->actingAs($student)
+            ->withSession([
+                'status_title' => 'Reservation successful',
+                'status' => 'The book is now reserved for you.',
+            ])
+            ->get(route('student.dashboard'))
+            ->assertOk()
+            ->assertSee('data-flash-toast', false)
+            ->assertSee('data-toast-title="Reservation successful"', false)
+            ->assertSee('data-toast-tone="success"', false)
+            ->assertSee('The book is now reserved for you.')
+            ->assertDontSee('data-flash-modal', false);
+    }
+
+    public function test_quiet_status_stays_inline_and_does_not_render_a_toast_payload(): void
+    {
+        $student = $this->student();
+
+        $this->actingAs($student)
+            ->withSession([
+                'status' => 'Welcome back.',
+                'status_quiet' => true,
+            ])
+            ->get(route('student.dashboard'))
+            ->assertOk()
+            ->assertSee('role="status"', false)
+            ->assertSee('Welcome back.')
+            ->assertDontSee('data-flash-toast', false);
+    }
+
     public function test_scanned_isbns_without_hyphens_and_advanced_filters_find_books(): void
     {
         $student = $this->student();

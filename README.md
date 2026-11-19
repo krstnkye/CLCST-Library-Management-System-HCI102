@@ -16,7 +16,7 @@ Laravel-based HCI102 project for the Central Luzon College of Science and Techno
 
 - **Barcode and QR scanner.** The scan buttons (catalog search, sidebar "Find by barcode or ISBN", librarian desk fields, inventory and book search) open the camera and read ISBN/EAN barcodes, copy barcodes, and QR codes. Without a camera you can scan a photo or type the code. Browsers only allow the camera on `localhost`, `127.0.0.1`, or HTTPS. The scanner library is bundled in `public/js/vendor`, so it works offline.
 - **Library e-Pass.** Students and faculty can open a QR code of their school ID from the sidebar or the dashboard. Librarians scan it in the patron field when checking out a book.
-- **Confirmations and results.** Important actions (reserve, renew, cancel, check in/out, record or waive a fine, approve, suspend or reactivate an account, reset a password) ask for confirmation in a pop-up, and every action shows a success or failure pop-up afterwards.
+- **Confirmations and results.** Important actions (reserve, renew, cancel, check in/out, record or waive a fine, approve, suspend or reactivate an account, reset a password) ask for confirmation in a focused dialog. Successful additions, updates, and removals then appear as accessible toast notifications that can be dismissed or left to close automatically. Validation and security errors stay visible beside the affected task.
 - **Notifications.** Patrons can open any notification to read it in full, mark it read or unread, and mark everything read or unread at once. Read marks are stored in the `notification_reads` table.
 
 ## Sidebar and profile photos
@@ -60,6 +60,8 @@ The schema is defined in `database/migrations` and works on SQLite (local) and M
 | `notification_reads` | Which patron notifications each user has read |
 
 The full HCI 102 write-up, with screenshots of every portal, is in `documentation/CLCST-Library-Management-System-HCI-102-Documentation.docx`.
+
+The defense slide deck is in `presentation/CLCST-Library-Management-System-HCI102-Defense.pptx`. It includes presenter notes, a five-role live-demo sequence, current security and testing evidence, and screenshots captured from the working project.
 
 Foreign keys protect history (a user or copy with loans cannot be deleted), unique constraints prevent duplicate ISBNs, barcodes, school IDs, emails, and receipt numbers, and indexes cover the common lookups (status, due date, patron and title).
 

@@ -88,13 +88,50 @@
 
     /* ---------- Toast ---------- */
     let toastHost;
-    const toast = (message, tone = 'success') => {
+    const toast = (message, toneOrOptions = 'success') => {
+        const options = typeof toneOrOptions === 'string' ? { tone: toneOrOptions } : toneOrOptions;
+        const tone = options.tone || 'success';
+        const title = options.title || (tone === 'error' ? 'Action not completed' : 'Update saved');
+        const duration = Number.isFinite(options.duration) ? options.duration : 5000;
         toastHost ??= document.body.appendChild(el('div', 'ui-toasts'));
         toastHost.setAttribute('aria-live', 'polite');
-        const item = el('div', `ui-toast ui-tone-${tone}`, `${icon(tone === 'error' ? 'error' : 'check_circle')}<span>${escapeHtml(message)}</span>`);
+        toastHost.setAttribute('aria-label', 'System notifications');
+        const action = options.link?.href
+            ? `<a class="ui-toast-action" href="${escapeHtml(options.link.href)}">${escapeHtml(options.link.label || 'View')}</a>`
+            : '';
+        const item = el('div', `ui-toast ui-tone-${tone}`, `${icon(tone === 'error' ? 'error' : 'check_circle')}<span class="ui-toast-body"><strong class="ui-toast-title">${escapeHtml(title)}</strong><span class="ui-toast-message">${escapeHtml(message)}</span>${action}</span><button class="ui-toast-close" type="button" aria-label="Dismiss notification">${icon('close')}</button>`);
+        item.setAttribute('role', tone === 'error' ? 'alert' : 'status');
+        item.tabIndex = 0;
         toastHost.append(item);
         requestAnimationFrame(() => item.classList.add('is-open'));
-        setTimeout(() => { item.classList.remove('is-open'); setTimeout(() => item.remove(), 250); }, 3800);
+
+        let remaining = duration;
+        let startedAt = 0;
+        let timer;
+        const remove = () => {
+            clearTimeout(timer);
+            item.classList.remove('is-open');
+            const delay = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 250;
+            setTimeout(() => item.remove(), delay);
+        };
+        const resume = () => {
+            if (duration <= 0 || timer || !item.isConnected) return;
+            startedAt = performance.now();
+            timer = setTimeout(remove, remaining);
+        };
+        const pause = () => {
+            if (!timer) return;
+            clearTimeout(timer);
+            timer = undefined;
+            remaining = Math.max(0, remaining - (performance.now() - startedAt));
+        };
+        item.addEventListener('mouseenter', pause);
+        item.addEventListener('mouseleave', resume);
+        item.addEventListener('focusin', pause);
+        item.addEventListener('focusout', (event) => { if (!item.contains(event.relatedTarget)) resume(); });
+        item.querySelector('.ui-toast-close').addEventListener('click', remove);
+        resume();
+        return item;
     };
 
     window.clcstUI = { modal, toast };
@@ -157,22 +194,18 @@
         });
     };
 
-    /* ---------- Result pop-up after an action (reserve, renew, check in...) ---------- */
+    /* ---------- Non-blocking result notification after an action ---------- */
     const flashResult = () => {
-        const flash = document.querySelector('[data-flash="error"]') || document.querySelector('[data-flash="success"]');
-        if (!flash || flash.hasAttribute('data-flash-quiet') || performance.getEntriesByType?.('navigation')[0]?.type === 'back_forward') return;
-        const success = flash.dataset.flash === 'success';
+        const flash = document.querySelector('[data-flash-toast]');
+        if (!flash || performance.getEntriesByType?.('navigation')[0]?.type === 'back_forward') return;
         const message = flash.querySelector('[data-flash-message]');
-        const lines = message.querySelectorAll('p').length ? [...message.querySelectorAll('p')].map((p) => p.textContent.trim()) : [message.textContent.trim()];
-        const actions = [];
-        if (flash.dataset.flashLink) actions.push({ label: flash.dataset.flashLinkLabel || 'View', href: flash.dataset.flashLink, variant: 'ghost', icon: 'arrow_forward' });
-        actions.push({ label: success ? 'Done' : 'OK, got it', variant: success ? 'primary' : 'danger' });
-        modal({
-            title: flash.dataset.flashTitle || (success ? 'Success' : 'That did not go through'),
-            icon: success ? 'check_circle' : 'error',
-            tone: success ? 'success' : 'danger',
-            body: `<div class="ui-result ${success ? 'is-success' : 'is-error'}"><div class="ui-result-mark" aria-hidden="true">${icon(success ? 'check' : 'priority_high')}</div>${lines.map((line) => `<p>${escapeHtml(line)}</p>`).join('')}</div>`,
-            actions,
+        toast(message.textContent.trim(), {
+            tone: flash.dataset.toastTone || 'success',
+            title: flash.dataset.toastTitle || 'Update saved',
+            link: flash.dataset.toastLink ? {
+                href: flash.dataset.toastLink,
+                label: flash.dataset.toastLinkLabel || 'View',
+            } : null,
         });
     };
 

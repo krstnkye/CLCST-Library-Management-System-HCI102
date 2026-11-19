@@ -65,7 +65,7 @@ class JwtApiTest extends TestCase
         $none = rtrim(strtr(base64_encode(json_encode(['typ' => 'JWT', 'alg' => 'none'])), '+/', '-_'), '=');
         $this->getJson('/api/v1/auth/me', ['Authorization' => "Bearer {$none}.{$p}."])->assertUnauthorized();
 
-        $expired = Jwt::issue(['sub' => $student->id, 'role' => 'student'], -1);
+        $expired = Jwt::issueFor($student, -1);
         $this->getJson('/api/v1/auth/me', ['Authorization' => "Bearer {$expired}"])->assertUnauthorized();
 
         $this->postJson('/api/v1/auth/logout', [], ['Authorization' => "Bearer {$token}"])->assertOk();

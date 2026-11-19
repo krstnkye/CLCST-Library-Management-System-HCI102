@@ -65,6 +65,19 @@ class LibraryBook extends Model
     }
 
     /**
+     * Close the waiting list and pickup holds of a title that is archived, so patrons are not
+     * left waiting for a book that can no longer be lent. Returns how many were closed.
+     */
+    public function closeOpenReservations(?int $staffId = null): int
+    {
+        return $this->reservations()->open()->update([
+            'status' => 'cancelled',
+            'closed_at' => now(),
+            'handled_by' => $staffId,
+        ]);
+    }
+
+    /**
      * Keep the summary counters used by lists and exports in step with the
      * individual copy records.
      */

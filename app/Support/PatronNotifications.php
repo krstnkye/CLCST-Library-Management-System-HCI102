@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * Builds a patron's notification feed from live records: loans that are due
@@ -28,11 +29,11 @@ class PatronNotifications
             $days = $loan->daysRemaining();
             if ($days < 0) {
                 $items->push(self::item('alert', 'error', 'warning', 'Overdue: '.$loan->copy->book->title,
-                    'This book was due on '.$loan->due_at->format('M d, Y').' ('.abs($days).' day(s) ago). Current fine: PHP '.number_format($loan->accruedFine(), 2).'. Please return it to the library desk.',
+                    'This book was due on '.$loan->due_at->format('M d, Y').' ('.abs($days).' '.Str::plural('day', abs($days)).' ago). Current fine: PHP '.number_format($loan->accruedFine(), 2).'. Please return it to the library desk.',
                     $loan->due_at, $loansPage, 'View my loans', 'loan-overdue-'.$loan->id));
             } elseif ($days <= 3) {
                 $items->push(self::item('due', 'warning', 'schedule', 'Due soon: '.$loan->copy->book->title,
-                    'Return or renew by '.$loan->due_at->format('l, M d').($days === 0 ? ' (today)' : ' ('.$days.' day(s) left)').'.',
+                    'Return or renew by '.$loan->due_at->format('l, M d').($days === 0 ? ' (today)' : ' ('.$days.' '.Str::plural('day', $days).' left)').'.',
                     $loan->due_at->copy()->subDays(3), $loansPage, 'Renew or view', 'loan-due-'.$loan->id.'-'.$loan->due_at->format('Ymd')));
             }
         }
@@ -44,10 +45,10 @@ class PatronNotifications
         }
 
         $outstanding = $user->outstandingFineTotal();
-        if ($outstanding > 0 && $user->role === 'student') {
+        if ($outstanding > 0) {
             $items->push(self::item('fine', 'warning', 'payments', 'Unpaid fine: PHP '.number_format($outstanding, 2),
                 'Settle your balance at the library cashier to keep borrowing privileges.',
-                $user->fines()->where('status', 'outstanding')->max('created_at'), route('student.section', 'fines'), 'View fines',
+                $user->fines()->where('status', 'outstanding')->max('created_at'), route($prefix, 'fines'), 'View fines',
                 'fine-'.$user->fines()->where('status', 'outstanding')->max('id')));
         }
 

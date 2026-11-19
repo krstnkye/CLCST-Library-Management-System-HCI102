@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Create your CLCST library account</title>
+    <title>Create an Account - CLCST Library Management System</title>
     @include('partials.favicon')
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}?v={{ filemtime(public_path('css/fonts.css')) }}">
     <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}?v={{ filemtime(public_path('css/tailwind.css')) }}">
@@ -25,7 +25,7 @@
         </a>
         <div class="login-story-copy">
             <p class="login-eyebrow">New library account</p>
-            <h2>One account,<br><em>every service.</em></h2>
+            <h2>One account, <br><em>every service.</em></h2>
             <p>Apply with the details on your school or employee record. Library staff confirm them before your first sign-in.</p>
             <dl class="login-facts">
                 <div><dt>Step 1</dt><dd>Apply here</dd></div>
@@ -50,7 +50,7 @@
 
             @if($errors->any())
                 <div class="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">
-                    <div class="flex items-start gap-3"><span class="material-symbols-outlined mt-0.5 text-lg">error</span><div><p class="font-bold">Please review the highlighted information.</p><ul class="mt-1 list-disc space-y-0.5 pl-5">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div></div>
+                    <div class="flex items-start gap-3"><span aria-hidden="true" class="material-symbols-outlined mt-0.5 text-lg">error</span><div><p class="font-bold">Please review the highlighted information.</p><ul class="mt-1 list-disc space-y-0.5 pl-5">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div></div>
                 </div>
             @endif
 
@@ -76,15 +76,15 @@
                                 <label class="cursor-pointer">
                                     <input class="sr-only" type="radio" name="patron_role" value="{{ $roleValue }}" @checked($selectedRole===$roleValue) required>
                                     <span class="role-card">
-                                        <span class="role-icon"><span class="material-symbols-outlined text-lg">{{ $roleIcon }}</span></span>
+                                        <span class="role-icon"><span aria-hidden="true" class="material-symbols-outlined text-lg">{{ $roleIcon }}</span></span>
                                         <span class="min-w-0"><strong>{{ $roleLabel }}</strong><small>{{ $roleHint }}</small></span>
-                                        <span class="role-check hidden"><span class="material-symbols-outlined text-sm">check</span></span>
+                                        <span class="role-check hidden"><span aria-hidden="true" class="material-symbols-outlined text-sm">check</span></span>
                                     </span>
                                 </label>
                             @endforeach
                         </div>
                         @error('patron_role')<p class="mt-2 text-xs font-semibold text-red-700">{{ $message }}</p>@enderror
-                        <p class="registration-note"><span class="material-symbols-outlined">info</span><span>Librarian applications need administrator approval. Administrator accounts are created internally.</span></p>
+                        <p class="registration-note"><span aria-hidden="true" class="material-symbols-outlined">info</span><span>Librarian applications need administrator approval. Administrator accounts are created internally.</span></p>
                     </fieldset>
                 </section>
 
@@ -112,17 +112,17 @@
                     <div class="registration-fields">
                         <div>
                             <label for="password">Password <b>*</b></label>
-                            <div class="relative"><input id="password" name="password" required type="password" autocomplete="new-password" class="pr-11 @error('password') border-red-500 @enderror"><button class="registration-password-toggle" type="button" data-password-toggle="password" aria-label="Show password"><span class="material-symbols-outlined text-lg">visibility</span></button></div>
+                            <div class="relative"><input id="password" name="password" required type="password" autocomplete="new-password" class="pr-11 @error('password') border-red-500 @enderror"><button class="registration-password-toggle" type="button" data-password-toggle="password" aria-label="Show password"><span aria-hidden="true" class="material-symbols-outlined text-lg">visibility</span></button></div>
                             <p class="field-help">At least 10 characters with uppercase, lowercase, and a number.</p>@error('password')<p class="field-error">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label for="password_confirmation">Confirm password <b>*</b></label>
-                            <div class="relative"><input id="password_confirmation" name="password_confirmation" required type="password" autocomplete="new-password" aria-describedby="password-match-message" class="pr-11"><button class="registration-password-toggle" type="button" data-password-toggle="password_confirmation" aria-label="Show password confirmation"><span class="material-symbols-outlined text-lg">visibility</span></button></div>
+                            <div class="relative"><input id="password_confirmation" name="password_confirmation" required type="password" autocomplete="new-password" aria-describedby="password-match-message" class="pr-11"><button class="registration-password-toggle" type="button" data-password-toggle="password_confirmation" aria-label="Show password confirmation"><span aria-hidden="true" class="material-symbols-outlined text-lg">visibility</span></button></div>
                             <p id="password-match-message" class="mt-1 hidden items-center gap-1 text-xs font-semibold" aria-live="polite"><span class="material-symbols-outlined text-sm" aria-hidden="true"></span><span data-password-match-text></span></p>
                         </div>
                         <div class="sm:col-span-2">
                             <label for="credential_file">Supporting school document <b>*</b></label>
-                            <label class="registration-upload" for="credential_file"><span class="material-symbols-outlined">upload_file</span><span><strong>Choose your COR, school ID, or employee ID</strong><small>PDF, JPG, or PNG · Maximum file size: 10 MB</small><small id="file-name" class="hidden selected-file"></small></span></label>
+                            <label class="registration-upload" for="credential_file"><span aria-hidden="true" class="material-symbols-outlined">upload_file</span><span><strong>Choose your COR, school ID, or employee ID</strong><small>PDF, JPG, or PNG · Maximum file size: 10 MB</small><small id="file-name" class="hidden selected-file"></small></span></label>
                             <input id="credential_file" name="credential_file" required type="file" accept=".pdf,.jpg,.jpeg,.png" class="sr-only">
                             @error('credential_file')<p class="field-error">{{ $message }}</p>@enderror
                         </div>
@@ -132,9 +132,9 @@
                 <section class="registration-submit">
                     <label class="flex cursor-pointer items-start gap-3 text-xs leading-6 text-slate-700"><input class="mt-1 rounded border-slate-300 text-clcst-700 focus:ring-clcst-600" name="privacy_consent" required type="checkbox" value="1" @checked(old('privacy_consent'))><span>I confirm that the information is accurate and consent to its use for account verification and library services under the Data Privacy Act. <b class="text-red-600">*</b></span></label>
                     @error('privacy_consent')<p class="field-error">{{ $message }}</p>@enderror
-                    <div class="registration-actions"><a href="{{ route('login') }}">Cancel</a><button type="submit"><span>Submit registration</span><span class="material-symbols-outlined text-lg">arrow_forward</span></button></div>
+                    <div class="registration-actions"><a href="{{ route('login') }}">Cancel</a><button type="submit"><span>Submit registration</span><span aria-hidden="true" class="material-symbols-outlined text-lg">arrow_forward</span></button></div>
                     <div class="registration-next">
-                        <span><b>1</b> Submit</span><span class="material-symbols-outlined">arrow_forward</span><span><b>2</b> Library review</span><span class="material-symbols-outlined">arrow_forward</span><span><b>3</b> Sign in after approval</span>
+                        <span><b>1</b> Submit</span><span aria-hidden="true" class="material-symbols-outlined">arrow_forward</span><span><b>2</b> Library review</span><span aria-hidden="true" class="material-symbols-outlined">arrow_forward</span><span><b>3</b> Sign in after approval</span>
                     </div>
                 </section>
             </form>

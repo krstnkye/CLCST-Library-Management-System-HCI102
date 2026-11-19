@@ -1,4 +1,5 @@
-@extends('layouts.student')
+{{-- Shared by the student and faculty portals. --}}
+@extends(auth()->user()->role === 'faculty' ? 'layouts.faculty' : 'layouts.student')
 
 @section('title', $title)
 
@@ -10,7 +11,7 @@
 
     <section class="overflow-hidden rounded-2xl border border-[#EDEAE5] bg-surface-container-lowest shadow-sm">
         <table class="w-full text-left text-sm">
-            <thead class="bg-surface-container-low text-[10px] uppercase text-outline"><tr><th class="px-5 py-3">Rule</th><th class="px-5 py-3">Students</th><th class="px-5 py-3">Faculty</th></tr></thead>
+            <thead class="bg-surface-container-low text-[10px] uppercase text-muted"><tr><th class="px-5 py-3">Rule</th><th class="px-5 py-3">Students</th><th class="px-5 py-3">Faculty</th></tr></thead>
             <tbody class="divide-y divide-outline-variant/50">
                 <tr><td class="px-5 py-3 font-semibold">Books on loan at once</td><td class="px-5 py-3">{{ $policy['max_loans_student'] }}</td><td class="px-5 py-3">{{ $policy['max_loans_faculty'] }}</td></tr>
                 <tr><td class="px-5 py-3 font-semibold">Loan period</td><td class="px-5 py-3">{{ $policy['loan_days_student'] }} days</td><td class="px-5 py-3">{{ $policy['loan_days_faculty'] }} days</td></tr>

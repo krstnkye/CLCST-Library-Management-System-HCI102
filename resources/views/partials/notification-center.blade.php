@@ -25,7 +25,7 @@
     <div class="nc-toolbar">
         <div class="nc-summary">
             <div class="nc-ring" style="--nc-progress: {{ $total > 0 ? round(($total - $unread) / $total * 100) : 100 }}%" aria-hidden="true">
-                <span class="material-symbols-outlined">{{ $unread > 0 ? 'notifications_active' : 'notifications' }}</span>
+                <span aria-hidden="true" class="material-symbols-outlined">{{ $unread > 0 ? 'notifications_active' : 'notifications' }}</span>
             </div>
             <div>
                 <p class="nc-summary-title"><span data-unread-count>{{ $unread }}</span> unread</p>

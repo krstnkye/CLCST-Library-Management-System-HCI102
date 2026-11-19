@@ -38,7 +38,7 @@
         </section>
         <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm xl:col-span-4">
             <h2 class="text-lg font-bold">Loans by patron type</h2>
-            <dl class="mt-3 space-y-2 text-sm">@forelse ($report['byRole'] as $role => $total)<div class="flex justify-between"><dt>{{ ucfirst($role) }}</dt><dd class="font-bold">{{ $total }}</dd></div>@empty<p class="text-slate-500">No loans yet.</p>@endforelse</dl>
+            <dl class="mt-3 space-y-2 text-sm">@forelse ($report['byRole'] as $role => $total)<div class="flex justify-between"><dt>{{ ['admin' => 'Administrator', 'superadmin' => 'Super Administrator'][$role] ?? ucfirst($role) }}</dt><dd class="font-bold">{{ $total }}</dd></div>@empty<p class="text-slate-500">No loans yet.</p>@endforelse</dl>
         </section>
         <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm xl:col-span-4">
             <h2 class="text-lg font-bold">Copy status</h2>

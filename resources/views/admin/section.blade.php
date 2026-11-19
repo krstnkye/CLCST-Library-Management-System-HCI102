@@ -1,7 +1,7 @@
 @extends('admin.layout')
 @section('title', $page['title'])
 @section('content')
-<header class="border-b border-slate-200 pb-5"><a class="text-sm font-semibold text-emerald-800 hover:underline" href="{{ route('admin.dashboard') }}">Back to dashboard</a><div class="mt-3 flex items-start gap-3"><span class="material-symbols-outlined rounded-md bg-emerald-50 p-2 text-emerald-800">{{ $page['icon'] }}</span><div><h1 class="text-2xl font-bold">{{ $page['title'] }}</h1><p class="mt-1 text-sm text-slate-600">{{ $page['description'] }}</p></div></div></header>
+<header class="border-b border-slate-200 pb-5"><a class="text-sm font-semibold text-emerald-800 hover:underline" href="{{ route('admin.dashboard') }}">Back to dashboard</a><div class="mt-3 flex items-start gap-3"><span aria-hidden="true" class="material-symbols-outlined rounded-md bg-emerald-50 p-2 text-emerald-800">{{ $page['icon'] }}</span><div><h1 class="text-2xl font-bold">{{ $page['title'] }}</h1><p class="mt-1 text-sm text-slate-600">{{ $page['description'] }}</p></div></div></header>
 
 <div class="mt-6">
 @if (in_array($section, ['users', 'approvals'], true))

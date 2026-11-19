@@ -1,7 +1,7 @@
-{{-- Account list with search, ID document viewer, and approve/suspend actions limited to the viewer's role. --}}
+{{-- Account list with search, ID document viewer, and approve, suspend, reactivate and password reset actions limited to the viewer's role. --}}
 <section class="overflow-hidden rounded-md border border-slate-200 bg-white">
     <form class="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between" method="GET" action="{{ $searchRoute }}" role="search">
-        <p class="text-xs text-slate-500">{{ $users->total() }} account(s). You can manage: {{ collect(auth()->user()->manageableRoles())->map(fn ($role) => ucfirst($role))->join(', ') }}.</p>
+        <p class="text-xs text-slate-500">{{ $users->total() }} {{ \Illuminate\Support\Str::plural('account', $users->total()) }}. You can manage: {{ collect(auth()->user()->manageableRoles())->map(fn ($role) => ['admin' => 'administrators', 'superadmin' => 'super administrators'][$role] ?? $role.'s')->join(', ') }}.</p>
         <div class="flex flex-wrap gap-2">
             @foreach (request()->only(['role', 'status']) as $key => $value)<input type="hidden" name="{{ $key }}" value="{{ $value }}">@endforeach
             <label class="sr-only" for="account-search">Search accounts</label>
@@ -15,7 +15,7 @@
             <tbody class="divide-y divide-slate-100">
                 @forelse ($users as $user)
                     <tr>
-                        <td class="px-5 py-4"><p class="font-semibold">{{ $user->name }}</p><p class="text-xs text-slate-500">{{ $user->patron_id }} · {{ $user->email }}</p><p class="text-xs text-slate-400">Registered {{ $user->created_at?->format('M d, Y') }}</p></td>
+                        <td class="px-5 py-4"><p class="font-semibold">{{ $user->name }}</p><p class="text-xs text-slate-500">{{ $user->patron_id }} · {{ $user->email }}</p><p class="text-xs text-slate-600">Registered {{ $user->created_at?->format('M d, Y') }}</p></td>
                         <td class="px-5 py-4">{{ $user->roleLabel() }}</td>
                         <td class="px-5 py-4 text-slate-600">{{ $user->program_or_department ?: 'Not provided' }}</td>
                         <td class="px-5 py-4"><span class="rounded-full px-2 py-1 text-xs font-semibold {{ $user->status === 'active' ? 'bg-emerald-100 text-emerald-800' : ($user->status === 'pending' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800') }}">{{ ucfirst($user->status) }}</span></td>
@@ -28,7 +28,13 @@
                                     <form method="POST" action="{{ route('management.accounts.approve', $user) }}" data-confirm="Make sure the uploaded ID matches the school record. The person will be able to sign in right away." data-confirm-title="Approve this account?" data-confirm-detail="{{ $user->name }} · {{ $user->roleLabel() }} · {{ $user->patron_id }}" data-confirm-label="Approve" data-confirm-icon="how_to_reg">@csrf<button class="rounded-md bg-emerald-900 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-800" type="submit">Approve</button></form>
                                 @endif
                                 @if ($user->status !== 'suspended' && ! auth()->user()->is($user))
-                                    <form method="POST" action="{{ route('management.accounts.suspend', $user) }}" data-confirm="{{ $user->status === 'pending' ? 'The application will be rejected and the person cannot sign in.' : 'The user will be signed out and cannot sign in until the account is approved again.' }}" data-confirm-title="{{ $user->status === 'pending' ? 'Reject this application?' : 'Suspend this account?' }}" data-confirm-detail="{{ $user->name }} · {{ $user->email }}" data-confirm-label="{{ $user->status === 'pending' ? 'Reject' : 'Suspend' }}">@csrf<button class="rounded-md border border-red-200 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-50" type="submit">{{ $user->status === 'pending' ? 'Reject' : 'Suspend' }}</button></form>
+                                    <form method="POST" action="{{ route('management.accounts.suspend', $user) }}" data-confirm="{{ $user->status === 'pending' ? 'The application will be rejected and the person cannot sign in.' : 'The user will be signed out and cannot sign in until the account is reactivated.' }}" data-confirm-title="{{ $user->status === 'pending' ? 'Reject this application?' : 'Suspend this account?' }}" data-confirm-detail="{{ $user->name }} · {{ $user->email }}" data-confirm-label="{{ $user->status === 'pending' ? 'Reject' : 'Suspend' }}">@csrf<button class="rounded-md border border-red-200 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-50" type="submit">{{ $user->status === 'pending' ? 'Reject' : 'Suspend' }}</button></form>
+                                @endif
+                                @if ($user->status === 'suspended' && ! auth()->user()->is($user))
+                                    <form method="POST" action="{{ route('management.accounts.reactivate', $user) }}" data-confirm="The person will be able to sign in again with their current password." data-confirm-title="Reactivate this account?" data-confirm-detail="{{ $user->name }} · {{ $user->roleLabel() }} · {{ $user->patron_id }}" data-confirm-label="Reactivate" data-confirm-icon="how_to_reg">@csrf<button class="rounded-md bg-emerald-900 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-800" type="submit">Reactivate</button></form>
+                                @endif
+                                @if ($user->status !== 'pending' && ! auth()->user()->is($user))
+                                    <form method="POST" action="{{ route('management.accounts.reset-password', $user) }}" data-confirm="A new temporary password will be shown once. The old password stops working and the person is signed out everywhere." data-confirm-title="Reset this password?" data-confirm-detail="{{ $user->name }} · {{ $user->email }}" data-confirm-label="Reset password" data-confirm-icon="lock_reset">@csrf<button class="rounded-md border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50" type="submit">Reset password</button></form>
                                 @endif
                             </div>
                         </td>

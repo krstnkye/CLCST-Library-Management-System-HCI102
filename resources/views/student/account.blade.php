@@ -21,7 +21,7 @@
             ['Renewals per loan', $policy['max_renewals']],
             ['Open reservations', $openReservations->count().' of '.$policy['max_reservations']],
         ] as [$label, $value])
-            <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm"><span class="block text-[10px] font-bold uppercase text-outline">{{ $label }}</span><span class="font-headline text-lg font-bold">{{ $value }}</span></div>
+            <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm"><span class="block text-[10px] font-bold uppercase text-muted">{{ $label }}</span><span class="font-headline text-lg font-bold">{{ $value }}</span></div>
         @endforeach
     </section>
 

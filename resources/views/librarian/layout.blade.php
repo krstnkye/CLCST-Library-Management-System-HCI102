@@ -22,32 +22,32 @@
     <header class="clcst-topbar fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#E1DCD3] bg-white px-4 shadow-sm md:px-6">
         <div class="flex min-w-0 items-center gap-3">
             <button aria-label="Open navigation" class="rounded-md p-2 text-[#284A30] hover:bg-[#F4F2EF] md:hidden" id="librarian-menu-button" type="button">
-                <span class="material-symbols-outlined">menu</span>
+                <span aria-hidden="true" class="material-symbols-outlined">menu</span>
             </button>
             <a class="flex min-w-0 items-center gap-3" href="{{ route($librarian->dashboardRouteName()) }}">
                 @include('partials.celtech-logo', ['class' => 'h-10 w-10 shrink-0 rounded-full object-contain'])
                 <div class="min-w-0">
                     <p class="truncate font-display text-sm font-extrabold text-[#284A30] sm:text-base">CLCST Library Management System</p>
-                    <p class="truncate text-[11px] font-medium text-[#767065]">{{ ['superadmin' => 'Super Admin Control Center', 'admin' => 'Administrator Portal'][$librarian->role] ?? 'Librarian Operations Portal' }}</p>
+                    <p class="truncate text-[11px] font-medium text-muted">{{ ['superadmin' => 'Super Admin Control Center', 'admin' => 'Administrator Portal'][$librarian->role] ?? 'Librarian Operations Portal' }}</p>
                 </div>
             </a>
         </div>
 
         <form class="mx-6 hidden max-w-xl flex-1 lg:block" method="GET" action="{{ route('librarian.section', 'books') }}" role="search">
             <label class="relative block">
-                <span class="material-symbols-outlined pointer-events-none absolute left-3 top-2.5 text-xl text-[#7E786B]">search</span>
+                <span aria-hidden="true" class="material-symbols-outlined pointer-events-none absolute left-3 top-2.5 text-xl text-muted">search</span>
                 <input id="librarian-header-search" class="w-full rounded-lg border-[#D6D2CB] bg-[#F9F8F7] py-2 pl-10 pr-11 text-sm focus:border-[#284A30] focus:ring-[#284A30]" name="q" placeholder="Search books by title, author, ISBN, barcode, or call number" type="search" aria-label="Search books">
-                <button class="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-[#7E786B] hover:bg-white hover:text-[#284A30]" type="button" title="Scan a barcode" aria-label="Scan a book barcode" data-scan data-scan-target="#librarian-header-search" data-scan-submit><span class="material-symbols-outlined text-xl">barcode_scanner</span></button>
+                <button class="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-muted hover:bg-white hover:text-[#284A30]" type="button" title="Scan a barcode" aria-label="Scan a book barcode" data-scan data-scan-target="#librarian-header-search" data-scan-submit><span aria-hidden="true" class="material-symbols-outlined text-xl">barcode_scanner</span></button>
             </label>
         </form>
 
         <div class="flex items-center gap-2">
             <a aria-label="Notifications" class="relative rounded-lg p-2 text-[#524E45] hover:bg-[#F4F2EF]" href="{{ route('librarian.section', 'notifications') }}">
-                <span class="material-symbols-outlined">notifications</span>
+                <span aria-hidden="true" class="material-symbols-outlined">notifications</span>
             </a>
             <div class="hidden text-right sm:block">
                 <p class="text-xs font-bold text-[#201F1C]">{{ $librarian->name }}</p>
-                <p class="text-[11px] text-[#767065]">{{ $librarian->program_or_department ?: 'Library Staff' }}</p>
+                <p class="text-[11px] text-muted">{{ $librarian->program_or_department ?: 'Library Staff' }}</p>
             </div>
             <a aria-label="Open profile" class="overflow-hidden flex h-9 w-9 items-center justify-center rounded-full bg-[#284A30] text-xs font-bold text-white" href="{{ ['superadmin' => route('superadmin.section', 'profile'), 'admin' => route('admin.section', 'profile')][$librarian->role] ?? route('librarian.section', 'profile') }}">@include('partials.avatar', ['user' => $librarian])</a>
         </div>

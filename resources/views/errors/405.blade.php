@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('code', '405')
+@section('eyebrow', 'Link not available')
+@section('title', 'That page can’t be opened this way')
+@section('message', 'This address only works from a button inside the library system, so it can’t be opened, bookmarked or refreshed directly. Use the button below to go back to your portal.')

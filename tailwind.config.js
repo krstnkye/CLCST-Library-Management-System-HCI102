@@ -35,7 +35,7 @@ module.exports = {
                 tertiary: '#2f3f58', 'tertiary-fixed': '#dfe5ee',
                 background: '#f6f3ec', surface: '#f6f3ec', 'surface-container-lowest': '#fffdf9', 'surface-container-low': '#f8f5ef',
                 'surface-container': '#f0ece4', 'surface-container-high': '#e8e2d6', 'on-surface': '#1f1d1a', 'on-surface-variant': '#5e584d',
-                outline: '#8a8275', 'outline-variant': '#ddd6c9', error: '#85362a', 'error-container': '#f3dfdb',
+                outline: '#8a8275', muted: '#68625a', 'outline-variant': '#ddd6c9', error: '#85362a', 'error-container': '#f3dfdb',
             },
             fontFamily: {
                 sans, body: sans, 'body-md': sans, 'label-sm': sans, 'label-md': sans,

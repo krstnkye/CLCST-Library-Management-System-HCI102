@@ -118,10 +118,27 @@ class LibrarianController extends Controller
             return back()->withErrors(['status' => 'This title still has copies on loan. Check them in before archiving it.']);
         }
 
-        $book->update($data);
-        AuditLog::record($request->user(), 'book.updated', 'Updated the catalog record for "'.$book->title.'".', ['book_id' => $book->id]);
+        $closed = DB::transaction(function () use ($book, $data, $request): int {
+            $book->update($data);
+            // Read what changed now: syncCopyCounts() saves the book again and resets wasChanged().
+            $policyChanged = $book->wasChanged('loan_policy');
+            // Archived and reference titles cannot be borrowed, so their waiting lists close.
+            $archived = $book->wasChanged('status') && $book->status === 'archived';
+            $nowReference = $policyChanged && $book->isReference();
 
-        return back()->with('status', 'Catalog record saved.');
+            // Changing the loan policy moves the shelf copies with it, so a title that becomes
+            // circulating can be lent again and a reference title stays in the library.
+            if ($policyChanged) {
+                [$from, $to] = $book->isReference() ? ['available', 'reference'] : ['reference', 'available'];
+                $book->copies()->where('status', $from)->update(['status' => $to]);
+                $book->syncCopyCounts();
+            }
+
+            return $archived || $nowReference ? $book->closeOpenReservations($request->user()->id) : 0;
+        });
+        AuditLog::record($request->user(), 'book.updated', 'Updated the catalog record for "'.$book->title.'".', ['book_id' => $book->id, 'reservations_closed' => $closed]);
+
+        return back()->with('status', 'Catalog record saved.'.($closed > 0 ? ' '.$closed.' open '.Str::plural('reservation', $closed).' for this title were cancelled because it can no longer be borrowed ('.($book->status === 'archived' ? 'archived' : 'reference only').').' : ''));
     }
 
     public function storeCopies(Request $request, LibraryBook $book): RedirectResponse
@@ -178,6 +195,9 @@ class LibrarianController extends Controller
 
     public function issueReservation(Request $request, Reservation $reservation): RedirectResponse
     {
+        if (! in_array($reservation->status, Reservation::OPEN_STATUSES, true)) {
+            return back()->withErrors(['circulation' => 'This reservation is already closed.'])->with('error_title', 'Book not checked out');
+        }
         $copy = $reservation->book->copies()->where('status', 'available')->first();
         if (! $copy) {
             return back()->withErrors(['circulation' => 'No copy of "'.$reservation->book->title.'" is on the shelf right now.'])->with('error_title', 'Book not checked out');
@@ -194,14 +214,22 @@ class LibrarianController extends Controller
 
     public function readyReservation(Request $request, Reservation $reservation): RedirectResponse
     {
-        $this->circulation->markReady($request->user(), $reservation);
+        try {
+            $this->circulation->markReady($request->user(), $reservation);
+        } catch (ValidationException $exception) {
+            return back()->withErrors($exception->errors())->with('error_title', 'Hold not placed');
+        }
 
         return back()->with('status_title', 'Patron notified')->with('status', $reservation->user->name.' was notified that "'.$reservation->book->title.'" is ready for pickup.');
     }
 
     public function cancelReservation(Request $request, Reservation $reservation): RedirectResponse
     {
-        $this->circulation->cancelReservation($request->user(), $reservation);
+        try {
+            $this->circulation->cancelReservation($request->user(), $reservation);
+        } catch (ValidationException $exception) {
+            return back()->withErrors($exception->errors())->with('error_title', 'Reservation not cancelled');
+        }
 
         return back()->with('status_title', 'Reservation cancelled')->with('status', 'The reservation was cancelled and the patron will no longer be held a copy.');
     }
@@ -225,7 +253,11 @@ class LibrarianController extends Controller
     public function settleFine(Request $request, Fine $fine): RedirectResponse
     {
         $outcome = $request->validate(['outcome' => ['required', Rule::in(['paid', 'waived'])]])['outcome'];
-        $fine = $this->circulation->settleFine($request->user(), $fine, $outcome);
+        try {
+            $fine = $this->circulation->settleFine($request->user(), $fine, $outcome);
+        } catch (ValidationException $exception) {
+            return back()->withErrors($exception->errors())->with('error_title', 'Fine not updated');
+        }
 
         return back()->with('status_title', $outcome === 'paid' ? 'Payment recorded' : 'Fine waived')->with('status', ($outcome === 'paid' ? 'Payment recorded' : 'Fine waived').' for '.$fine->user->name.'. Receipt '.$fine->receipt_no.'.');
     }
@@ -267,10 +299,14 @@ class LibrarianController extends Controller
 
     private function completeCheckin(Request $request, Loan $loan): RedirectResponse
     {
-        $fine = $this->circulation->checkin($request->user(), $loan);
+        try {
+            $fine = $this->circulation->checkin($request->user(), $loan);
+        } catch (ValidationException $exception) {
+            return back()->withErrors($exception->errors())->with('error_title', 'Book not checked in');
+        }
         $message = 'Checked in "'.$loan->copy->book->title.'" from '.$loan->user->name.'.';
         if ($fine) {
-            $message .= ' Returned '.$fine->days_late.' day(s) late: a fine of PHP '.number_format((float) $fine->amount, 2).' was added to the account.';
+            $message .= ' Returned '.$fine->days_late.' '.\Illuminate\Support\Str::plural('day', (int) $fine->days_late).' late: a fine of PHP '.number_format((float) $fine->amount, 2).' was added to the account.';
         }
         $next = Reservation::open()->where('library_book_id', $loan->copy->library_book_id)->where('status', 'pending')->oldest()->first();
         if ($next) {
@@ -348,21 +384,21 @@ class LibrarianController extends Controller
         $stats = $this->stats();
         $alerts = [];
         if ($stats['pendingAccounts'] > 0) {
-            $alerts[] = ['how_to_reg', 'amber', $stats['pendingAccounts'].' account application(s) waiting for review.', route('management.accounts.index'), 'Review accounts'];
+            $alerts[] = ['how_to_reg', 'amber', $stats['pendingAccounts'].' account '.\Illuminate\Support\Str::plural('application', $stats['pendingAccounts']).' waiting for review.', route('management.accounts.index'), 'Review accounts'];
         }
         if ($stats['overdueBooks'] > 0) {
-            $alerts[] = ['schedule', 'red', $stats['overdueBooks'].' book(s) are overdue.', route('librarian.section', 'overdue'), 'View overdue'];
+            $alerts[] = ['schedule', 'red', $stats['overdueBooks'].' '.\Illuminate\Support\Str::plural('book', $stats['overdueBooks']).' '.($stats['overdueBooks'] === 1 ? 'is' : 'are').' overdue.', route('librarian.section', 'overdue'), 'View overdue'];
         }
         $waiting = Reservation::where('status', 'pending')->whereHas('book.copies', fn ($copy) => $copy->where('status', 'available'))->count();
         if ($waiting > 0) {
-            $alerts[] = ['bookmark', 'blue', $waiting.' reservation(s) can be filled from shelf copies.', route('librarian.section', 'borrow-requests'), 'Serve reservations'];
+            $alerts[] = ['bookmark', 'blue', $waiting.' '.\Illuminate\Support\Str::plural('reservation', $waiting).' can be filled from shelf copies.', route('librarian.section', 'borrow-requests'), 'Serve reservations'];
         }
         $expired = Reservation::where('status', 'ready')->where('ready_until', '<', now())->count();
         if ($expired > 0) {
-            $alerts[] = ['event_busy', 'amber', $expired.' pickup hold(s) have passed their pickup date.', route('librarian.section', 'reservations'), 'Review holds'];
+            $alerts[] = ['event_busy', 'amber', $expired.' pickup '.\Illuminate\Support\Str::plural('hold', $expired).' '.($expired === 1 ? 'has' : 'have').' passed '.($expired === 1 ? 'its' : 'their').' pickup date.', route('librarian.section', 'reservations'), 'Review holds'];
         }
         if ($stats['openRequests'] > 0) {
-            $alerts[] = ['forum', 'blue', $stats['openRequests'].' patron request(s) need a response.', route('librarian.section', 'feedback'), 'Open requests'];
+            $alerts[] = ['forum', 'blue', $stats['openRequests'].' patron '.\Illuminate\Support\Str::plural('request', $stats['openRequests']).' '.($stats['openRequests'] === 1 ? 'needs' : 'need').' a response.', route('librarian.section', 'feedback'), 'Open requests'];
         }
         $repair = BookCopy::where('status', 'maintenance')->count();
         if ($repair > 0) {

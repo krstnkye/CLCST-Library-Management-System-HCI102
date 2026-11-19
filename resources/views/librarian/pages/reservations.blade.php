@@ -5,12 +5,12 @@
     </div>
     <div class="overflow-x-auto">
         <table class="w-full min-w-[760px] text-left text-sm">
-            <thead class="bg-[#F7F6F4] text-xs uppercase text-[#767065]"><tr><th class="px-5 py-3">Patron</th><th class="px-5 py-3">Book</th><th class="px-5 py-3">Requested</th><th class="px-5 py-3">Status</th><th class="px-5 py-3 text-right">Action</th></tr></thead>
+            <thead class="bg-[#F7F6F4] text-xs uppercase text-muted"><tr><th class="px-5 py-3">Patron</th><th class="px-5 py-3">Book</th><th class="px-5 py-3">Requested</th><th class="px-5 py-3">Status</th><th class="px-5 py-3 text-right">Action</th></tr></thead>
             <tbody class="divide-y divide-[#EAE7E0]">
                 @forelse ($reservations as $reservation)
                     @php($expired = $reservation->status === 'ready' && $reservation->ready_until?->isPast())
                     <tr>
-                        <td class="px-5 py-3"><p class="font-bold">{{ $reservation->user->name }}</p><p class="text-xs text-[#827C6F]">{{ $reservation->user->patron_id }}</p></td>
+                        <td class="px-5 py-3"><p class="font-bold">{{ $reservation->user->name }}</p><p class="text-xs text-muted">{{ $reservation->user->patron_id }}</p></td>
                         <td class="px-5 py-3">{{ $reservation->book->title }}</td>
                         <td class="px-5 py-3 text-xs">{{ $reservation->created_at->format('M d, Y g:i A') }}</td>
                         <td class="px-5 py-3"><span class="rounded-full px-2.5 py-1 text-xs font-bold {{ $expired ? 'bg-red-100 text-red-800' : match ($reservation->status) { 'ready' => 'bg-emerald-100 text-emerald-800', 'pending' => 'bg-amber-100 text-amber-800', default => 'bg-slate-100 text-slate-700' } }}">{{ $expired ? 'Pickup date passed' : ($reservation->status === 'ready' ? 'Ready until '.$reservation->ready_until?->format('M d') : ucfirst($reservation->status)) }}</span></td>
@@ -21,7 +21,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td class="px-5 py-10 text-center text-[#777166]" colspan="5">No reservations yet.</td></tr>
+                    <tr><td class="px-5 py-10 text-center text-muted" colspan="5">No reservations yet.</td></tr>
                 @endforelse
             </tbody>
         </table>

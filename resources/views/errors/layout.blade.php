@@ -1,6 +1,7 @@
-{{-- Shared page for HTTP errors (403, 404, 419, 429, 500, 503) in the library's house style. --}}
+{{-- Shared page for HTTP errors (403, 404, 405, 419, 429, 500, 503, and any other 4xx/5xx) in the library's house style. --}}
 @php
-    $user = auth()->user();
+    // The page must still render if the error happened before the session or database was ready.
+    try { $user = auth()->user(); } catch (\Throwable) { $user = null; }
     $home = $user ? route($user->dashboardRouteName()) : route('login');
 @endphp
 <!DOCTYPE html>
@@ -23,7 +24,7 @@
         .side small { color:#b9b3a6; letter-spacing:.14em; text-transform:uppercase; font-size:11px; }
         main { display:flex; align-items:center; padding:48px; }
         .card { max-width:520px; }
-        .eyebrow { display:flex; align-items:center; gap:10px; color:var(--gold); font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; }
+        .eyebrow { display:flex; align-items:center; gap:10px; color:#7a5f2c; font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; }
         .eyebrow::before { content:''; width:28px; height:1px; background:var(--gold); }
         h1 { font-family:'Cormorant Garamond', Georgia, serif; font-weight:600; font-size:clamp(34px, 4vw, 48px); line-height:1.1; margin:14px 0 12px; }
         p { color:var(--muted); margin:0 0 10px; }
@@ -49,7 +50,7 @@
             <h1>@yield('title')</h1>
             <p>@yield('message')</p>
             @if ($user)
-                <div class="who">You are signed in as <strong>{{ $user->name }}</strong> ({{ $user->roleLabel() }}). This page is outside what your account can open.</div>
+                <div class="who">You are signed in as <strong>{{ $user->name }}</strong> ({{ $user->roleLabel() }}).@if (trim($__env->yieldContent('code')) === '403') This page is outside what your account can open.@endif</div>
             @endif
             <div class="actions">
                 <a class="btn btn-primary" href="{{ $home }}">{{ $user ? 'Go to my dashboard' : 'Go to sign in' }}</a>

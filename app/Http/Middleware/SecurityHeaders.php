@@ -11,6 +11,10 @@ class SecurityHeaders
     public function handle(Request $request, Closure $next): Response
     {
         $response = $next($request);
+
+        // Do not advertise the server software and version to visitors.
+        header_remove('X-Powered-By');
+        $response->headers->remove('X-Powered-By');
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');

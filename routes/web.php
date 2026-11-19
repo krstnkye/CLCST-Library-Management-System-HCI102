@@ -122,4 +122,6 @@ Route::middleware(['auth', 'portal:librarian,admin,superadmin'])->prefix('manage
     Route::get('/{user}/credential', [AccountManagementController::class, 'credential'])->name('credential');
     Route::post('/{user}/approve', [AccountManagementController::class, 'approve'])->middleware('throttle:30,1')->name('approve');
     Route::post('/{user}/suspend', [AccountManagementController::class, 'suspend'])->middleware('throttle:30,1')->name('suspend');
+    Route::post('/{user}/reactivate', [AccountManagementController::class, 'reactivate'])->middleware('throttle:30,1')->name('reactivate');
+    Route::post('/{user}/reset-password', [AccountManagementController::class, 'resetPassword'])->middleware('throttle:10,1')->name('reset-password');
 });

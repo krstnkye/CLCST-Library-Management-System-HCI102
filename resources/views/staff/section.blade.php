@@ -24,12 +24,13 @@
 
     @switch($section)
         @case('circulation')
-            <section class="space-y-4 rounded-2xl border border-[#EDEAE5] bg-white p-5 shadow-sm">
-                <p class="text-sm text-[#5F5A51]">{{ $activeLoans->count() }} of {{ $loanLimit }} books on loan. Loans last {{ $loanDays }} days and can be renewed {{ $policy['max_renewals'] }} time(s) online.</p>
+            <section class="space-y-4 rounded-2xl border border-[#EDEAE5] bg-white p-5 shadow-sm" aria-labelledby="faculty-loans-heading">
+                <h2 id="faculty-loans-heading" class="font-headline text-lg font-bold">Books on loan</h2>
+                <p class="text-sm text-[#5F5A51]">{{ $activeLoans->count() }} of {{ $loanLimit }} books on loan. Loans last {{ $loanDays }} days and can be renewed {{ $policy['max_renewals'] }} {{ \Illuminate\Support\Str::plural('time', (int) $policy['max_renewals']) }} online.</p>
                 @forelse ($activeLoans as $loan)
                     @include('student.partials.loan-card', ['loan' => $loan])
                 @empty
-                    <p class="rounded-xl border border-dashed border-[#DBD8D1] p-6 text-center text-sm text-[#817B6E]">You have no books on loan.</p>
+                    <p class="rounded-xl border border-dashed border-[#DBD8D1] p-6 text-center text-sm text-muted">You have no books on loan.</p>
                 @endforelse
             </section>
             @break
@@ -39,7 +40,7 @@
             @break
 
         @case('history')
-            <div class="flex justify-end"><a class="inline-flex items-center gap-2 rounded-lg border border-[#DBD8D1] bg-white px-4 py-2 text-sm font-bold hover:bg-[#F0ECE4]" href="{{ route('staff.section', ['history', 'export' => 'csv']) }}"><span class="material-symbols-outlined text-base">download</span>Download CSV</a></div>
+            <div class="flex justify-end"><a class="inline-flex items-center gap-2 rounded-lg border border-[#DBD8D1] bg-white px-4 py-2 text-sm font-bold hover:bg-[#F0ECE4]" href="{{ route('staff.section', ['history', 'export' => 'csv']) }}"><span aria-hidden="true" class="material-symbols-outlined text-base">download</span>Download CSV</a></div>
             @include('partials.patron-history')
             @break
 
@@ -69,11 +70,11 @@
                         @forelse ($requests as $libraryRequest)
                             <li class="px-5 py-4">
                                 <div class="flex flex-wrap items-center justify-between gap-2"><p class="font-semibold">{{ $libraryRequest->subject }}</p><span class="rounded-full px-2.5 py-1 text-[11px] font-bold {{ match ($libraryRequest->status) { 'approved', 'completed' => 'bg-emerald-100 text-emerald-800', 'declined' => 'bg-red-100 text-red-800', 'in_review' => 'bg-blue-100 text-blue-800', default => 'bg-amber-100 text-amber-900' } }}">{{ $libraryRequest->statusLabel() }}</span></div>
-                                <p class="mt-1 text-xs text-[#817B6E]">REQ-{{ str_pad((string) $libraryRequest->id, 5, '0', STR_PAD_LEFT) }} - sent {{ $libraryRequest->created_at->format('M d, Y') }}</p>
+                                <p class="mt-1 text-xs text-muted">REQ-{{ str_pad((string) $libraryRequest->id, 5, '0', STR_PAD_LEFT) }} - sent {{ $libraryRequest->created_at->format('M d, Y') }}</p>
                                 @if ($libraryRequest->response)<p class="mt-2 rounded-lg bg-emerald-50 p-2 text-xs text-emerald-900">Librarian: {{ $libraryRequest->response }}</p>@endif
                             </li>
                         @empty
-                            <li class="px-5 py-8 text-center text-sm text-[#817B6E]">No requests of this type yet.</li>
+                            <li class="px-5 py-8 text-center text-sm text-muted">No requests of this type yet.</li>
                         @endforelse
                     </ul>
                 </section>

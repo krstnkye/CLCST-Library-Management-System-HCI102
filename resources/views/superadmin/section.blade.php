@@ -2,7 +2,7 @@
 @section('title', $page['title'])
 @section('content')
     <section class="flex flex-col justify-between gap-4 border-b border-[#E0DCD3] pb-5 lg:flex-row lg:items-end">
-        <div><a class="mb-3 inline-flex items-center gap-1 text-xs font-bold text-[#284A30] hover:underline" href="{{ route('superadmin.dashboard') }}"><span class="material-symbols-outlined text-base">arrow_back</span>Dashboard</a><div class="flex items-center gap-3"><span class="material-symbols-outlined flex h-11 w-11 items-center justify-center rounded-lg bg-[#EFECE7] text-[#201F1C]">{{ $page['icon'] }}</span><div><h1 class="font-display text-2xl font-extrabold md:text-3xl">{{ $page['title'] }}</h1><p class="mt-1 text-sm text-[#6E685D]">{{ $page['description'] }}</p></div></div></div>
+        <div><a class="mb-3 inline-flex items-center gap-1 text-xs font-bold text-[#284A30] hover:underline" href="{{ route('superadmin.dashboard') }}"><span aria-hidden="true" class="material-symbols-outlined text-base">arrow_back</span>Dashboard</a><div class="flex items-center gap-3"><span aria-hidden="true" class="material-symbols-outlined flex h-11 w-11 items-center justify-center rounded-lg bg-[#EFECE7] text-[#201F1C]">{{ $page['icon'] }}</span><div><h1 class="font-display text-2xl font-extrabold md:text-3xl">{{ $page['title'] }}</h1><p class="mt-1 text-sm text-muted">{{ $page['description'] }}</p></div></div></div>
     </section>
 
     <div class="mt-6">
@@ -24,14 +24,14 @@
                 @endphp
                 <section class="overflow-hidden rounded-lg border border-[#E0DCD3] bg-white shadow-sm">
                     <div class="overflow-x-auto"><table class="w-full min-w-[760px] text-left text-sm">
-                        <thead class="bg-[#F7F6F4] text-xs uppercase text-[#787266]"><tr><th class="px-5 py-3">Permission</th>@foreach (\App\Models\User::ROLES as $role)<th class="px-3 py-3 text-center">{{ ['student' => 'Student', 'faculty' => 'Faculty', 'librarian' => 'Librarian', 'admin' => 'Admin', 'superadmin' => 'Super Admin'][$role] }}<span class="block text-[10px] font-normal normal-case">{{ $roleCounts[$role] ?? 0 }} accounts</span></th>@endforeach</tr></thead>
+                        <thead class="bg-[#F7F6F4] text-xs uppercase text-muted"><tr><th class="px-5 py-3">Permission</th>@foreach (\App\Models\User::ROLES as $role)<th class="px-3 py-3 text-center">{{ ['student' => 'Student', 'faculty' => 'Faculty', 'librarian' => 'Librarian', 'admin' => 'Admin', 'superadmin' => 'Super Admin'][$role] }}<span class="block text-[10px] font-normal normal-case">{{ $roleCounts[$role] ?? 0 }} accounts</span></th>@endforeach</tr></thead>
                         <tbody class="divide-y divide-[#EAE7E0]">
                             @foreach ($matrix as $permission => $roles)
-                                <tr><td class="px-5 py-3 font-medium">{{ $permission }}</td>@foreach (\App\Models\User::ROLES as $role)<td class="px-3 py-3 text-center">@if (in_array($role, $roles, true))<span class="material-symbols-outlined text-emerald-700" aria-label="Allowed">check_circle</span>@else<span class="text-slate-300" aria-label="Not allowed">-</span>@endif</td>@endforeach</tr>
+                                <tr><td class="px-5 py-3 font-medium">{{ $permission }}</td>@foreach (\App\Models\User::ROLES as $role)<td class="px-3 py-3 text-center">@if (in_array($role, $roles, true))<span aria-hidden="true" class="material-symbols-outlined text-emerald-700" aria-label="Allowed">check_circle</span>@else<span class="text-slate-300" aria-label="Not allowed">-</span>@endif</td>@endforeach</tr>
                             @endforeach
                         </tbody>
                     </table></div>
-                    <p class="border-t border-[#EAE7E0] p-4 text-xs text-[#6E685D]">Permissions are enforced on the server by the <code>portal</code> route middleware and by role checks in each controller, not only by hiding menu items. Roles are read from the database on every request.</p>
+                    <p class="border-t border-[#EAE7E0] p-4 text-xs text-muted">Permissions are enforced on the server by the <code>portal</code> route middleware and by role checks in each controller, not only by hiding menu items. Roles are read from the database on every request.</p>
                 </section>
                 @break
 
@@ -47,11 +47,11 @@
                     @method('PUT')
                     <div class="grid gap-4 sm:grid-cols-2">
                         @foreach ($fields as $key => [$label, $unit])
-                            <div><label class="mb-1.5 block text-sm font-bold" for="{{ $key }}">{{ $label }}</label><div class="flex items-center gap-2"><input id="{{ $key }}" name="{{ $key }}" type="number" step="{{ $unit === 'PHP' ? '0.01' : '1' }}" min="0" value="{{ old($key, $policy[$key]) }}" required class="w-full rounded-lg border-[#D6D2CB] text-sm focus:border-[#284A30] focus:ring-[#284A30]"><span class="w-12 text-xs font-semibold text-[#787266]">{{ $unit }}</span></div></div>
+                            <div><label class="mb-1.5 block text-sm font-bold" for="{{ $key }}">{{ $label }}</label><div class="flex items-center gap-2"><input id="{{ $key }}" name="{{ $key }}" type="number" step="{{ $unit === 'PHP' ? '0.01' : '1' }}" min="0" value="{{ old($key, $policy[$key]) }}" required class="w-full rounded-lg border-[#D6D2CB] text-sm focus:border-[#284A30] focus:ring-[#284A30]"><span class="w-12 text-xs font-semibold text-muted">{{ $unit }}</span></div></div>
                         @endforeach
                     </div>
                     <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[#EAE7E0] pt-4">
-                        <p class="text-xs text-[#787266]">Changes apply to new checkouts and renewals immediately and are recorded in the audit log. Existing due dates are not changed.</p>
+                        <p class="text-xs text-muted">Changes apply to new checkouts and renewals immediately and are recorded in the audit log. Existing due dates are not changed.</p>
                         <button class="rounded-lg bg-[#201F1C] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#284A30]" type="submit">Save settings</button>
                     </div>
                 </form>
@@ -67,7 +67,7 @@
                         ['cookie', 'Sessions', 'Sessions are encrypted, HTTP-only, SameSite='.ucfirst((string) config('session.same_site')).', expire after '.config('session.lifetime').' minutes, and are regenerated at sign-in.'],
                         ['shield_lock', 'Request protection', 'Every form carries a CSRF token, output is HTML-escaped, database queries are parameterized, and security headers are sent on every response.'],
                     ] as [$icon, $title, $body])
-                        <article class="rounded-lg border border-[#E0DCD3] bg-white p-5 shadow-sm"><h2 class="flex items-center gap-2 font-display text-base font-bold"><span class="material-symbols-outlined text-[#284A30]">{{ $icon }}</span>{{ $title }}</h2><p class="mt-2 text-sm leading-6 text-[#524E45]">{{ $body }}</p></article>
+                        <article class="rounded-lg border border-[#E0DCD3] bg-white p-5 shadow-sm"><h2 class="flex items-center gap-2 font-display text-base font-bold"><span aria-hidden="true" class="material-symbols-outlined text-[#284A30]">{{ $icon }}</span>{{ $title }}</h2><p class="mt-2 text-sm leading-6 text-[#524E45]">{{ $body }}</p></article>
                     @endforeach
                 </section>
                 <div class="mt-6">@include('partials.policy-table')</div>
@@ -79,13 +79,13 @@
 
             @case('security')
                 <section class="grid gap-4 sm:grid-cols-3">
-                    <article class="rounded-lg border border-[#E0DCD3] bg-white p-4 shadow-sm"><p class="text-xs font-semibold text-[#787266]">Failed sign-ins (7 days)</p><p class="mt-2 font-display text-2xl font-extrabold">{{ $failed->count() }}</p></article>
-                    <article class="rounded-lg border border-[#E0DCD3] bg-white p-4 shadow-sm"><p class="text-xs font-semibold text-[#787266]">Suspended accounts</p><p class="mt-2 font-display text-2xl font-extrabold">{{ $suspended }}</p></article>
-                    <article class="rounded-lg border border-[#E0DCD3] bg-white p-4 shadow-sm"><p class="text-xs font-semibold text-[#787266]">Pending accounts</p><p class="mt-2 font-display text-2xl font-extrabold">{{ $stats['pending'] }}</p></article>
+                    <article class="rounded-lg border border-[#E0DCD3] bg-white p-4 shadow-sm"><p class="text-xs font-semibold text-muted">Failed sign-ins (7 days)</p><p class="mt-2 font-display text-2xl font-extrabold">{{ $failed->count() }}</p></article>
+                    <article class="rounded-lg border border-[#E0DCD3] bg-white p-4 shadow-sm"><p class="text-xs font-semibold text-muted">Suspended accounts</p><p class="mt-2 font-display text-2xl font-extrabold">{{ $suspended }}</p></article>
+                    <article class="rounded-lg border border-[#E0DCD3] bg-white p-4 shadow-sm"><p class="text-xs font-semibold text-muted">Pending accounts</p><p class="mt-2 font-display text-2xl font-extrabold">{{ $stats['pending'] }}</p></article>
                 </section>
                 <div class="mt-6 grid gap-6 xl:grid-cols-2">
-                    <section class="rounded-lg border border-[#E0DCD3] bg-white shadow-sm"><h2 class="border-b border-[#EAE7E0] px-5 py-4 font-display text-lg font-bold">Failed sign-in attempts</h2><ul class="divide-y divide-[#EAE7E0] text-sm">@forelse ($failed as $log)<li class="flex justify-between gap-3 px-5 py-3"><span>Account type: {{ $log->metadata['role'] ?? 'unknown' }}</span><span class="font-mono text-xs text-[#787266]">{{ $log->ip_address }} - {{ $log->created_at->diffForHumans() }}</span></li>@empty<li class="px-5 py-6 text-center text-[#787266]">No failed attempts in the last 7 days.</li>@endforelse</ul></section>
-                    <section class="rounded-lg border border-[#E0DCD3] bg-white shadow-sm"><h2 class="border-b border-[#EAE7E0] px-5 py-4 font-display text-lg font-bold">Recent sign-ins</h2><ul class="divide-y divide-[#EAE7E0] text-sm">@forelse ($signIns as $log)<li class="flex justify-between gap-3 px-5 py-3"><span class="font-semibold">{{ $log->user?->name ?? 'Former user' }}</span><span class="font-mono text-xs text-[#787266]">{{ $log->ip_address }} - {{ $log->created_at->diffForHumans() }}</span></li>@empty<li class="px-5 py-6 text-center text-[#787266]">No sign-ins yet.</li>@endforelse</ul></section>
+                    <section class="rounded-lg border border-[#E0DCD3] bg-white shadow-sm"><h2 class="border-b border-[#EAE7E0] px-5 py-4 font-display text-lg font-bold">Failed sign-in attempts</h2><ul class="divide-y divide-[#EAE7E0] text-sm">@forelse ($failed as $log)<li class="flex justify-between gap-3 px-5 py-3"><span>Account type: {{ $log->metadata['role'] ?? 'unknown' }}</span><span class="font-mono text-xs text-muted">{{ $log->ip_address }} - {{ $log->created_at->diffForHumans() }}</span></li>@empty<li class="px-5 py-6 text-center text-muted">No failed attempts in the last 7 days.</li>@endforelse</ul></section>
+                    <section class="rounded-lg border border-[#E0DCD3] bg-white shadow-sm"><h2 class="border-b border-[#EAE7E0] px-5 py-4 font-display text-lg font-bold">Recent sign-ins</h2><ul class="divide-y divide-[#EAE7E0] text-sm">@forelse ($signIns as $log)<li class="flex justify-between gap-3 px-5 py-3"><span class="font-semibold">{{ $log->user?->name ?? 'Former user' }}</span><span class="font-mono text-xs text-muted">{{ $log->ip_address }} - {{ $log->created_at->diffForHumans() }}</span></li>@empty<li class="px-5 py-6 text-center text-muted">No sign-ins yet.</li>@endforelse</ul></section>
                 </div>
                 @break
 
@@ -95,9 +95,9 @@
 
             @case('maintenance')
                 <div class="grid gap-6 xl:grid-cols-2">
-                    <section class="rounded-lg border border-[#E0DCD3] bg-white shadow-sm"><h2 class="border-b border-[#EAE7E0] px-5 py-4 font-display text-lg font-bold">Application</h2><dl class="divide-y divide-[#EAE7E0] text-sm">@foreach ($system['environment'] as $label => $value)<div class="flex justify-between gap-3 px-5 py-3"><dt class="text-[#787266]">{{ $label }}</dt><dd class="font-semibold">{{ $value }}</dd></div>@endforeach</dl></section>
+                    <section class="rounded-lg border border-[#E0DCD3] bg-white shadow-sm"><h2 class="border-b border-[#EAE7E0] px-5 py-4 font-display text-lg font-bold">Application</h2><dl class="divide-y divide-[#EAE7E0] text-sm">@foreach ($system['environment'] as $label => $value)<div class="flex justify-between gap-3 px-5 py-3"><dt class="text-muted">{{ $label }}</dt><dd class="font-semibold">{{ $value }}</dd></div>@endforeach</dl></section>
                     <section class="rounded-lg border border-[#E0DCD3] bg-white shadow-sm"><h2 class="border-b border-[#EAE7E0] px-5 py-4 font-display text-lg font-bold">Database records</h2><dl class="divide-y divide-[#EAE7E0] text-sm">@foreach ($system['tables'] as $table => $count)<div class="flex justify-between gap-3 px-5 py-3"><dt class="font-mono text-xs">{{ $table }}</dt><dd class="font-semibold">{{ number_format($count) }}</dd></div>@endforeach</dl>
-                        <p class="border-t border-[#EAE7E0] p-4 text-xs text-[#787266]">Back up the database with your hosting provider's tools (for example <code>mysqldump</code>, or a copy of <code>database/database.sqlite</code> locally). Restores are not done from inside the application on purpose.</p></section>
+                        <p class="border-t border-[#EAE7E0] p-4 text-xs text-muted">Back up the database with your hosting provider's tools (for example <code>mysqldump</code>, or a copy of <code>database/database.sqlite</code> locally). Restores are not done from inside the application on purpose.</p></section>
                 </div>
                 @break
 

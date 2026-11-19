@@ -55,7 +55,7 @@ class Reservation extends Model
             ->update(['status' => 'expired', 'closed_at' => now()]);
 
         if ($expired > 0) {
-            AuditLog::record(null, 'reservation.expired', "Closed {$expired} pickup hold(s) that were not collected in time.");
+            AuditLog::record(null, 'reservation.expired', 'Closed '.$expired.' pickup '.\Illuminate\Support\Str::plural('hold', $expired).' that '.($expired === 1 ? 'was' : 'were').' not collected in time.');
         }
 
         return $expired;
